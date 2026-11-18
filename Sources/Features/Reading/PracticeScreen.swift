@@ -5,7 +5,6 @@ struct PracticeScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var tutor = false
     @State private var context = ""
-    @State private var question = ""
     @State private var saved = false
 
     var body: some View {
@@ -40,6 +39,12 @@ struct PracticeScreen: View {
                         Button(store.reviewed ? "次のセットを生成" : "採点して解説を見る") {
                             if store.reviewed { store.send(.start(store.section)) } else { store.send(.review) }
                         }.buttonStyle(.borderedProminent)
+                        Button("この問題を保存", systemImage: "bookmark") {
+                            store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
+                                skill: "Reading", title: set.title, directions: "", passages: set.passages,
+                                questions: set.questions, audio: nil, oral: [])))
+                            saved = true
+                        }
                         Button("この問題をAIに質問") { openTutor(set.passages.joined(separator: "\n") + "\n" + set.questions.map(\.prompt).joined(separator: "\n")) }
                     }
                 }.padding(.horizontal, StudySpacing.screenInset)
@@ -47,30 +52,72 @@ struct PracticeScreen: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .alert("単語帳に保存しました", isPresented: $saved) { Button("学習を続ける") {} }
+        .alert("保存しました", isPresented: $saved) { Button("学習を続ける") {} }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
-            NavigationStack {
-                Form {
-                    Section("質問") { TextField("何を知りたいですか？", text: $question, axis: .vertical) }
-                    Button("送信", systemImage: "arrow.up.circle.fill") { store.send(.ask(context, question)) }
-                        .disabled(question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || store.asking)
-                    if store.asking { ProgressView() }
-                    if let explanation = store.explanation { Section("回答") { Text(explanation).textSelection(.enabled) } }
-                }.navigationTitle("AIに質問").toolbar { Button("完了") { tutor = false } }
-            }
+            TutorScreen(store: store, context: context)
         }
     }
 
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: id) { entry in
-            store.send(.save(entry.expression))
+            let paper = store.session.map {
+                ExamUnit(id: "Reading / Section \(store.section) · " + $0.title, skill: "Reading", title: $0.title,
+                         directions: "", passages: $0.passages, questions: $0.questions, audio: nil, oral: [])
+            }
+            store.send(.saveExpression(SavedExpression(expression: entry.expression,
+                source: "Reading / Section \(store.section)", sourceText: entry.sourceText, paper: paper)))
             saved = true
         } onAsk: { entry in openTutor(entry.sourceText + "\n選択範囲: " + entry.expression) }
     }
 
     private func openTutor(_ selection: String) {
         context = selection
-        question = ""
         tutor = true
+    }
+}
+
+struct TutorScreen: View {
+    let store: StoreOf<StudyFeature>
+    let context: String
+    @State private var draft = ""
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        NavigationStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        DisclosureGroup("質問の対象") { Text(context).font(.footnote).textSelection(.enabled) }
+                            .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 18))
+                        if store.messages.isEmpty { Text("意味や答えの根拠を質問できます。").foregroundStyle(.secondary) }
+                        ForEach(store.messages) { message in
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(message.isUser ? "あなた" : "AIチューター").font(.caption.bold()).foregroundStyle(StudyColors.accent)
+                                SelectableStudyText(text: message.text, sourceID: message.id.uuidString) { entry in
+                                    store.send(.saveExpression(SavedExpression(expression: entry.expression,
+                                        source: "AIチューター", sourceText: entry.sourceText)))
+                                }
+                            }.padding().frame(maxWidth: .infinity, alignment: .leading)
+                                .background(message.isUser ? StudyColors.mockCard : Color.clear, in: RoundedRectangle(cornerRadius: 18))
+                        }
+                        if store.asking { ProgressView("回答中…") }
+                        if let error = store.explanation, store.messages.last?.text != error {
+                            Text(error).foregroundStyle(StudyColors.error)
+                        }
+                        Color.clear.frame(height: 1).id("bottom")
+                    }.padding(20)
+                }.onChange(of: store.messages.count) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
+            }
+            .safeAreaInset(edge: .bottom) {
+                HStack(alignment: .bottom) {
+                    TextField("追加で質問…", text: $draft, axis: .vertical).lineLimit(1...5)
+                    Button("送信", systemImage: "arrow.up.circle.fill") {
+                        store.send(.ask(context, draft)); draft = ""
+                    }.labelStyle(.iconOnly).font(.title)
+                        .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || store.asking)
+                }.padding().background(.regularMaterial)
+            }
+            .navigationTitle("AIチューター").navigationBarTitleDisplayMode(.inline)
+            .toolbar { Button("完了") { dismiss() } }
+        }
     }
 }

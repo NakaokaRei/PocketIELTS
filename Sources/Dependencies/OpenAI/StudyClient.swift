@@ -34,35 +34,34 @@ struct StudyClient: DependencyKey {
                           input: context + "\n学習者の質問: " + question, json: false)
     })
 
+    static func generateUnit(like template: ExamUnit) async throws -> ExamUnit {
+        let example = String(decoding: try JSONEncoder().encode(template), as: UTF8.self)
+        let response = try await request(instructions: """
+        Create a new original IELTS General Training exercise for \(template.id).
+        Match the task format, number of questions, length and difficulty of this example.
+        Use English for material and Japanese for answer explanations. All answers must be grounded in the material.
+        For Listening provide a complete spoken script in audio. For Speaking provide interview questions in oral.
+        Return only a JSON object with exactly the same keys and value types as the example.
+        Example: \(example)
+        """, input: "Generate a fresh exercise on a different topic.", json: true)
+        let result = try JSONDecoder().decode(ExamUnit.self, from: Data(response.utf8))
+        guard result.skill == template.skill, !result.title.isEmpty, !result.directions.isEmpty,
+              result.questions.count == template.questions.count,
+              result.questions.allSatisfy({ !$0.prompt.isEmpty && !$0.answers.isEmpty && !$0.explanation.isEmpty }),
+              template.audio == nil || !(result.audio ?? "").isEmpty,
+              template.passages.isEmpty || !result.passages.isEmpty,
+              template.oral.isEmpty || !result.oral.isEmpty else {
+            throw StudyError.message("必要な教材が揃いませんでした。もう一度生成してください。")
+        }
+        return ExamUnit(id: template.id + " · " + result.title, skill: result.skill,
+                        title: result.title, directions: result.directions, passages: result.passages,
+                        questions: result.questions, audio: result.audio, oral: result.oral)
+    }
+
     private static func request(instructions: String, input: String, json: Bool) async throws -> String {
-        guard let key = try KeyStore.read() else { throw StudyError.message("設定でAPIキーを入力してください。") }
-        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/responses")!)
-        request.httpMethod = "POST"
-        request.timeoutInterval = 180
-        request.setValue("Bearer " + key, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        var body: [String: Any] = ["model":"gpt-4.1-mini", "instructions":instructions, "input":input,
-                                   "store":false, "max_output_tokens":json ? 10000 : 1500]
-        if json { body["text"] = ["format":["type":"json_object"]] }
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        switch (response as? HTTPURLResponse)?.statusCode {
-        case 200: break
-        case 401, 403: throw StudyError.message("APIキーまたはモデルの利用権限を設定で確認してください。")
-        case 429: throw StudyError.message("APIの利用上限に達しました。利用枠を確認してから再試行してください。")
-        default: throw StudyError.message("OpenAIへのリクエストに失敗しました。時間をおいて再試行してください。")
+        guard let token = try await ChatGPTAccount.accessToken() else {
+            throw StudyError.message("設定でChatGPTにサインインしてください。")
         }
-        struct Reply: Decodable {
-            struct Item: Decodable {
-                struct Content: Decodable { var type: String; var text: String? }
-                var content: [Content]?
-            }
-            var status: String
-            var output: [Item]
-        }
-        let reply = try JSONDecoder().decode(Reply.self, from: data)
-        let result = reply.output.flatMap { $0.content ?? [] }.filter { $0.type == "output_text" }.compactMap(\.text).joined()
-        guard reply.status == "completed", !result.isEmpty else { throw StudyError.message("応答が途中で終了しました。もう一度お試しください。") }
-        return result
+        return try await ChatGPTInference.generate(token: token, instructions: instructions, input: input)
     }
 }

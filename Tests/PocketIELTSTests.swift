@@ -12,41 +12,20 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertFalse(question.accepts(""))
     }
 
-    func testSettingsTrimsKeyAndReportsRemoval() async {
-        let store = TestStore(initialState: SettingsFeature.State()) {
-            SettingsFeature()
-        } withDependencies: {
-            $0[CredentialClient.self] = CredentialClient(
-                isConfigured: { false },
-                save: { XCTAssertEqual($0, "sample") },
-                remove: {}
-            )
-        }
-        await store.send(.opened)
-        await store.send(.save("  "))
-        await store.send(.save(" sample\n")) {
-            $0.configured = true
-            $0.didSave = true
-        }
-        await store.send(.remove) {
-            $0.configured = false
-            $0.didSave = false
-        }
+    func testChatGPTOnlyPracticeGate() {
+        var state = SettingsFeature.State()
+        XCTAssertFalse(state.canPractice)
+        state.account.active = "profile"
+        XCTAssertTrue(state.canPractice)
+        state.account.active = nil
+        XCTAssertFalse(state.canPractice)
     }
 
-    func testFailedReplacementDoesNotReportSuccess() async {
-        var state = SettingsFeature.State()
-        state.configured = true
-        state.didSave = true
-        let store = TestStore(initialState: state) {
-            SettingsFeature()
-        } withDependencies: {
-            $0[CredentialClient.self].save = { _ in throw StudyError.message("Save failed") }
-        }
-        await store.send(.save("replacement")) {
-            $0.didSave = false
-            $0.error = "Save failed"
-        }
+    func testAccountRefresh() async {
+        let store = TestStore(initialState: SettingsFeature.State()) { SettingsFeature() }
+            withDependencies: { $0[AccountClient.self] = AccountClient(status: { .init(active: "profile") }, signIn: { _ in }, signOut: {}) }
+        await store.send(.refreshAccount)
+        await store.receive(\.accountChanged) { $0.account.active = "profile" }
     }
 
     func testReadingSessionLoadsGradesOnceAndFinishes() async {
@@ -56,6 +35,8 @@ final class PocketIELTSTests: XCTestCase {
         let store = TestStore(initialState: StudyFeature.State()) {
             StudyFeature()
         } withDependencies: {
+            $0.uuid = .constant(UUID(uuidString: "00000000-0000-0000-0000-000000000001")!)
+            $0.date.now = Date(timeIntervalSince1970: 0)
             $0[StudyClient.self].generate = { section in
                 XCTAssertEqual(section, 2)
                 return paper
@@ -70,10 +51,13 @@ final class PocketIELTSTests: XCTestCase {
             $0.session = paper
         }
         await store.send(.answer(0, "monday")) { $0.answers = [0: "monday"] }
-        let history = try! JSONEncoder().encode(["Section 2 · Opening hours · 1/1"])
+        let history = try! StudyPersistence.encode(["Section 2 · Opening hours · 1/1"])
         await store.send(.review) {
             $0.reviewed = true
             $0.$history.withLock { $0 = history }
+            let record = StudyResult(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, date: Date(timeIntervalSince1970: 0),
+                                     skill: "Reading", title: "Opening hours", correct: 1, total: 1)
+            $0.$resultData.withLock { $0 = try! StudyPersistence.encode([record]) }
         }
         await store.send(.review)
         await store.send(.answer(0, "Tuesday"))
@@ -83,4 +67,38 @@ final class PocketIELTSTests: XCTestCase {
             $0.answers = [:]
         }
     }
+    func testSavedPaperAndExpressionKeepSource() async throws {
+        let paper = ExamUnit(id: "Reading / Section 1", skill: "Reading", title: "Library", directions: "Read",
+                             passages: ["Return books beside the entrance."], questions: [], audio: nil, oral: [])
+        let entry = SavedExpression(expression: "beside", source: paper.id, sourceText: paper.passages[0], paper: paper)
+        let store = TestStore(initialState: StudyFeature.State()) { StudyFeature() }
+        let paperData = try StudyPersistence.encode([paper])
+        await store.send(.savePaper(paper)) { $0.$paperData.withLock { $0 = paperData } }
+        await store.send(.savePaper(paper))
+        let entryData = try StudyPersistence.encode([entry])
+        await store.send(.saveExpression(entry)) { $0.$vocabularyData.withLock { $0 = entryData } }
+        await store.send(.saveExpression(entry))
+        XCTAssertEqual(store.state.vocabulary.first?.paper, paper)
+        XCTAssertEqual(store.state.vocabulary.first?.sourceText, paper.passages[0])
+    }
+
+    func testResultsDoNotDuplicateSameAttempt() async throws {
+        let result = StudyResult(skill: "Listening", title: "Booking", correct: 7, total: 10, isMock: true)
+        let store = TestStore(initialState: StudyFeature.State()) { StudyFeature() }
+        let data = try StudyPersistence.encode([result])
+        await store.send(.record(result)) { $0.$resultData.withLock { $0 = data } }
+        await store.send(.record(result))
+        XCTAssertEqual(store.state.records.count, 1)
+    }
+
+    func testBundledMaterialsDecode() throws {
+        let units = try ExamUnit.load()
+        XCTAssertEqual(Set(units.map(\.skill)), Set(["Reading", "Listening", "Writing", "Speaking"]))
+        XCTAssertEqual(Set(units.map(\.id)).count, units.count)
+        for unit in units where unit.skill == "Reading" || unit.skill == "Listening" {
+            XCTAssertFalse(unit.questions.isEmpty)
+            XCTAssertTrue(unit.questions.allSatisfy { !$0.answers.isEmpty && !$0.explanation.isEmpty })
+        }
+    }
+
 }

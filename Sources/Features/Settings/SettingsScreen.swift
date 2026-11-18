@@ -3,40 +3,46 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
-    @State private var draft = ""
     let store: StoreOf<SettingsFeature>
-    private var saved: Bool { store.configured }
-    @State private var confirmRemoval = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    LabeledContent("APIキー", value: saved ? "設定済み" : "未設定")
-                    SecureField(saved ? "新しいキーを入力" : "キーを入力", text: $draft)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
-                } header: { Text("OpenAI API") }
-                  footer: { Text("このiPhoneのキーチェーンに保存します。問題生成・質問にはご自身のOpenAI API利用枠を使用します。") }
-                Section {
-                    Button("保存") {
-                        store.send(.save(draft))
-                        if store.didSave { draft = ""; dismiss() }
-                    }.disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    if saved { Button("キーを削除", role: .destructive) { confirmRemoval = true } }
-                }
+                    if let active = store.account.active {
+                        LabeledContent("接続中", value: store.account.profiles.first { $0.id == active }?.displayName ?? "ChatGPT")
+                        Link("利用状況を確認", destination: URL(string: "https://chatgpt.com/settings/usage")!)
+                        Button("サインアウト", role: .destructive) { store.send(.signOut) }
+                    } else {
+                        ForEach(store.account.profiles) { profile in
+                            Button(profile.displayName) { store.send(.signIn(profile)) }
+                        }
+                        Button("Sign in with ChatGPT") { store.send(.signIn(nil)) }
+                    }
+                    if store.connecting { ProgressView("接続中…") }
+                } header: { Text("ChatGPT アカウント") }
+                  footer: { Text("問題の生成とAI解説に、接続したChatGPTプランの利用枠を使います。") }
+                  .disabled(store.connecting)
                 if let error = store.error { Text(error).foregroundStyle(StudyColors.error) }
             }
+            .interactiveDismissDisabled(store.connecting)
             .navigationTitle("設定")
-            .toolbar { Button("完了") { dismiss() } }
+            .toolbar { Button("完了") { dismiss() }.disabled(store.connecting) }
             .onAppear {
                 store.send(.opened)
+                store.send(.refreshAccount)
             }
-            .confirmationDialog("APIキーを削除しますか？", isPresented: $confirmRemoval) {
-                Button("削除", role: .destructive) {
-                    store.send(.remove)
-                    draft = ""
-                }
-            }
+
         }
     }
+}
+
+#Preview("設定 · Light") {
+    SettingsScreen(store: Store(initialState: SettingsFeature.State()) { SettingsFeature() })
+        .tint(StudyColors.accent).preferredColorScheme(.light)
+}
+
+#Preview("設定 · Dark") {
+    SettingsScreen(store: Store(initialState: SettingsFeature.State()) { SettingsFeature() })
+        .tint(StudyColors.accent).preferredColorScheme(.dark)
 }

@@ -5,34 +5,47 @@ import Foundation
 struct SettingsFeature {
     @ObservableState
     struct State: Equatable {
-        var configured = false
+        var account = AccountClient.Status()
+        var connecting = false
+        var canPractice: Bool { account.active != nil }
         var error: String?
-        var didSave = false
     }
     enum Action {
-        case opened, remove
-        case save(String)
+        case refreshAccount, signIn(ChatGPTAccount.Profile?), signOut
+        case accountChanged(AccountClient.Status, String?)
+        case opened
     }
 
-    @Dependency(CredentialClient.self) var credentials
+    @Dependency(AccountClient.self) var accounts
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             state.error = nil
-            state.didSave = false
             do {
                 switch action {
+                case .refreshAccount, .signIn, .signOut:
+                    guard !state.connecting else { return .none }
+                    if case .refreshAccount = action {} else { state.connecting = true }
+                    return .run { send in
+                        var message: String?
+                        do {
+                            switch action {
+                            case let .signIn(profile): try await accounts.signIn(profile)
+                            case .signOut: try await accounts.signOut()
+                            default: break
+                            }
+                        } catch is CancellationError {
+                        } catch { message = error.localizedDescription }
+                        do { await send(.accountChanged(try await accounts.status(), message)) }
+                        catch { await send(.accountChanged(.init(), error.localizedDescription)) }
+                    }
+                case let .accountChanged(status, error):
+                    state.account = status
+                    state.error = error
+                    state.connecting = false
                 case .opened:
-                    state.configured = try credentials.isConfigured()
-                case let .save(value):
-                    let key = value.trimmingCharacters(in: .whitespacesAndNewlines)
-                    guard !key.isEmpty else { return .none }
-                    try credentials.save(key)
-                    state.configured = true
-                    state.didSave = true
-                case .remove:
-                    try credentials.remove()
-                    state.configured = false
+                    // Remove credentials left by versions that offered personal API keys.
+                    try KeyStore.remove(account: "personal")
                 }
             } catch { state.error = error.localizedDescription }
             return .none

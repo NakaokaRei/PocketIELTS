@@ -18,3 +18,37 @@ struct ReadingSet: Codable, Equatable, Sendable {
         }
     }
 }
+
+struct SavedExpression: Codable, Equatable, Identifiable {
+    var id = UUID()
+    var expression: String
+    var source: String
+    var sourceText: String
+    var meaning = ""
+    var paper: ExamUnit?
+}
+
+struct StudyResult: Codable, Equatable, Identifiable {
+    var id = UUID()
+    var date = Date()
+    var skill: String
+    var title: String
+    var correct: Int
+    var total: Int
+    var isMock = false
+}
+
+struct TutorMessage: Equatable, Identifiable {
+    var id = UUID()
+    var isUser: Bool
+    var text: String
+}
+
+/// Stable bytes avoid unnecessary Shared state updates when a saved value is unchanged.
+enum StudyPersistence {
+    static func encode<T: Encodable>(_ value: T) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        return try encoder.encode(value)
+    }
+}

@@ -1,0 +1,832 @@
+[
+  {
+    "id": "Listening / Part 1",
+    "skill": "Listening",
+    "title": "Booking a community cooking course",
+    "directions": "",
+    "passages": [],
+    "questions": [
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Course name: Kitchen _____",
+        "answers": [
+          "Basics"
+        ],
+        "explanation": "受付では Kitchen Skills と区別し、予約するクラスを Kitchen Basics と確認しています。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Venue: hall on _____ Road",
+        "answers": [
+          "Miller"
+        ],
+        "explanation": "会場は Miller Road。似た名前の Mill Road は別の場所です。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Start time in the evening: _____",
+        "answers": [
+          "6:30",
+          "6.30",
+          "six thirty",
+          "6:30 pm",
+          "6.30 pm"
+        ],
+        "explanation": "午後クラスの終了が6時で、その30分後に開始します。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Day of the class: _____",
+        "answers": [
+          "Tuesday"
+        ],
+        "explanation": "印刷された曜日はThursdayですが、変更後はTuesdayです。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Item students must bring: a _____",
+        "answers": [
+          "container"
+        ],
+        "explanation": "包丁とエプロンは用意されており、持参するのは持ち帰り用の容器です。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Deposit: £_____",
+        "answers": [
+          "15",
+          "fifteen"
+        ],
+        "explanation": "80ポンドは全額で、予約時に支払うのは15ポンドです。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Last day to use the payment link: _____",
+        "answers": [
+          "Friday"
+        ],
+        "explanation": "支払いリンクが有効なのはFridayまでです。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Food allergy: _____",
+        "answers": [
+          "sesame"
+        ],
+        "explanation": "食の好みとは別に、アレルギーとしてsesameだけを申告しています。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Use the entrance marked _____.",
+        "answers": [
+          "garden"
+        ],
+        "explanation": "正面は施錠され、gardenと表示された入口を使います。"
+      },
+      {
+        "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+        "prompt": "Send cancellations by _____.",
+        "answers": [
+          "email",
+          "e-mail"
+        ],
+        "explanation": "キャンセルには書面の記録が要るので、電話ではなくemailを使います。"
+      }
+    ],
+    "audio": "Receptionist: Eastbank Community Centre. How can I help?\nCaller: I'm ringing about the evening cooking course. I saw the photograph in the newsletter. The people in it seemed to know what they were doing. I can follow a recipe, but I'd struggle if somebody just put ingredients in front of me.\nReceptionist: That photograph was taken at the end of last year's course. The class we're taking bookings for now is called Kitchen Basics. There's another called Kitchen Skills, but that's for people who have already done the first course. Shall I put Kitchen Basics on your form?\nCaller: Yes, please. Is it the building near the bridge? The market used to be held there.\nReceptionist: We use that for talks. You'll be cooking in the hall on Miller Road. That's Miller, M-I-L-L-E-R. Don't follow the sign to Mill Road; it's on the opposite side of the river. If you come by bus, get off outside the pharmacy.\nCaller: Good. I usually finish work at half past five. Would that give me time?\nReceptionist: The afternoon group leaves at six. We need half an hour to set up after them, so your group starts at six thirty. People sometimes ask if they can arrive at seven, but by then the practical demonstration is over.\nCaller: I can manage that. The advert said something about Thursday. Is that the day I need to keep free?\nReceptionist: That was the plan until the hall changed its opening hours. We've moved the class to Tuesday. Thursday is still printed on some copies of the newsletter. We've kept the course to six sessions so that it finishes before the school term ends.\nCaller: What about equipment? My sister said she had to buy a set of knives when she trained.\nReceptionist: Please leave your knives at home. We supply them, and there are aprons hanging by the door. The one thing you need to bring is a container, so that you can take home what you've made. Something with a lid is better than a plate.\nCaller: I'll bring one. My sister also told me I'd have to pay for ingredients every week. Is that still the arrangement?\nReceptionist: No. The fee includes the food. We take a deposit of fifteen pounds now, and you pay the balance on the first evening. The full fee is eighty pounds, so please don't send that amount as the deposit. When the course finishes, any unused money in the food budget goes towards the final meal.\nCaller: Fine. Can I book a place online? I can pay the deposit while we're talking if that's easier.\nReceptionist: I can hold a place today. To confirm it, please use the link in the email I'm about to send. It stays active until Friday. After Friday I have to offer the place to the next person on the list, even if you still have the link.\nCaller: Before you send it, could you make a note about food? I don't eat meat, but fish is fine. And there's a big difference between food I prefer to avoid and food that actually makes me ill.\nReceptionist: Absolutely. There's a separate box for allergies. What should I put there?\nCaller: Sesame. That's the only allergy. Don't put nuts; I eat those all the time. I can talk to the tutor about alternatives on the first evening.\nReceptionist: Thanks. The main doors will be locked after the afternoon group leaves. Use the entrance marked garden rather than the one marked deliveries. The tutor will meet you just inside. Last year everyone waited at the front until I went looking for them.\nCaller: Garden. I've written it down. And if I can't come after all?\nReceptionist: Email us rather than leaving a phone message. We need a written record of cancellations. You don't need to give a reason, but do include your booking number. You'll find that in the confirmation.\nCaller: Perfect. I'll look out for the message.",
+    "oral": []
+  },
+  {
+    "id": "Listening / Part 2",
+    "skill": "Listening",
+    "title": "A guide to the repair festival",
+    "directions": "",
+    "passages": [],
+    "questions": [
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Where should visitors take a broken item first?\\nA Under the clock   B Beside the fountain   C Inside the workshop",
+        "answers": [
+          "B"
+        ],
+        "explanation": "時計の下はボランティア用で、壊れた物の受付は噴水のそばです。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Why was the ticket system changed?\\nA To let visitors leave the queue   B To give faster repairs   C To reduce the number of tools needed",
+        "answers": [
+          "A"
+        ],
+        "explanation": "新しい予約券は待ち時間に列を離れて会場を回るためのものです。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "What is different about the clothing workshop this year?\\nA It only accepts beginners.   B Visitors must bring cotton.   C Material is provided for practice.",
+        "answers": [
+          "C"
+        ],
+        "explanation": "初心者が自分の服を傷めないよう、練習用の素材を用意しています。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Why are several chairs displayed together?\\nA To compare prices   B To show stages in a process   C To advertise a sale",
+        "answers": [
+          "B"
+        ],
+        "explanation": "3脚は搬入時・分解中・修理後の状態を示します。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Which activity requires an adult to remain with the child?\\nA The morning tool session   B The afternoon stories   C Both activities",
+        "answers": [
+          "A"
+        ],
+        "explanation": "保護者が残る必要があるのは工具を使う午前の活動です。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Collect booking cards from the tent near the _____.",
+        "answers": [
+          "stage"
+        ],
+        "explanation": "予約カードは入口ではなくステージそばのテントで配ります。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Eat your own lunch on the _____.",
+        "answers": [
+          "terrace"
+        ],
+        "explanation": "芝生は濡れているため、持参した昼食はテラスで食べます。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Leave your _____ with staff when borrowing tools.",
+        "answers": [
+          "ticket"
+        ],
+        "explanation": "工具を借りる際に預けるのは身分証ではなく受付券です。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Unfinished large items must be collected by _____.",
+        "answers": [
+          "Monday"
+        ],
+        "explanation": "未完成の大型品を保管できるのは月曜までです。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Write ideas for future activities on the _____.",
+        "answers": [
+          "board"
+        ],
+        "explanation": "提案は出口の掲示板へ。箱は寄付用です。"
+      }
+    ],
+    "audio": "Guide: Good morning, and welcome to the first day of the Eastbank Repair Festival. I'm going to talk you through the site before you go off with your maps. If you've been to the winter market here, forget the route you normally take. We haven't changed the entrance, but most of the activities are in different places. The small blue mark on your map is where we are standing now, in the courtyard.\nGuide: To begin with, anyone bringing a broken item should go to the desk beside the fountain. There are two desks in the courtyard. The one under the clock is for people who have volunteered to help, so there's no point showing the staff there your lamp or your radio. At the fountain you'll receive a ticket with a time on it. That time is for an assessment, not a promise that a repair will be finished by then.\nGuide: The old system of giving people a place in a queue as soon as they arrived didn't work very well. People had to stand for hours, and nobody dared leave to look at the demonstrations. This year the tickets let you explore until ten minutes before your appointment. If the time clashes with something else you want to see, return to the desk. Passing a ticket to somebody with a different item can cause problems, since electrical work and furniture repairs need different equipment.\nGuide: Let's look first at what you can do while you wait. In the weaving room a craft worker will show you how to mend a hole in a jumper. She used to ask people to bring something of their own to work on. That meant beginners worried about spoiling a favourite piece of clothing. This time she has brought practice material for everyone. You'll be working with wool, not the thin cotton you may have used for sewing on buttons. You'll be able to take your practice piece away.\nGuide: Next door you'll see some beautiful wooden chairs. Please resist the temptation to sit on them. The point of the display is not to sell restored furniture. One chair has been left exactly as it arrived, another has been taken apart, and a third has been put back together. Together they show the stages of a single repair. The carpenter has left the price tags from the charity shop on two of them, which can give the wrong impression.\nGuide: There are two events for children. The morning session involves small tools, so an adult must stay with each child. At the afternoon storytelling session an adult is welcome but does not have to stay. Both activities are free, but only the morning one has to be booked. Go to the tent beside the stage for a booking card. The people in the tent by the gate can tell you where things are, but they don't have the cards.\nGuide: Now for a few practical details. Hot drinks are available in the café, and you may bring your own lunch. Please eat it on the terrace. We originally intended to use the lawn for picnics, but the ground is too wet. There's a tap for drinking water just beyond the terrace, on the wall of the workshop. The tap in the paint room is for washing brushes only.\nGuide: If you borrow tools, please give the attendant your ticket to hold, not your identity card. You'll get it back when you return the tools. Large items that aren't ready for collection this evening can be left in the store until Monday. We cannot keep them until the next festival. Finally, before you leave, tell us which activity you would most like us to repeat. Put your suggestion on the board by the exit; the box beside it is for donations. That's everything. I hope you find something worth taking home, even if it's only an idea.",
+    "oral": []
+  },
+  {
+    "id": "Listening / Part 3",
+    "skill": "Listening",
+    "title": "Designing a study of student travel",
+    "directions": "",
+    "passages": [],
+    "questions": [
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "What was the main weakness of the trial sample?\\nA The participants shared a travel pattern.   B Too few subjects were taught.   C Most students refused to answer.",
+        "answers": [
+          "A"
+        ],
+        "explanation": "ゼミ開始時刻が快速列車の到着に合い、同じ通学手段の人が偏っていました。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Why include an afternoon collection period?\\nA The station is quieter.   B Some students arrive later.   C Staff have more time to help.",
+        "answers": [
+          "B"
+        ],
+        "explanation": "午前に来ないパートタイム学生を含めるためです。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "How will the main method of travel be classified?\\nA By cost   B By time   C By distance",
+        "answers": [
+          "C"
+        ],
+        "explanation": "バスの遅れに左右されないよう、最長距離を移動した方法を使います。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "What will happen to the question about reliability and cost?\\nA It will be split.   B It will be removed.   C Examples will be added.",
+        "answers": [
+          "A"
+        ],
+        "explanation": "信頼性と価格が1問に混在していたため、別々の質問にします。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Why will the map be removed?\\nA It shows old routes.   B It suggests personal location data is needed.   C It takes too long to print.",
+        "answers": [
+          "B"
+        ],
+        "explanation": "参加者に自宅の場所を尋ねられていると思わせたためです。"
+      },
+      {
+        "instruction": "Choose the correct letter, A, B or C.",
+        "prompt": "Which people will be chosen for follow-up interviews?\\nA Those with the longest trip   B Those who arrive first   C Those whose answers are unusual",
+        "answers": [
+          "C"
+        ],
+        "explanation": "全体傾向の例外に話を聞く方針に、指導教員も賛成します。"
+      },
+      {
+        "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Link the questionnaire and the contact slip using a _____.",
+        "answers": [
+          "code"
+        ],
+        "explanation": "質問票と別紙の連絡先には同じcodeを記入します。"
+      },
+      {
+        "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Put a _____ around each example.",
+        "answers": [
+          "border"
+        ],
+        "explanation": "白黒印刷でも例を目立たせるため、borderで囲みます。"
+      },
+      {
+        "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Use a _____ to show exact results.",
+        "answers": [
+          "table"
+        ],
+        "explanation": "正確な数値にはtable、最大の差にはグラフを使います。"
+      },
+      {
+        "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Send the revised questions to the tutor on _____.",
+        "answers": [
+          "Friday"
+        ],
+        "explanation": "木曜は入口の視察で、質問の送付は金曜の午後です。"
+      }
+    ],
+    "audio": "Maya: Thanks for seeing us. Leo and I have been trying to design the survey about journeys to college. We were going to ask everyone in our seminar, but the trial answers weren't terribly interesting. Almost everyone came by train.\nTutor: Does that mean there isn't much to investigate, or does it tell you more about the people you asked? Think about what those students have in common, apart from studying the same subject.\nLeo: Our seminar starts just after the fast train arrives. Students choose it partly because of the timetable. We've effectively chosen people who travel in one particular way. I thought the problem was that we'd only tried twelve people, but asking another twelve in the same room wouldn't solve it.\nMaya: So we'll recruit at different entrances, not just at the station gate. I wanted to stand outside the main gate all morning. Leo suggested a period in the afternoon, too, because part-time students may never be there in the morning.\nTutor: Good. Now, what do you mean by the main part of a journey? A student might walk to a bus stop and spend longer waiting for the bus than sitting on it. Would you call that a journey on foot?\nLeo: My first thought was to measure time, including the wait. But times change from day to day. For our categories, shall we take the method that covers the greatest distance? That way two people making the same trip won't be put in different groups simply because one bus was late.\nMaya: Yes, let's use distance. We'll still ask about waiting time as a separate question. In the trial I asked whether the service was reliable and affordable. Three people said yes, but then explained that it was expensive. They were answering just the first half.\nTutor: You can see why I'd prefer two questions there. What about the route map you planned to give people? Will that help somebody explain where they changed from a bus to a train?\nMaya: It might, but I tried it with a neighbour and she thought we wanted her home address. We don't need that. We'll remove the map rather than trying to cover the residential streets. We can ask for the number of changes without asking for a location.\nLeo: I'd quite like to interview a few people afterwards. The numbers might tell us that people avoid a certain service, but not why. Perhaps we should interview the students with the longest journeys?\nMaya: Or people whose answers don't fit the general pattern. If almost everyone with access to a car drives, the person who has one and cycles might tell us something the others won't. I think that's more useful than simply following up the longest journeys.\nTutor: I agree. Don't choose them before you've seen the questionnaires. You'll need a way to contact them without writing their names on the answers. How are you going to manage that?\nLeo: We'll give each questionnaire a code. Anyone willing to be interviewed can put the same code on a separate slip with their email address. I had planned to keep the slips in the same folder as the questionnaires, but that would defeat the point. Maya can keep the slips in a locked drawer.\nMaya: The trial also taught us something about presentation. I put examples in small grey print. People missed them because they looked like notes for us. For the next version I'll use a border around each example. I don't want to use colour because the copies may be printed in black and white.\nTutor: Good. And how will you display the results? A pie chart for each entrance would be easy to draw, but comparing the slices across several charts might be difficult.\nLeo: We'll use a table for the exact figures. Then we'll put one graph in the presentation showing the biggest difference. Our first draft had a graph for every answer and you couldn't remember the first by the time you reached the last.\nMaya: I'll visit the entrances on Thursday to check there's room to stand. Leo, could you send the revised questions to the tutor by Friday? We can do the printing after we've had some comments.\nLeo: Yes. The seminar is on Friday morning, so I'll send them that afternoon.",
+    "oral": []
+  },
+  {
+    "id": "Listening / Part 4",
+    "skill": "Listening",
+    "title": "Reconstructing the uses of old buildings",
+    "directions": "",
+    "passages": [],
+    "questions": [
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "The earliest document found using the local name was a _____.",
+        "answers": [
+          "postcard"
+        ],
+        "explanation": "呼び名が確認できた最も古い記録は、建物の使用後に送られた絵はがきです。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Insurance plans are especially informative about the material of _____.",
+        "answers": [
+          "walls"
+        ],
+        "explanation": "保険図は延焼リスクを見積もるため、壁の材質を詳しく記録します。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "The direction of _____ showed where loads were moved.",
+        "answers": [
+          "scratches"
+        ],
+        "explanation": "床の平行な擦り傷の方向が、荷を運んだ方角を示しました。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Repeated movement of a _____ may explain the wear on the hook.",
+        "answers": [
+          "rope"
+        ],
+        "explanation": "何度も同じ場所を通るロープが、フックの溝を説明します。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Unused _____ helped show that a beam had been used previously.",
+        "answers": [
+          "holes"
+        ],
+        "explanation": "今の位置では用途のない穴があり、梁を再利用したと考えられます。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "The carrier recorded entries according to _____.",
+        "answers": [
+          "destination"
+        ],
+        "explanation": "運送業者の台帳は顧客名ではなく行き先順でした。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "Some loads were identified as shipments of _____.",
+        "answers": [
+          "clay"
+        ],
+        "explanation": "照合できた荷のうち、一部が粘土と判明します。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "An unusual _____ is more helpful for matching records than a standard charge.",
+        "answers": [
+          "payment",
+          "sum"
+        ],
+        "explanation": "頻出の標準料金より、珍しい支払額の一致の方が有力な根拠になります。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "The resident placed the wheel in the neighbouring _____.",
+        "answers": [
+          "yard"
+        ],
+        "explanation": "住民が見た車輪の位置は、隣の建物の敷地の庭でした。"
+      },
+      {
+        "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
+        "prompt": "A visitor drew attention to a narrow _____.",
+        "answers": [
+          "drain"
+        ],
+        "explanation": "展示を見た人が排水溝に気づき、次の調査の出発点となります。"
+      }
+    ],
+    "audio": "Lecturer: Today I'd like to look at the way historians investigate a building whose original purpose is uncertain. I'll use the example of a brick building beside a canal. Local people called it the old mill. That name appeared in a newspaper article and later found its way into a guidebook. When we began our survey, it would have been easy to treat the name as evidence. In fact, the earliest document in which we could find it was a postcard sent long after the building had stopped being used. The postcard told us what one visitor believed, not what work had once taken place inside.\nLecturer: Our first useful source was an insurance plan. These plans were drawn so that an insurer could estimate the risk of fire spreading from one property to another. They are therefore particularly good at recording the material of walls. They pay rather less attention to the use of an individual room if changing that use made no difference to the risk. On our plan, two adjoining spaces appeared as one. We didn't conclude that the dividing wall was a later addition until we had actually examined the bricks.\nLecturer: Inside the building we looked for signs of loads being moved. A railway goods shed generally needs a floor set at a convenient height for unloading. Here the floor was too low for a railway wagon. However, there was a series of parallel scratches across it, ending at a wide opening in the canal wall. Scratches can be made in several ways, but their direction was informative. Whatever was being moved was travelling towards the water, not towards the road.\nLecturer: Above the opening we found an iron hook. The popular explanation was that it had once held a lamp. That was possible, although it was unusually thick for the weight of an ordinary lamp. Under a layer of paint we found a curve worn into its upper surface. A rope drawn repeatedly across the same point could leave such a curve. The discovery didn't tell us exactly what was lifted, but it encouraged us to look for records of loading operations.\nLecturer: This brings me to a distinction that matters throughout this kind of investigation: the date an object was made is not necessarily the date it entered the building. One beam bore a date a century earlier than the canal. Its end contained holes that served no purpose in its present position. It had almost certainly been used somewhere else first. Had we treated the beam as proof of the age of the walls, we would have had to explain why a waterside loading door had been built before there was any water outside it.\nLecturer: After examining the fabric, we turned to the written sources. The first ledger we consulted listed the names of customers and the amount each had paid, but it rarely named the goods. What helped was a second ledger kept by the carrier. Its entries were arranged by destination rather than by customer. By matching dates and payments we could connect some of the anonymous loads with shipments of clay. Notice the word some. A matching payment is much stronger evidence when the sum is unusual than when a standard charge appears twenty times on the same page.\nLecturer: We also interviewed former residents. One remembered an enormous wheel and described its position in detail. When she drew it on a plan, she placed it outside the building we were studying, in the yard of the next property. Her memory had not been useless. It suggested how the two properties came to be confused. For that reason we kept her drawing with the interview, rather than correcting its position to fit the guidebook.\nLecturer: Our report called the building a loading store, a description that fitted the physical marks and the carrier's accounts. We could not rule out other uses at other times. At the public exhibition we therefore displayed our conclusion alongside a photograph of the hook and a copy of one ledger page. Visitors could see the route from observation to interpretation. Several asked about details we had passed over. One of those questions concerned a narrow drain, which will be the starting point for the next survey.",
+    "oral": []
+  },
+  {
+    "id": "Reading / Section 1",
+    "skill": "Reading",
+    "title": "Community services",
+    "directions": "",
+    "passages": [
+      "A · Using the library outside staffed hours\n\nYour ordinary library card allows you to borrow books at the counter, but it will not open the building when no member of staff is present. Adults who would like this additional service should come to the front desk with their card and one document showing their current address. You will be shown how to leave the building if the main doors do not open. The demonstration takes about fifteen minutes. Access begins the following morning, even if there is time to finish the demonstration before the desk closes.\n\nDuring unstaffed hours, hold your own card against the reader until the light turns green. Please do not let another adult follow you through the door, even someone you recognise. Children under sixteen may accompany a registered adult, who must remain in the building with them. The self-service machine can issue and renew most books. Items with a yellow label must be taken to the desk during staffed hours because the machine cannot remove their security cases.\n\nTo return an ordinary book, use the machine and place the book on the trolley beside it. If the library is closed altogether, books may be left in the box beside the east entrance. Keep your receipt until the item has disappeared from your account. There is no need to report a delay on the day of return: items left in the outside box are processed on the next staffed day. If an item is still on your account after that, email a photograph of the receipt or tell us when and where you returned it. Please include the title of the book in your message so that staff can check the correct item.",
+      "B · Buying a swim pass at Harbour Pool\n\nA standard pass covers ten public swimming sessions and may be shared by people living at the same address. Tell reception how many of you are swimming before anyone goes through the gate. One visit is deducted for each swimmer, not for the group as a whole. A pass cannot be used for lessons, private bookings or evening events advertised separately. The ten visits must be used within six months of the first swim, which may be later than the date on which the pass was bought.\n\nIf the pool closes unexpectedly after you have entered, ask the duty supervisor to stamp your receipt before you leave. Reception can then put the visit back on the pass. An early departure for personal reasons does not qualify. Swimmers who lose a pass should contact reception rather than buy a replacement online. Staff can transfer any unused visits if the original pass was registered; they cannot identify the owner of an unregistered pass from the number of visits remaining.\n\nLockers take a deposit which is returned when you open the door again. Put the key round your wrist before going on to the poolside. Anything left in a locker overnight is taken to reception the next morning. Wet towels are kept for two days only, so there is no advantage in waiting until your next regular swim to collect one.",
+      "C · Saturday bicycle workshop\n\nThe workshop is held in the covered yard behind the railway station. Enter through the delivery gate on Mill Street; the station ticket hall has no entrance to the yard. Bring your bicycle and a note of anything that changes when the problem occurs, such as a noise that disappears as soon as you stop pedalling. This information helps the volunteer decide which checks to make first.\n\nThere are two queues. Join the shorter assessment queue if you are unsure what needs doing. Volunteers there give advice but do not carry out repairs. Join the repair queue if you already have an assessment slip. A slip issued at a previous workshop is still valid provided the fault has not changed. Labour is free. Replacement parts are charged at cost, and payment is by card. If a part has to be ordered, take your bicycle home and bring it back when you receive a message. There is no secure storage in the yard between workshops."
+    ],
+    "questions": [
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "An ordinary library card automatically gives its holder entry during unstaffed hours.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "A · After-hours access requires registration and a demonstration."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "New users can enter without staff on the evening of their demonstration.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "A · Access begins the following morning."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "Every adult entering during unstaffed hours must use their own card.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "A · Adults may not follow another cardholder inside."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The library charges adults to register for unstaffed access.",
+        "answers": [
+          "NOT GIVEN"
+        ],
+        "explanation": "A · No registration price is stated."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "A registered adult must stay with a child under sixteen.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "A · The adult must remain in the building."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text A. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "Returns left outside are processed on the next staffed day.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "A · The final paragraph specifies the processing time."
+      },
+      {
+        "instruction": "Complete the sentences. Choose ONE WORD ONLY from text B.",
+        "prompt": "People sharing a pass must live at the same _____.",
+        "answers": [
+          "address"
+        ],
+        "explanation": "B · A standard pass can be shared within one address."
+      },
+      {
+        "instruction": "Complete the sentences. Choose ONE WORD ONLY from text B.",
+        "prompt": "The six-month period begins with the first _____.",
+        "answers": [
+          "swim"
+        ],
+        "explanation": "B · The purchase date may be earlier."
+      },
+      {
+        "instruction": "Complete the sentences. Choose ONE WORD ONLY from text B.",
+        "prompt": "To recover a visit after an unexpected closure, obtain a stamp on your _____.",
+        "answers": [
+          "receipt"
+        ],
+        "explanation": "B · Ask the duty supervisor before leaving."
+      },
+      {
+        "instruction": "Complete the sentences. Choose ONE WORD ONLY from text B.",
+        "prompt": "Unused visits can be recovered if the missing pass was _____.",
+        "answers": [
+          "registered"
+        ],
+        "explanation": "B · An unregistered pass cannot be traced to an owner."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text C.",
+        "prompt": "Use the delivery _____ to reach the workshop.",
+        "answers": [
+          "gate"
+        ],
+        "explanation": "C · The public ticket hall does not lead to the yard."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text C.",
+        "prompt": "A previous assessment slip may be used if the _____ is unchanged.",
+        "answers": [
+          "fault"
+        ],
+        "explanation": "C · The slip remains valid for the same fault."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text C.",
+        "prompt": "Pay for replacement parts by _____.",
+        "answers": [
+          "card"
+        ],
+        "explanation": "C · Labour is free, but replacement parts are charged."
+      }
+    ],
+    "audio": null,
+    "oral": []
+  },
+  {
+    "id": "Reading / Section 2",
+    "skill": "Reading",
+    "title": "Starting work and applying for training",
+    "directions": "",
+    "passages": [
+      "A · Your first month at North Quay Services\n\nYour appointment letter gives the time of your first shift, but new staff are asked to arrive twenty minutes earlier on that occasion. Use the staff entrance on King Street and give reception the name of the supervisor shown on the letter. Reception will issue a temporary badge against a signature. The badge opens the staff entrance and the changing rooms; it will not open the equipment store. A permanent badge is prepared after your supervisor confirms that you have completed the induction. Until then, do not borrow another employee's badge to open a door that yours will not unlock.\n\nFor the first three shifts you will work alongside a designated colleague, referred to on the rota as your partner. The partner demonstrates routine tasks and observes you attempting them. They can show you where to find a procedure, but they cannot sign off your induction. If your partner is moved to a different department during a shift, report to your supervisor before carrying on alone. A shortage of people in your department does not change this arrangement. The supervisor may pair you with another experienced employee or give you a different task for the rest of the shift.\n\nUniforms are collected from the clothing desk, which is closed at weekends. Staff starting on a Saturday or Sunday receive a clean loan set from the supervisor. Exchange it at the clothing desk on your next weekday shift. Bring every item in the set, including anything you did not wear. The desk checks the loan record before issuing your normal allocation. If a garment fits at the shoulders but is too tight when you bend, ask for another size. You will not have to explain your measurements, and exchanging an unworn garment does not count towards your annual replacement allowance.\n\nAt the end of each week, check your hours on the electronic timesheet. Breaks are entered separately; do not deduct them from the starting or finishing times you report. If a shift is missing altogether, send your supervisor a copy of the relevant rota. Payroll can correct an approved entry, but it cannot create a record of attendance simply because your name appears on next month's rota. Report discrepancies by noon on Monday if you want the correction included in the next regular payment. A later report can still be considered, although payment of the difference may be delayed.",
+      "B · Applying for a course during working hours\n\nThe development scheme is open to employees who have completed their first month. Its purpose is to support learning that can be used in an employee's present role or in a role the organisation expects to need. You do not have to promise to apply for a promotion. A course chosen solely for a personal interest can be discussed with your manager, but its cost cannot be met from the development budget. If part of a course is relevant and part is not, explain the distinction on the application. The panel may offer a contribution instead of paying the whole fee.\n\nStart by discussing the dates with the person responsible for your rota. A course provider's offer of a place is not permission to leave a shift uncovered. Submit the form at least four weeks before the course begins and attach the provider's outline. An advertisement giving only the course title will not help the panel decide whether the proposed learning is relevant. If the provider gives no list of topics, ask for a short written description from the tutor. The organisation will accept that in place of an outline. A receipt should not accompany the application: you are advised to wait for the written decision before paying.\n\nApplications are assessed on two questions: what you expect to learn, and how colleagues or service users could benefit. The cheapest of two courses need not be chosen if the more expensive one offers practice on equipment that staff actually use. Explain that difference in the space provided. The panel will not assume that a high fee indicates better teaching. Where two applications have equal merit and funding is limited, preference goes to the employee who has received less support from the scheme in the previous twelve months.\n\nWithin ten working days of returning, complete a short account of one change you intend to try. A certificate proves attendance but does not replace this account. If the course was cancelled after a fee had been paid, forward the provider's notice to the training office. Staff there will pursue the refund so that two people do not make separate claims for the same payment. Any credit offered by the provider belongs to the organisation, even if the booking was made in your name. Before accepting a different date, check the rota again: approval of the original dates does not automatically release you from a later shift."
+    ],
+    "questions": [
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "Give reception the name of your _____.",
+        "answers": [
+          "supervisor"
+        ],
+        "explanation": "A · Use the name on the appointment letter."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "You must provide a _____ for a temporary badge.",
+        "answers": [
+          "signature"
+        ],
+        "explanation": "A · Reception issues the badge against a signature."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "On the rota, the colleague who demonstrates tasks is called your _____.",
+        "answers": [
+          "partner"
+        ],
+        "explanation": "A · This colleague observes routine work."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "Only after your _____ is complete can a permanent badge be prepared.",
+        "answers": [
+          "induction"
+        ],
+        "explanation": "A · The supervisor confirms completion."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "Weekend starters initially wear a _____ set of clothes.",
+        "answers": [
+          "loan"
+        ],
+        "explanation": "A · Exchange the loan set on the next weekday shift."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "Record _____ separately on the timesheet.",
+        "answers": [
+          "breaks"
+        ],
+        "explanation": "A · Do not subtract them from the reported times."
+      },
+      {
+        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
+        "prompt": "Send a copy of the relevant _____ if a whole shift is missing.",
+        "answers": [
+          "rota"
+        ],
+        "explanation": "A · This goes to the supervisor."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "Employees must commit to seeking promotion to get financial support.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "B · No promise to apply for promotion is required."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The scheme can cover part of a course fee.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "B · A contribution may be offered."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The panel meets once every four weeks.",
+        "answers": [
+          "NOT GIVEN"
+        ],
+        "explanation": "B · Four weeks is the application deadline, not the meeting frequency."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "A written description from the tutor can replace a course outline.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "B · This is accepted if the provider has no topic list."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "If two applications are equally strong, recent support can affect the choice.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "B · Less support in the previous twelve months gives priority."
+      },
+      {
+        "instruction": "Decide whether the statements agree with the information in text B. Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "A certificate is sufficient evidence to fulfil the post-course reporting requirement.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "B · A written account of a proposed change is also required."
+      }
+    ],
+    "audio": null,
+    "oral": []
+  },
+  {
+    "id": "Reading / Section 3",
+    "skill": "Reading",
+    "title": "Urban orchards",
+    "directions": "",
+    "passages": [
+      "A\n\nEarly urban orchards supplied nearby families. Today, some of these plots serve a different purpose: volunteers use them to teach schoolchildren how fruit trees grow. From a school bus, the orchard at Merefield looks much like any other patch of public grass. Only when the children walk between the rows do they notice that the trees have names. One apple is called Bellman's Green, although it turns yellow when it is ripe. Another has no name at all. Its label simply reads “the baker's tree”, after the shop that once stood on the corner.",
+      "B\n\nNobody set out to create a museum. When the council acquired the land behind the old bakery, its first drawing showed six straight paths leading across an empty lawn. A resident brought a photograph to a public meeting and asked where her grandfather's pear tree would go. The surveyors had marked every trunk, but their map said nothing about what grew on it. The drawing was put aside. For the next autumn, residents were asked to bring fruit from the site to a temporary stall. Comparing fruit on the same day proved far more useful than comparing memories of its colour.",
+      "C\n\nAt first the volunteers arranged the fruit by size. Their visitor, a retired grower, quietly rearranged it. She put two apples that looked almost identical at opposite ends of the table and placed a small, uneven pear beside a much larger one. Weather, she explained, could change the size of a fruit considerably. Instead, she asked people to cut each sample in half and look at the shape of the core. Even this was only a clue. Rather than give doubtful specimens a confident name, the team recorded the month of harvest and left space in the register for a later identification.",
+      "D\n\nThe exercise changed the layout of the site. A narrow path that would have taken visitors past all the oldest trees was popular on paper. On the ground it crossed a wet hollow, where the passage of thirty pairs of boots could turn the soil into mud in a morning. The team moved the path uphill. The hollow was left to fill with rain, and a bench was placed where visitors could see it without walking through it. Keeping people out of one small area made it possible to keep the rest of the orchard open through the winter.",
+      "E\n\nAs the crop increased, so did disagreement about who could take it. Some volunteers favoured a locked gate and a share for every hour worked. Others argued that public land should provide fruit to anyone who passed. A trial settled the matter for that season. Green ribbons marked trees ready for picking. Each visitor could take a bag from those trees, whether or not they had helped that year. A tree without a ribbon was to be left alone; it might simply need another week. The trial did not tell the team how much fruit each household took, but it did bring complaints about unripe apples to an end.",
+      "F\n\nFor the school, the most valuable lesson has little to do with picking. Each spring a class chooses one branch, slips a loose band around it and counts its flowers. The pupils return to count the tiny fruits on the same branch. Their teacher once used different branches for the two counts and got an impressive result that nobody could interpret. Now the children keep a sketch as well as a number, so that another class can find the branch even if the band has fallen off. The gaps in the record are discussed rather than filled with guesses.",
+      "G\n\nOn the orchard gate hangs a price list from the old bakery. Beside it, an empty label invites visitors to suggest a name for the baker's apple. The team has decided to keep the local name on display even if the variety is eventually identified. A grower might need the official name to order a replacement tree. A child trying to explain why there is an orchard on this particular street may find the other name more useful. There is room on the label for both."
+    ],
+    "questions": [
+      {
+        "instruction": "Choose the correct heading for paragraphs B–E. Write the correct number, i–vi.\ni  A route that had to move\nii  A fair way to share a crop\niii  Looking inside to identify fruit\niv  A photograph changes a proposal\nv  A business finds a new market\nvi  Waiting for permission to plant",
+        "prompt": "Paragraph B",
+        "answers": [
+          "iv"
+        ],
+        "explanation": "iv  A photograph changes a proposal"
+      },
+      {
+        "instruction": "Choose the correct heading for paragraphs B–E. Write the correct number, i–vi.\ni  A route that had to move\nii  A fair way to share a crop\niii  Looking inside to identify fruit\niv  A photograph changes a proposal\nv  A business finds a new market\nvi  Waiting for permission to plant",
+        "prompt": "Paragraph C",
+        "answers": [
+          "iii"
+        ],
+        "explanation": "iii  Looking inside to identify fruit"
+      },
+      {
+        "instruction": "Choose the correct heading for paragraphs B–E. Write the correct number, i–vi.\ni  A route that had to move\nii  A fair way to share a crop\niii  Looking inside to identify fruit\niv  A photograph changes a proposal\nv  A business finds a new market\nvi  Waiting for permission to plant",
+        "prompt": "Paragraph D",
+        "answers": [
+          "i"
+        ],
+        "explanation": "i  A route that had to move"
+      },
+      {
+        "instruction": "Choose the correct heading for paragraphs B–E. Write the correct number, i–vi.\ni  A route that had to move\nii  A fair way to share a crop\niii  Looking inside to identify fruit\niv  A photograph changes a proposal\nv  A business finds a new market\nvi  Waiting for permission to plant",
+        "prompt": "Paragraph E",
+        "answers": [
+          "ii"
+        ],
+        "explanation": "ii  A fair way to share a crop"
+      },
+      {
+        "instruction": "Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The original survey map recorded the positions of the trees.",
+        "answers": [
+          "TRUE"
+        ],
+        "explanation": "B · The surveyors had marked every trunk."
+      },
+      {
+        "instruction": "Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The retired grower considered size a reliable way to identify fruit.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "C · Weather could substantially change a fruit’s size."
+      },
+      {
+        "instruction": "Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The bench was made by pupils from the local school.",
+        "answers": [
+          "NOT GIVEN"
+        ],
+        "explanation": "D · The passage explains its location, but does not identify its maker."
+      },
+      {
+        "instruction": "Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "Visitors had to work in the orchard before they could pick from marked trees.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "E · A visitor could take a bag whether or not they had helped."
+      },
+      {
+        "instruction": "Write TRUE, FALSE or NOT GIVEN.",
+        "prompt": "The trial established exactly how much fruit each household took.",
+        "answers": [
+          "FALSE"
+        ],
+        "explanation": "E · The trial did not provide this information."
+      },
+      {
+        "instruction": "Choose ONE WORD ONLY from the passage.",
+        "prompt": "The team left a _____ in a position overlooking the wet hollow.",
+        "answers": [
+          "bench"
+        ],
+        "explanation": "D"
+      },
+      {
+        "instruction": "Choose ONE WORD ONLY from the passage.",
+        "prompt": "Green _____ showed visitors which trees were ready.",
+        "answers": [
+          "ribbons"
+        ],
+        "explanation": "E"
+      },
+      {
+        "instruction": "Choose ONE WORD ONLY from the passage.",
+        "prompt": "The pupils now count flowers and fruits on the same _____.",
+        "answers": [
+          "branch"
+        ],
+        "explanation": "F"
+      },
+      {
+        "instruction": "Choose ONE WORD ONLY from the passage.",
+        "prompt": "Pupils make a _____ to help others locate the object they studied.",
+        "answers": [
+          "sketch"
+        ],
+        "explanation": "F"
+      },
+      {
+        "instruction": "Choose ONE WORD ONLY from the passage.",
+        "prompt": "The orchard team has space for both names on the _____.",
+        "answers": [
+          "label"
+        ],
+        "explanation": "G"
+      }
+    ],
+    "audio": null,
+    "oral": []
+  },
+  {
+    "id": "Writing / Task 1",
+    "skill": "Writing",
+    "title": "A change to your community course",
+    "directions": "You should spend about 20 minutes on this task. Write at least 150 words.",
+    "passages": [
+      "You have registered for an evening course at a community centre. The centre has changed the day of the course and you cannot attend on the new day. Write a letter to the course organiser.",
+      "describe the course you registered for and the change you were told about",
+      "explain why the new day is difficult for you",
+      "say what you would like the organiser to do",
+      "You do not need to write any addresses. Begin your letter: Dear Sir or Madam,"
+    ],
+    "questions": [],
+    "audio": null,
+    "oral": []
+  },
+  {
+    "id": "Writing / Task 2",
+    "skill": "Writing",
+    "title": "Transport in town centres",
+    "directions": "You should spend about 40 minutes on this task. Write at least 250 words.",
+    "passages": [
+      "Some people believe that private cars should be banned from town centres. Others think that people should be free to drive there. Discuss both these views and give your own opinion.",
+      "Give reasons for your answer.",
+      "Include any relevant examples from your own knowledge or experience."
+    ],
+    "questions": [],
+    "audio": null,
+    "oral": []
+  },
+  {
+    "id": "Speaking / Part 1",
+    "skill": "Speaking",
+    "title": "Home, mornings and getting around",
+    "directions": "4–5分",
+    "passages": [
+      "An interview about familiar topics. Answer each question aloud, then go on to the next one."
+    ],
+    "questions": [],
+    "audio": null,
+    "oral": [
+      "Do you work or are you a student?",
+      "What part of your working or study day do you enjoy most? Why?",
+      "Where do you live at the moment?",
+      "Is there anything you would like to change about your neighbourhood?",
+      "What is the first thing you usually do in the morning?",
+      "Are your mornings different at weekends?",
+      "Do you prefer making plans in the morning or the night before? Why?",
+      "How do you usually get around your town?",
+      "Has the way you travel changed since you were a child?",
+      "Is there a journey you look forward to making regularly? Why?"
+    ]
+  },
+  {
+    "id": "Speaking / Part 2",
+    "skill": "Speaking",
+    "title": "A journey that did not go as planned",
+    "directions": "準備1分・発話1〜2分・短い追加質問",
+    "passages": [
+      "Describe a journey that did not go as planned.",
+      "where you were going",
+      "who you were travelling with",
+      "what happened during the journey",
+      "and explain how you felt about the change of plan."
+    ],
+    "questions": [],
+    "audio": null,
+    "oral": [
+      "Would you make the same journey again?",
+      "Did you tell anyone about the experience afterwards?"
+    ]
+  },
+  {
+    "id": "Speaking / Part 3",
+    "skill": "Speaking",
+    "title": "Travel, reliability and public investment",
+    "directions": "4–5分",
+    "passages": [
+      "The examiner develops the topic of journeys from Part 2 into a wider discussion."
+    ],
+    "questions": [],
+    "audio": null,
+    "oral": [
+      "Why do some people value a reliable journey more than a fast one?",
+      "Would your answer be different for people living outside large cities?",
+      "How can transport providers communicate unexpected changes more effectively?",
+      "Are cheap fares always the best way to encourage people to use public transport?",
+      "Who should decide which transport projects a town funds first?",
+      "How might changing working habits affect public investment in transport over the next twenty years?"
+    ]
+  }
+]

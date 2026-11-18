@@ -7,3 +7,9 @@ enum StudySpacing {
     static let screenInset: CGFloat = 20
     static let section: CGFloat = 24
 }
+
+extension StudySpacing {
+    static let gridGap: CGFloat = 10
+    static let cardRadius: CGFloat = 21
+    static let cardHeight: CGFloat = 127
+}
