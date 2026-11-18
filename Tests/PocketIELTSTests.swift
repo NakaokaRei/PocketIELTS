@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 import ComposableArchitecture
 @testable import PocketIELTS
 
@@ -99,6 +100,64 @@ final class PocketIELTSTests: XCTestCase {
             XCTAssertFalse(unit.questions.isEmpty)
             XCTAssertTrue(unit.questions.allSatisfy { !$0.answers.isEmpty && !$0.explanation.isEmpty })
         }
+    }
+
+    func testSelectionExcerptRetainsUnicodeAndChosenOccurrence() {
+        let text = "📚 Read this first. Put the book beside the door. Then close it."
+        let range = (text as NSString).range(of: "beside")
+        XCTAssertEqual(StudyTextSelection.excerpt(text, range: range, expression: "beside"), "Put the book beside the door.")
+        XCTAssertEqual(StudyTextSelection.excerpt(text, range: NSRange(location: 9999, length: 1), expression: "beside"), text)
+        XCTAssertEqual(SavedExpression.legacy("beside").id, SavedExpression.legacy("beside").id)
+        XCTAssertNotEqual(SavedExpression.legacy("beside").id, SavedExpression.legacy("instead of").id)
+    }
+
+    func testMeaningEditOnlyChangesSelectedSource() async throws {
+        let first = SavedExpression(expression: "book", source: "Reading", sourceText: "Read a book.")
+        let second = SavedExpression(expression: "book", source: "Listening", sourceText: "Book a room.")
+        var state = StudyFeature.State()
+        state.$vocabularyData.withLock { $0 = try! StudyPersistence.encode([first, second]) }
+        let store = TestStore(initialState: state) { StudyFeature() }
+        var edited = second; edited.meaning = "予約する"
+        let expected = try StudyPersistence.encode([first, edited])
+        await store.send(.updateMeaning(second.id, "予約する")) { $0.$vocabularyData.withLock { $0 = expected } }
+        XCTAssertEqual(store.state.vocabulary[0].meaning, "")
+        XCTAssertEqual(store.state.vocabulary[1].meaning, "予約する")
+    }
+
+    func testFigmaFontsAreBundledAndRegistered() {
+        _ = StudyTypography.japaneseTitle(30)
+        _ = StudyTypography.roundedTitle(24)
+        XCTAssertNotNil(UIFont(name: "ZenMaruGothic-Black", size: 30))
+        XCTAssertNotNil(UIFont(name: "Nunito-Black", size: 24))
+    }
+
+    func testPracticeBandNeedsEnoughEvidenceAndUsesSkillSpecificAnchors() {
+        XCTAssertNil(StudyBand.objective(skill: "Reading", correct: 3, total: 3))
+        XCTAssertEqual(StudyBand.objective(skill: "Reading", correct: 30, total: 40), 6)
+        XCTAssertEqual(StudyBand.objective(skill: "Listening", correct: 30, total: 40), 7)
+        XCTAssertNil(StudyBand.objective(skill: "Reading", correct: 41, total: 40))
+        XCTAssertEqual(StudyBand.cefr(6), "B2")
+        XCTAssertNil(StudyBand.overall([]))
+    }
+
+    func testAssessmentAndRecordingSurvivePersistence() throws {
+        let assessment = PracticeAssessment(criteria: [
+            .init(name: "Coherence", band: 6, feedback: "具体例を追加"),
+            .init(name: "Pronunciation", band: nil, feedback: "音声未評価")
+        ], summary: "内容の評価", improvedResponse: "An improved response.")
+        let original = StudyResult(skill: "Speaking", title: "Home", correct: 0, total: 0,
+            response: "I live near the park.", assessment: assessment, recordingFile: "recording.m4a", attemptID: UUID())
+        let restored = try JSONDecoder().decode(StudyResult.self, from: StudyPersistence.encode(original))
+        XCTAssertEqual(restored, original)
+        XCTAssertTrue(restored.assessment!.isPartial)
+        XCTAssertEqual(restored.assessment?.estimatedBand, 6)
+        let legacy = Data(#"{"id":"00000000-0000-0000-0000-000000000001","date":0,"skill":"Reading","title":"Old","correct":3,"total":10,"isMock":false}"#.utf8)
+        XCTAssertNil(try JSONDecoder().decode(StudyResult.self, from: legacy).assessment)
+    }
+
+    func testJSONCodeFenceIsAcceptedWithoutTruncatingContent() throws {
+        let data = StudyClient.jsonData("```json\n{\"title\":\"Example\"}\n```")
+        XCTAssertEqual(try JSONSerialization.jsonObject(with: data) as? [String:String], ["title":"Example"])
     }
 
 }

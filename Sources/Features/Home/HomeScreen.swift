@@ -105,9 +105,10 @@ struct HomeScreen: View {
 
     private func metric(_ title: String) -> some View {
         VStack(alignment: .leading, spacing: StudySpacing.related) {
-            Text("—").font(.title.bold())
+            Text(title == "CEFR 目安" ? StudyBand.cefr(StudyBand.overall(store.records)) : StudyBand.label(StudyBand.overall(store.records)))
+                .font(StudyTypography.roundedTitle(30))
             Text(title).font(.caption)
-        }.frame(maxWidth: .infinity, alignment: .leading).accessibilityLabel(title + " 未算出")
+        }.frame(maxWidth: .infinity, alignment: .leading).accessibilityLabel(title + " " + (title == "CEFR 目安" ? StudyBand.cefr(StudyBand.overall(store.records)) : StudyBand.label(StudyBand.overall(store.records))))
     }
 
     private var history: some View {
@@ -115,33 +116,40 @@ struct HomeScreen: View {
     }
 
     private func partPicker(_ skill: String) -> some View {
-        List {
-            if skill == "Reading" {
-                Section("新しい問題を生成") {
-                    ForEach(1...3, id: \.self) { section in
-                        Button("Section \(section)") {
-                            if store.settings.canPractice { store.send(.start(section)); practice = true }
-                            else { settings = true }
+        let parts = units.filter { $0.skill == skill }
+        let tint = skills.first { $0.name == skill }?.tint ?? StudyColors.reading
+        let descriptions = [
+            "Reading": ["日常生活の案内", "仕事・研修の文書", "一般的な話題の長文"],
+            "Listening": ["日常の会話", "日常の独話", "教育・研修の会話", "学術的な独話"],
+            "Writing": ["手紙 · 150語以上 · 約20分", "エッセイ · 250語以上 · 約40分"],
+            "Speaking": ["身近な話題のインタビュー", "トピックカードでスピーチ", "Part 2に関連する議論"]
+        ]
+        let noun = skill == "Reading" ? "Section" : skill == "Writing" ? "Task" : "Part"
+        return ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("GENERAL TRAINING").font(.caption.bold()).foregroundStyle(StudyColors.accent)
+                Text(skill).font(StudyTypography.roundedTitle(34))
+                Text("練習する\(noun)を選択").font(.headline)
+                ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
+                    VStack(alignment: .leading, spacing: 16) {
+                        NavigationLink { ExamScreen(units: [part], store: store) } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
+                                    Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(.subheadline)
+                                }
+                                Spacer(); Image(systemName: "chevron.right")
+                            }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
+                        }.buttonStyle(.plain)
+                        NavigationLink { GeneratedExamScreen(templates: [part], store: store) } label: {
+                            Label("新しい問題を生成して練習", systemImage: "sparkles").font(.subheadline)
                         }
-                    }
+                    }.padding(20).background(tint, in: RoundedRectangle(cornerRadius: 20))
                 }
-            }
-            if skill != "Reading" {
-                Section("新しい問題を生成") {
-                    ForEach(units.filter { $0.skill == skill }) { part in
-                        NavigationLink(part.id) { GeneratedExamScreen(templates: [part], store: store) }
-                    }
-                }
-            }
-            Section("収録問題") {
-                ForEach(units.filter { $0.skill == skill }) { part in
-                    NavigationLink { ExamScreen(units: [part], store: store) } label: {
-                        VStack(alignment: .leading) { Text(part.id); Text(part.title).font(.subheadline).foregroundStyle(.secondary) }
-                    }
-                }
-                if let loadError { Text(loadError) }
-            }
-        }.navigationTitle(skill)
+                Text("選んだ区分の全文・全設問で練習します。").font(.footnote).foregroundStyle(.secondary)
+                if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
+            }.padding(20).foregroundStyle(StudyColors.ink)
+        }.navigationTitle("パート選択").navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -158,13 +166,13 @@ struct ProgressScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
-                Text("いまのレベル").font(.system(.largeTitle, design: .rounded, weight: .black))
+                Text("いまのレベル").font(StudyTypography.japaneseTitle(30))
                 VStack(alignment: .leading, spacing: 22) {
                     Text("推定 IELTS Overall").font(.headline).foregroundStyle(StudyColors.reading)
-                    HStack { Text("判定中").font(.largeTitle.bold()); Spacer(); Text("CEFR  —").bold() }
+                    HStack { Text(StudyBand.label(StudyBand.overall(store.records))).font(StudyTypography.roundedTitle(30)); Spacer(); Text("CEFR  " + StudyBand.cefr(StudyBand.overall(store.records))).bold() }
                 }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(.white).background(StudyColors.levelCard, in: RoundedRectangle(cornerRadius: 20))
-                Text("技能別の学習状況").font(.title2.bold())
+                Text("技能別の推定バンド").font(.title2.bold())
                 ForEach(["Reading", "Listening", "Writing", "Speaking"], id: \.self) { skill in
                     let records = store.records.filter { $0.skill == skill }
                     let total = records.reduce(0) { $0 + $1.total }
@@ -172,19 +180,21 @@ struct ProgressScreen: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Text(skill).bold(); Spacer()
-                            Text(total > 0 ? "\(correct) / \(total)問" : records.isEmpty ? "判定中" : "\(records.count)回練習")
+                            Text(StudyBand.label(StudyBand.skill(skill, records: store.records)))
                                 .foregroundStyle(.secondary)
                         }
-                        ProgressView(value: total > 0 ? Double(correct) / Double(total) : 0)
+                        ProgressView(value: (StudyBand.skill(skill, records: store.records) ?? 0) / 9)
+                        Text(total > 0 ? "\(correct) / \(total)問 正解" : "\(records.count)回練習").font(.caption).foregroundStyle(.secondary)
                     }
                 }
-                Text("演習の正答数を表示しています。IELTSバンド・CEFRは、4技能の評価が揃うまで判定中です。")
+                Text("直近の演習からの学習用推定です。Reading・Listeningは10問以上、Writing・SpeakingはAI講評があると表示します。Speakingの発音・音声の流暢さは含みません。公式スコアではありません。")
                     .font(.footnote).foregroundStyle(.secondary)
                 Text("学習履歴").font(.title2.bold())
                 if store.records.isEmpty && store.results.isEmpty {
                     ContentUnavailableView("学習記録はまだありません", systemImage: "chart.bar")
                 }
                 ForEach(store.records) { result in
+                    NavigationLink { ResultDetailScreen(result: result, store: store) } label: {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(result.skill + (result.isMock ? " · 模擬テスト" : "")).font(.caption).foregroundStyle(StudyColors.accent)
                         Text(result.title).bold()
@@ -194,6 +204,7 @@ struct ProgressScreen: View {
                         }.font(.caption).foregroundStyle(.secondary)
                     }.frame(maxWidth: .infinity, alignment: .leading).padding()
                         .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
+                    }.buttonStyle(.plain)
                 }
                 ForEach(Array(store.results.enumerated()), id: \.offset) { Text($0.element).font(.footnote) }
             }.padding(StudySpacing.screenInset)
@@ -215,9 +226,9 @@ struct VocabularyScreen: View {
                         Text(entry.source).font(.caption.bold()).foregroundStyle(StudyColors.accent)
                         Text(entry.expression).font(.title2.bold()).textSelection(.enabled)
                         TextField("意味・メモを追加", text: Binding(get: {
-                            store.vocabulary.first { $0.expression == entry.expression && $0.source == entry.source }?.meaning ?? ""
-                        }, set: { store.send(.updateMeaning(entry.expression, $0)) }), axis: .vertical)
-                        if !entry.sourceText.isEmpty { Text(entry.sourceText).font(.subheadline).textSelection(.enabled) }
+                            store.vocabulary.first { $0.id == entry.id }?.meaning ?? ""
+                        }, set: { store.send(.updateMeaning(entry.id, $0)) }), axis: .vertical)
+                        if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(.subheadline).textSelection(.enabled) }
                         if let paper = entry.paper {
                             NavigationLink("元の問題を復習") { ExamScreen(units: [paper], store: store) }
                         }
@@ -240,5 +251,50 @@ struct VocabularyScreen: View {
                 }
             }.padding(StudySpacing.screenInset)
         }.background(Color(uiColor: .systemGroupedBackground))
+    }
+}
+
+struct ResultDetailScreen: View {
+    let result: StudyResult
+    let store: StoreOf<StudyFeature>
+    @State private var audio = SpeakingRecorder()
+    @State private var evaluating = false
+    @State private var error: String?
+    private var current: StudyResult { store.records.first { $0.id == result.id } ?? result }
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text(current.skill).font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                Text(current.title).font(.title.bold())
+                Text(current.date, style: .date).foregroundStyle(.secondary)
+                if current.total > 0 { Text("\(current.correct) / \(current.total) 正解").font(.title2.bold()) }
+                if let response = current.response, !response.isEmpty {
+                    Text("あなたの回答").font(.headline)
+                    Text(response).textSelection(.enabled)
+                }
+                if let file = current.recordingFile { Button("録音を聞く", systemImage: "play.circle") { audio.playArchived(file) } }
+                if let paper = current.paper {
+                    if let assessment = current.assessment { AssessmentContent(assessment: assessment, paper: paper, store: store) }
+                    if ["Writing", "Speaking"].contains(current.skill), let response = current.response, !response.isEmpty {
+                        Button("AIの講評を確認・更新") { evaluating = true }.disabled(evaluating)
+                        if evaluating { ProgressView("講評中…") }
+                    }
+                    NavigationLink("この問題をもう一度練習") { ExamScreen(units: [paper], store: store) }
+                    Button("この問題を保存") { store.send(.savePaper(paper)) }
+                }
+                if let error = error ?? audio.error { Text(error).foregroundStyle(StudyColors.error) }
+            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .navigationTitle("学習の振り返り").navigationBarTitleDisplayMode(.inline)
+        .onDisappear { audio.stop() }
+        .task(id: evaluating) {
+            guard evaluating, let paper = current.paper, let response = current.response else { return }
+            do {
+                let assessment = try await StudyClient.assess(paper, response: response)
+                try Task.checkCancellation()
+                store.send(.updateAssessment(current.id, assessment))
+            } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
+            evaluating = false
+        }
     }
 }

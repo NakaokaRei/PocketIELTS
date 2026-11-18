@@ -1,4 +1,5 @@
 import AVFoundation
+import Speech
 import SwiftUI
 import ComposableArchitecture
 
@@ -31,7 +32,7 @@ struct MockIntroScreen: View {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Full mock").font(.largeTitle.bold())
                     Text("時間を計って4技能に挑戦。\n解説はテスト終了後に確認できます。")
-                    Text("収録問題を使用します。Writing・Speakingは評価の観点で振り返ります。")
+                    Text(generate ? "新しい問題を生成します。" : "収録問題を使用します。Writing・Speakingは終了後にAI講評を確認できます。")
                         .font(.footnote)
                 }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
                     .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
@@ -56,7 +57,16 @@ struct ExamScreen: View {
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     var isMock = false
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.studyNavigation) private var navigation
+    @State private var confirmEnd = false
     @State private var position = 0
+    @State private var attemptID = UUID()
+    @State private var resultIDs: [String: UUID] = [:]
+    @State private var assessments: [String: PracticeAssessment] = [:]
+    @State private var assessmentErrors: [String: String] = [:]
+    @State private var evaluatingID: String?
+    @State private var recordingFiles: [String: String] = [:]
     @State private var finished = false
     @State private var answers: [String: String] = [:]
     @State private var reviewed: Set<String> = []
@@ -68,6 +78,7 @@ struct ExamScreen: View {
     @State private var context = ""
     @State private var saved = false
     @State private var recording = false
+    @State private var vocabulary = false
     @State private var audio = SpeakingRecorder()
     private var unit: ExamUnit { units[position] }
     private var showingReview: Bool { reviewed.contains(unit.id) && !isMock }
@@ -92,11 +103,32 @@ struct ExamScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop() }
+        .toolbar {
+            if !isMock { ToolbarItem(placement: .topBarTrailing) { Button("終了", systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly) } }
+        }
+        .confirmationDialog("練習を終了しますか？", isPresented: $confirmEnd, titleVisibility: .visible) {
+            Button("練習を終了") { finished = true; ended = Date() }
+            Button("続ける", role: .cancel) {}
+        } message: { Text("採点済みの結果と保存した表現は残ります。") }
+        .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
+        .onChange(of: audio.transcript) { _, text in
+            if unit.skill == "Speaking", !text.isEmpty { answers[unit.id + "-0"] = text }
+        }
+        .task(id: evaluatingID) {
+            guard let id = evaluatingID, let part = units.first(where: { $0.id == id }) else { return }
+            do {
+                let result = try await StudyClient.assess(part, response: answers[id + "-0", default: ""])
+                try Task.checkCancellation()
+                assessments[id] = result
+                if let resultID = resultIDs[id] { store.send(.updateAssessment(resultID, result)) }
+            } catch { if !Task.isCancelled { assessmentErrors[id] = error.localizedDescription } }
+            if evaluatingID == id { evaluatingID = nil }
+        }
         .alert("保存しました", isPresented: $saved) { Button("学習を続ける", role: .cancel) {} }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context)
         }
+        .sheet(isPresented: $vocabulary) { NavigationStack { VocabularyScreen(store: store).navigationTitle("単語帳").toolbar { Button("完了") { vocabulary = false } } } }
         .sheet(isPresented: $recording, onDismiss: { audio.stop() }) {
             RecordingScreen(recorder: audio, title: unit.id, prompt: unit.directions)
         }
@@ -144,7 +176,20 @@ struct ExamScreen: View {
                         speaker.stopSpeaking(at: .immediate)
                         recording = true
                     }
-                    if audio.hasRecording { Button("録音を聞く", systemImage: "play.fill") { audio.play() } }
+                    if audio.hasRecording {
+                        HStack {
+                            Button("録音を聞く", systemImage: "play.fill") { audio.play() }
+                            Button("文字起こし", systemImage: "text.bubble") { Task { await audio.transcribe() } }
+                                .disabled(audio.transcribing)
+                        }
+                    }
+                    if audio.transcribing { ProgressView("端末内で文字起こし中…") }
+                    Text("回答の文字起こし").font(.headline)
+                    TextEditor(text: binding(0)).frame(minHeight: 140)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
+                        .accessibilityLabel("スピーキングの文字起こし")
+                    Text("文字起こしを確認・修正してから講評へ進めます。認識できない場合は回答を入力してください。")
+                        .font(.caption).foregroundStyle(.secondary)
                     if let error = audio.error { Text(error).foregroundStyle(StudyColors.error) }
                 }
             }
@@ -158,11 +203,13 @@ struct ExamScreen: View {
                     saveResult(unit)
                 } else { advance() }
             }.buttonStyle(.borderedProminent).controlSize(.large)
+                .disabled(audio.transcribing || audio.isRecording)
             if showingReview {
                 Button("このパートをもう一度") {
                     reviewed.remove(unit.id); recorded.remove(unit.id)
                     answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
-                    audio.clear()
+                    audio.clear(); assessments[unit.id] = nil; assessmentErrors[unit.id] = nil
+                    resultIDs[unit.id] = nil; recordingFiles[unit.id] = nil
                 }
             }
         }
@@ -170,29 +217,43 @@ struct ExamScreen: View {
 
     private var results: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text(isMock ? "今回の模試結果" : "練習が終わりました").font(StudyTypography.title)
-            ForEach(units) { part in
+            Text(isMock ? "今回の模試結果" : "練習を終了しました").font(StudyTypography.japaneseTitle(30))
+            if isMock {
+                let records = store.records.filter { $0.attemptID == attemptID }
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("推定 IELTS Overall").font(.headline)
+                    Text(StudyBand.label(StudyBand.overall(records)) + "  /  CEFR " + StudyBand.cefr(StudyBand.overall(records))).font(.title2.bold())
+                    ForEach(["Listening", "Reading", "Writing", "Speaking"], id: \.self) { skill in
+                        HStack { Text(skill); Spacer(); Text(StudyBand.label(StudyBand.skill(skill, records: records))) }
+                    }
+                    Text("Writing・Speakingの講評後に全体の学習用推定を表示します。発音の評価は含みません。")
+                        .font(.footnote)
+                }.padding(20).foregroundStyle(.white).background(StudyColors.levelCard, in: RoundedRectangle(cornerRadius: 20))
+            }
+            ForEach(units.filter { recorded.contains($0.id) }) { part in
                 VStack(alignment: .leading, spacing: 10) {
                     Text(part.id).font(.headline)
                     if !part.questions.isEmpty { Text("\(score(part)) / \(part.questions.count) 正解").font(.title2.bold()) }
-                    else { Text("練習完了 · バンド判定は未実施").font(.subheadline) }
+                    else { Text("学習用推定 " + StudyBand.label(assessments[part.id]?.estimatedBand)).font(.subheadline) }
                     DisclosureGroup("答えと解説・振り返り") { reviewContent(part) }
                     if part.skill == "Writing", let response = answers[part.id + "-0"] {
                         DisclosureGroup("あなたの回答") { Text(response).textSelection(.enabled) }
                     }
                 }.padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             }
-            NavigationLink("学習記録を見る") { ProgressScreen(store: store).navigationTitle("学習記録") }
+            Text("技能別の推移は学習記録で確認できます。").foregroundStyle(.secondary)
+            Button("学習記録を見る") { dismiss(); navigation.progress() }.buttonStyle(.borderedProminent)
+            Button("ホームに戻る") { dismiss(); navigation.home() }
             Button("もう一度練習する") {
-                position = 0; finished = false; answers = [:]; reviewed = []; recorded = []
-                started = Date(); ended = nil; audio.clear()
+                position = 0; finished = false; answers = [:]; reviewed = []; recorded = []; evaluatingID = nil
+                started = Date(); ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
             }
         }
     }
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            if let script = part.audio { DisclosureGroup("スクリプト") { Text(script).textSelection(.enabled) } }
+            if let script = part.audio { DisclosureGroup("スクリプト") { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }, onVocabulary: { vocabulary = true }) } }
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
@@ -207,25 +268,42 @@ struct ExamScreen: View {
                 }
             }
             if part.questions.isEmpty {
-                Text("評価の観点").font(.headline)
-                ForEach(part.skill == "Writing" ? ["Task response", "Coherence and cohesion", "Lexical resource", "Grammatical range and accuracy"] : ["Fluency and coherence", "Lexical resource", "Grammatical range and accuracy", "Pronunciation"], id: \.self) {
-                    Text($0).bold()
+                if let file = recordingFiles[part.id] {
+                    Button("保存した録音を聞く", systemImage: "play.circle") { audio.playArchived(file) }
                 }
-                Text("この観点で回答を振り返り、もう一度練習しましょう。").foregroundStyle(.secondary)
-                if part.skill == "Writing" {
-                    Button("AIに講評を相談") { openTutor(material(part) + "\n学習者の回答:\n" + answers[part.id + "-0", default: ""]) }
+                if let response = answers[part.id + "-0"], !response.isEmpty {
+                    DisclosureGroup("あなたの回答") { Text(response).textSelection(.enabled) }
                 }
+                if let assessment = assessments[part.id] {
+                    AssessmentContent(assessment: assessment, paper: part, store: store)
+                } else {
+                    Text("評価の観点").font(.headline)
+                    ForEach(part.skill == "Writing" ? ["Task response", "Coherence and cohesion", "Lexical resource", "Grammatical range and accuracy"] : ["Fluency and coherence", "Lexical resource", "Grammatical range and accuracy", "Pronunciation"], id: \.self) { Text($0).bold() }
+                }
+                if let error = assessmentErrors[part.id] { Text(error).foregroundStyle(StudyColors.error) }
+                if evaluatingID == part.id { ProgressView("回答を講評中…") }
+                Button(assessments[part.id] == nil ? "AIの講評を見る" : "講評を更新") {
+                    assessmentErrors[part.id] = nil; evaluatingID = part.id
+                }.buttonStyle(.borderedProminent)
+                    .disabled(evaluatingID != nil || answers[part.id + "-0", default: ""].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                if answers[part.id + "-0", default: ""].isEmpty {
+                    Text("回答がありません。このパートをもう一度練習すると講評を受けられます。")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
+                Text("AIによる学習用の推定です。Speakingは文字起こしを使うため、発音・音声の流暢さは評価に含みません。")
+                    .font(.footnote).foregroundStyle(.secondary)
+                Button("AIに追加で質問") { openTutor(material(part) + "\n学習者の回答:\n" + answers[part.id + "-0", default: ""]) }
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
     }
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
-            onAsk: isMock ? nil : { openTutor(material(unit) + "\n選択範囲: " + $0.expression) })
+            onAsk: isMock ? nil : { openTutor(material(unit) + "\n選択範囲: " + $0.expression) },
+            onSavePaper: { store.send(.savePaper(unit)) }, onVocabulary: { vocabulary = true })
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
         store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
-                                                  sourceText: entry.sourceText, paper: paper)))
-        saved = true
+                                                  sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
     }
     private func openTutor(_ value: String) { context = value; tutor = true }
     private func material(_ part: ExamUnit) -> String {
@@ -233,11 +311,25 @@ struct ExamScreen: View {
     }
     private func saveResult(_ part: ExamUnit) {
         guard !recorded.contains(part.id) else { return }
-        store.send(.record(StudyResult(skill: part.skill, title: part.title, correct: score(part), total: part.questions.count, isMock: isMock)))
+        let id = UUID()
+        resultIDs[part.id] = id
+        if part.skill == "Speaking", part.id == unit.id, audio.hasRecording, recordingFiles[part.id] == nil {
+            do { recordingFiles[part.id] = try audio.archive() }
+            catch { assessmentErrors[part.id] = "録音の保存に失敗しました: " + error.localizedDescription }
+        }
+        store.send(.record(StudyResult(id: id, skill: part.skill, title: part.title,
+            correct: score(part), total: part.questions.count, isMock: isMock,
+            response: answers[part.id + "-0"], assessment: assessments[part.id],
+            recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID)))
         recorded.insert(part.id)
     }
     private func advance() {
         speaker.stopSpeaking(at: .immediate); audio.stop()
+        // Preserve each speaking recording before moving to a new part.
+        if unit.skill == "Speaking", audio.hasRecording, recordingFiles[unit.id] == nil {
+            do { recordingFiles[unit.id] = try audio.archive() }
+            catch { assessmentErrors[unit.id] = error.localizedDescription }
+        }
         if position + 1 < units.count { position += 1; audio.clear() }
         else {
             units.forEach(saveResult)
@@ -267,6 +359,10 @@ final class SpeakingRecorder {
     private var recorder: AVAudioRecorder?
     private var player: AVAudioPlayer?
     private var file: URL?
+    private var recognition: SFSpeechRecognitionTask?
+    private var recognitionID: UUID?
+    var transcript = ""
+    var transcribing = false
     var isRecording = false
     var hasRecording = false
     var error: String?
@@ -289,7 +385,7 @@ final class SpeakingRecorder {
             next.isMeteringEnabled = true
             guard next.record() else { throw StudyError.message("録音を開始できませんでした。") }
             if let file { try? FileManager.default.removeItem(at: file) }
-            file = url; recorder = next; isRecording = true; hasRecording = false; elapsed = 0
+            file = url; recorder = next; isRecording = true; hasRecording = false; elapsed = 0; transcript = ""
         } catch { self.error = error.localizedDescription }
     }
     func update() {
@@ -314,7 +410,63 @@ final class SpeakingRecorder {
             player?.play()
         } catch { self.error = error.localizedDescription }
     }
+    func transcribe() async {
+        stop(); cancelTranscription(); error = nil
+        guard let file, hasRecording else { return }
+        let permission = await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
+        }
+        guard permission == .authorized else {
+            error = "設定で音声認識を許可するか、回答をテキストで入力してください。"; return
+        }
+        guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-GB")),
+              recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else {
+            error = "この端末では英語の端末内文字起こしを利用できません。回答をテキストで入力してください。"; return
+        }
+        let id = UUID(); recognitionID = id; transcribing = true
+        let request = SFSpeechURLRecognitionRequest(url: file)
+        request.requiresOnDeviceRecognition = true
+        request.shouldReportPartialResults = true
+        recognition = recognizer.recognitionTask(with: request) { [weak self] result, error in
+            let value = result?.bestTranscription.formattedString
+            let final = result?.isFinal ?? false
+            let failure = error?.localizedDescription
+            Task { @MainActor in
+                guard let self, self.recognitionID == id else { return }
+                if let value { self.transcript = value }
+                if final || failure != nil {
+                    self.transcribing = false; self.recognitionID = nil; self.recognition = nil
+                    if let failure, self.transcript.isEmpty { self.error = "文字起こしに失敗しました。回答を入力できます。\n" + failure }
+                }
+            }
+        }
+    }
+    func cancelTranscription() {
+        recognitionID = nil; recognition?.cancel(); recognition = nil; transcribing = false
+    }
+    static var archiveDirectory: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Recordings", isDirectory: true)
+    }
+    func archive() throws -> String? {
+        stop()
+        guard let file, hasRecording else { return nil }
+        try FileManager.default.createDirectory(at: Self.archiveDirectory, withIntermediateDirectories: true)
+        let name = UUID().uuidString + ".m4a"
+        try FileManager.default.copyItem(at: file, to: Self.archiveDirectory.appendingPathComponent(name))
+        return name
+    }
+    func playArchived(_ name: String) {
+        guard name == URL(fileURLWithPath: name).lastPathComponent else { return }
+        stop()
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            player = try AVAudioPlayer(contentsOf: Self.archiveDirectory.appendingPathComponent(name))
+            player?.play()
+        } catch { self.error = error.localizedDescription }
+    }
     func clear() {
+        cancelTranscription(); transcript = ""
         stop()
         if let file { try? FileManager.default.removeItem(at: file) }
         file = nil; hasRecording = false; elapsed = 0
@@ -392,5 +544,30 @@ struct GeneratedExamScreen: View {
             } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
+    }
+}
+
+struct AssessmentContent: View {
+    let assessment: PracticeAssessment
+    let paper: ExamUnit
+    let store: StoreOf<StudyFeature>
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("学習用推定 " + StudyBand.label(assessment.estimatedBand)).font(StudyTypography.roundedTitle(28))
+            if assessment.isPartial { Text("発音を除く、回答内容の推定").font(.caption).foregroundStyle(.secondary) }
+            Text(assessment.summary)
+            ForEach(assessment.criteria, id: \.name) { criterion in
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack { Text(criterion.name).bold(); Spacer(); Text(criterion.band.map { String(format: "%.1f", $0) } ?? "未評価") }
+                    Text(criterion.feedback).font(.subheadline)
+                }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
+            }
+            Text("改善例").font(.headline)
+            SelectableStudyText(text: assessment.improvedResponse, sourceID: paper.id + "-improved", onSave: { entry in
+                store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
+                    sourceText: entry.sourceText, meaning: entry.meaning, paper: paper,
+                    sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
+            }, onSavePaper: { store.send(.savePaper(paper)) })
+        }
     }
 }

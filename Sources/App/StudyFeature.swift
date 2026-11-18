@@ -21,7 +21,7 @@ struct StudyFeature {
         var vocabulary: [SavedExpression] {
             let details = (try? JSONDecoder().decode([SavedExpression].self, from: vocabularyData)) ?? []
             return details + entries.filter { word in !details.contains { $0.expression == word } }
-                .map { SavedExpression(expression: $0, source: "Reading", sourceText: "") }
+                .map(SavedExpression.legacy)
         }
         var records: [StudyResult] { (try? JSONDecoder().decode([StudyResult].self, from: resultData)) ?? [] }
         var papers: [ExamUnit] { (try? JSONDecoder().decode([ExamUnit].self, from: paperData)) ?? [] }
@@ -36,7 +36,8 @@ struct StudyFeature {
         case start(Int), loaded(ReadingSet), failed(String), finish
         case answer(Int, String), review, save(String)
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
-        case updateMeaning(String, String)
+        case updateMeaning(UUID, String)
+        case updateAssessment(UUID, PracticeAssessment)
         case ask(String, String), explained(String), askFailed(String), closeQuestion
     }
 
@@ -94,16 +95,25 @@ struct StudyFeature {
                 var entries = state.vocabulary
                 if let index = entries.firstIndex(where: { $0.expression == entry.expression && $0.source == entry.source }) {
                     entries[index].sourceText = entry.sourceText
-                    entries[index].paper = entry.paper
+                    entries[index].paper = entry.paper ?? entries[index].paper
+                    entries[index].sourceID = entry.sourceID
+                    entries[index].selectionLocation = entry.selectionLocation
+                    entries[index].selectionLength = entry.selectionLength
+                    if !entry.meaning.isEmpty { entries[index].meaning = entry.meaning }
                 } else { entries.insert(entry, at: 0) }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
-            case let .updateMeaning(expression, meaning):
+            case let .updateMeaning(id, meaning):
                 var entries = state.vocabulary
-                for i in entries.indices where entries[i].expression == expression { entries[i].meaning = meaning }
+                for i in entries.indices where entries[i].id == id { entries[i].meaning = meaning }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
             case let .savePaper(paper):
                 guard !state.papers.contains(where: { $0.id == paper.id }) else { return .none }
                 if let data = try? StudyPersistence.encode([paper] + state.papers) { state.$paperData.withLock { $0 = data } }
+            case let .updateAssessment(id, assessment):
+                var records = state.records
+                guard let index = records.firstIndex(where: { $0.id == id }) else { return .none }
+                records[index].assessment = assessment
+                if let data = try? StudyPersistence.encode(records) { state.$resultData.withLock { $0 = data } }
             case let .record(result):
                 guard !state.records.contains(where: { $0.id == result.id }) else { return .none }
                 if let data = try? StudyPersistence.encode([result] + state.records) { state.$resultData.withLock { $0 = data } }

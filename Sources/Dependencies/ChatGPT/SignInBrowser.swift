@@ -3,7 +3,7 @@ import SafariServices
 
 /// Safari keeps the app active while the system browser follows the IPv4 loopback redirect.
 @MainActor
-final class SignInBrowser: NSObject, SFSafariViewControllerDelegate {
+final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate {
     private var browser: SFSafariViewController?
     private var listener: NWListener?
     private var pending: CheckedContinuation<(URL, URL), Error>?

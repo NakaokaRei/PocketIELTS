@@ -6,6 +6,7 @@ struct PracticeScreen: View {
     @State private var tutor = false
     @State private var context = ""
     @State private var saved = false
+    @State private var vocabulary = false
 
     var body: some View {
         IELTSPracticeSession(title: "Reading / Section \(store.section)", finish: { store.send(.finish) }) {
@@ -32,7 +33,7 @@ struct PracticeScreen: View {
                                     .textFieldStyle(.roundedBorder).disabled(store.reviewed)
                                 if store.reviewed {
                                     Label(item.answers.joined(separator: " / "), systemImage: item.accepts(store.answers[i] ?? "") ? "checkmark.circle" : "xmark.circle")
-                                    Text(item.explanation)
+                                    selectable(item.explanation, id: "explanation-\(i)")
                                 }
                             }
                         }
@@ -53,6 +54,7 @@ struct PracticeScreen: View {
             }
         }
         .alert("保存しました", isPresented: $saved) { Button("学習を続ける") {} }
+        .sheet(isPresented: $vocabulary) { NavigationStack { VocabularyScreen(store: store).navigationTitle("単語帳").toolbar { Button("完了") { vocabulary = false } } } }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context)
         }
@@ -65,9 +67,13 @@ struct PracticeScreen: View {
                          directions: "", passages: $0.passages, questions: $0.questions, audio: nil, oral: [])
             }
             store.send(.saveExpression(SavedExpression(expression: entry.expression,
-                source: "Reading / Section \(store.section)", sourceText: entry.sourceText, paper: paper)))
-            saved = true
-        } onAsk: { entry in openTutor(entry.sourceText + "\n選択範囲: " + entry.expression) }
+                source: "Reading / Section \(store.section)", sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
+        } onAsk: { entry in openTutor(entry.sourceText + "\n選択範囲: " + entry.expression) } onSavePaper: {
+            if let set = store.session {
+                store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
+                    skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [])))
+            }
+        } onVocabulary: { vocabulary = true }
     }
 
     private func openTutor(_ selection: String) {
@@ -94,7 +100,7 @@ struct TutorScreen: View {
                                 Text(message.isUser ? "あなた" : "AIチューター").font(.caption.bold()).foregroundStyle(StudyColors.accent)
                                 SelectableStudyText(text: message.text, sourceID: message.id.uuidString) { entry in
                                     store.send(.saveExpression(SavedExpression(expression: entry.expression,
-                                        source: "AIチューター", sourceText: entry.sourceText)))
+                                        source: "AIチューター", sourceText: entry.sourceText, meaning: entry.meaning, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
                                 }
                             }.padding().frame(maxWidth: .infinity, alignment: .leading)
                                 .background(message.isUser ? StudyColors.mockCard : Color.clear, in: RoundedRectangle(cornerRadius: 18))
