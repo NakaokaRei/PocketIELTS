@@ -86,6 +86,7 @@ struct TutorScreen: View {
     let store: StoreOf<StudyFeature>
     let context: String
     @State private var draft = ""
+    @State private var settings = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         NavigationStack {
@@ -95,6 +96,7 @@ struct TutorScreen: View {
                         DisclosureGroup("質問の対象") { Text(context).font(.footnote).textSelection(.enabled) }
                             .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 18))
                         if store.messages.isEmpty { Text("意味や答えの根拠を質問できます。").foregroundStyle(.secondary) }
+                        if !store.settings.canPractice { Button("ChatGPTの接続設定") { settings = true } }
                         ForEach(store.messages) { message in
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(message.isUser ? "あなた" : "AIチューター").font(.caption.bold()).foregroundStyle(StudyColors.accent)
@@ -124,6 +126,7 @@ struct TutorScreen: View {
             }
             .navigationTitle("AIチューター").navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("完了") { dismiss() } }
+            .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         }
     }
 }

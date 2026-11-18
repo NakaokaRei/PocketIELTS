@@ -114,7 +114,7 @@ final class PocketIELTSTests: XCTestCase {
     func testMeaningEditOnlyChangesSelectedSource() async throws {
         let first = SavedExpression(expression: "book", source: "Reading", sourceText: "Read a book.")
         let second = SavedExpression(expression: "book", source: "Listening", sourceText: "Book a room.")
-        var state = StudyFeature.State()
+        let state = StudyFeature.State()
         state.$vocabularyData.withLock { $0 = try! StudyPersistence.encode([first, second]) }
         let store = TestStore(initialState: state) { StudyFeature() }
         var edited = second; edited.meaning = "予約する"
@@ -158,6 +158,15 @@ final class PocketIELTSTests: XCTestCase {
     func testJSONCodeFenceIsAcceptedWithoutTruncatingContent() throws {
         let data = StudyClient.jsonData("```json\n{\"title\":\"Example\"}\n```")
         XCTAssertEqual(try JSONSerialization.jsonObject(with: data) as? [String:String], ["title":"Example"])
+    }
+
+    func testFullPaperQuestionNumbersAndChoices() throws {
+        let units = try ExamUnit.load()
+        XCTAssertEqual(units.first { $0.id == "Reading / Section 2" }?.firstQuestionNumber, 14)
+        XCTAssertEqual(units.first { $0.id == "Listening / Part 4" }?.firstQuestionNumber, 31)
+        XCTAssertEqual(units.first { $0.id == "Reading / Section 1" }?.questions.first?.choices, ["TRUE", "FALSE", "NOT GIVEN"])
+        XCTAssertEqual(units.first { $0.id == "Listening / Part 2" }?.questions.first?.choices, ["A", "B", "C"])
+        XCTAssertTrue(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
     }
 
 }

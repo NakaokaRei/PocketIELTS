@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D820A0A124101DA934C12501 = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12502; };
 		D820A0A124101DA934C12401 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12402 /* Fonts */; };
 		04CA9912CE8A9BA31A3F0E5A /* SelectableStudyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CB76826AAB675374932A0F /* SelectableStudyText.swift */; };
 		05B074500FF80A4635840976 /* IELTSPracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C36F9A374A3AE95093B8B12 /* IELTSPracticeSession.swift */; };
@@ -46,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+        D820A0A124101DA934C12502 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests/PocketIELTSUITests.swift; sourceTree = "<group>"; };
+        D820A0A124101DA934C12503 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = PocketIELTSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D820A0A124101DA934C12402 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		07BE1ABECCF875FA75966B8B /* StudyError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyError.swift; sourceTree = "<group>"; };
 		0C2D3DF1191FB78C91F5E944 /* AccountClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountClient.swift; sourceTree = "<group>"; };
@@ -77,6 +80,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+        D820A0A124101DA934C12505 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		0DCB3B4950690DC824570E33 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -112,6 +116,7 @@
 			children = (
 				282F2E1DD73CFFDB68BED98C /* PocketIELTS.app */,
 				1EDFE26D205ED2EC28808F3B /* PocketIELTSTests.xctest */,
+                D820A0A124101DA934C12503,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 		42E8208863D6BC3B417960B7 = {
 			isa = PBXGroup;
 			children = (
+                D820A0A124101DA934C12502,
 				223AAF15E5ADC5174D1C41D0 /* Products */,
 				DB92AC27F7C44E57A842FA3D /* Frameworks */,
 				1D135D760F7EF91ACE9711BC /* Sources */,
@@ -295,6 +301,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+        D820A0A124101DA934C12506 /* PocketIELTSUITests */ = {
+            isa = PBXNativeTarget; buildConfigurationList = D820A0A124101DA934C12507;
+            buildPhases = (D820A0A124101DA934C12504, D820A0A124101DA934C12505,);
+            buildRules = (); dependencies = (3696148B03FBC6389BFF58F0,);
+            name = PocketIELTSUITests; productName = PocketIELTSUITests;
+            productReference = D820A0A124101DA934C12503;
+            productType = "com.apple.product-type.bundle.ui-testing";
+        };
 		7F06E3947551DAE1321652CC /* PocketIELTSTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7626041175DAC7DBB9F7433A /* Build configuration list for PBXNativeTarget "PocketIELTSTests" */;
@@ -360,6 +374,7 @@
 			targets = (
 				CF48A862FA5F1F9E7E6FCD00 /* PocketIELTS */,
 				7F06E3947551DAE1321652CC /* PocketIELTSTests */,
+                D820A0A124101DA934C12506 /* PocketIELTSUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -384,6 +399,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+        D820A0A124101DA934C12504 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D820A0A124101DA934C12501,); runOnlyForDeploymentPostprocessing = 0; };
 		91C9D66B0EF8D5CE5593AB06 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -433,6 +449,18 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+        D820A0A124101DA934C12509 = {isa = XCBuildConfiguration; buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
+            SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = PocketIELTS;
+        }; name = Release; };
+        D820A0A124101DA934C12508 = {isa = XCBuildConfiguration; buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
+            SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = PocketIELTS;
+        }; name = Debug; };
 		5E0DBD09F1878766D3BCDC0B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -635,6 +663,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+        D820A0A124101DA934C12507 = {isa = XCConfigurationList; buildConfigurations = (D820A0A124101DA934C12508, D820A0A124101DA934C12509,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 		21E1C5205D471214769FF6FB /* Build configuration list for PBXNativeTarget "PocketIELTS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

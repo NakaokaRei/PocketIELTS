@@ -10,6 +10,7 @@ struct SelectableStudyText: View {
     var onAsk: ((Entry) -> Void)? = nil
     var onSavePaper: (() -> Void)? = nil
     var onVocabulary: (() -> Void)? = nil
+    var allowsAI = true
     @State private var selected: Entry?
     @State private var afterDismiss: (() -> Void)?
 
@@ -21,7 +22,7 @@ struct SelectableStudyText: View {
                 afterDismiss = nil
                 action?()
             }) { entry in
-                SelectionActionsScreen(entry: entry, onSave: onSave, onAsk: onAsk.map { action in
+                SelectionActionsScreen(entry: entry, allowsAI: allowsAI, onSave: onSave, onAsk: onAsk.map { action in
                     { value in afterDismiss = { action(value) }; selected = nil }
                 }, onSavePaper: onSavePaper, onVocabulary: onVocabulary.map { action in
                     { afterDismiss = action; selected = nil }
@@ -33,6 +34,7 @@ struct SelectableStudyText: View {
 
 private struct SelectionActionsScreen: View {
     let entry: SelectableStudyText.Entry
+    let allowsAI: Bool
     let onSave: (SelectableStudyText.Entry) -> Void
     let onAsk: ((SelectableStudyText.Entry) -> Void)?
     let onSavePaper: (() -> Void)?
@@ -62,9 +64,9 @@ private struct SelectionActionsScreen: View {
                             .textSelection(.enabled)
                         TextField("意味・メモ（任意）", text: $meaning, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
-                        Button("意味をAIで調べる") {
-                            translating = true; error = nil
-                        }.disabled(translating)
+                        if allowsAI {
+                            Button("意味をAIで調べる") { translating = true; error = nil }.disabled(translating)
+                        }
                         if translating { ProgressView("意味を確認中…") }
                         if let error { Text(error).font(.footnote).foregroundStyle(StudyColors.error) }
                         Button("選んだ表現を単語帳に追加", systemImage: "text.badge.plus") {

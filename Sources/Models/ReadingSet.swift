@@ -11,6 +11,14 @@ struct ReadingSet: Codable, Equatable, Sendable {
         var prompt: String
         var answers: [String]
         var explanation: String
+        var choices: [String] {
+            let value = instruction.uppercased()
+            if value.contains("TRUE"), value.contains("FALSE"), value.contains("NOT GIVEN") { return ["TRUE", "FALSE", "NOT GIVEN"] }
+            if value.contains("YES"), value.contains("NO"), value.contains("NOT GIVEN") { return ["YES", "NO", "NOT GIVEN"] }
+            if value.contains("CORRECT LETTER, A, B OR C") { return ["A", "B", "C"] }
+            if value.contains("I–VI") || value.contains("I-VI") { return ["i", "ii", "iii", "iv", "v", "vi"] }
+            return []
+        }
         func accepts(_ input: String) -> Bool {
             func normal(_ value: String) -> String {
                 value.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")

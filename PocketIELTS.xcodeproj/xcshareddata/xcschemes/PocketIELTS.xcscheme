@@ -47,6 +47,9 @@
                ReferencedContainer = "container:PocketIELTS.xcodeproj">
             </BuildableReference>
          </TestableReference>
+      <TestableReference skipped="NO">
+            <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="D820A0A124101DA934C12506" BuildableName="PocketIELTSUITests.xctest" BlueprintName="PocketIELTSUITests" ReferencedContainer="container:PocketIELTS.xcodeproj" />
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

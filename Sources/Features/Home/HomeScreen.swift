@@ -57,7 +57,7 @@ struct HomeScreen: View {
                                 }
                                 .padding(StudySpacing.contentInset).frame(maxWidth: .infinity, minHeight: StudySpacing.cardHeight, alignment: .leading)
                                 .background(skill.tint, in: RoundedRectangle(cornerRadius: StudySpacing.cardRadius))
-                            }.buttonStyle(.plain)
+                            }.buttonStyle(.plain).accessibilityIdentifier("home.skill.\(skill.name)")
                         }
                     }
                     NavigationLink { history.navigationTitle("学習記録") } label: {
@@ -140,7 +140,7 @@ struct HomeScreen: View {
                                 }
                                 Spacer(); Image(systemName: "chevron.right")
                             }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
-                        }.buttonStyle(.plain)
+                        }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
                         NavigationLink { GeneratedExamScreen(templates: [part], store: store) } label: {
                             Label("新しい問題を生成して練習", systemImage: "sparkles").font(.subheadline)
                         }
@@ -150,6 +150,7 @@ struct HomeScreen: View {
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
             }.padding(20).foregroundStyle(StudyColors.ink)
         }.navigationTitle("パート選択").navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .tabBar)
     }
 }
 

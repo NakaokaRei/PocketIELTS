@@ -105,7 +105,7 @@
     "questions": [
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Where should visitors take a broken item first?\\nA Under the clock   B Beside the fountain   C Inside the workshop",
+        "prompt": "Where should visitors take a broken item first?\nA Under the clock   B Beside the fountain   C Inside the workshop",
         "answers": [
           "B"
         ],
@@ -113,7 +113,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Why was the ticket system changed?\\nA To let visitors leave the queue   B To give faster repairs   C To reduce the number of tools needed",
+        "prompt": "Why was the ticket system changed?\nA To let visitors leave the queue   B To give faster repairs   C To reduce the number of tools needed",
         "answers": [
           "A"
         ],
@@ -121,7 +121,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "What is different about the clothing workshop this year?\\nA It only accepts beginners.   B Visitors must bring cotton.   C Material is provided for practice.",
+        "prompt": "What is different about the clothing workshop this year?\nA It only accepts beginners.   B Visitors must bring cotton.   C Material is provided for practice.",
         "answers": [
           "C"
         ],
@@ -129,7 +129,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Why are several chairs displayed together?\\nA To compare prices   B To show stages in a process   C To advertise a sale",
+        "prompt": "Why are several chairs displayed together?\nA To compare prices   B To show stages in a process   C To advertise a sale",
         "answers": [
           "B"
         ],
@@ -137,7 +137,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Which activity requires an adult to remain with the child?\\nA The morning tool session   B The afternoon stories   C Both activities",
+        "prompt": "Which activity requires an adult to remain with the child?\nA The morning tool session   B The afternoon stories   C Both activities",
         "answers": [
           "A"
         ],
@@ -196,7 +196,7 @@
     "questions": [
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "What was the main weakness of the trial sample?\\nA The participants shared a travel pattern.   B Too few subjects were taught.   C Most students refused to answer.",
+        "prompt": "What was the main weakness of the trial sample?\nA The participants shared a travel pattern.   B Too few subjects were taught.   C Most students refused to answer.",
         "answers": [
           "A"
         ],
@@ -204,7 +204,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Why include an afternoon collection period?\\nA The station is quieter.   B Some students arrive later.   C Staff have more time to help.",
+        "prompt": "Why include an afternoon collection period?\nA The station is quieter.   B Some students arrive later.   C Staff have more time to help.",
         "answers": [
           "B"
         ],
@@ -212,7 +212,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "How will the main method of travel be classified?\\nA By cost   B By time   C By distance",
+        "prompt": "How will the main method of travel be classified?\nA By cost   B By time   C By distance",
         "answers": [
           "C"
         ],
@@ -220,7 +220,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "What will happen to the question about reliability and cost?\\nA It will be split.   B It will be removed.   C Examples will be added.",
+        "prompt": "What will happen to the question about reliability and cost?\nA It will be split.   B It will be removed.   C Examples will be added.",
         "answers": [
           "A"
         ],
@@ -228,7 +228,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Why will the map be removed?\\nA It shows old routes.   B It suggests personal location data is needed.   C It takes too long to print.",
+        "prompt": "Why will the map be removed?\nA It shows old routes.   B It suggests personal location data is needed.   C It takes too long to print.",
         "answers": [
           "B"
         ],
@@ -236,7 +236,7 @@
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
-        "prompt": "Which people will be chosen for follow-up interviews?\\nA Those with the longest trip   B Those who arrive first   C Those whose answers are unusual",
+        "prompt": "Which people will be chosen for follow-up interviews?\nA Those with the longest trip   B Those who arrive first   C Those whose answers are unusual",
         "answers": [
           "C"
         ],

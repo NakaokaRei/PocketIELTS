@@ -50,7 +50,8 @@ struct StudyClient: DependencyKey {
         Example: \(example)
         """, input: "Generate a fresh exercise on a different topic.", json: true)
         let result = try JSONDecoder().decode(ExamUnit.self, from: jsonData(response))
-        guard result.skill == template.skill, !result.title.isEmpty, !result.directions.isEmpty,
+        guard result.skill == template.skill, !result.title.isEmpty,
+              template.directions.isEmpty || !result.directions.isEmpty,
               result.questions.count == template.questions.count,
               result.questions.allSatisfy({ !$0.prompt.isEmpty && !$0.answers.isEmpty && !$0.explanation.isEmpty }),
               template.audio == nil || !(result.audio ?? "").isEmpty,

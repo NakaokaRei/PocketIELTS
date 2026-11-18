@@ -9,6 +9,11 @@ struct ExamUnit: Codable, Equatable, Identifiable, Sendable {
     let questions: [ReadingSet.Question]
     let audio: String?
     let oral: [String]
+    var firstQuestionNumber: Int {
+        if skill == "Reading" { return id.contains("Section 3") ? 27 : id.contains("Section 2") ? 14 : 1 }
+        if skill == "Listening", let part = (1...4).first(where: { id.contains("Part \($0)") }) { return (part - 1) * 10 + 1 }
+        return 1
+    }
     static func load() throws -> [ExamUnit] {
         guard let url = Bundle.main.url(forResource: "GeneralTraining", withExtension: "json") else {
             throw StudyError.message("教材が見つかりません。")
@@ -60,6 +65,7 @@ struct ExamScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.studyNavigation) private var navigation
     @State private var confirmEnd = false
+    @FocusState private var answerFocused: Bool
     @State private var position = 0
     @State private var attemptID = UUID()
     @State private var resultIDs: [String: UUID] = [:]
@@ -79,6 +85,7 @@ struct ExamScreen: View {
     @State private var saved = false
     @State private var recording = false
     @State private var vocabulary = false
+    @State private var settings = false
     @State private var audio = SpeakingRecorder()
     private var unit: ExamUnit { units[position] }
     private var showingReview: Bool { reviewed.contains(unit.id) && !isMock }
@@ -99,12 +106,18 @@ struct ExamScreen: View {
                         }
                         if finished { results } else { exercise }
                     }.padding(StudySpacing.screenInset)
-                }
+                }.scrollDismissesKeyboard(.interactively)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .foregroundStyle(StudyColors.ink)
         .toolbar {
-            if !isMock { ToolbarItem(placement: .topBarTrailing) { Button("終了", systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly) } }
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("入力を完了") { answerFocused = false }
+            }
+            if !isMock { ToolbarItem(placement: .topBarTrailing) { Button("終了", systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
         }
         .confirmationDialog("練習を終了しますか？", isPresented: $confirmEnd, titleVisibility: .visible) {
             Button("練習を終了") { finished = true; ended = Date() }
@@ -128,20 +141,21 @@ struct ExamScreen: View {
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context)
         }
+        .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         .sheet(isPresented: $vocabulary) { NavigationStack { VocabularyScreen(store: store).navigationTitle("単語帳").toolbar { Button("完了") { vocabulary = false } } } }
         .sheet(isPresented: $recording, onDismiss: { audio.stop() }) {
-            RecordingScreen(recorder: audio, title: unit.id, prompt: unit.directions)
+            RecordingScreen(recorder: audio, title: unit.id, prompt: ([unit.title] + unit.passages + unit.oral).joined(separator: "\n\n"))
         }
     }
 
     private var exercise: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(unit.id).font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
-            Text(showingReview ? "答えと解説" : unit.title).font(StudyTypography.title)
+            Text(showingReview ? "答えと解説" : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
             if showingReview {
                 reviewContent(unit)
             } else {
-                selectable(unit.directions, id: "directions")
+                if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
                 ForEach(Array(unit.passages.enumerated()), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
                 if let script = unit.audio {
                     HStack {
@@ -155,14 +169,21 @@ struct ExamScreen: View {
                         if index == 0 || unit.questions[index-1].instruction != item.instruction {
                             selectable(item.instruction, id: "instruction-\(index)")
                         }
-                        selectable("\(index+1). " + item.prompt, id: "question-\(index)")
-                        TextField("解答", text: binding(index)).textFieldStyle(.roundedBorder)
-                            .textInputAutocapitalization(.never).autocorrectionDisabled()
+                        selectable("\(unit.firstQuestionNumber + index). " + item.prompt, id: "question-\(index)")
+                        if !item.choices.isEmpty {
+                            Picker("解答", selection: binding(index)) {
+                                Text("選択してください").tag("")
+                                ForEach(item.choices, id: \.self) { Text($0).tag($0) }
+                            }.pickerStyle(.menu)
+                        } else {
+                            TextField("解答", text: binding(index)).textFieldStyle(.roundedBorder)
+                                .textInputAutocapitalization(.never).autocorrectionDisabled()
+                        }
                     }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                 }
                 if unit.skill == "Writing" {
                     Text("Your response").font(.headline)
-                    TextEditor(text: binding(0)).frame(minHeight: 220)
+                    TextEditor(text: binding(0)).focused($answerFocused).keyboardType(.asciiCapable).frame(minHeight: 220)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
                         .accessibilityLabel("英作文の回答")
                     Text("\(binding(0).wrappedValue.split(whereSeparator: \.isWhitespace).count) words").font(.caption)
@@ -185,7 +206,7 @@ struct ExamScreen: View {
                     }
                     if audio.transcribing { ProgressView("端末内で文字起こし中…") }
                     Text("回答の文字起こし").font(.headline)
-                    TextEditor(text: binding(0)).frame(minHeight: 140)
+                    TextEditor(text: binding(0)).focused($answerFocused).keyboardType(.asciiCapable).frame(minHeight: 140)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
                         .accessibilityLabel("スピーキングの文字起こし")
                     Text("文字起こしを確認・修正してから講評へ進めます。認識できない場合は回答を入力してください。")
@@ -198,19 +219,21 @@ struct ExamScreen: View {
                 Button("この問題をAIに質問") { openTutor(material(unit)) }
             }
             Button(isMock ? (position + 1 < units.count ? "次のパートへ" : "テストを終了して結果を見る") : showingReview ? (position + 1 < units.count ? "次のパートへ" : "結果を見る") : "解答・振り返りを確認") {
+                answerFocused = false
                 if !isMock && !showingReview {
                     reviewed.insert(unit.id)
                     saveResult(unit)
                 } else { advance() }
             }.buttonStyle(.borderedProminent).controlSize(.large)
                 .disabled(audio.transcribing || audio.isRecording)
+                .accessibilityIdentifier("practice.review")
             if showingReview {
                 Button("このパートをもう一度") {
                     reviewed.remove(unit.id); recorded.remove(unit.id)
                     answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
                     audio.clear(); assessments[unit.id] = nil; assessmentErrors[unit.id] = nil
                     resultIDs[unit.id] = nil; recordingFiles[unit.id] = nil
-                }
+                }.accessibilityIdentifier("practice.retry")
             }
         }
     }
@@ -258,7 +281,7 @@ struct ExamScreen: View {
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("\(index + 1). " + question.answers.joined(separator: " / "),
+                    Label("\(part.firstQuestionNumber + index). " + question.answers.joined(separator: " / "),
                           systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
                         .font(.headline)
                     Text("あなたの解答: " + (answer.isEmpty ? "未回答" : answer)).font(.caption)
@@ -281,6 +304,7 @@ struct ExamScreen: View {
                     ForEach(part.skill == "Writing" ? ["Task response", "Coherence and cohesion", "Lexical resource", "Grammatical range and accuracy"] : ["Fluency and coherence", "Lexical resource", "Grammatical range and accuracy", "Pronunciation"], id: \.self) { Text($0).bold() }
                 }
                 if let error = assessmentErrors[part.id] { Text(error).foregroundStyle(StudyColors.error) }
+                if !store.settings.canPractice { Button("ChatGPTの接続設定") { settings = true } }
                 if evaluatingID == part.id { ProgressView("回答を講評中…") }
                 Button(assessments[part.id] == nil ? "AIの講評を見る" : "講評を更新") {
                     assessmentErrors[part.id] = nil; evaluatingID = part.id
@@ -299,7 +323,7 @@ struct ExamScreen: View {
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
             onAsk: isMock ? nil : { openTutor(material(unit) + "\n選択範囲: " + $0.expression) },
-            onSavePaper: { store.send(.savePaper(unit)) }, onVocabulary: { vocabulary = true })
+            onSavePaper: { store.send(.savePaper(unit)) }, onVocabulary: isMock ? nil : { vocabulary = true }, allowsAI: !isMock)
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
         store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
@@ -413,17 +437,20 @@ final class SpeakingRecorder {
     func transcribe() async {
         stop(); cancelTranscription(); error = nil
         guard let file, hasRecording else { return }
+        let id = UUID(); recognitionID = id; transcribing = true
         let permission = await withCheckedContinuation { continuation in
             SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
         }
+        guard recognitionID == id, !Task.isCancelled else { return }
         guard permission == .authorized else {
+            transcribing = false; recognitionID = nil
             error = "設定で音声認識を許可するか、回答をテキストで入力してください。"; return
         }
         guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-GB")),
               recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else {
+            transcribing = false; recognitionID = nil
             error = "この端末では英語の端末内文字起こしを利用できません。回答をテキストで入力してください。"; return
         }
-        let id = UUID(); recognitionID = id; transcribing = true
         let request = SFSpeechURLRecognitionRequest(url: file)
         request.requiresOnDeviceRecognition = true
         request.shouldReportPartialResults = true
