@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
- A01100000000000000000003 /* Licenses in Resources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000004; };
  A01100000000000000000001 /* ListeningAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000002; };
 		B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000004 /* InfoPlist.xcstrings */; };
 		B7A002000000000000000001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000002 /* Localizable.xcstrings */; };
@@ -53,7 +52,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
- A01100000000000000000004 /* Licenses */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Licenses; sourceTree = SOURCE_ROOT; };
  A01100000000000000000002 /* ListeningAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningAudio.swift; sourceTree = "<group>"; };
 		B7A002000000000000000004 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		B7A002000000000000000002 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -351,6 +349,7 @@
 				EB8A49ED0C5E0A2A54E6636C /* Sources */,
 				53FEA6089979A0A36A370054 /* Frameworks */,
 				B3FAECDB2862783B3E5E141E /* Resources */,
+                A01100000000000000000005 /* Sync OSS Licenses */,
 			);
 			buildRules = (
 			);
@@ -402,7 +401,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
- A01100000000000000000003 /* Licenses in Resources */,
 				F4731DBD8262741070CE03B1 /* GeneralTraining.json in Resources */,
 				B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */,
 				B7A002000000000000000001 /* Localizable.xcstrings in Resources */,
@@ -419,6 +417,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+        A01100000000000000000005 /* Sync OSS Licenses */ = {
+            isa = PBXShellScriptBuildPhase;
+            alwaysOutOfDate = 1;
+            buildActionMask = 2147483647;
+            files = ();
+            inputPaths = ();
+            name = "Sync OSS Licenses";
+            outputPaths = ("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Licenses/Acknowledgements.plist",);
+            runOnlyForDeploymentPostprocessing = 0;
+            shellPath = /bin/bash;
+            shellScript = "\"$SRCROOT/Scripts/build-licenses.sh\"";
+        };
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
         D820A0A124101DA934C12504 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D820A0A124101DA934C12501,); runOnlyForDeploymentPostprocessing = 0; };

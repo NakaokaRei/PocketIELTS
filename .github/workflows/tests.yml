@@ -27,14 +27,7 @@ jobs:
       - name: Resolve locked dependencies
         run: xcodebuild -resolvePackageDependencies -project PocketIELTS.xcodeproj -scheme PocketIELTS -derivedDataPath build -disableAutomaticPackageResolution
       - name: Install pinned LicensePlist
-        run: |
-          curl --fail --location --retry 3 https://github.com/mono0926/LicensePlist/releases/download/3.28.3/license-plist.zip -o "$RUNNER_TEMP/license-plist.zip"
-          echo "5b5be263636889415b0dceca736f9ca8cf8f3ed23f80ed675a52c7ddd4842f06  $RUNNER_TEMP/license-plist.zip" | shasum -a 256 -c -
-          unzip -q "$RUNNER_TEMP/license-plist.zip" -d "$RUNNER_TEMP/license-plist"
-      - name: Generate OSS acknowledgements
-        env:
-          LICENSE_PLIST_BIN: ${{ runner.temp }}/license-plist/license-plist
-        run: Scripts/generate-licenses.sh build/SourcePackages
+        run: Scripts/licenseplist-tool.sh
       - name: Unit and UI tests
         run: |
           set -o pipefail
@@ -47,5 +40,5 @@ jobs:
           path: |
             TestResults-*.xcresult
             test-*.log
-            Resources/Licenses
+            build/Build/Products/Debug-iphonesimulator/PocketIELTS.app/Licenses
           retention-days: 14

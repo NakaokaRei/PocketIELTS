@@ -148,14 +148,17 @@ GitHub Actions runs unit and UI tests on iPhone and iPad simulators for pushes a
 
 Dependabot checks Swift Package Manager dependencies (including the Xcode project’s `Package.resolved`) and GitHub Actions weekly. It starts once `.github/dependabot.yml` is on the default branch. Compatible Swift updates are grouped; major updates remain separate.
 
-Regenerate the committed acknowledgements after changing dependencies:
+Every Xcode **Build / Run / Archive** runs the target's **Sync OSS Licenses** phase after Copy Bundle Resources and before code signing. It generates notices from the current resolved package checkouts, validates complete package/font coverage, then synchronizes the generated files directly into the app's `Licenses` folder. Removed dependencies are removed from the bundle too. A missing or invalid notice fails the build instead of shipping stale acknowledgements.
+
+LicensePlist **3.28.3** is downloaded from its official release with a pinned SHA-256 checksum on first use, then reused from `~/Library/Caches/PocketIELTS/LicensePlist`. First setup requires internet access; subsequent generation uses local package sources without network license lookups. CI runs this same build phase. Generated plist files are build artifacts, not a second committed source of truth.
+
+For manual inspection after resolving Swift packages:
 
 ```sh
-brew install licenseplist
-Scripts/generate-licenses.sh /path/to/DerivedData/SourcePackages
+Scripts/generate-licenses.sh /path/to/DerivedData/SourcePackages /tmp/pocket-licenses
 ```
 
-CI uses LicensePlist 3.28.3 with a verified download checksum and regenerates notices from resolved package sources without network license lookups. `Scripts/check-licenses.py` checks package and font coverage. Commit regenerated `Resources/Licenses` when updating dependencies locally.
+If using `xcodebuild -clonedSourcePackagesDirPath`, also pass `LICENSE_PLIST_PACKAGE_SOURCES_PATH=/absolute/path/to/SourcePackages`. `LICENSE_PLIST_BIN` can point to an already installed executable for offline/managed environments. To bootstrap the pinned tool in advance, run `Scripts/licenseplist-tool.sh`.
 
 ### Saved practice and audio playback
 
