@@ -24,6 +24,11 @@ jobs:
         run: |
           sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
           xcodebuild -version
+      - name: Cache Swift packages
+        uses: actions/cache@v6
+        with:
+          path: build/SourcePackages
+          key: ${{ runner.os }}-${{ runner.arch }}-xcode-26.6-spm-${{ hashFiles('**/Package.resolved') }}
       - name: Resolve locked dependencies
         run: xcodebuild -resolvePackageDependencies -project PocketIELTS.xcodeproj -scheme PocketIELTS -derivedDataPath build -disableAutomaticPackageResolution
       - name: Install pinned LicensePlist
