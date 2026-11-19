@@ -18,5 +18,6 @@ xcodebuild -project PocketIELTS.xcodeproj -scheme PocketIELTS \
   -derivedDataPath "${CI_DERIVED_DATA:-build}" \
   -resultBundlePath "$result_path" \
   -parallel-testing-enabled NO \
+  -skipMacroValidation \
   -disableAutomaticPackageResolution \
   CODE_SIGNING_ALLOWED=NO test
