@@ -40,7 +40,37 @@ struct HomeScreen: View {
                             .font(StudyTypography.japaneseTitle(30))
                             .accessibilityAddTraits(.isHeader)
                     }
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: StudySpacing.gridGap),
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 24) {
+                            skillGrid.frame(minWidth: 400)
+                            summaryCards.frame(width: 280)
+                        }
+                        VStack(spacing: 24) { skillGrid; summaryCards }
+                    }
+
+                }.foregroundStyle(StudyColors.ink)
+                    .padding(.horizontal, StudySpacing.screenInset)
+                    .padding(.top, 6)
+                    .padding(.bottom, StudySpacing.screenInset)
+                    .frame(maxWidth: 1100)
+                    .frame(maxWidth: .infinity)
+            }
+            .toolbar(UIDevice.current.userInterfaceIdiom == .pad ? .visible : .hidden, for: .navigationBar)
+        } progress: { history } vocabulary: {
+            VocabularyScreen(store: store)
+        }
+        .onAppear {
+            store.send(.settings(.opened))
+            store.send(.settings(.refreshAccount))
+            do { units = try ExamUnit.load() } catch { loadError = error.localizedDescription }
+        }
+        .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
+        .fullScreenCover(isPresented: $practice, onDismiss: { store.send(.finish) }) { PracticeScreen(store: store) }
+        .tint(StudyColors.accent)
+    }
+
+    private var skillGrid: some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: StudySpacing.gridGap),
                                              count: typeSize.isAccessibilitySize ? 1 : 2), spacing: StudySpacing.gridGap) {
                         ForEach(skills, id: \.name) { skill in
                             NavigationLink {
@@ -60,7 +90,10 @@ struct HomeScreen: View {
                             }.buttonStyle(.plain).accessibilityIdentifier("home.skill.\(skill.name)")
                         }
                     }
-                    NavigationLink { history.navigationTitle("学習記録") } label: {
+    }
+    private var summaryCards: some View {
+        VStack(spacing: 24) {
+        NavigationLink { history.navigationTitle("学習記録") } label: {
                         VStack(alignment: .leading, spacing: StudySpacing.contentInset) {
                             Text("現在の推定レベル").font(.subheadline.bold())
                             HStack {
@@ -84,23 +117,7 @@ struct HomeScreen: View {
                         }.padding(StudySpacing.screenInset).frame(minHeight: 106)
                             .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: StudySpacing.cardRadius))
                     }.buttonStyle(.plain)
-                }.foregroundStyle(StudyColors.ink)
-                    .padding(.horizontal, StudySpacing.screenInset)
-                    .padding(.top, 6)
-                    .padding(.bottom, StudySpacing.screenInset)
-            }
-            .toolbar(.hidden, for: .navigationBar)
-        } progress: { history } vocabulary: {
-            VocabularyScreen(store: store)
         }
-        .onAppear {
-            store.send(.settings(.opened))
-            store.send(.settings(.refreshAccount))
-            do { units = try ExamUnit.load() } catch { loadError = error.localizedDescription }
-        }
-        .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
-        .fullScreenCover(isPresented: $practice, onDismiss: { store.send(.finish) }) { PracticeScreen(store: store) }
-        .tint(StudyColors.accent)
     }
 
     private func metric(_ title: String) -> some View {
@@ -148,7 +165,7 @@ struct HomeScreen: View {
                 }
                 Text("選んだ区分の全文・全設問で練習します。").font(.footnote).foregroundStyle(.secondary)
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
-            }.padding(20).foregroundStyle(StudyColors.ink)
+            }.padding(20).frame(maxWidth: 760).frame(maxWidth: .infinity).foregroundStyle(StudyColors.ink)
         }.navigationTitle("パート選択").navigationBarTitleDisplayMode(.inline)
             .toolbar(.hidden, for: .tabBar)
     }
@@ -208,7 +225,7 @@ struct ProgressScreen: View {
                     }.buttonStyle(.plain)
                 }
                 ForEach(Array(store.results.enumerated()), id: \.offset) { Text($0.element).font(.footnote) }
-            }.padding(StudySpacing.screenInset)
+            }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }
     }
 }
@@ -250,7 +267,7 @@ struct VocabularyScreen: View {
                     HStack { Text("保存した問題を見る").bold(); Spacer(); Image(systemName: "chevron.right") }
                         .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                 }
-            }.padding(StudySpacing.screenInset)
+            }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.background(Color(uiColor: .systemGroupedBackground))
     }
 }
@@ -284,7 +301,7 @@ struct ResultDetailScreen: View {
                     Button("この問題を保存") { store.send(.savePaper(paper)) }
                 }
                 if let error = error ?? audio.error { Text(error).foregroundStyle(StudyColors.error) }
-            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+            }.padding(20).frame(maxWidth: 800, alignment: .leading).frame(maxWidth: .infinity)
         }
         .navigationTitle("学習の振り返り").navigationBarTitleDisplayMode(.inline)
         .onDisappear { audio.stop() }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+        C10000000000000000000001 = {isa = PBXBuildFile; fileRef = C10000000000000000000002; };
 		D820A0A124101DA934C12501 = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12502; };
 		D820A0A124101DA934C12401 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12402 /* Fonts */; };
 		04CA9912CE8A9BA31A3F0E5A /* SelectableStudyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CB76826AAB675374932A0F /* SelectableStudyText.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+        C10000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Dependencies/Cloud/StudyCloudSync.swift; sourceTree = SOURCE_ROOT; };
         D820A0A124101DA934C12502 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests/PocketIELTSUITests.swift; sourceTree = "<group>"; };
         D820A0A124101DA934C12503 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = PocketIELTSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D820A0A124101DA934C12402 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				80CD1606E462630EF461520F /* DesignSystem */,
 				30817FB0AAC3267F77957C7B /* Features */,
 				F7478398766F253FC542AECA /* Models */,
+                C10000000000000000000002,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -414,6 +417,7 @@
 			files = (
 				FA4BB5B120D0779929E6698D /* IELTSNavigation.swift in Sources */,
 				336A4F40E6891B8632DE67F6 /* PocketIELTSApp.swift in Sources */,
+                C10000000000000000000001,
 				C0EFB27F3AF89E39998AD858 /* StudyFeature.swift in Sources */,
 				ED7D3A657663466E13B90523 /* KeyStore.swift in Sources */,
 				2F1C2F89B4ECF29B83740D1C /* StudyClient.swift in Sources */,
@@ -552,6 +556,10 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
+                CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                ICLOUD_CONTAINER_ENVIRONMENT = Production;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "録音した英語の回答を文字起こしし、学習の振り返りに使います。";
@@ -567,7 +575,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -641,6 +649,10 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
+                CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                ICLOUD_CONTAINER_ENVIRONMENT = Development;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "録音した英語の回答を文字起こしし、学習の振り返りに使います。";
@@ -656,7 +668,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};

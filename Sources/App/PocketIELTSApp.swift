@@ -21,6 +21,6 @@ struct PocketIELTSApp: App {
     }
 
     var body: some Scene {
-        WindowGroup { HomeScreen(store: store).tint(StudyColors.accent) }
+        WindowGroup { StudyCloudHost(store: store).tint(StudyColors.accent) }
     }
 }

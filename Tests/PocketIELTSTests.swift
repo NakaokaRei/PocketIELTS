@@ -169,4 +169,49 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertTrue(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
     }
 
+    func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
+        let word = SavedExpression(expression: "library", source: "Reading", sourceText: "The library is open.")
+        var phone = CloudStudyJournal(), tablet = CloudStudyJournal()
+        try phone.capture(.init(vocabulary: [word]), at: Date(timeIntervalSince1970: 1))
+        tablet.merge(Array(phone.items.values))
+        var updated = word; updated.meaning = "図書館"
+        let other = SavedExpression(expression: "course", source: "Listening", sourceText: "A new course.")
+        try phone.capture(.init(vocabulary: [word, other]), at: Date(timeIntervalSince1970: 2))
+        try tablet.capture(.init(vocabulary: [updated]), at: Date(timeIntervalSince1970: 3))
+        let before = phone
+        phone.merge(Array(tablet.items.values)); tablet.merge(Array(before.items.values))
+        XCTAssertEqual(try phone.snapshot(), try tablet.snapshot())
+        XCTAssertEqual(try phone.snapshot().vocabulary.count, 2)
+        XCTAssertEqual(try phone.snapshot().vocabulary.first { $0.id == word.id }?.meaning, "図書館")
+        let revision = phone.items.values.first { $0.kind == "word" && $0.modified == Date(timeIntervalSince1970: 3) }?.revision
+        try phone.capture(phone.snapshot(), at: Date(timeIntervalSince1970: 10))
+        XCTAssertTrue(phone.items.values.contains { $0.revision == revision })
+    }
+
+    func testCloudJournalRoundTripPreservesAnswersPapersAndAudioReference() throws {
+        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let result = StudyResult(skill: "Speaking", title: "Practice", correct: 0, total: 0, response: "I take the bus.", recordingFile: "answer.m4a", paper: paper)
+        var journal = CloudStudyJournal()
+        try journal.capture(.init(results: [result], papers: [paper]))
+        let restored = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(journal))
+        XCTAssertEqual(try restored.snapshot().results, [result])
+        XCTAssertEqual(try restored.snapshot().papers, [paper])
+        XCTAssertEqual(restored.items.values.first { $0.kind == "result" }?.recording, "answer.m4a")
+    }
+
+    func testCloudEqualTimestampMergeConvergesAndAccountsStaySeparate() throws {
+        let word = SavedExpression(expression: "book", source: "Reading", sourceText: "A book.")
+        var left = CloudStudyJournal(); try left.capture(.init(vocabulary: [word]))
+        var first = try XCTUnwrap(left.items.values.first), second = first
+        first.revision = "a"; second.revision = "b"
+        var right = CloudStudyJournal(); right.merge([second, first]); left.merge([first, second])
+        XCTAssertEqual(left.items, right.items)
+        XCTAssertTrue(CloudStudyJournal.accepts(account: "A", previous: nil))
+        XCTAssertTrue(CloudStudyJournal.accepts(account: "A", previous: "A"))
+        XCTAssertFalse(CloudStudyJournal.accepts(account: "B", previous: "A"))
+        let folder = URL(fileURLWithPath: "/tmp/Recordings")
+        XCTAssertNil(CloudStudyJournal.safeRecordingURL("../secret.m4a", directory: folder))
+        XCTAssertNotNil(CloudStudyJournal.safeRecordingURL("answer.m4a", directory: folder))
+    }
+
 }

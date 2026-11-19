@@ -105,7 +105,7 @@ struct ExamScreen: View {
                             }.foregroundStyle(StudyColors.accent)
                         }
                         if finished { results } else { exercise }
-                    }.padding(StudySpacing.screenInset)
+                    }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
                 }.scrollDismissesKeyboard(.interactively)
             }
         }
@@ -115,7 +115,10 @@ struct ExamScreen: View {
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("入力を完了") { answerFocused = false }
+                Button("入力を完了") {
+                    answerFocused = false
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
             }
             if !isMock { ToolbarItem(placement: .topBarTrailing) { Button("終了", systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
         }

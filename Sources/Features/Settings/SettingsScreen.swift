@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.studyCloud) private var cloud
     let store: StoreOf<SettingsFeature>
 
     var body: some View {
@@ -23,6 +24,17 @@ struct SettingsScreen: View {
                 } header: { Text("ChatGPT アカウント") }
                   footer: { Text("問題の生成とAI解説に、接続したChatGPTプランの利用枠を使います。") }
                   .disabled(store.connecting)
+                if let cloud {
+                    Section {
+                        Toggle("iCloudで同期", isOn: Binding(get: { cloud.enabled }, set: { cloud.enabled = $0; if $0 { Task { await cloud.sync() } } }))
+                            .accessibilityIdentifier("settings.icloud")
+                        Label(cloud.status, systemImage: cloud.syncing ? "arrow.triangle.2.circlepath.icloud" : "icloud")
+                            .font(.subheadline)
+                        if let date = cloud.lastSynced { LabeledContent("前回の同期", value: date.formatted(date: .abbreviated, time: .shortened)) }
+                        Button("今すぐ同期") { Task { await cloud.sync() } }.disabled(!cloud.enabled || cloud.syncing)
+                    } header: { Text("iCloud") }
+                    footer: { Text("同じApple AccountのiPhone・iPadで、単語帳・保存した問題・学習履歴・回答・講評・録音を同期します。オフラインでも保存でき、アプリ使用中に再同期します。ChatGPTの接続は端末ごとに設定してください。") }
+                }
                 if let error = store.error { Text(error).foregroundStyle(StudyColors.error) }
             }
             .interactiveDismissDisabled(store.connecting)

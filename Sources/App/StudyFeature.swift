@@ -33,6 +33,7 @@ struct StudyFeature {
 
     enum Action {
         case settings(SettingsFeature.Action)
+        case applyCloudSnapshot(CloudStudySnapshot)
         case start(Int), loaded(ReadingSet), failed(String), finish
         case answer(Int, String), review, save(String)
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
@@ -51,6 +52,10 @@ struct StudyFeature {
         Reduce { state, action in
             switch action {
             case .settings: break
+            case let .applyCloudSnapshot(snapshot):
+                if let data = try? StudyPersistence.encode(snapshot.vocabulary) { state.$vocabularyData.withLock { $0 = data } }
+                if let data = try? StudyPersistence.encode(snapshot.results) { state.$resultData.withLock { $0 = data } }
+                if let data = try? StudyPersistence.encode(snapshot.papers) { state.$paperData.withLock { $0 = data } }
             case let .start(section):
                 state.section = section
                 state.loading = true

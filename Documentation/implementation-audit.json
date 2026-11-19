@@ -86,15 +86,28 @@
       "figmaNodes": "4:122",
       "source": "Sources/Features/Home/HomeScreen.swift",
       "implemented": "Persistent attempts, objective estimates after >=10 questions, AI criterion estimates, overall and CEFR guidance, response/recording replay"
+    },
+    {
+      "name": "Private iCloud study sync",
+      "figmaNodes": "62:2578,100:2612",
+      "source": "Sources/Dependencies/Cloud/StudyCloudSync.swift",
+      "implemented": "Local-first journal; per-record conflict merge; private CloudKit zone; answers, feedback and CKAsset recordings; account-change isolation; foreground/manual sync"
+    },
+    {
+      "name": "Adaptive iPad layouts",
+      "figmaNodes": "99:2578,101:2601,101:2649",
+      "source": "Sources/App/IELTSNavigation.swift",
+      "implemented": "Native sidebar; adaptive dashboard columns; readable content widths; portrait/landscape; reset complete navigation on return home"
     }
   ],
   "validation": {
-    "unitTests": "14 tests passed on Xcode 27.2 / iOS 26.5 simulator",
-    "uiTests": "5 tests passed: contextual word saving and source replay after relaunch; review/retry/home; ChatGPT-only settings; mock start/exit; Writing response history after relaunch",
-    "manual": "Single-tap library -> save -> vocabulary -> source link verified in Device Hub before Mac lock",
-    "completedAt": "2026-11-19T09:35:23+13:00",
-    "result": "19 tests passed, zero failures; xcodebuild TEST SUCCEEDED",
-    "toolchainNote": "Xcode emitted a simulator diagnostic-collection warning after successful tests; test execution and assertions passed."
+    "unitTests": "17 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; includes 3 new cloud journal/conflict tests",
+    "uiTests": "6 iPhone scenarios passed in final full run. All 6 iPad scenarios passed across the initial run and targeted navigation/screenshot reruns after fixes.",
+    "deviceBuild": "Xcode 27.2 generic iOS Debug build succeeded with Apple Development signing; verified CloudKit container and Development environment in signed entitlements",
+    "screenshots": "Captured running iPhone/iPad app with isolated UI-test data; landscape capture uses XCUIScreen to retain correct orientation metadata",
+    "completedAt": "2026-11-19",
+    "result": "iPhone final suite: 23 tests, zero failures. iPad navigation and portrait/landscape checks passed.",
+    "toolchainNote": "Xcode emitted App Intents metadata/diagnostic collection warnings; no app compile errors."
   },
   "limitations": [
     "Live ChatGPT sign-in, usage limits, generation and inference require the user account; no live authenticated request was made during this task.",
@@ -102,6 +115,8 @@
     "On-device English recognition requires supported device/language assets and permission; manual transcript entry remains available.",
     "Scores and CEFR are formative estimates, not calibrated official IELTS results.",
     "Microphone capture and transcription need a physical-device permission/audio check.",
-    "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference."
+    "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference.",
+    "Live two-device CloudKit transfer remains unverified; schema must be deployed to Production before TestFlight/App Store. Background push sync is not implemented.",
+    "Historical plain-text readingHistory entries remain local; current structured results synchronize."
   ]
 }
