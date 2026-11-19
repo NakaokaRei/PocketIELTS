@@ -61,13 +61,13 @@ enum ChatGPTAccount {
         func field(_ name: String) -> String? { params.first { $0.name == name }?.value }
         guard field("state") == state, field("error") == nil, let code = field("code"), !code.isEmpty,
               let client = field("client_id") ?? profile?.id, !client.isEmpty, client != "dynamic_agent_client",
-              profile == nil || profile?.id == client else { throw StudyError.message("ChatGPTとの接続が承認されませんでした。") }
+              profile == nil || profile?.id == client else { throw StudyError.message(String(localized: "ChatGPTとの接続が承認されませんでした。")) }
         let tokens = try await exchange(["grant_type": "authorization_code", "client_id": client,
                                          "code": code, "code_verifier": verifier, "redirect_uri": redirect.absoluteString])
         guard let identity = tokens.id_token, let refresh = tokens.refresh_token,
-              allowsInference(tokens.scope) else { throw StudyError.message("ChatGPTプランの利用を許可してください。") }
+              allowsInference(tokens.scope) else { throw StudyError.message(String(localized: "ChatGPTプランの利用を許可してください。")) }
         let claims = try await ChatGPTIdentity.verify(identity, client: client, nonce: nonce)
-        guard profile == nil || profile?.subject == claims.sub else { throw StudyError.message("選択したアカウントと一致しません。") }
+        guard profile == nil || profile?.subject == claims.sub else { throw StudyError.message(String(localized: "選択したアカウントと一致しません。")) }
         var saved = try vault()
         let newProfile = Profile(id: client, subject: claims.sub, email: claims.email)
         saved.profiles.removeAll { $0.id == client }
@@ -90,7 +90,7 @@ enum ChatGPTAccount {
             defer { if current == generation { refreshTask = nil } }
             let tokens = try await exchange(["grant_type":"refresh_token", "client_id":client, "refresh_token":session.refresh])
             guard current == generation else { throw CancellationError() }
-            guard tokens.scope == nil || allowsInference(tokens.scope) else { throw StudyError.message("ChatGPTの利用許可を再確認してください。") }
+            guard tokens.scope == nil || allowsInference(tokens.scope) else { throw StudyError.message(String(localized: "ChatGPTの利用許可を再確認してください。")) }
             var updated = saved
             updated.session = Session(access: tokens.access_token, refresh: tokens.refresh_token ?? session.refresh,
                                       identity: session.identity, expiry: Date().addingTimeInterval(tokens.expires_in))
@@ -110,7 +110,7 @@ enum ChatGPTAccount {
         try persist(saved)
         let (_, response) = try await URLSession.shared.data(for: form("revoke", ["client_id":client, "token":session.refresh, "token_type_hint":"refresh_token"]))
         guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            throw StudyError.message("端末からログアウトしました。ChatGPT設定から接続状態を確認してください。")
+            throw StudyError.message(String(localized: "端末からログアウトしました。ChatGPT設定から接続状態を確認してください。"))
         }
     }
 
@@ -135,7 +135,7 @@ enum ChatGPTAccount {
         var fields = fields
         fields["resource"] = resource
         let (data, response) = try await URLSession.shared.data(for: form("token", fields))
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw StudyError.message("ChatGPTにもう一度サインインしてください。") }
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw StudyError.message(String(localized: "ChatGPTにもう一度サインインしてください。")) }
         return try JSONDecoder().decode(Tokens.self, from: data)
     }
 }

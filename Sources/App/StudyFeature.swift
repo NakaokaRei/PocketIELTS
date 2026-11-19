@@ -18,10 +18,12 @@ struct StudyFeature {
         @Shared(.appStorage("vocabularyDetails")) var vocabularyData = Data()
         @Shared(.appStorage("studyResults")) var resultData = Data()
         @Shared(.appStorage("savedPapers")) var paperData = Data()
+        @Shared(.appStorage("deletedVocabulary")) var deletedVocabularyData = Data()
+        var deletedVocabulary: [DeletedExpression] { (try? JSONDecoder().decode([DeletedExpression].self, from: deletedVocabularyData)) ?? [] }
         var vocabulary: [SavedExpression] {
             let details = (try? JSONDecoder().decode([SavedExpression].self, from: vocabularyData)) ?? []
-            return details + entries.filter { word in !details.contains { $0.expression == word } }
-                .map(SavedExpression.legacy)
+            return (details + entries.filter { word in !details.contains { $0.expression == word } }
+                .map(SavedExpression.legacy)).filter { entry in !deletedVocabulary.contains { $0.id == entry.id } }
         }
         var records: [StudyResult] { (try? JSONDecoder().decode([StudyResult].self, from: resultData)) ?? [] }
         var papers: [ExamUnit] { (try? JSONDecoder().decode([ExamUnit].self, from: paperData)) ?? [] }
@@ -38,6 +40,7 @@ struct StudyFeature {
         case answer(Int, String), review, save(String)
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
         case updateMeaning(UUID, String)
+        case deleteExpression(UUID)
         case updateAssessment(UUID, PracticeAssessment)
         case ask(String, String), explained(String), askFailed(String), closeQuestion
     }
@@ -53,6 +56,7 @@ struct StudyFeature {
             switch action {
             case .settings: break
             case let .applyCloudSnapshot(snapshot):
+                if let data = try? StudyPersistence.encode(snapshot.deletedVocabulary) { state.$deletedVocabularyData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.vocabulary) { state.$vocabularyData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.results) { state.$resultData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.papers) { state.$paperData.withLock { $0 = data } }
@@ -94,7 +98,12 @@ struct StudyFeature {
                 let result = "Section \(state.section) · \(set.title) · \(correct)/\(set.questions.count)"
                 let data = try? StudyPersistence.encode([result] + state.results)
                 if let data { state.$history.withLock { $0 = data } }
-                let record = StudyResult(id: uuid(), date: now, skill: "Reading", title: set.title, correct: correct, total: set.questions.count)
+                let paper = ExamUnit(id: "Reading / Section \(state.section) · " + set.title,
+                                     skill: "Reading", title: set.title, directions: "", passages: set.passages,
+                                     questions: set.questions, audio: nil, oral: [])
+                let record = StudyResult(id: uuid(), date: now, skill: "Reading", title: set.title, correct: correct,
+                                         total: set.questions.count, paper: paper,
+                                         questionAnswers: set.questions.indices.map { state.answers[$0, default: ""] })
                 if let data = try? StudyPersistence.encode([record] + state.records) { state.$resultData.withLock { $0 = data } }
             case let .saveExpression(entry):
                 var entries = state.vocabulary
@@ -107,6 +116,12 @@ struct StudyFeature {
                     if !entry.meaning.isEmpty { entries[index].meaning = entry.meaning }
                 } else { entries.insert(entry, at: 0) }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
+            case let .deleteExpression(id):
+                guard state.vocabulary.contains(where: { $0.id == id }) else { return .none }
+                let remaining = state.vocabulary.filter { $0.id != id }
+                let deleted = state.deletedVocabulary.filter { $0.id != id } + [DeletedExpression(id: id, date: now)]
+                if let data = try? StudyPersistence.encode(deleted) { state.$deletedVocabularyData.withLock { $0 = data } }
+                if let data = try? StudyPersistence.encode(remaining) { state.$vocabularyData.withLock { $0 = data } }
             case let .updateMeaning(id, meaning):
                 var entries = state.vocabulary
                 for i in entries.indices where entries[i].id == id { entries[i].meaning = meaning }
@@ -130,12 +145,12 @@ struct StudyFeature {
                 guard !state.asking else { return .none }
                 let question = question.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !question.isEmpty else { return .none }
-                let conversation = state.messages.map { ($0.isUser ? "学習者: " : "チューター: ") + $0.text }.joined(separator: "\n")
+                let conversation = state.messages.map { ($0.isUser ? String(localized: "学習者: ") : String(localized: "チューター: ")) + $0.text }.joined(separator: "\n")
                 state.messages.append(TutorMessage(isUser: true, text: question))
                 state.asking = true
                 state.explanation = nil
                 return .run { send in
-                    let answer = try await client.explain(context + "\nこれまでの会話:\n" + conversation, question)
+                    let answer = try await client.explain(context + String(localized: "\nこれまでの会話:\n") + conversation, question)
                     try Task.checkCancellation()
                     await send(.explained(answer))
                 } catch: { error, send in

@@ -1,8 +1,10 @@
 # Pocket IELTS
 
+<img src="Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-Light.png" width="128" alt="Pocket IELTS smiling pocket-book app icon" />
+
 **Practice a skill. Save an expression. Pick up where you left off.**
 
-Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. The interface is currently in Japanese; practice materials are in English.
+Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. The interface supports **Japanese and English**, following your iOS app language. Practice materials remain in English.
 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-home.png" width="250" alt="iPhone home with four color-coded IELTS skills" />
@@ -14,7 +16,7 @@ Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on 
 
 - **Four skills:** three Reading sections, four Listening parts, two Writing tasks and three Speaking parts. Start with bundled full-length exercises or generate fresh material with ChatGPT.
 - **Vocabulary in context:** tap a word, or long-press to select a phrase, in passages, questions and explanations. Use the native selection menu to save immediately or ask the AI tutor, without an extra action sheet. Tap elsewhere to clear the selection. Edit meanings later in Vocabulary; the source sentence and original exercise stay attached.
-- **Reading and Listening:** answer questions, review explanations and retry. Listening uses system text-to-speech playback.
+- **Reading and Listening:** answer questions, review explanations and retry. Listening can generate natural British-English audio through the OpenAI Speech API, cache it locally, and play, pause, stop or seek. Playback and pending generation stop when leaving the screen.
 - **Writing:** compose a response with a word count, then request criterion-based feedback and an improved example.
 - **Speaking:** record and replay an answer, transcribe it on-device where supported, and edit the transcript before requesting feedback. Manual transcription remains available.
 - **Mock practice:** work through all 12 parts, with an elapsed-time display and feedback deferred until the end.
@@ -26,9 +28,40 @@ Speaking feedback evaluates the transcript, not pronunciation or acoustic fluenc
 
 <img src="Documentation/Screenshots/iphone-generation.png" width="280" alt="A smiling book with estimated progress during question generation" />
 
-Fresh questions are prepared with a gently floating book, an estimated percentage and a count of completed, validated sections. The percentage is **a time-based estimate, not progress reported by the AI service**; each unfinished section stays below completion until its response is validated. Reduce Motion keeps the illustration still. Generation can be cancelled, and failed multi-part generation resumes from the sections already completed.
+Fresh questions are prepared with a gently floating book, an estimated percentage and a count of completed, validated sections. The percentage is **a time-based estimate, not progress reported by the AI service**; each unfinished section stays below completion until its response is validated. The illustration animates separately from progress text at up to 60 updates per second. Reduce Motion keeps it still; inactive scenes pause it. Generation can be cancelled, and failed multi-part generation resumes from the sections already completed.
 
 In each part card, **Practice bundled questions** opens the included exercise. **Generate new questions** requests fresh material through ChatGPT.
+
+## Clear questions and useful next steps
+
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review and completion open at the top without a button morphing animation. Ending practice uses a centered confirmation alert; cancelling keeps the current answers.
+
+New Reading and Listening attempts preserve every answer, including unanswered positions. History shows a score card and an expandable question-by-question review. Older records keep their existing saved data; missing historical answers cannot be reconstructed.
+
+The tutor offers six editable question starters: meaning, grammar, paraphrases and examples, answer evidence, alternative choices and a hint. Selecting one fills the draft; you decide when to send it.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-questions.png" width="250" alt="Question instructions and separate radio choices" />
+  <img src="Documentation/Screenshots/iphone-review-actions.png" width="250" alt="Review with distinct result, save, AI and retry buttons" />
+  <img src="Documentation/Screenshots/iphone-tutor-en.png" width="250" alt="English tutor with editable learning question suggestions" />
+</p>
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-completion.png" width="250" alt="Practice completion card with clear progress, home and retry actions" />
+  <img src="Documentation/Screenshots/iphone-history-detail.png" width="250" alt="History score card with expandable answers and save and retry actions" />
+  <img src="Documentation/Screenshots/iphone-exit-alert.png" width="250" alt="Centered end-practice alert with continue and end actions" />
+</p>
+
+## Your language and appearance
+
+Choose **System, Light or Dark** in Settings. The open settings sheet updates immediately, and the preference is saved on the device. App language follows the iOS language setting for Pocket IELTS. New AI explanations and feedback request the interface language; previously saved text is preserved in its original language.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-settings-en.png" width="250" alt="English settings and appearance choices" />
+  <img src="Documentation/Screenshots/iphone-settings-dark.png" width="250" alt="Japanese settings in dark mode" />
+</p>
+
+Translations are maintained in `Resources/Localizable.xcstrings` and `Resources/InfoPlist.xcstrings`, including permission descriptions.
 
 ## Made for iPad, too
 
@@ -57,7 +90,7 @@ Turning sync off keeps local data. Changing Apple Accounts pauses sync to avoid 
 
 ## ChatGPT connection
 
-Connect through **Sign in with ChatGPT** in Settings. There is no API-key entry flow. Fresh exercise generation, word explanations, tutor conversations and assessments require a working ChatGPT connection and available usage. Bundled exercises and local study features work without an AI connection.
+Connect through **Sign in with ChatGPT** in Settings. Text generation continues to use ChatGPT sign-in. Optional listening audio has a separate personal API-key field, a key-creation link and an API-usage link. Keys are stored in device-only Keychain; audio API usage is billed separately. Fresh exercise generation, word explanations, tutor conversations and assessments require a working ChatGPT connection and available usage. Bundled exercises and local study features work without an AI connection.
 
 Authentication is stored in the device Keychain. When you explicitly request AI help, relevant exercise text and your question or written/transcribed response are sent to OpenAI. Speaking transcription requests on-device recognition; recorded audio is not sent to the text-feedback endpoint. With iCloud sync enabled, archived recordings are uploaded to your private CloudKit database.
 
@@ -100,4 +133,26 @@ Screenshots show the running app in the iOS 26.5 simulator using isolated test s
 
 ## Credits
 
-The display typography uses **Nunito** and **Zen Maru Gothic**. Their Open Font License files are included in `Resources/Fonts`. System controls and icons use SwiftUI, UIKit and SF Symbols.
+The display typography uses **Nunito** and **Zen Maru Gothic**. Their Open Font License files are included in `Resources/Fonts`. Japanese UI labels use Zen Maru Gothic Regular/Bold; English UI labels use Nunito. Long exercise passages retain native Dynamic Type. Icons use SF Symbols. Settings includes an offline OSS acknowledgements browser generated by LicensePlist, covering all resolved packages and both fonts.
+
+The original [pocket-book app icon](Documentation/Brand/README.md) includes light, dark and tinted appearances, with editable SVGs and a reproducible asset generator.
+
+
+## Saved learning and vocabulary
+
+Open **Practise saved questions** from Home or a skill’s part picker. Saved questions live with practice entry points, while Vocabulary contains saved words and expressions. Each expression can open the AI tutor with its original context and word-focused suggested questions. Delete uses a confirmation alert; deletion records sync through iCloud so an older offline copy does not restore the word.
+
+## Continuous integration and dependencies
+
+GitHub Actions runs unit and UI tests on iPhone and iPad simulators for pushes and pull requests. Local development uses Xcode 27.2; the hosted workflow selects Xcode 26.6, currently present on the `macos-26` image. Result bundles and generated OSS notices are uploaded as artifacts. Tests use fixtures and do not make paid audio API requests.
+
+Dependabot checks Swift Package Manager dependencies (including the Xcode project’s `Package.resolved`) and GitHub Actions weekly. It starts once `.github/dependabot.yml` is on the default branch. Compatible Swift updates are grouped; major updates remain separate.
+
+Regenerate the committed acknowledgements after changing dependencies:
+
+```sh
+brew install licenseplist
+Scripts/generate-licenses.sh /path/to/DerivedData/SourcePackages
+```
+
+CI uses LicensePlist 3.28.3 with a verified download checksum and regenerates notices from resolved package sources without network license lookups. `Scripts/check-licenses.py` checks package and font coverage. Commit regenerated `Resources/Licenses` when updating dependencies locally.

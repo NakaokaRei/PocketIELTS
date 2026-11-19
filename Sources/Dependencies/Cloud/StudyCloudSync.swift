@@ -17,15 +17,23 @@ struct CloudStudyItem: Codable, Equatable {
     }
 }
 
+struct DeletedExpression: Codable, Equatable {
+    var id: UUID
+    var date: Date
+}
+
 struct CloudStudySnapshot: Equatable {
+    var deletedVocabulary: [DeletedExpression]
     var vocabulary: [SavedExpression]
     var results: [StudyResult]
     var papers: [ExamUnit]
 
     init(state: StudyFeature.State) {
+        deletedVocabulary = state.deletedVocabulary
         vocabulary = state.vocabulary; results = state.records; papers = state.papers
     }
-    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = []) {
+    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = [], deletedVocabulary: [DeletedExpression] = []) {
+        self.deletedVocabulary = deletedVocabulary
         self.vocabulary = vocabulary; self.results = results; self.papers = papers
     }
     func items(at date: Date) throws -> [CloudStudyItem] {
@@ -33,7 +41,12 @@ struct CloudStudySnapshot: Equatable {
             let key = kind + "-" + SHA256.hash(data: Data(id.utf8)).map { String(format: "%02x", $0) }.joined()
             return try .init(key: key, kind: kind, payload: StudyPersistence.encode(value), modified: date, revision: UUID().uuidString, recording: recording)
         }
-        return try vocabulary.map { try item("word", $0.id.uuidString, $0) }
+        let tombstones = try deletedVocabulary.map { deleted -> CloudStudyItem in
+            var value = try item("word", deleted.id.uuidString, deleted)
+            value.kind = "deletedWord"; value.modified = deleted.date
+            return value
+        }
+        return try tombstones + vocabulary.map { try item("word", $0.id.uuidString, $0) }
             + results.map { try item("result", $0.id.uuidString, $0, recording: $0.recordingFile) }
             + papers.map { try item("paper", $0.id, $0) }
     }
@@ -60,7 +73,8 @@ struct CloudStudyJournal: Codable {
         return try .init(
             vocabulary: sorted.filter { $0.kind == "word" }.map { try decoder.decode(SavedExpression.self, from: $0.payload) },
             results: sorted.filter { $0.kind == "result" }.map { try decoder.decode(StudyResult.self, from: $0.payload) }.sorted { $0.date > $1.date },
-            papers: sorted.filter { $0.kind == "paper" }.map { try decoder.decode(ExamUnit.self, from: $0.payload) })
+            papers: sorted.filter { $0.kind == "paper" }.map { try decoder.decode(ExamUnit.self, from: $0.payload) },
+            deletedVocabulary: sorted.filter { $0.kind == "deletedWord" }.map { try decoder.decode(DeletedExpression.self, from: $0.payload) })
     }
     static func accepts(account: String, previous: String?) -> Bool { previous == nil || previous == account }
     static func safeRecordingURL(_ name: String, directory: URL) -> URL? {
@@ -73,11 +87,11 @@ struct CloudStudyJournal: Codable {
 @MainActor @Observable
 final class StudyCloudSync {
     static let containerIdentifier = "iCloud.app.pocketielts.study"
-    var status = "同期を準備中"
+    var status = String(localized: "同期を準備中")
     var syncing = false
     var lastSynced: Date?
     var enabled: Bool {
-        didSet { defaults.set(enabled, forKey: "iCloudSyncEnabled"); if !enabled { status = "同期はオフです" } }
+        didSet { defaults.set(enabled, forKey: "iCloudSyncEnabled"); if !enabled { status = String(localized: "同期はオフです") } }
     }
     private let defaults: UserDefaults
     private let store: StoreOf<StudyFeature>
@@ -93,29 +107,29 @@ final class StudyCloudSync {
         enabled = defaults.object(forKey: "iCloudSyncEnabled") as? Bool ?? true
         journal = defaults.data(forKey: "iCloudStudyJournal.v1").flatMap { try? JSONDecoder().decode(CloudStudyJournal.self, from: $0) } ?? .init()
         lastSynced = defaults.object(forKey: "iCloudLastSynced") as? Date
-        if isTesting { status = "テスト環境・端末内に保存" }
+        if isTesting { status = String(localized: "テスト環境・端末内に保存") }
     }
     func captureLocalChanges() {
         guard !isTesting else { return }
         do {
-            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers))
+            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary))
             try persist()
-        } catch { status = "同期用データを保存できませんでした。端末の空き容量を確認してください。" }
+        } catch { status = String(localized: "同期用データを保存できませんでした。端末の空き容量を確認してください。") }
     }
     private func persist() throws { defaults.set(try StudyPersistence.encode(journal), forKey: journalKey) }
 
     func sync() async {
         guard enabled, !syncing, !isTesting else { return }
-        syncing = true; status = "iCloudと同期中…"
+        syncing = true; status = String(localized: "iCloudと同期中…")
         defer { syncing = false }
         do {
             captureLocalChanges()
             guard try await container.accountStatus() == .available else {
-                status = "iCloudにサインインしてください。データはこの端末に保存されています。"; return
+                status = String(localized: "iCloudにサインインしてください。データはこの端末に保存されています。"); return
             }
             let account = try await container.userRecordID().recordName
             guard CloudStudyJournal.accepts(account: account, previous: journal.account) else {
-                status = "Apple Accountが変更されています。元のアカウントに戻すまで同期を停止します。"; return
+                status = String(localized: "Apple Accountが変更されています。元のアカウントに戻すまで同期を停止します。"); return
             }
             journal.account = account; try persist()
             let database = container.privateCloudDatabase
@@ -168,14 +182,14 @@ final class StudyCloudSync {
                 for saved in result.saveResults.values { _ = try saved.get() }
             }
             lastSynced = Date(); defaults.set(lastSynced, forKey: "iCloudLastSynced")
-            status = "iCloudと同期しました"
+            status = String(localized: "iCloudと同期しました")
         } catch is CancellationError {
-            status = "次回の起動時に同期を再開します"
+            status = String(localized: "次回の起動時に同期を再開します")
         } catch {
             if let cloud = error as? CKError, cloud.code == .notAuthenticated {
-                status = "iCloudにサインインしてください。データは端末に保存済みです。"
+                status = String(localized: "iCloudにサインインしてください。データは端末に保存済みです。")
             } else {
-                status = "同期を完了できませんでした。接続・iCloud設定を確認して再試行してください。\n" + error.localizedDescription
+                status = String(localized: "同期を完了できませんでした。接続・iCloud設定を確認して再試行してください。\n") + error.localizedDescription
             }
         }
     }
@@ -199,7 +213,7 @@ struct StudyCloudHost: View {
     }
     var body: some View {
         HomeScreen(store: store).environment(\.studyCloud, cloud)
-            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers)) { _, _ in cloud.captureLocalChanges() }
+            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary)) { _, _ in cloud.captureLocalChanges() }
             .task(id: phase) {
                 guard phase == .active else { cloud.captureLocalChanges(); return }
                 while !Task.isCancelled {

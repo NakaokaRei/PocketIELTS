@@ -98,16 +98,46 @@
       "figmaNodes": "99:2578,101:2601,101:2649",
       "source": "Sources/App/IELTSNavigation.swift",
       "implemented": "Native sidebar; adaptive dashboard columns; readable content widths; portrait/landscape; reset complete navigation on return home"
+    },
+    {
+      "name": "Pocket-book app icon and smooth loading",
+      "figmaNodes": "122:2766,114:2656",
+      "source": "Resources/Assets.xcassets/AppIcon.appiconset; Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Original opaque 1024px light/dark/tinted artwork with matching editable SVGs; display-driven mascot redraws at up to 60 Hz, progress at 1 Hz; Reduce Motion and scene inactivity pause animation"
+    },
+    {
+      "name": "Readable questions and supporting review actions",
+      "figmaNodes": "57:2229,57:2256,137:3292,137:3296,137:3300",
+      "source": "Sources/Features/Exam/ExamScreen.swift; Sources/Models/ReadingSet.swift",
+      "implemented": "Separate instruction block; labeled radio choices; duplicate numbering removal; prominent result action and outlined SF Symbol save/AI/retry buttons"
+    },
+    {
+      "name": "Tutor question starters",
+      "figmaNodes": "24:505,130:3113",
+      "source": "Sources/Features/Reading/PracticeScreen.swift",
+      "implemented": "Six localized editable question drafts; explicit send; context retained"
+    },
+    {
+      "name": "Appearance and bilingual interface",
+      "figmaNodes": "62:2578,130:3032,130:3090,132:3289",
+      "source": "Resources/Localizable.xcstrings; Resources/InfoPlist.xcstrings; Sources/Features/Settings/SettingsScreen.swift",
+      "implemented": "Japanese/English interface, permission descriptions and AI explanation language; persisted System/Light/Dark preference applies immediately to the open Settings sheet"
+    },
+    {
+      "name": "Completion and history flow polish",
+      "figmaNodes": "10:14,144:3415,144:3436",
+      "source": "Sources/Features/Exam/ExamScreen.swift; Sources/Features/Home/HomeScreen.swift; Sources/Models/ReadingSet.swift",
+      "implemented": "Stable non-morphing primary buttons; review/completion reset scroll position; centered cancel/end alert; completion and history cards; full indexed Reading/Listening answers with backward-compatible persistence; history save confirmation and retry."
     }
   ],
   "validation": {
-    "unitTests": "17 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; includes 3 new cloud journal/conflict tests",
-    "uiTests": "All 8 iPhone scenarios passed across full and targeted runs after fixes. iPad: 6 existing scenarios plus native selection/AI flow passed across full and targeted runs; latest save/selection/portrait-landscape screenshot rerun passed 3/3.",
+    "unitTests": "21 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; covers indexed answers, empty positions and legacy history decoding.",
+    "uiTests": "All 12 iPhone scenarios passed in a full run. Final iPad build passed 3 targeted flows: results/history/save/retry, centered exit alert/cancel/finish/home, and Writing response history.",
     "deviceBuild": "Xcode 27.2 generic iOS Debug build succeeded with Apple Development signing; verified CloudKit container and Development environment in signed entitlements",
     "screenshots": "Captured running iPhone/iPad app with isolated UI-test data; landscape capture uses XCUIScreen to retain correct orientation metadata",
     "completedAt": "2026-11-19",
-    "result": "17 unit tests passed; changed native selection/save/AI flows passed on iPhone and iPad. Generation/cancel passed on iPhone. Live cloud/auth/audio checks remain listed below.",
-    "toolchainNote": "Xcode emitted App Intents metadata/diagnostic collection warnings; no app compile errors."
+    "result": "Completion, history and centered alert screens verified. Review starts at the top; cancellation preserves the current screen; results route to history; save confirms; all indexed answers persist; history reopens original exercises. Existing selection, appearance, English UI, mock and generation/cancel checks passed.",
+    "toolchainNote": "Xcode emitted simulator diagnostics/debugger metadata warnings; builds and test suites succeeded."
   },
   "limitations": [
     "Live ChatGPT sign-in, usage limits, generation and inference require the user account; no live authenticated request was made during this task.",
@@ -118,6 +148,7 @@
     "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference.",
     "Live two-device CloudKit transfer remains unverified; schema must be deployed to Production before TestFlight/App Store. Background push sync is not implemented.",
     "Historical plain-text readingHistory entries remain local; current structured results synchronize.",
-    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture."
+    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture.",
+    "Older Reading/Listening history stored only the first answer; new questionAnswers records preserve all answers, but missing historical answers cannot be reconstructed."
   ]
 }

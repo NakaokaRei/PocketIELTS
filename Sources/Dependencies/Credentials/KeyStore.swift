@@ -36,7 +36,7 @@ enum KeyStore {
 
     private static func check(_ status: OSStatus) throws {
         guard status == errSecSuccess else {
-            throw StudyError.message("キーチェーンにアクセスできません。iPhoneのロックを解除して再試行してください。")
+            throw StudyError.message(String(localized: "キーチェーンにアクセスできません。iPhoneのロックを解除して再試行してください。"))
         }
     }
 }

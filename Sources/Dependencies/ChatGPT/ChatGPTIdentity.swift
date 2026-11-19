@@ -46,7 +46,7 @@ enum ChatGPTIdentity {
 
     static func verify(_ jwt: String, client: String, nonce: String) async throws -> Claims {
         let parts = jwt.components(separatedBy: ".")
-        let invalid = StudyError.message("ChatGPTの本人確認に失敗しました。")
+        let invalid = StudyError.message(String(localized: "ChatGPTの本人確認に失敗しました。"))
         guard parts.count == 3, let headerData = Data(base64URL: parts[0]),
               let payload = Data(base64URL: parts[1]), let signature = Data(base64URL: parts[2])
         else { throw invalid }

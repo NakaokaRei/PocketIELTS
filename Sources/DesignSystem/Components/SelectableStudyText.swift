@@ -17,11 +17,11 @@ struct SelectableStudyText: View {
             onSave(entry)
             saved = true
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-            UIAccessibility.post(notification: .announcement, argument: "単語帳に保存しました")
+            UIAccessibility.post(notification: .announcement, argument: String(localized: "単語帳に保存しました"))
         }, onAsk: allowsAI ? onAsk : nil, onSavePaper: onSavePaper)
         .overlay(alignment: .top) {
             if saved {
-                Label("単語帳に保存しました", systemImage: "checkmark.circle.fill")
+                Label(String(localized: "単語帳に保存しました"), systemImage: "checkmark.circle.fill")
                     .font(.subheadline.bold()).padding(12)
                     .background(.regularMaterial, in: Capsule())
                     .allowsHitTesting(false).accessibilityIdentifier("selection.saved")
@@ -145,24 +145,24 @@ struct StudyTextView: UIViewRepresentable {
             let entry = Entry(expression: expression, sourceText: current.text,
                               sourceID: current.sourceID, utf16Range: range)
             var actions: [UIMenuElement] = [
-                UIAction(title: "単語帳に追加", image: UIImage(systemName: "text.badge.plus")) { _ in
+                UIAction(title: String(localized: "単語帳に追加"), image: UIImage(systemName: "text.badge.plus")) { _ in
                     StudySelectionDismissal.shared.clear()
                     current.onSave(entry)
                 }
             ]
             if let ask = current.onAsk {
-                actions.append(UIAction(title: "AIに質問", image: UIImage(systemName: "bubble.left")) { _ in
+                actions.append(UIAction(title: String(localized: "AIに質問"), image: UIImage(systemName: "bubble.left")) { _ in
                     StudySelectionDismissal.shared.clear()
                     ask(entry)
                 })
             }
             if let savePaper = current.onSavePaper {
-                actions.append(UIAction(title: "問題を保存", image: UIImage(systemName: "bookmark")) { _ in
+                actions.append(UIAction(title: String(localized: "問題を保存"), image: UIImage(systemName: "bookmark")) { _ in
                     StudySelectionDismissal.shared.clear()
                     savePaper()
                 })
             }
-            actions.append(UIAction(title: "コピー", image: UIImage(systemName: "doc.on.doc")) { _ in
+            actions.append(UIAction(title: String(localized: "コピー"), image: UIImage(systemName: "doc.on.doc")) { _ in
                 UIPasteboard.general.string = entry.expression
                 StudySelectionDismissal.shared.clear()
             })

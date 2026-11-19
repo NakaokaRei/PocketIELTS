@@ -1,3 +1,4 @@
+import AVFoundation
 import XCTest
 import UIKit
 import ComposableArchitecture
@@ -57,7 +58,10 @@ final class PocketIELTSTests: XCTestCase {
             $0.reviewed = true
             $0.$history.withLock { $0 = history }
             let record = StudyResult(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, date: Date(timeIntervalSince1970: 0),
-                                     skill: "Reading", title: "Opening hours", correct: 1, total: 1)
+                                     skill: "Reading", title: "Opening hours", correct: 1, total: 1,
+                                     paper: ExamUnit(id: "Reading / Section 2 · Opening hours", skill: "Reading", title: paper.title,
+                                                     directions: "", passages: paper.passages, questions: paper.questions, audio: nil, oral: []),
+                                     questionAnswers: ["monday"])
             $0.$resultData.withLock { $0 = try! StudyPersistence.encode([record]) }
         }
         await store.send(.review)
@@ -169,6 +173,60 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertTrue(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
     }
 
+    func testInlineOptionsPreserveSemicolonsAndRemoveDuplicateNumber() {
+        let instruction = "Choose the correct letter, A, B or C. Write ONE LETTER only. A. Mill Lane Repair Morning; B. Oakfield Library; Collecting Reserved Books; C. Community Garden."
+        let layout = StudyQuestionLayout(instruction)
+        XCTAssertEqual(layout.options.map(\.label), ["A", "B", "C"])
+        XCTAssertEqual(layout.options[1].text, "Oakfield Library; Collecting Reserved Books")
+        XCTAssertTrue(layout.formatted.contains("\n\nB. Oakfield"))
+        let question = ReadingSet.Question(instruction: instruction, prompt: "1. 1. how to collect a reserved item", answers: ["B"], explanation: "")
+        XCTAssertEqual(question.displayPrompt(number: 14, localNumber: 1), "how to collect a reserved item")
+        XCTAssertEqual(question.choiceText("B"), "B. Oakfield Library; Collecting Reserved Books")
+    }
+
+    func testQuestionLayoutHandlesBundledOptionsAndPreservesOrdinaryProse() throws {
+        let units = try ExamUnit.load()
+        let choice = try XCTUnwrap(units.first { $0.id == "Listening / Part 2" }?.questions.first)
+        XCTAssertEqual(StudyQuestionLayout(choice.prompt).options.map(\.label), ["A", "B", "C"])
+        XCTAssertEqual(choice.choiceText("B"), "B. Beside the fountain")
+        let heading = try XCTUnwrap(units.first { $0.id == "Reading / Section 3" }?.questions.first)
+        XCTAssertEqual(StudyQuestionLayout(heading.instruction).options.count, 6)
+        let prose = "A library needs space. B. Smith manages it; opening times vary."
+        XCTAssertEqual(StudyQuestionLayout(prose).formatted, prose)
+        let decimal = ReadingSet.Question(instruction: "", prompt: "1.5 metres is the minimum distance.", answers: ["TRUE"], explanation: "")
+        XCTAssertEqual(decimal.displayPrompt(number: 1, localNumber: 1), decimal.prompt)
+    }
+
+    func testBrandFontsLoadWithoutFallback() {
+        _ = StudyTypography.body
+        for name in ["ZenMaruGothic-Regular", "ZenMaruGothic-Bold", "ZenMaruGothic-Black", "Nunito-Regular", "Nunito-Bold", "Nunito-Black"] {
+            XCTAssertNotNil(UIFont(name: name, size: 17), "Bundled font must load: \(name)")
+        }
+    }
+
+    func testQuestionAnswersPreserveGapsAndDecodeLegacyHistory() throws {
+        let result = StudyResult(skill: "Reading", title: "Practice", correct: 1, total: 3,
+                                 questionAnswers: ["TRUE", "", "C"])
+        let encoded = try StudyPersistence.encode(result)
+        XCTAssertEqual(try JSONDecoder().decode(StudyResult.self, from: encoded).questionAnswers, ["TRUE", "", "C"])
+        var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        legacy.removeValue(forKey: "questionAnswers")
+        legacy["response"] = "TRUE"
+        let decoded = try JSONDecoder().decode(StudyResult.self, from: JSONSerialization.data(withJSONObject: legacy))
+        XCTAssertNil(decoded.questionAnswers)
+        XCTAssertEqual(decoded.response, "TRUE")
+    }
+
+    func testEnglishAndJapaneseCatalogsAreBundled() throws {
+        let english = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "en", ofType: "lproj"))))
+        let japanese = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "ja", ofType: "lproj"))))
+        XCTAssertEqual(english.localizedString(forKey: "設定", value: nil, table: nil), "Settings")
+        XCTAssertEqual(japanese.localizedString(forKey: "設定", value: nil, table: nil), "設定")
+        let format = english.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
+        XCTAssertEqual(String(format: format, "1", "3"), "Sections ready: 1 / 3")
+        XCTAssertTrue(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Record"))
+    }
+
     func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
         let word = SavedExpression(expression: "library", source: "Reading", sourceText: "The library is open.")
         var phone = CloudStudyJournal(), tablet = CloudStudyJournal()
@@ -214,4 +272,80 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertNotNil(CloudStudyJournal.safeRecordingURL("answer.m4a", directory: folder))
     }
 
+}
+
+
+extension PocketIELTSTests {
+    func testGenerationCompletionReachesExactly100WithoutRegression() {
+        for count in [0, 1, 11] {
+            let from = GenerationProgress.estimate(completed: count, total: 12, elapsed: 60)
+            let values = (0...100).map { GenerationProgress.finish(from: from, elapsed: Double($0) / 100) }
+            XCTAssertEqual(values.first!, from)
+            XCTAssertEqual(values.last!, 1)
+            XCTAssertTrue(zip(values, values.dropFirst()).allSatisfy { $0 <= $1 })
+        }
+        XCTAssertLessThan(GenerationProgress.estimate(completed: 1, total: 1, elapsed: 1000), 1)
+    }
+    func testAudioChunkingPreservesScriptAndAPIRequest() throws {
+        let script = String(repeating: "Speaker A: Hello. Speaker B: Good morning!\n", count: 400)
+        let chunks = SpeechAudio.chunks(script)
+        XCTAssertEqual(chunks.joined(), script)
+        XCTAssertTrue(chunks.allSatisfy { !$0.isEmpty && $0.count <= 2800 })
+        XCTAssertEqual(SpeechAudio.chunks(String(repeating: "a", count: 6000)).joined().count, 6000)
+        let request = try SpeechAudio.request(text: chunks[0], key: "test-only-not-a-key")
+        XCTAssertEqual(request.url?.path, "/v1/audio/speech")
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: String])
+        XCTAssertEqual(json["response_format"], "pcm")
+        XCTAssertEqual(json["input"], chunks[0])
+        XCTAssertThrowsError(try SpeechAudio.validate(HTTPURLResponse(url: request.url!, statusCode: 429, httpVersion: nil, headerFields: nil)!, data: Data()))
+    }
+    @MainActor func testAudioStopRejectsLateGenerationAndResetsPlayback() async throws {
+        let player = ListeningPlayer()
+        let pcm = Data(repeating: 0, count: 48000)
+        let wave = SpeechAudio.wave(pcm)
+        let decoded = try AVAudioPlayer(data: wave)
+        XCTAssertEqual(decoded.duration, 1, accuracy: 0.01)
+        player.play(script: "Test") { _, _ in
+            try? await Task.sleep(for: .milliseconds(100))
+            return wave
+        }
+        XCTAssertTrue(player.generating)
+        player.stop()
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertFalse(player.generating)
+        XCTAssertNil(player.player)
+        player.play(script: "Test") { _, _ in wave }
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNotNil(player.player)
+        player.stop()
+        XCTAssertFalse(player.player?.isPlaying ?? true)
+        XCTAssertEqual(player.player?.currentTime, 0)
+    }
+}
+
+extension PocketIELTSTests {
+    func testCloudDeletionDoesNotResurrectOfflineVocabulary() throws {
+        let entry = SavedExpression(expression: "ordinary", source: "Reading", sourceText: "An ordinary day.")
+        var left = CloudStudyJournal(), right = CloudStudyJournal()
+        try left.capture(.init(vocabulary: [entry]), at: Date(timeIntervalSince1970: 1))
+        right.merge(Array(left.items.values))
+        try left.capture(.init(deletedVocabulary: [.init(id: entry.id, date: Date(timeIntervalSince1970: 2))]), at: Date(timeIntervalSince1970: 2))
+        left.merge(Array(right.items.values)); right.merge(Array(left.items.values))
+        XCTAssertTrue(try left.snapshot().vocabulary.isEmpty)
+        XCTAssertTrue(try right.snapshot().vocabulary.isEmpty)
+        XCTAssertEqual(try right.snapshot().deletedVocabulary.map(\.id), [entry.id])
+        var relaunched = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(right))
+        try relaunched.capture(try right.snapshot(), at: Date(timeIntervalSince1970: 3))
+        XCTAssertTrue(try relaunched.snapshot().vocabulary.isEmpty)
+    }
+}
+
+extension PocketIELTSTests {
+    func testLicensePlistNoticesAreBundledAndReadable() throws {
+        let notices = try OSSNotice.load()
+        XCTAssertGreaterThanOrEqual(notices.count, 17)
+        XCTAssertTrue(notices.contains { $0.title.contains("Nunito") })
+        XCTAssertTrue(notices.contains { $0.title.contains("swift-composable-architecture") })
+        XCTAssertTrue(notices.allSatisfy { $0.text.count > 100 })
+    }
 }

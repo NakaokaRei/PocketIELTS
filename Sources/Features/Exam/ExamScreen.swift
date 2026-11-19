@@ -16,7 +16,7 @@ struct ExamUnit: Codable, Equatable, Identifiable, Sendable {
     }
     static func load() throws -> [ExamUnit] {
         guard let url = Bundle.main.url(forResource: "GeneralTraining", withExtension: "json") else {
-            throw StudyError.message("教材が見つかりません。")
+            throw StudyError.message(String(localized: "教材が見つかりません。"))
         }
         return try JSONDecoder().decode([Self].self, from: Data(contentsOf: url))
     }
@@ -33,24 +33,40 @@ struct MockIntroScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 32) {
-                Text("模擬テスト").font(.system(.largeTitle, design: .rounded, weight: .black))
+                Text(String(localized: "模擬テスト")).font(StudyTypography.japaneseTitle(30))
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Full mock").font(.largeTitle.bold())
-                    Text("時間を計って4技能に挑戦。\n解説はテスト終了後に確認できます。")
-                    Text(generate ? "新しい問題を生成します。" : "収録問題を使用します。Writing・Speakingは終了後にAI講評を確認できます。")
-                        .font(.footnote)
+                    Text(String(localized: "Full mock")).font(StudyTypography.title)
+                    Text(String(localized: "時間を計って4技能に挑戦。\n解説はテスト終了後に確認できます。"))
                 }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
                     .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
-                ForEach(Array(["Listening", "Reading", "Writing", "Speaking"].enumerated()), id: \.offset) { index, skill in
-                    Text(String(format: "%02d     %@", index + 1, skill)).font(.title2.bold()).padding(.vertical, 8)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
+                    ForEach(Array(["Listening", "Reading", "Writing", "Speaking"].enumerated()), id: \.offset) { index, skill in
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text(String(format: "%02d", index + 1)).font(StudyTypography.roundedTitle(18))
+                                Spacer()
+                                Image(systemName: ["headphones", "book", "pencil", "mic"][index])
+                            }.foregroundStyle(StudyColors.ink)
+                            Text(skill).font(StudyTypography.roundedTitle(22))
+                        }.padding(18).frame(maxWidth: .infinity, alignment: .leading)
+                            .background([StudyColors.listening, StudyColors.reading, StudyColors.writing, StudyColors.speaking][index], in: RoundedRectangle(cornerRadius: 20))
+                    }
                 }
-                Toggle("新しい問題を生成する", isOn: $generate)
-                Button("模試を始める") { started = true }.buttonStyle(.borderedProminent).controlSize(.large)
-                    .disabled(units.isEmpty)
-            }.padding(20)
+                VStack(alignment: .leading, spacing: 12) {
+                    Toggle(isOn: $generate) {
+                        Label(String(localized: "新しい問題を生成する"), systemImage: "sparkles")
+                            .font(StudyTypography.button)
+                    }
+                    .accessibilityIdentifier("mock.generate")
+                    Text(generate ? String(localized: "新しい問題を生成します。") : String(localized: "収録問題を使用します。Writing・Speakingは終了後にAI講評を確認できます。"))
+                        .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                }.padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                Button(String(localized: "模試を始める"), systemImage: "play.fill") { started = true }
+                    .buttonStyle(StudyPrimaryButtonStyle()).disabled(units.isEmpty)
+            }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $started) {
-                IELTSPracticeSession(title: "模擬テスト", finish: {}) {
+                IELTSPracticeSession(title: String(localized: "模擬テスト"), finish: {}) {
                     if generate { GeneratedExamScreen(templates: ordered, store: store, isMock: true) }
                     else { ExamScreen(units: ordered, store: store, isMock: true) }
                 }
@@ -92,13 +108,13 @@ struct ExamScreen: View {
     var body: some View {
         Group {
             if units.isEmpty {
-                ContentUnavailableView("教材がありません", systemImage: "book")
+                ContentUnavailableView(String(localized: "教材がありません"), systemImage: "book")
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: StudySpacing.section) {
                         if isMock {
                             HStack {
-                                Text("模擬テスト").bold(); Spacer()
+                                Text(String(localized: "模擬テスト")).bold(); Spacer()
                                 if let ended { Text(duration(ended.timeIntervalSince(started))).monospacedDigit() }
                                 else { Text(started, style: .timer).monospacedDigit() }
                             }.foregroundStyle(StudyColors.accent)
@@ -106,6 +122,8 @@ struct ExamScreen: View {
                         if finished { results } else { exercise }
                     }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
                 }.scrollDismissesKeyboard(.interactively)
+                    .id("\(position)-\(finished)-\(showingReview)")
+                    .transaction { $0.animation = nil; $0.disablesAnimations = true }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -114,17 +132,17 @@ struct ExamScreen: View {
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("入力を完了") {
+                Button(String(localized: "入力を完了")) {
                     answerFocused = false
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 }
             }
-            if !isMock { ToolbarItem(placement: .topBarTrailing) { Button("終了", systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
+            if !isMock && !finished { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
         }
-        .confirmationDialog("練習を終了しますか？", isPresented: $confirmEnd, titleVisibility: .visible) {
-            Button("練習を終了") { finished = true; ended = Date() }
-            Button("続ける", role: .cancel) {}
-        } message: { Text("採点済みの結果と保存した表現は残ります。") }
+        .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd) {
+            Button(String(localized: "練習を終了"), role: .destructive) { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription(); finished = true; ended = Date() }
+            Button(String(localized: "続ける"), role: .cancel) {}
+        } message: { Text(String(localized: "採点済みの結果と保存した表現は残ります。")) }
         .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
         .onChange(of: audio.transcript) { _, text in
             if unit.skill == "Speaking", !text.isEmpty { answers[unit.id + "-0"] = text }
@@ -139,7 +157,7 @@ struct ExamScreen: View {
             } catch { if !Task.isCancelled { assessmentErrors[id] = error.localizedDescription } }
             if evaluatingID == id { evaluatingID = nil }
         }
-        .alert("保存しました", isPresented: $saved) { Button("学習を続ける", role: .cancel) {} }
+        .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける"), role: .cancel) {} }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context)
         }
@@ -151,179 +169,226 @@ struct ExamScreen: View {
 
     private var exercise: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(unit.id).font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
-            Text(showingReview ? "答えと解説" : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
+            Text(unit.id).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
+            Text(showingReview ? String(localized: "答えと解説") : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
             if showingReview {
                 reviewContent(unit)
             } else {
                 if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
                 ForEach(Array(unit.passages.enumerated()), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
                 if let script = unit.audio {
-                    HStack {
-                        Button("音声を再生", systemImage: "headphones") { speak(script) }
-                        Button("停止", systemImage: "stop.fill") { speaker.stopSpeaking(at: .immediate) }
-                    }
+                    ListeningAudioView(script: script) { settings = true }.id(unit.id)
                 }
                 ForEach(unit.questions.indices, id: \.self) { index in
                     let item = unit.questions[index]
-                    VStack(alignment: .leading, spacing: 12) {
-                        if index == 0 || unit.questions[index-1].instruction != item.instruction {
-                            selectable(item.instruction, id: "instruction-\(index)")
-                        }
-                        selectable("\(unit.firstQuestionNumber + index). " + item.prompt, id: "question-\(index)")
+                    if index == 0 || unit.questions[index-1].instruction != item.instruction {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Label(String(localized: "解答のルール"), systemImage: "info.circle").font(StudyTypography.subheadline.bold())
+                                .foregroundStyle(StudyColors.accent)
+                            selectable(StudyQuestionLayout(item.instruction).formatted, id: "instruction-\(index)")
+                        }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                            .background(StudyColors.reading.opacity(0.35), in: RoundedRectangle(cornerRadius: 16))
+                    }
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Question \(unit.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold())
+                            .foregroundStyle(StudyColors.accent)
+                        selectable(item.displayPrompt(number: unit.firstQuestionNumber + index, localNumber: index + 1), id: "question-\(index)")
                         if !item.choices.isEmpty {
-                            Picker("解答", selection: binding(index)) {
-                                Text("選択してください").tag("")
-                                ForEach(item.choices, id: \.self) { Text($0).tag($0) }
-                            }.pickerStyle(.menu)
+                            Text(String(localized: "丸いボタンをタップして解答")).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                            ForEach(item.choices, id: \.self) { choice in
+                                HStack(alignment: .top, spacing: 10) {
+                                    Button {
+                                        binding(index).wrappedValue = choice
+                                    } label: {
+                                        Image(systemName: binding(index).wrappedValue == choice ? "checkmark.circle.fill" : "circle")
+                                            .font(.title2).frame(width: 44, height: 44)
+                                    }.buttonStyle(.plain).foregroundStyle(StudyColors.accent)
+                                        .accessibilityLabel(String(format: String(localized: "%@を選択"), item.choiceText(choice)))
+                                        .accessibilityValue(binding(index).wrappedValue == choice ? String(localized: "選択済み") : String(localized: "未選択"))
+                                        .accessibilityIdentifier("answer.choice.\(index).\(choice)")
+                                    selectable(item.choiceText(choice), id: "choice-\(index)-\(choice)")
+                                        .padding(.vertical, 10)
+                                }.padding(.horizontal, 8)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(binding(index).wrappedValue == choice ? StudyColors.reading.opacity(0.5) : Color.clear,
+                                                in: RoundedRectangle(cornerRadius: 12))
+                                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(StudyColors.accent.opacity(binding(index).wrappedValue == choice ? 0.8 : 0.2)))
+                            }
                         } else {
-                            TextField("解答", text: binding(index)).textFieldStyle(.roundedBorder)
+                            TextField(String(localized: "解答"), text: binding(index)).textFieldStyle(.roundedBorder)
                                 .textInputAutocapitalization(.never).autocorrectionDisabled()
                         }
                     }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                 }
                 if unit.skill == "Writing" {
-                    Text("Your response").font(.headline)
+                    Text(String(localized: "Your response")).font(StudyTypography.headline)
                     TextEditor(text: binding(0)).focused($answerFocused).keyboardType(.asciiCapable).frame(minHeight: 220)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
-                        .accessibilityLabel("英作文の回答")
-                    Text("\(binding(0).wrappedValue.split(whereSeparator: \.isWhitespace).count) words").font(.caption)
+                        .accessibilityLabel(String(localized: "英作文の回答"))
+                    Text(String(format: String(localized: "Word count: %@"), String(binding(0).wrappedValue.split(whereSeparator: \.isWhitespace).count))).font(StudyTypography.caption)
                 }
                 ForEach(unit.oral.indices, id: \.self) { index in
                     selectable(unit.oral[index], id: "oral-\(index)")
-                    Button("質問を聞く", systemImage: "speaker.wave.2") { speak(unit.oral[index]) }
+                    Button(String(localized: "質問を聞く"), systemImage: "speaker.wave.2") { speak(unit.oral[index]) }
                 }
                 if unit.skill == "Speaking" {
-                    Button("マイクで回答", systemImage: "mic.fill") {
+                    Button(String(localized: "マイクで回答"), systemImage: "mic.fill") {
                         speaker.stopSpeaking(at: .immediate)
                         recording = true
                     }
                     if audio.hasRecording {
                         HStack {
-                            Button("録音を聞く", systemImage: "play.fill") { audio.play() }
-                            Button("文字起こし", systemImage: "text.bubble") { Task { await audio.transcribe() } }
+                            Button(String(localized: "録音を聞く"), systemImage: "play.fill") { audio.play() }
+                            Button(String(localized: "文字起こし"), systemImage: "text.bubble") { Task { await audio.transcribe() } }
                                 .disabled(audio.transcribing)
                         }
                     }
-                    if audio.transcribing { ProgressView("端末内で文字起こし中…") }
-                    Text("回答の文字起こし").font(.headline)
+                    if audio.transcribing { ProgressView(String(localized: "端末内で文字起こし中…")) }
+                    Text(String(localized: "回答の文字起こし")).font(StudyTypography.headline)
                     TextEditor(text: binding(0)).focused($answerFocused).keyboardType(.asciiCapable).frame(minHeight: 140)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
-                        .accessibilityLabel("スピーキングの文字起こし")
-                    Text("文字起こしを確認・修正してから講評へ進めます。認識できない場合は回答を入力してください。")
-                        .font(.caption).foregroundStyle(.secondary)
+                        .accessibilityLabel(String(localized: "スピーキングの文字起こし"))
+                    Text(String(localized: "文字起こしを確認・修正してから講評へ進めます。認識できない場合は回答を入力してください。"))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     if let error = audio.error { Text(error).foregroundStyle(StudyColors.error) }
                 }
             }
-            if !isMock {
-                Button("この問題を保存", systemImage: "bookmark") { store.send(.savePaper(unit)); saved = true }
-                Button("この問題をAIに質問") { openTutor(material(unit)) }
-            }
-            Button(isMock ? (position + 1 < units.count ? "次のパートへ" : "テストを終了して結果を見る") : showingReview ? (position + 1 < units.count ? "次のパートへ" : "結果を見る") : "解答・振り返りを確認") {
-                answerFocused = false
-                if !isMock && !showingReview {
-                    reviewed.insert(unit.id)
-                    saveResult(unit)
-                } else { advance() }
-            }.buttonStyle(.borderedProminent).controlSize(.large)
+            VStack(spacing: 12) {
+                Button {
+                    answerFocused = false
+                    if !isMock && !showingReview {
+                        speaker.stopSpeaking(at: .immediate)
+                        reviewed.insert(unit.id)
+                        saveResult(unit)
+                    } else { advance() }
+                } label: {
+                    Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "結果を見る")) : String(localized: "解答・振り返りを確認"),
+                          systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
+                        .frame(maxWidth: .infinity, minHeight: 28)
+                }
+                .buttonStyle(StudyPrimaryButtonStyle())
                 .disabled(audio.transcribing || audio.isRecording)
                 .accessibilityIdentifier("practice.review")
-            if showingReview {
-                Button("このパートをもう一度") {
-                    reviewed.remove(unit.id); recorded.remove(unit.id)
-                    answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
-                    audio.clear(); assessments[unit.id] = nil; assessmentErrors[unit.id] = nil
-                    resultIDs[unit.id] = nil; recordingFiles[unit.id] = nil
-                }.accessibilityIdentifier("practice.retry")
-            }
+                if !isMock {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
+                        Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
+                            store.send(.savePaper(unit)); saved = true
+                        }.accessibilityIdentifier("practice.save")
+                        Button(String(localized: "この問題をAIに質問"), systemImage: "bubble.left.and.bubble.right") {
+                            openTutor(material(unit))
+                        }.accessibilityIdentifier("practice.ask")
+                    }.buttonStyle(StudySecondaryButtonStyle())
+                }
+                if showingReview {
+                    Button(String(localized: "このパートをもう一度"), systemImage: "arrow.counterclockwise") {
+                        reviewed.remove(unit.id); recorded.remove(unit.id)
+                        answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
+                        audio.clear(); assessments[unit.id] = nil; assessmentErrors[unit.id] = nil
+                        resultIDs[unit.id] = nil; recordingFiles[unit.id] = nil
+                    }.buttonStyle(StudySecondaryButtonStyle())
+                        .accessibilityIdentifier("practice.retry")
+                }
+            }.padding(.top, 8)
+
         }
     }
 
     private var results: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text(isMock ? "今回の模試結果" : "練習を終了しました").font(StudyTypography.japaneseTitle(30))
+            VStack(alignment: .leading, spacing: 16) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 40)).foregroundStyle(StudyColors.accent)
+                    .padding(16).background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 22))
+                Text(isMock ? String(localized: "今回の模試結果") : String(localized: "練習を終了しました"))
+                    .font(StudyTypography.japaneseTitle(28))
+                Text(String(localized: "技能別の推移は学習記録で確認できます。"))
+                    .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .padding(24).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
+                .accessibilityIdentifier("practice.completion")
             if isMock {
                 let records = store.records.filter { $0.attemptID == attemptID }
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("推定 IELTS Overall").font(.headline)
-                    Text(StudyBand.label(StudyBand.overall(records)) + "  /  CEFR " + StudyBand.cefr(StudyBand.overall(records))).font(.title2.bold())
+                    Text(String(localized: "推定 IELTS Overall")).font(StudyTypography.headline)
+                    Text(StudyBand.label(StudyBand.overall(records)) + "  /  CEFR " + StudyBand.cefr(StudyBand.overall(records))).font(StudyTypography.heading)
                     ForEach(["Listening", "Reading", "Writing", "Speaking"], id: \.self) { skill in
                         HStack { Text(skill); Spacer(); Text(StudyBand.label(StudyBand.skill(skill, records: records))) }
                     }
-                    Text("Writing・Speakingの講評後に全体の学習用推定を表示します。発音の評価は含みません。")
-                        .font(.footnote)
+                    Text(String(localized: "Writing・Speakingの講評後に全体の学習用推定を表示します。発音の評価は含みません。"))
+                        .font(StudyTypography.footnote)
                 }.padding(20).foregroundStyle(.white).background(StudyColors.levelCard, in: RoundedRectangle(cornerRadius: 20))
             }
             ForEach(units.filter { recorded.contains($0.id) }) { part in
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(part.id).font(.headline)
-                    if !part.questions.isEmpty { Text("\(score(part)) / \(part.questions.count) 正解").font(.title2.bold()) }
-                    else { Text("学習用推定 " + StudyBand.label(assessments[part.id]?.estimatedBand)).font(.subheadline) }
-                    DisclosureGroup("答えと解説・振り返り") { reviewContent(part) }
+                    Text(part.id).font(StudyTypography.headline)
+                    if !part.questions.isEmpty { Text(String(format: String(localized: "%@ / %@ 正解"), String(score(part)), String(part.questions.count))).font(StudyTypography.heading) }
+                    else { Text(String(localized: "学習用推定 ") + StudyBand.label(assessments[part.id]?.estimatedBand)).font(StudyTypography.subheadline) }
+                    DisclosureGroup(String(localized: "答えと解説・振り返り")) { reviewContent(part) }
                     if part.skill == "Writing", let response = answers[part.id + "-0"] {
-                        DisclosureGroup("あなたの回答") { Text(response).textSelection(.enabled) }
+                        DisclosureGroup(String(localized: "あなたの回答")) { Text(response).textSelection(.enabled) }
                     }
                 }.padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             }
-            Text("技能別の推移は学習記録で確認できます。").foregroundStyle(.secondary)
-            Button("学習記録を見る") { dismiss(); navigation.progress() }.buttonStyle(.borderedProminent)
-            Button("ホームに戻る") { dismiss(); navigation.home() }
-            Button("もう一度練習する") {
+            Button(String(localized: "学習記録を見る"), systemImage: "chart.bar.xaxis") { dismiss(); navigation.progress() }
+                .buttonStyle(StudyPrimaryButtonStyle())
+            Button(String(localized: "ホームに戻る"), systemImage: "house") { dismiss(); navigation.home() }
+                .buttonStyle(StudySecondaryButtonStyle())
+            Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
                 position = 0; finished = false; answers = [:]; reviewed = []; recorded = []; evaluatingID = nil
                 started = Date(); ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
-            }
+            }.buttonStyle(StudySecondaryButtonStyle())
         }
     }
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            if let script = part.audio { DisclosureGroup("スクリプト") { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }) } }
+            if let script = part.audio { DisclosureGroup(String(localized: "スクリプト")) { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }) } }
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
                 VStack(alignment: .leading, spacing: 8) {
                     Label("\(part.firstQuestionNumber + index). " + question.answers.joined(separator: " / "),
                           systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
-                        .font(.headline)
-                    Text("あなたの解答: " + (answer.isEmpty ? "未回答" : answer)).font(.caption)
+                        .font(StudyTypography.headline)
+                    Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)
-                    } onAsk: { entry in openTutor(material(part) + "\n選択範囲: " + entry.expression) }
+                    } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression) }
                 }
             }
             if part.questions.isEmpty {
                 if let file = recordingFiles[part.id] {
-                    Button("保存した録音を聞く", systemImage: "play.circle") { audio.playArchived(file) }
+                    Button(String(localized: "保存した録音を聞く"), systemImage: "play.circle") { audio.playArchived(file) }
                 }
                 if let response = answers[part.id + "-0"], !response.isEmpty {
-                    DisclosureGroup("あなたの回答") { Text(response).textSelection(.enabled) }
+                    DisclosureGroup(String(localized: "あなたの回答")) { Text(response).textSelection(.enabled) }
                 }
                 if let assessment = assessments[part.id] {
                     AssessmentContent(assessment: assessment, paper: part, store: store)
                 } else {
-                    Text("評価の観点").font(.headline)
+                    Text(String(localized: "評価の観点")).font(StudyTypography.headline)
                     ForEach(part.skill == "Writing" ? ["Task response", "Coherence and cohesion", "Lexical resource", "Grammatical range and accuracy"] : ["Fluency and coherence", "Lexical resource", "Grammatical range and accuracy", "Pronunciation"], id: \.self) { Text($0).bold() }
                 }
                 if let error = assessmentErrors[part.id] { Text(error).foregroundStyle(StudyColors.error) }
-                if !store.settings.canPractice { Button("ChatGPTの接続設定") { settings = true } }
-                if evaluatingID == part.id { ProgressView("回答を講評中…") }
-                Button(assessments[part.id] == nil ? "AIの講評を見る" : "講評を更新") {
+                if !store.settings.canPractice { Button(String(localized: "ChatGPTの接続設定"), systemImage: "person.crop.circle") { settings = true }.buttonStyle(StudySecondaryButtonStyle()) }
+                if evaluatingID == part.id { ProgressView(String(localized: "回答を講評中…")) }
+                Button(assessments[part.id] == nil ? String(localized: "AIの講評を見る") : String(localized: "講評を更新")) {
                     assessmentErrors[part.id] = nil; evaluatingID = part.id
                 }.buttonStyle(.borderedProminent)
                     .disabled(evaluatingID != nil || answers[part.id + "-0", default: ""].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 if answers[part.id + "-0", default: ""].isEmpty {
-                    Text("回答がありません。このパートをもう一度練習すると講評を受けられます。")
-                        .font(.footnote).foregroundStyle(.secondary)
+                    Text(String(localized: "回答がありません。このパートをもう一度練習すると講評を受けられます。"))
+                        .font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
                 }
-                Text("AIによる学習用の推定です。Speakingは文字起こしを使うため、発音・音声の流暢さは評価に含みません。")
-                    .font(.footnote).foregroundStyle(.secondary)
-                Button("AIに追加で質問") { openTutor(material(part) + "\n学習者の回答:\n" + answers[part.id + "-0", default: ""]) }
+                Text(String(localized: "AIによる学習用の推定です。Speakingは文字起こしを使うため、発音・音声の流暢さは評価に含みません。"))
+                    .font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
+                Button(String(localized: "AIに追加で質問")) { openTutor(material(part) + String(localized: "\n学習者の回答:\n") + answers[part.id + "-0", default: ""]) }
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
     }
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
-            onAsk: isMock ? nil : { openTutor(material(unit) + "\n選択範囲: " + $0.expression) },
+            onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression) },
             onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
@@ -340,12 +405,13 @@ struct ExamScreen: View {
         resultIDs[part.id] = id
         if part.skill == "Speaking", part.id == unit.id, audio.hasRecording, recordingFiles[part.id] == nil {
             do { recordingFiles[part.id] = try audio.archive() }
-            catch { assessmentErrors[part.id] = "録音の保存に失敗しました: " + error.localizedDescription }
+            catch { assessmentErrors[part.id] = String(localized: "録音の保存に失敗しました: ") + error.localizedDescription }
         }
         store.send(.record(StudyResult(id: id, skill: part.skill, title: part.title,
             correct: score(part), total: part.questions.count, isMock: isMock,
-            response: answers[part.id + "-0"], assessment: assessments[part.id],
-            recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID)))
+            response: part.questions.isEmpty ? answers[part.id + "-0"] : nil, assessment: assessments[part.id],
+            recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID,
+            questionAnswers: part.questions.isEmpty ? nil : part.questions.indices.map { answers[part.id + "-\($0)", default: ""] })))
         recorded.insert(part.id)
     }
     private func advance() {
@@ -398,7 +464,7 @@ final class SpeakingRecorder {
         error = nil
         let allowed = await AVAudioApplication.requestRecordPermission()
         guard !Task.isCancelled else { return }
-        guard allowed else { error = "設定アプリでPocket IELTSのマイク使用を許可してください。"; return }
+        guard allowed else { error = String(localized: "設定アプリでPocket IELTSのマイク使用を許可してください。"); return }
         do {
             stop()
             let session = AVAudioSession.sharedInstance()
@@ -408,7 +474,7 @@ final class SpeakingRecorder {
             let next = try AVAudioRecorder(url: url, settings: [AVFormatIDKey: kAudioFormatMPEG4AAC,
                 AVSampleRateKey: 44100, AVNumberOfChannelsKey: 1, AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue])
             next.isMeteringEnabled = true
-            guard next.record() else { throw StudyError.message("録音を開始できませんでした。") }
+            guard next.record() else { throw StudyError.message(String(localized: "録音を開始できませんでした。")) }
             if let file { try? FileManager.default.removeItem(at: file) }
             file = url; recorder = next; isRecording = true; hasRecording = false; elapsed = 0; transcript = ""
         } catch { self.error = error.localizedDescription }
@@ -445,12 +511,12 @@ final class SpeakingRecorder {
         guard recognitionID == id, !Task.isCancelled else { return }
         guard permission == .authorized else {
             transcribing = false; recognitionID = nil
-            error = "設定で音声認識を許可するか、回答をテキストで入力してください。"; return
+            error = String(localized: "設定で音声認識を許可するか、回答をテキストで入力してください。"); return
         }
         guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-GB")),
               recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else {
             transcribing = false; recognitionID = nil
-            error = "この端末では英語の端末内文字起こしを利用できません。回答をテキストで入力してください。"; return
+            error = String(localized: "この端末では英語の端末内文字起こしを利用できません。回答をテキストで入力してください。"); return
         }
         let request = SFSpeechURLRecognitionRequest(url: file)
         request.requiresOnDeviceRecognition = true
@@ -464,7 +530,7 @@ final class SpeakingRecorder {
                 if let value { self.transcript = value }
                 if final || failure != nil {
                     self.transcribing = false; self.recognitionID = nil; self.recognition = nil
-                    if let failure, self.transcript.isEmpty { self.error = "文字起こしに失敗しました。回答を入力できます。\n" + failure }
+                    if let failure, self.transcript.isEmpty { self.error = String(localized: "文字起こしに失敗しました。回答を入力できます。\n") + failure }
                 }
             }
         }
@@ -509,9 +575,9 @@ struct RecordingScreen: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 28) {
-                Text(title).font(.title2.bold())
+                Text(title).font(StudyTypography.heading)
                 ScrollView { Text(prompt).font(.title3.bold()).frame(maxWidth: .infinity, alignment: .leading) }
-                Text(recorder.isRecording ? "録音中" : "録音停止").bold().foregroundStyle(StudyColors.accent)
+                Text(recorder.isRecording ? String(localized: "録音中") : String(localized: "録音停止")).bold().foregroundStyle(StudyColors.accent)
                 TimelineView(.periodic(from: .now, by: 0.1)) { timeline in
                     HStack(spacing: 5) {
                         ForEach(0..<32, id: \.self) { index in
@@ -521,14 +587,14 @@ struct RecordingScreen: View {
                     }.frame(height: 98).padding(.horizontal, 14)
                         .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
                         .onChange(of: timeline.date) { _, _ in recorder.update() }
-                        .accessibilityLabel("録音レベル")
+                        .accessibilityLabel(String(localized: "録音レベル"))
                 }
                 Text(String(format: "%02d:%02d", Int(recorder.elapsed) / 60, Int(recorder.elapsed) % 60)).monospacedDigit()
                 if let error = recorder.error { Text(error).foregroundStyle(StudyColors.error) }
-                Button("録音を停止して課題に戻る") { recorder.stop(); dismiss() }
+                Button(String(localized: "録音を停止して課題に戻る")) { recorder.stop(); dismiss() }
                     .buttonStyle(.borderedProminent).controlSize(.large)
             }.padding(20)
-                .toolbar { Button("閉じる") { recorder.stop(); dismiss() } }
+                .toolbar { Button(String(localized: "閉じる")) { recorder.stop(); dismiss() } }
                 .task { await recorder.start() }
                 .onDisappear { recorder.stop() }
         }
@@ -541,28 +607,34 @@ struct GeneratedExamScreen: View {
     var isMock = false
     @State private var generated: [ExamUnit] = []
     @State private var generationStarted = Date()
+    @State private var completionStarted: Date?
+    @State private var completionFrom = 0.0
+    @State private var showQuestions = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var error: String?
     @State private var attempt = 0
     @State private var settings = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         Group {
-            if generated.count == templates.count && !generated.isEmpty {
+            if showQuestions {
                 ExamScreen(units: generated, store: store, isMock: isMock)
+                    .transition(reduceMotion ? .opacity : .move(edge: .trailing).combined(with: .opacity))
             } else {
                 GeometryReader { geometry in
                     ScrollView {
                         VStack(alignment: .leading, spacing: 24) {
                             if let error {
-                                Label("生成を完了できませんでした", systemImage: "book.closed").font(.title2.bold())
+                                Label(String(localized: "生成を完了できませんでした"), systemImage: "book.closed").font(StudyTypography.heading)
                                 Text(error).foregroundStyle(StudyColors.error)
-                                Button("もう一度生成") { self.error = nil; attempt += 1 }
-                                Button("ChatGPTの接続設定") { settings = true }
+                                Button(String(localized: "もう一度生成"), systemImage: "arrow.clockwise") { self.error = nil; attempt += 1 }.buttonStyle(StudyPrimaryButtonStyle())
+                                Button(String(localized: "ChatGPTの接続設定"), systemImage: "person.crop.circle") { settings = true }.buttonStyle(StudySecondaryButtonStyle())
                             } else {
                                 GenerationLoadingView(completed: generated.count, total: templates.count,
-                                                      started: generationStarted)
+                                                      started: generationStarted, completionStarted: completionStarted, completionFrom: completionFrom)
                             }
-                            Button("キャンセルして戻る") { dismiss() }
+                            Button(String(localized: "キャンセルして戻る"), systemImage: "xmark.circle") { dismiss() }
+                                .buttonStyle(StudySecondaryButtonStyle())
                         }.padding(24).frame(maxWidth: 480)
                             .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                     }
@@ -577,14 +649,21 @@ struct GeneratedExamScreen: View {
                 return
             }
             #endif
-            guard !templates.isEmpty else { error = "教材がありません。"; return }
+            guard !templates.isEmpty else { error = String(localized: "教材がありません。"); return }
             do {
                 for template in templates.dropFirst(generated.count) {
                     generationStarted = Date()
                     let unit = try await StudyClient.generateUnit(like: template)
                     try Task.checkCancellation()
+                    if generated.count + 1 == templates.count {
+                        completionFrom = GenerationProgress.estimate(completed: generated.count, total: templates.count, elapsed: Date().timeIntervalSince(generationStarted))
+                        completionStarted = Date()
+                    }
                     generated.append(unit)
                 }
+                try await Task.sleep(for: .milliseconds(1300))
+                try Task.checkCancellation()
+                withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeInOut(duration: 0.38)) { showQuestions = true }
             } catch is CancellationError {
             } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
         }
@@ -598,16 +677,16 @@ struct AssessmentContent: View {
     let store: StoreOf<StudyFeature>
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("学習用推定 " + StudyBand.label(assessment.estimatedBand)).font(StudyTypography.roundedTitle(28))
-            if assessment.isPartial { Text("発音を除く、回答内容の推定").font(.caption).foregroundStyle(.secondary) }
+            Text(String(localized: "学習用推定 ") + StudyBand.label(assessment.estimatedBand)).font(StudyTypography.roundedTitle(28))
+            if assessment.isPartial { Text(String(localized: "発音を除く、回答内容の推定")).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText) }
             Text(assessment.summary)
             ForEach(assessment.criteria, id: \.name) { criterion in
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack { Text(criterion.name).bold(); Spacer(); Text(criterion.band.map { String(format: "%.1f", $0) } ?? "未評価") }
-                    Text(criterion.feedback).font(.subheadline)
+                    HStack { Text(criterion.name).bold(); Spacer(); Text(criterion.band.map { String(format: "%.1f", $0) } ?? String(localized: "未評価")) }
+                    Text(criterion.feedback).font(StudyTypography.subheadline)
                 }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
             }
-            Text("改善例").font(.headline)
+            Text(String(localized: "改善例")).font(StudyTypography.headline)
             SelectableStudyText(text: assessment.improvedResponse, sourceID: paper.id + "-improved", onSave: { entry in
                 store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
                     sourceText: entry.sourceText, meaning: entry.meaning, paper: paper,
@@ -617,18 +696,61 @@ struct AssessmentContent: View {
     }
 }
 
+enum GenerationProgress {
+    static func estimate(completed: Int, total: Int, elapsed: Double) -> Double {
+        min(0.99, (Double(completed) + min(0.9, 0.9 * (1 - exp(-max(0, elapsed) / 45)))) / Double(max(1, total)))
+    }
+    static func finish(from: Double, elapsed: Double) -> Double {
+        let t = min(1, max(0, elapsed / 0.8))
+        return from + (1 - from) * (1 - pow(1 - t, 3))
+    }
+}
+
 /// An explicitly estimated indicator: only validated units count as completed.
 private struct GenerationLoadingView: View {
     let completed: Int
     let total: Int
     let started: Date
+    let completionStarted: Date?
+    let completionFrom: Double
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: completionStarted == nil ? 1 : 1.0 / 60)) { timeline in
+            let elapsed = max(0, timeline.date.timeIntervalSince(started))
+            let estimate = completionStarted.map { GenerationProgress.finish(from: completionFrom, elapsed: timeline.date.timeIntervalSince($0)) } ?? GenerationProgress.estimate(completed: completed, total: total, elapsed: elapsed)
+            VStack(spacing: 24) {
+                LoadingBookMascot()
+                VStack(spacing: 10) {
+                    Text(completionStarted == nil ? String(localized: "あなただけの問題を準備中") : String(localized: "問題の準備ができました")).font(StudyTypography.ui(24, relativeTo: .title2, bold: true)).multilineTextAlignment(.center)
+                    Text(String(localized: "小さな一歩が、大きな自信に。")).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                }
+                VStack(spacing: 12) {
+                    HStack {
+                        Text(String(localized: "進捗の目安")).font(StudyTypography.subheadline)
+                        Spacer()
+                        Text(completionStarted == nil ? String(format: String(localized: "約 %@%% "), String(Int(estimate * 100))) : "\(Int(estimate * 100))%")
+                            .monospacedDigit().bold().accessibilityIdentifier("generation.percent")
+                    }
+                    ProgressView(value: estimate).tint(StudyColors.accent)
+                    Text(String(format: String(localized: "生成・確認済み %@ / %@ セクション"), String(completed), String(total)))
+                        .font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
+                    Text(completionStarted != nil ? String(localized: "準備完了。まもなく問題を開きます。") : elapsed > 90 ? String(localized: "もう少し時間がかかっています。完了までこの画面でお待ちください。") : String(localized: "本文・設問・解説を作成しています。表示は時間に基づく目安です。"))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText).multilineTextAlignment(.center)
+                }.padding(20).background(StudyColors.reading.opacity(0.5), in: RoundedRectangle(cornerRadius: 20))
+            }
+        }
+    }
+}
+
+/// Only the illustration updates at display cadence; progress text updates once a second.
+private struct LoadingBookMascot: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var animationStarted = Date()
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: reduceMotion ? 1 : 0.25)) { timeline in
-            let elapsed = max(0, timeline.date.timeIntervalSince(started))
-            let estimate = (Double(completed) + min(0.9, 0.9 * (1 - exp(-elapsed / 45)))) / Double(max(1, total))
-            VStack(spacing: 24) {
+        TimelineView(.animation(minimumInterval: 1.0 / 60.0,
+                                paused: reduceMotion || scenePhase != .active)) { timeline in
+            let elapsed = max(0, timeline.date.timeIntervalSince(animationStarted))
                 ZStack {
                     Circle().fill(StudyColors.reading).frame(width: 196, height: 196)
                     ForEach(0..<4) { index in
@@ -650,23 +772,6 @@ private struct GenerationLoadingView: View {
                     .rotationEffect(.degrees(reduceMotion ? 0 : sin(elapsed * 1.8) * 5))
                     .offset(y: reduceMotion ? 0 : sin(elapsed * 1.8) * 7)
                 }.frame(height: 220).accessibilityHidden(true)
-                VStack(spacing: 10) {
-                    Text("あなただけの問題を準備中").font(StudyTypography.roundedTitle(24))
-                    Text("小さな一歩が、大きな自信に。").font(.subheadline).foregroundStyle(.secondary)
-                }
-                VStack(spacing: 12) {
-                    HStack {
-                        Text("進捗の目安").font(.subheadline)
-                        Spacer()
-                        Text("約 \(Int(estimate * 100))% ").monospacedDigit().bold()
-                    }
-                    ProgressView(value: estimate).tint(StudyColors.accent)
-                    Text("生成・確認済み \(completed) / \(total) セクション")
-                        .font(.footnote).foregroundStyle(.secondary)
-                    Text(elapsed > 90 ? "もう少し時間がかかっています。完了までこの画面でお待ちください。" : "本文・設問・解説を作成しています。表示は時間に基づく目安です。")
-                        .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                }.padding(20).background(StudyColors.reading.opacity(0.5), in: RoundedRectangle(cornerRadius: 20))
-            }
         }
     }
 }
