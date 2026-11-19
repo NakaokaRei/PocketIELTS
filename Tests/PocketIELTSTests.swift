@@ -6,6 +6,73 @@ import ComposableArchitecture
 
 @MainActor
 final class PocketIELTSTests: XCTestCase {
+    func testSpeakingReceivedAudioActuallyRendersAndInterruptionClearsIt() throws {
+        // Exercise the real AVAudioEngine graph offline: no microphone, key, or API call.
+        let engine = AVAudioEngine()
+        let player = AVAudioPlayerNode()
+        let format = try XCTUnwrap(AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false))
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: format)
+        try engine.enableManualRenderingMode(.offline, format: format, maximumFrameCount: 1024)
+        try engine.start()
+        let session = SpeakingConversation(phase: .listening, engine: engine, output: player)
+        defer { session.stop() }
+        var pcm = Data()
+        for i in 0..<12000 {
+            var sample = Int16(sin(Double(i) * 2 * .pi * 440 / 24000) * 16000).littleEndian
+            withUnsafeBytes(of: &sample) { pcm.append(contentsOf: $0) }
+        }
+        session.handle(["type": "response.created"])
+        session.handle(["type": "response.output_audio.delta", "item_id": "audio", "delta": pcm.base64EncodedString()])
+        XCTAssertTrue(player.isPlaying)
+        let rendered = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024))
+        var peak: Float = 0
+        for _ in 0..<4 {
+            XCTAssertEqual(try engine.renderOffline(1024, to: rendered), .success)
+            for i in 0..<Int(rendered.frameLength) { peak = max(peak, abs(rendered.floatChannelData![0][i])) }
+        }
+        XCTAssertGreaterThan(peak, 0.1, "Received PCM must produce non-silent output, not just a speaking label")
+        session.handle(["type": "input_audio_buffer.speech_started"])
+        XCTAssertFalse(player.isPlaying)
+        session.handle(["type": "response.output_audio.delta", "item_id": "audio", "delta": pcm.base64EncodedString()])
+        XCTAssertFalse(player.isPlaying, "Late audio from the interrupted response must stay discarded")
+        session.stop()
+        XCTAssertFalse(engine.isRunning)
+    }
+
+    func testSpeakingPermissionDialogDoesNotCancelStartup() {
+        let session = SpeakingConversation(phase: .connecting)
+        session.sceneChanged(.inactive)
+        session.audioInterrupted(.ended)
+        session.sceneChanged(.active)
+        XCTAssertEqual(session.phase, .connecting)
+        XCTAssertTrue(session.active)
+        session.sceneChanged(.background)
+        XCTAssertEqual(session.phase, .ended)
+        session.sceneChanged(.active)
+        XCTAssertFalse(session.active)
+    }
+
+    func testSpeakingOnlyStopsForBeginningOfAnAudioInterruption() {
+        let session = SpeakingConversation(phase: .listening)
+        session.audioInterrupted(.ended)
+        XCTAssertTrue(session.active)
+        session.audioInterrupted(.began)
+        XCTAssertFalse(session.active)
+        session.audioInterrupted(.ended)
+        XCTAssertFalse(session.active)
+    }
+
+    func testSpeakingAPIErrorMessagesIdentifyCauseWithoutEchoingSecrets() {
+        let generic = SpeakingProtocol.errorDescription([:])
+        for code in ["invalid_api_key", "insufficient_quota", "model_not_found"] {
+            let message = SpeakingProtocol.errorDescription(["code": code, "message": "secret"])
+            XCTAssertNotEqual(message, generic)
+            XCTAssertFalse(message.contains("secret"))
+        }
+        XCTAssertNotEqual(SpeakingProtocol.errorDescription(["param": "session.audio.input.transcription.model"]), generic)
+    }
+
     func testSpeakingDefaultsToMiniAndBuildsSelectedModelSession() throws {
         XCTAssertEqual(SpeakingModel.resolve(nil), .mini)
         XCTAssertEqual(SpeakingModel.resolve("unknown"), .mini)

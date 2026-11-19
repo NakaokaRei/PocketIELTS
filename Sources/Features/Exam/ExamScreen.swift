@@ -496,9 +496,12 @@ final class SpeakingRecorder {
         if !recorder.isRecording { stop() }
     }
     func stop() {
+        let ownedAudioSession = isRecording || player?.isPlaying == true
         if isRecording { elapsed = recorder?.currentTime ?? elapsed; recorder?.stop(); hasRecording = elapsed > 0 }
         isRecording = false; level = 0; player?.stop()
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        // A covered recorder can disappear after the conversation starts. An idle
+        // recorder must not deactivate the process-wide session owned by that conversation.
+        if ownedAudioSession { try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation) }
     }
     func play() {
         stop()

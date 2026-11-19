@@ -39,6 +39,20 @@ enum SpeakingProtocol {
                       "output": ["format": ["type": "audio/pcm", "rate": 24000], "voice": "marin"]]
         ]]
     }
+    static func errorDescription(_ error: [String: Any]) -> String {
+        switch error["code"] as? String {
+        case "invalid_api_key": return String(localized: "音声APIキーが無効です。設定でキーを登録し直してください。")
+        case "insufficient_quota": return String(localized: "音声APIの残高または利用枠が不足しています。APIの利用状況を確認してください。")
+        case "model_not_found": return String(localized: "選択した音声モデルを利用できません。APIプロジェクトのモデル利用権限を確認してください。")
+        default:
+            // Never display raw server messages: they can echo user input or credentials.
+            let param = error["param"] as? String ?? ""
+            if param.contains("transcription") {
+                return String(localized: "音声の文字起こし設定がAPIに受け付けられませんでした。文字起こしモデルの利用権限を確認してください。")
+            }
+            return String(localized: "音声APIでエラーが発生しました。キー・モデルの利用権限・残高を確認してください。")
+        }
+    }
     static func encode(_ event: [String: Any]) throws -> String {
         String(decoding: try JSONSerialization.data(withJSONObject: event), as: UTF8.self)
     }
@@ -70,6 +84,9 @@ struct SpeakingTurn: Identifiable, Equatable {
     private var sendTask: Task<Void, Never>?
     private var captureTask: Task<Void, Never>?
     private var timeoutTask: Task<Void, Never>?
+    private var audioHealthTask: Task<Void, Never>?
+    private var lastInputAt: Date?
+    private var configuredInputFormat: AVAudioFormat?
     private var lifetimeTask: Task<Void, Never>?
     private var outgoing: AsyncStream<String>.Continuation?
     private var engine: AVAudioEngine?
@@ -104,7 +121,9 @@ struct SpeakingTurn: Identifiable, Equatable {
         case .ended: return String(localized: "会話を終了しました")
         }
     }
-    init(phase: Phase = .idle) { self.phase = phase }
+    init(phase: Phase = .idle, engine: AVAudioEngine? = nil, output: AVAudioPlayerNode? = nil) {
+        self.phase = phase; self.engine = engine; self.output = output
+    }
 
     func start(unit: ExamUnit, model: SpeakingModel) async {
         guard !active else { return }
@@ -141,7 +160,12 @@ struct SpeakingTurn: Identifiable, Equatable {
                         if event["type"] as? String == "session.created" { self.send(SpeakingProtocol.configuration(unit: unit, model: model)) }
                         else if event["type"] as? String == "session.updated", self.phase == .connecting {
                             self.timeoutTask?.cancel()
-                            try self.startAudio(id: id)
+                            do { try self.startAudio(id: id) }
+                            catch {
+                                let failure = error as NSError
+                                self.fail(String(format: String(localized: "マイク・スピーカーを開始できませんでした（エラー %ld）。通話や他の録音を終了して、もう一度お試しください。"), failure.code))
+                                return
+                            }
                             self.phase = .listening
                             self.send(["type": "response.create", "response": ["instructions": "Greet the candidate briefly and ask the first question for this part."]])
                             self.lifetimeTask = Task { [weak self] in
@@ -168,9 +192,13 @@ struct SpeakingTurn: Identifiable, Equatable {
         let engine = AVAudioEngine(); self.engine = engine
         try engine.inputNode.setVoiceProcessingEnabled(true)
         let inputFormat = engine.inputNode.outputFormat(forBus: 0)
+        guard inputFormat.sampleRate > 0, inputFormat.channelCount > 0 else {
+            throw NSError(domain: "PocketIELTS.Audio", code: 1)
+        }
         guard let wireFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 24000, channels: 1, interleaved: true),
               let playbackFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false),
               let converter = AVAudioConverter(from: inputFormat, to: wireFormat) else { throw URLError(.cannotDecodeContentData) }
+        configuredInputFormat = inputFormat
         let player = AVAudioPlayerNode(); output = player
         engine.attach(player); engine.connect(player, to: engine.mainMixerNode, format: playbackFormat)
         let capture = AsyncStream<Data>.makeStream(bufferingPolicy: .bufferingOldest(20))
@@ -191,6 +219,7 @@ struct SpeakingTurn: Identifiable, Equatable {
         captureTask = Task { [weak self] in
             for await pcm in capture.stream {
                 guard let self, self.generation == id, !Task.isCancelled else { return }
+                self.lastInputAt = .now
                 if !self.finishing {
                     let transmitted = self.muted ? Data(repeating: 0, count: pcm.count) : pcm
                     self.send(["type": "input_audio_buffer.append", "audio": transmitted.base64EncodedString()])
@@ -198,7 +227,20 @@ struct SpeakingTurn: Identifiable, Equatable {
             }
             if !Task.isCancelled, self?.generation == id { self?.fail(String(localized: "接続が遅いため会話を停止しました。もう一度お試しください。")) }
         }
-        try engine.start(); player.play()
+        engine.prepare()
+        try engine.start()
+        lastInputAt = .now
+        audioHealthTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled, let self, self.generation == id, !self.finishing else { return }
+                self.checkAudioEngine()
+                if self.active, let last = self.lastInputAt, Date().timeIntervalSince(last) > 5 {
+                    self.fail(String(localized: "マイクから音声を取得できません。端末のマイク設定と接続先を確認して、もう一度お試しください。"))
+                    return
+                }
+            }
+        }
     }
     func handle(_ event: [String: Any]) {
         guard active, let type = event["type"] as? String else { return }
@@ -224,7 +266,7 @@ struct SpeakingTurn: Identifiable, Equatable {
         case "response.created": responseFinished = false
         case "response.output_audio.delta":
             guard !finishing, !ignoredItems.contains(id), let delta = event["delta"] as? String, let data = Data(base64Encoded: delta), !data.isEmpty, data.count.isMultiple(of: 2) else { return }
-            if itemID != id { output?.stop(); output?.play(); itemID = id; contentIndex = event["content_index"] as? Int ?? 0; receivedFrames = 0; pendingBuffers = 0; playbackGeneration = UUID() }
+            if itemID != id { output?.stop(); itemID = id; contentIndex = event["content_index"] as? Int ?? 0; receivedFrames = 0; pendingBuffers = 0; playbackGeneration = UUID() }
             enqueueAudio(data)
         case "response.output_audio_transcript.done":
             if !ignoredItems.contains(id) { setTurn(id: id, isUser: false, text: event["transcript"] as? String ?? "") }
@@ -234,7 +276,9 @@ struct SpeakingTurn: Identifiable, Equatable {
                 fail(String(localized: "AIの応答を完了できませんでした。APIの利用状況を確認してください。")); return
             }
             if pendingBuffers == 0 && !finishing { phase = .listening }
-        case "error": fail(String(localized: "音声APIでエラーが発生しました。キー・モデルの利用権限・残高を確認してください。"))
+        case "error":
+            let details = event["error"] as? [String: Any] ?? [:]
+            fail(SpeakingProtocol.errorDescription(details))
         default: break
         }
     }
@@ -244,7 +288,8 @@ struct SpeakingTurn: Identifiable, Equatable {
         else { turns.append(SpeakingTurn(id: id, isUser: isUser, text: text)) }
     }
     private func enqueueAudio(_ data: Data) {
-        guard let output, let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false),
+        checkAudioEngine()
+        guard active, let output, let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false),
               let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(data.count / 2)) else { return }
         buffer.frameLength = buffer.frameCapacity
         data.withUnsafeBytes { bytes in
@@ -259,6 +304,30 @@ struct SpeakingTurn: Identifiable, Equatable {
                 if self.pendingBuffers == 0 && self.responseFinished && !self.finishing { self.phase = .listening }
             }
         }
+        if !output.isPlaying { output.play() }
+    }
+    /// Hardware reconfiguration can stop AVAudioEngine without a session interruption.
+    /// Restart only unchanged formats; a changed route requires a fresh user start.
+    func checkAudioEngine() {
+        guard active, !finishing, let engine, !engine.isRunning else { return }
+        let format = engine.inputNode.outputFormat(forBus: 0)
+        guard let configuredInputFormat,
+              format.sampleRate == configuredInputFormat.sampleRate,
+              format.channelCount == configuredInputFormat.channelCount else {
+            fail(String(localized: "音声の接続先が変わりました。もう一度会話を開始してください。")); return
+        }
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            engine.prepare()
+            try engine.start()
+            if pendingBuffers > 0 { output?.play() }
+        } catch {
+            fail(String(localized: "音声の接続先が変わりました。もう一度会話を開始してください。"))
+        }
+    }
+    func engineConfigurationChanged(_ changed: AVAudioEngine?) {
+        guard let changed, changed === engine else { return }
+        checkAudioEngine()
     }
     private func interruptPlayback() {
         if let itemID {
@@ -267,7 +336,17 @@ struct SpeakingTurn: Identifiable, Equatable {
             ignoredItems.insert(itemID)
             send(["type": "conversation.item.truncate", "item_id": itemID, "content_index": contentIndex, "audio_end_ms": Int(frames * 1000 / 24000)])
         }
-        playbackGeneration = UUID(); output?.stop(); output?.play(); pendingBuffers = 0; itemID = nil; receivedFrames = 0
+        playbackGeneration = UUID(); output?.stop(); pendingBuffers = 0; itemID = nil; receivedFrames = 0
+    }
+    // Permission dialogs temporarily deactivate the scene. They must not invalidate
+    // the in-flight permission request; leaving the app still closes the connection.
+    func sceneChanged(_ phase: ScenePhase) {
+        if phase == .background && active { stop() }
+    }
+    func audioInterrupted(_ type: AVAudioSession.InterruptionType) {
+        // End notifications can arrive during setup. Only a real interruption of
+        // an established audio session is a reason to stop; never auto-restart it.
+        if type == .began && active && phase != .connecting { stop() }
     }
     func toggleMute() { muted.toggle() }
     /// End capture immediately; allow already committed transcripts to arrive before saving.
@@ -292,6 +371,7 @@ struct SpeakingTurn: Identifiable, Equatable {
         receiveTask?.cancel(); sendTask?.cancel(); captureTask?.cancel(); timeoutTask?.cancel(); lifetimeTask?.cancel(); finishTask?.cancel()
         receiveTask = nil; sendTask = nil; captureTask = nil; timeoutTask = nil; lifetimeTask = nil; finishTask = nil
         socket?.cancel(with: .goingAway, reason: nil); socket = nil
+        audioHealthTask?.cancel(); audioHealthTask = nil; lastInputAt = nil; configuredInputFormat = nil
         output?.stop(); output = nil
         if let engine { if tapInstalled { engine.inputNode.removeTap(onBus: 0) }; engine.stop() }
         tapInstalled = false
@@ -360,10 +440,17 @@ struct SpeakingConversationScreen: View {
                 .navigationTitle(String(localized: "Speaking 音声会話")).navigationBarTitleDisplayMode(.inline)
                 .toolbar { Button(String(localized: "閉じる")) { conversation.stop(); if !conversation.userTranscript.isEmpty { save(conversation.userTranscript) }; dismiss() } }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .AVAudioEngineConfigurationChange).receive(on: RunLoop.main)) { note in
+            conversation.engineConfigurationChanged(note.object as? AVAudioEngine)
+        }
         .onDisappear { conversation.stop() }
-        .onChange(of: scenePhase) { _, phase in if phase != .active { conversation.stop() } }
-        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { _ in conversation.stop() }
-        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)) { note in
+        .onChange(of: scenePhase) { _, phase in conversation.sceneChanged(phase) }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification).receive(on: RunLoop.main)) { note in
+            guard let raw = note.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  let type = AVAudioSession.InterruptionType(rawValue: raw) else { return }
+            conversation.audioInterrupted(type)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification).receive(on: RunLoop.main)) { note in
             if (note.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt) == AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue { conversation.stop() }
         }
     }

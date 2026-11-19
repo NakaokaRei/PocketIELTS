@@ -5278,6 +5278,125 @@
           }
         }
       }
+    },
+    "マイク・スピーカーを開始できませんでした（エラー %ld）。通話や他の録音を終了して、もう一度お試しください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not start the microphone and speaker (error %ld). End any phone call or other recording and try again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイク・スピーカーを開始できませんでした（エラー %ld）。通話や他の録音を終了して、もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "音声APIキーが無効です。設定でキーを登録し直してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice API key is invalid. Save a valid key in Settings."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声APIキーが無効です。設定でキーを登録し直してください。"
+          }
+        }
+      }
+    },
+    "音声APIの残高または利用枠が不足しています。APIの利用状況を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your voice API credits or quota are exhausted. Check your API usage."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声APIの残高または利用枠が不足しています。APIの利用状況を確認してください。"
+          }
+        }
+      }
+    },
+    "選択した音声モデルを利用できません。APIプロジェクトのモデル利用権限を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The selected voice model is unavailable. Check model access for your API project."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択した音声モデルを利用できません。APIプロジェクトのモデル利用権限を確認してください。"
+          }
+        }
+      }
+    },
+    "音声の文字起こし設定がAPIに受け付けられませんでした。文字起こしモデルの利用権限を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The API rejected the audio transcription configuration. Check access to the transcription model."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声の文字起こし設定がAPIに受け付けられませんでした。文字起こしモデルの利用権限を確認してください。"
+          }
+        }
+      }
+    },
+    "マイクから音声を取得できません。端末のマイク設定と接続先を確認して、もう一度お試しください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No microphone audio is arriving. Check your microphone settings and audio route, then try again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクから音声を取得できません。端末のマイク設定と接続先を確認して、もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "音声の接続先が変わりました。もう一度会話を開始してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The audio route changed. Please start the conversation again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声の接続先が変わりました。もう一度会話を開始してください。"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
