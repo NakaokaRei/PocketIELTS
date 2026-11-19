@@ -1,0 +1,123 @@
+{
+  "figma": "https://www.figma.com/design/bYd2T51eVSh9tDzzehJtMa/IETLS_Study",
+  "toolchain": "Xcode 27.2 (27B52)",
+  "branch": "codex/figma-functional-parity",
+  "features": [
+    {
+      "name": "Home / settings symbol",
+      "figmaNodes": "4:5",
+      "source": "Sources/Features/Home/HomeScreen.swift",
+      "implemented": "Native gearshape, 44pt target, Figma typography/colors/spacing"
+    },
+    {
+      "name": "ChatGPT-only account",
+      "figmaNodes": "62:2578",
+      "source": "Sources/Features/Settings/SettingsScreen.swift",
+      "implemented": "OAuth sign-in, saved profiles, sign-out, usage link; API key UI and fallback removed"
+    },
+    {
+      "name": "Choose sections and parts",
+      "figmaNodes": "10:32,10:453,10:1010,10:1295",
+      "source": "Sources/Features/Home/HomeScreen.swift",
+      "implemented": "All 12 complete General Training parts; separate labeled bundled-practice and fresh-generation actions"
+    },
+    {
+      "name": "Generate and cancel",
+      "figmaNodes": "5:54",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Animated book with Reduce Motion support; explicitly time-estimated percentage capped at 90% per unfinished section, validated completion count, cancellation, partial retry and auth errors"
+    },
+    {
+      "name": "Read / listen / answer",
+      "figmaNodes": "57:2104",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Full passage, TTS playback, correct question numbering, text/menu answers, explanations"
+    },
+    {
+      "name": "Tap and select expressions",
+      "figmaNodes": "24:462",
+      "source": "Sources/DesignSystem/Components/SelectableStudyText.swift",
+      "implemented": "Native single-tap/long-press edit menu; direct save, AI question, copy and save-paper actions; nonmodal saved toast; outside-content taps clear selection without intercepting menu actions"
+    },
+    {
+      "name": "Vocabulary persistence",
+      "figmaNodes": "24:474,5:100",
+      "source": "Sources/Features/Home/HomeScreen.swift",
+      "implemented": "Selected expression, editable meaning, sentence context, original full material and selection offsets"
+    },
+    {
+      "name": "Saved paper practice",
+      "figmaNodes": "29:1373",
+      "source": "Sources/Features/Home/HomeScreen.swift",
+      "implemented": "Persist complete original exercise and reopen for another attempt"
+    },
+    {
+      "name": "AI tutor conversation",
+      "figmaNodes": "24:525,24:552",
+      "source": "Sources/Features/Reading/PracticeScreen.swift",
+      "implemented": "Contextual follow-ups, loading/error states, save reply expressions, connection sheet"
+    },
+    {
+      "name": "Writing review",
+      "figmaNodes": "57:2807,88:2578",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Response editor, word count, four-criterion formative assessment, improved response, history"
+    },
+    {
+      "name": "Speaking recording and review",
+      "figmaNodes": "59:2273,57:2853,88:2584,93:2578",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Recording meter/timer, stop/play, persistent recording, on-device transcription, editable fallback, content feedback"
+    },
+    {
+      "name": "Full mock",
+      "figmaNodes": "4:150,5:64,5:76",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "12 parts in Listening/Reading/Writing/Speaking order, elapsed timer, feedback deferred until end, session-specific results"
+    },
+    {
+      "name": "Practice completion",
+      "figmaNodes": "10:14",
+      "source": "Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Review, retry, end, return home or learning history"
+    },
+    {
+      "name": "Learning progress",
+      "figmaNodes": "4:122",
+      "source": "Sources/Features/Home/HomeScreen.swift",
+      "implemented": "Persistent attempts, objective estimates after >=10 questions, AI criterion estimates, overall and CEFR guidance, response/recording replay"
+    },
+    {
+      "name": "Private iCloud study sync",
+      "figmaNodes": "62:2578,100:2612",
+      "source": "Sources/Dependencies/Cloud/StudyCloudSync.swift",
+      "implemented": "Local-first journal; per-record conflict merge; private CloudKit zone; answers, feedback and CKAsset recordings; account-change isolation; foreground/manual sync"
+    },
+    {
+      "name": "Adaptive iPad layouts",
+      "figmaNodes": "99:2578,101:2601,101:2649",
+      "source": "Sources/App/IELTSNavigation.swift",
+      "implemented": "Native sidebar; adaptive dashboard columns; readable content widths; portrait/landscape; reset complete navigation on return home"
+    }
+  ],
+  "validation": {
+    "unitTests": "17 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; includes 3 new cloud journal/conflict tests",
+    "uiTests": "All 8 iPhone scenarios passed across full and targeted runs after fixes. iPad: 6 existing scenarios plus native selection/AI flow passed across full and targeted runs; latest save/selection/portrait-landscape screenshot rerun passed 3/3.",
+    "deviceBuild": "Xcode 27.2 generic iOS Debug build succeeded with Apple Development signing; verified CloudKit container and Development environment in signed entitlements",
+    "screenshots": "Captured running iPhone/iPad app with isolated UI-test data; landscape capture uses XCUIScreen to retain correct orientation metadata",
+    "completedAt": "2026-11-19",
+    "result": "17 unit tests passed; changed native selection/save/AI flows passed on iPhone and iPad. Generation/cancel passed on iPhone. Live cloud/auth/audio checks remain listed below.",
+    "toolchainNote": "Xcode emitted App Intents metadata/diagnostic collection warnings; no app compile errors."
+  },
+  "limitations": [
+    "Live ChatGPT sign-in, usage limits, generation and inference require the user account; no live authenticated request was made during this task.",
+    "Speaking feedback uses the transcript; pronunciation and acoustic fluency are explicitly unevaluated. No fabricated audio score is included.",
+    "On-device English recognition requires supported device/language assets and permission; manual transcript entry remains available.",
+    "Scores and CEFR are formative estimates, not calibrated official IELTS results.",
+    "Microphone capture and transcription need a physical-device permission/audio check.",
+    "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference.",
+    "Live two-device CloudKit transfer remains unverified; schema must be deployed to Production before TestFlight/App Store. Background push sync is not implemented.",
+    "Historical plain-text readingHistory entries remain local; current structured results synchronize.",
+    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture."
+  ]
+}

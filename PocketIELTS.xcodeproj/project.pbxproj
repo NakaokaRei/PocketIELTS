@@ -3,27 +3,36 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+        C10000000000000000000001 = {isa = PBXBuildFile; fileRef = C10000000000000000000002; };
+		D820A0A124101DA934C12501 = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12502; };
+		D820A0A124101DA934C12401 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D820A0A124101DA934C12402 /* Fonts */; };
 		04CA9912CE8A9BA31A3F0E5A /* SelectableStudyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CB76826AAB675374932A0F /* SelectableStudyText.swift */; };
 		05B074500FF80A4635840976 /* IELTSPracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C36F9A374A3AE95093B8B12 /* IELTSPracticeSession.swift */; };
 		1C14DA6C771A646B3C3C1441 /* PracticeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A748B526B837971583F6E0BF /* PracticeScreen.swift */; };
 		2F1C2F89B4ECF29B83740D1C /* StudyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A8AF6300E6CC69F008353D /* StudyClient.swift */; };
 		336A4F40E6891B8632DE67F6 /* PocketIELTSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217765AD639B433CCF007585 /* PocketIELTSApp.swift */; };
 		41E74FB0095767DA2A5F28C5 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA865B7E47DB2BBB078CE65E /* HomeScreen.swift */; };
+		434451488BD08B41D695C93E /* SignInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F63ACB4E87EF9452346689 /* SignInBrowser.swift */; };
+		4402C5C9A38604E1220F81F0 /* ExamScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74290FBE07E403D3FA46FB1A /* ExamScreen.swift */; };
 		4D21F79A5608C3D359256B5B /* StudyTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1D12DABA49E54AC6F02406 /* StudyTypography.swift */; };
+		66B2E6E2FC1AA8ED3BC31C6D /* ChatGPTAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3DD2275A37445902BB39C0 /* ChatGPTAccount.swift */; };
 		679B5B2CDEAE57E1A1265877 /* SettingsFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B22508590485F6F3FBE751 /* SettingsFeature.swift */; };
+		77EA7F00C0CF4F3AC943EB7D /* AccountClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2D3DF1191FB78C91F5E944 /* AccountClient.swift */; };
 		7D0B4D53CA4E8E6E023CB55C /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133762ED9C428C96777BC9F /* SettingsScreen.swift */; };
 		7F3BCAB552CA3E59B7F82D08 /* StudyColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B069D7D9DC4005759DB856A /* StudyColors.swift */; };
+		999E5C8551D01A8092F8A161 /* ChatGPTInference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7666AB56D6570FE68BD54CC /* ChatGPTInference.swift */; };
 		A4D4FA4078235FA91F1B2ABB /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 50620EF5C0E390F31269E9B1 /* ComposableArchitecture */; };
 		A56BFBDFFA34DB0FF9E7EEDA /* PocketIELTSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2EB101A220A42EEA7BC22E /* PocketIELTSTests.swift */; };
 		AA4570D7B1BF07E29159AA52 /* StudyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BE1ABECCF875FA75966B8B /* StudyError.swift */; };
-		AFD6A9743137C4FBE2C852D0 /* CredentialClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C192E7F65BD5D6BC8FE5692 /* CredentialClient.swift */; };
 		C0EFB27F3AF89E39998AD858 /* StudyFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6C2CF7C69B72E1D8A8D8F8 /* StudyFeature.swift */; };
 		C4DA482D9A7B4FE68ED2286B /* StudySpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A8D899DFC1792343D9F94D /* StudySpacing.swift */; };
+		E8016FF7FAF907A139087EC8 /* ChatGPTIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F33C8FAB1DAC8AD89F4608 /* ChatGPTIdentity.swift */; };
 		ED7D3A657663466E13B90523 /* KeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A90B89FD1753C98ADDB080 /* KeyStore.swift */; };
+		F4731DBD8262741070CE03B1 /* GeneralTraining.json in Resources */ = {isa = PBXBuildFile; fileRef = 10889015A060ED025DDF6579 /* GeneralTraining.json */; };
 		FA4BB5B120D0779929E6698D /* IELTSNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AAA4A9DA3C459C4EC51E92 /* IELTSNavigation.swift */; };
 		FA7E28D2E91AC73292CD5BC0 /* ReadingSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B3EB6424D13D61714E4549 /* ReadingSet.swift */; };
 /* End PBXBuildFile section */
@@ -39,17 +48,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+        C10000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Dependencies/Cloud/StudyCloudSync.swift; sourceTree = SOURCE_ROOT; };
+        D820A0A124101DA934C12502 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests/PocketIELTSUITests.swift; sourceTree = "<group>"; };
+        D820A0A124101DA934C12503 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = PocketIELTSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D820A0A124101DA934C12402 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		07BE1ABECCF875FA75966B8B /* StudyError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyError.swift; sourceTree = "<group>"; };
+		0C2D3DF1191FB78C91F5E944 /* AccountClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountClient.swift; sourceTree = "<group>"; };
+		10889015A060ED025DDF6579 /* GeneralTraining.json */ = {isa = PBXFileReference; includeInIndex = 1; path = GeneralTraining.json; sourceTree = "<group>"; };
 		13A8AF6300E6CC69F008353D /* StudyClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyClient.swift; sourceTree = "<group>"; };
 		1EDFE26D205ED2EC28808F3B /* PocketIELTSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketIELTSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		217765AD639B433CCF007585 /* PocketIELTSApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PocketIELTSApp.swift; sourceTree = "<group>"; };
 		27B22508590485F6F3FBE751 /* SettingsFeature.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsFeature.swift; sourceTree = "<group>"; };
 		282F2E1DD73CFFDB68BED98C /* PocketIELTS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketIELTS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30F33C8FAB1DAC8AD89F4608 /* ChatGPTIdentity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatGPTIdentity.swift; sourceTree = "<group>"; };
 		3C2EB101A220A42EEA7BC22E /* PocketIELTSTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PocketIELTSTests.swift; sourceTree = "<group>"; };
 		3C36F9A374A3AE95093B8B12 /* IELTSPracticeSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IELTSPracticeSession.swift; sourceTree = "<group>"; };
 		4D6C2CF7C69B72E1D8A8D8F8 /* StudyFeature.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyFeature.swift; sourceTree = "<group>"; };
 		4E1D12DABA49E54AC6F02406 /* StudyTypography.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyTypography.swift; sourceTree = "<group>"; };
-		6C192E7F65BD5D6BC8FE5692 /* CredentialClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CredentialClient.swift; sourceTree = "<group>"; };
+		74290FBE07E403D3FA46FB1A /* ExamScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExamScreen.swift; sourceTree = "<group>"; };
 		78AAA4A9DA3C459C4EC51E92 /* IELTSNavigation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IELTSNavigation.swift; sourceTree = "<group>"; };
 		8B069D7D9DC4005759DB856A /* StudyColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudyColors.swift; sourceTree = "<group>"; };
 		9133762ED9C428C96777BC9F /* SettingsScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
@@ -57,12 +73,16 @@
 		A748B526B837971583F6E0BF /* PracticeScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PracticeScreen.swift; sourceTree = "<group>"; };
 		AA865B7E47DB2BBB078CE65E /* HomeScreen.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		BA6528F494790178570F916D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		BB3DD2275A37445902BB39C0 /* ChatGPTAccount.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatGPTAccount.swift; sourceTree = "<group>"; };
 		D0A8D899DFC1792343D9F94D /* StudySpacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudySpacing.swift; sourceTree = "<group>"; };
+		D9F63ACB4E87EF9452346689 /* SignInBrowser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SignInBrowser.swift; sourceTree = "<group>"; };
 		F1CB76826AAB675374932A0F /* SelectableStudyText.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SelectableStudyText.swift; sourceTree = "<group>"; };
 		F2B3EB6424D13D61714E4549 /* ReadingSet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadingSet.swift; sourceTree = "<group>"; };
+		F7666AB56D6570FE68BD54CC /* ChatGPTInference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatGPTInference.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+        D820A0A124101DA934C12505 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		0DCB3B4950690DC824570E33 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -89,8 +109,8 @@
 				80CD1606E462630EF461520F /* DesignSystem */,
 				30817FB0AAC3267F77957C7B /* Features */,
 				F7478398766F253FC542AECA /* Models */,
+                C10000000000000000000002,
 			);
-			name = Sources;
 			path = Sources;
 			sourceTree = "<group>";
 		};
@@ -99,6 +119,7 @@
 			children = (
 				282F2E1DD73CFFDB68BED98C /* PocketIELTS.app */,
 				1EDFE26D205ED2EC28808F3B /* PocketIELTSTests.xctest */,
+                D820A0A124101DA934C12503,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,7 +129,6 @@
 			children = (
 				13A8AF6300E6CC69F008353D /* StudyClient.swift */,
 			);
-			name = OpenAI;
 			path = OpenAI;
 			sourceTree = "<group>";
 		};
@@ -118,8 +138,8 @@
 				7AC401E357B999E3F39F6165 /* Home */,
 				4A90DCE61BC71733F11BE65D /* Reading */,
 				905160E218D2F308021BBF38 /* Settings */,
+				C70316EF54DE8FC552B43F12 /* Exam */,
 			);
-			name = Features;
 			path = Features;
 			sourceTree = "<group>";
 		};
@@ -130,7 +150,6 @@
 				217765AD639B433CCF007585 /* PocketIELTSApp.swift */,
 				4D6C2CF7C69B72E1D8A8D8F8 /* StudyFeature.swift */,
 			);
-			name = App;
 			path = App;
 			sourceTree = "<group>";
 		};
@@ -139,17 +158,18 @@
 			children = (
 				3C2EB101A220A42EEA7BC22E /* PocketIELTSTests.swift */,
 			);
-			name = Tests;
 			path = Tests;
 			sourceTree = "<group>";
 		};
 		42E8208863D6BC3B417960B7 = {
 			isa = PBXGroup;
 			children = (
+                D820A0A124101DA934C12502,
 				223AAF15E5ADC5174D1C41D0 /* Products */,
 				DB92AC27F7C44E57A842FA3D /* Frameworks */,
 				1D135D760F7EF91ACE9711BC /* Sources */,
 				3C3129C5BB965A7094647736 /* Tests */,
+				A91AAABC91E8F62EA7DE1461 /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,7 +178,6 @@
 			children = (
 				A748B526B837971583F6E0BF /* PracticeScreen.swift */,
 			);
-			name = Reading;
 			path = Reading;
 			sourceTree = "<group>";
 		};
@@ -168,7 +187,6 @@
 				3C36F9A374A3AE95093B8B12 /* IELTSPracticeSession.swift */,
 				F1CB76826AAB675374932A0F /* SelectableStudyText.swift */,
 			);
-			name = Components;
 			path = Components;
 			sourceTree = "<group>";
 		};
@@ -177,7 +195,6 @@
 			children = (
 				AA865B7E47DB2BBB078CE65E /* HomeScreen.swift */,
 			);
-			name = Home;
 			path = Home;
 			sourceTree = "<group>";
 		};
@@ -187,7 +204,6 @@
 				4F8DADCD86C0862F2B65BF00 /* Components */,
 				98F0ADA52EC8791618FDBD99 /* Tokens */,
 			);
-			name = DesignSystem;
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
@@ -197,17 +213,14 @@
 				27B22508590485F6F3FBE751 /* SettingsFeature.swift */,
 				9133762ED9C428C96777BC9F /* SettingsScreen.swift */,
 			);
-			name = Settings;
 			path = Settings;
 			sourceTree = "<group>";
 		};
 		96F3B75757D967D31B2D7274 /* Credentials */ = {
 			isa = PBXGroup;
 			children = (
-				6C192E7F65BD5D6BC8FE5692 /* CredentialClient.swift */,
 				93A90B89FD1753C98ADDB080 /* KeyStore.swift */,
 			);
-			name = Credentials;
 			path = Credentials;
 			sourceTree = "<group>";
 		};
@@ -218,8 +231,17 @@
 				D0A8D899DFC1792343D9F94D /* StudySpacing.swift */,
 				4E1D12DABA49E54AC6F02406 /* StudyTypography.swift */,
 			);
-			name = Tokens;
 			path = Tokens;
+			sourceTree = "<group>";
+		};
+		A91AAABC91E8F62EA7DE1461 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				10889015A060ED025DDF6579 /* GeneralTraining.json */,
+				D820A0A124101DA934C12402 /* Fonts */,
+			);
+			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		A98992EA257545E7BF48F38A /* iOS */ = {
@@ -235,9 +257,18 @@
 			children = (
 				96F3B75757D967D31B2D7274 /* Credentials */,
 				26FE7DD0CE35165B7713B979 /* OpenAI */,
+				FFBC8EF8BB45E3CEE395F216 /* ChatGPT */,
 			);
-			name = Dependencies;
 			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		C70316EF54DE8FC552B43F12 /* Exam */ = {
+			isa = PBXGroup;
+			children = (
+				74290FBE07E403D3FA46FB1A /* ExamScreen.swift */,
+			);
+			name = Exam;
+			path = Exam;
 			sourceTree = "<group>";
 		};
 		DB92AC27F7C44E57A842FA3D /* Frameworks */ = {
@@ -254,13 +285,33 @@
 				F2B3EB6424D13D61714E4549 /* ReadingSet.swift */,
 				07BE1ABECCF875FA75966B8B /* StudyError.swift */,
 			);
-			name = Models;
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FFBC8EF8BB45E3CEE395F216 /* ChatGPT */ = {
+			isa = PBXGroup;
+			children = (
+				0C2D3DF1191FB78C91F5E944 /* AccountClient.swift */,
+				BB3DD2275A37445902BB39C0 /* ChatGPTAccount.swift */,
+				30F33C8FAB1DAC8AD89F4608 /* ChatGPTIdentity.swift */,
+				F7666AB56D6570FE68BD54CC /* ChatGPTInference.swift */,
+				D9F63ACB4E87EF9452346689 /* SignInBrowser.swift */,
+			);
+			name = ChatGPT;
+			path = ChatGPT;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+        D820A0A124101DA934C12506 /* PocketIELTSUITests */ = {
+            isa = PBXNativeTarget; buildConfigurationList = D820A0A124101DA934C12507;
+            buildPhases = (D820A0A124101DA934C12504, D820A0A124101DA934C12505,);
+            buildRules = (); dependencies = (3696148B03FBC6389BFF58F0,);
+            name = PocketIELTSUITests; productName = PocketIELTSUITests;
+            productReference = D820A0A124101DA934C12503;
+            productType = "com.apple.product-type.bundle.ui-testing";
+        };
 		7F06E3947551DAE1321652CC /* PocketIELTSTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7626041175DAC7DBB9F7433A /* Build configuration list for PBXNativeTarget "PocketIELTSTests" */;
@@ -326,6 +377,7 @@
 			targets = (
 				CF48A862FA5F1F9E7E6FCD00 /* PocketIELTS */,
 				7F06E3947551DAE1321652CC /* PocketIELTSTests */,
+                D820A0A124101DA934C12506 /* PocketIELTSUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -335,6 +387,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4731DBD8262741070CE03B1 /* GeneralTraining.json in Resources */,
+				D820A0A124101DA934C12401 /* Fonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +402,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+        D820A0A124101DA934C12504 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D820A0A124101DA934C12501,); runOnlyForDeploymentPostprocessing = 0; };
 		91C9D66B0EF8D5CE5593AB06 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -362,8 +417,8 @@
 			files = (
 				FA4BB5B120D0779929E6698D /* IELTSNavigation.swift in Sources */,
 				336A4F40E6891B8632DE67F6 /* PocketIELTSApp.swift in Sources */,
+                C10000000000000000000001,
 				C0EFB27F3AF89E39998AD858 /* StudyFeature.swift in Sources */,
-				AFD6A9743137C4FBE2C852D0 /* CredentialClient.swift in Sources */,
 				ED7D3A657663466E13B90523 /* KeyStore.swift in Sources */,
 				2F1C2F89B4ECF29B83740D1C /* StudyClient.swift in Sources */,
 				05B074500FF80A4635840976 /* IELTSPracticeSession.swift in Sources */,
@@ -377,6 +432,12 @@
 				7D0B4D53CA4E8E6E023CB55C /* SettingsScreen.swift in Sources */,
 				FA7E28D2E91AC73292CD5BC0 /* ReadingSet.swift in Sources */,
 				AA4570D7B1BF07E29159AA52 /* StudyError.swift in Sources */,
+				77EA7F00C0CF4F3AC943EB7D /* AccountClient.swift in Sources */,
+				66B2E6E2FC1AA8ED3BC31C6D /* ChatGPTAccount.swift in Sources */,
+				E8016FF7FAF907A139087EC8 /* ChatGPTIdentity.swift in Sources */,
+				999E5C8551D01A8092F8A161 /* ChatGPTInference.swift in Sources */,
+				434451488BD08B41D695C93E /* SignInBrowser.swift in Sources */,
+				4402C5C9A38604E1220F81F0 /* ExamScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +453,18 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+        D820A0A124101DA934C12509 = {isa = XCBuildConfiguration; buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
+            SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = PocketIELTS;
+        }; name = Release; };
+        D820A0A124101DA934C12508 = {isa = XCBuildConfiguration; buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
+            SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = PocketIELTS;
+        }; name = Debug; };
 		5E0DBD09F1878766D3BCDC0B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -482,17 +555,27 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
+                CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                ICLOUD_CONTAINER_ENVIRONMENT = Production;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "録音した英語の回答を文字起こしし、学習の振り返りに使います。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Speakingの回答を録音して聞き直すためにマイクを使用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -565,23 +648,34 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
+                CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                ICLOUD_CONTAINER_ENVIRONMENT = Development;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "録音した英語の回答を文字起こしし、学習の振り返りに使います。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Speakingの回答を録音して聞き直すためにマイクを使用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+        D820A0A124101DA934C12507 = {isa = XCConfigurationList; buildConfigurations = (D820A0A124101DA934C12508, D820A0A124101DA934C12509,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 		21E1C5205D471214769FF6FB /* Build configuration list for PBXNativeTarget "PocketIELTS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

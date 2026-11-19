@@ -23,3 +23,21 @@ enum StudyColors {
 
     static let error = Color(uiColor: .systemRed)
 }
+
+extension StudyColors {
+    static let reading = adaptive(0xB6EFFF, 0x164856)
+    static let listening = adaptive(0xFFD7A5, 0x583D26)
+    static let writing = adaptive(0xE3D2FB, 0x473659)
+    static let speaking = adaptive(0xC8EAC8, 0x2D4834)
+    static let levelCard = adaptive(0x112D3B, 0x193A49)
+    static let mockCard = adaptive(0xEAF8FC, 0x1D343F)
+    static let ink = Color(uiColor: bodyText)
+
+    private static func adaptive(_ light: Int, _ dark: Int) -> Color {
+        Color(uiColor: UIColor { traits in
+            let value = traits.userInterfaceStyle == .dark ? dark : light
+            return UIColor(red: CGFloat((value >> 16) & 255) / 255, green: CGFloat((value >> 8) & 255) / 255,
+                           blue: CGFloat(value & 255) / 255, alpha: 1)
+        })
+    }
+}
