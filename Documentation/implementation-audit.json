@@ -122,16 +122,22 @@
       "figmaNodes": "62:2578,130:3032,130:3090,132:3289",
       "source": "Resources/Localizable.xcstrings; Resources/InfoPlist.xcstrings; Sources/Features/Settings/SettingsScreen.swift",
       "implemented": "Japanese/English interface, permission descriptions and AI explanation language; persisted System/Light/Dark preference applies immediately to the open Settings sheet"
+    },
+    {
+      "name": "Completion and history flow polish",
+      "figmaNodes": "10:14,144:3415,144:3436",
+      "source": "Sources/Features/Exam/ExamScreen.swift; Sources/Features/Home/HomeScreen.swift; Sources/Models/ReadingSet.swift",
+      "implemented": "Stable non-morphing primary buttons; review/completion reset scroll position; centered cancel/end alert; completion and history cards; full indexed Reading/Listening answers with backward-compatible persistence; history save confirmation and retry."
     }
   ],
   "validation": {
-    "unitTests": "20 passed on iPhone 17 Pro, iOS 26.5, including option layout and bilingual resource tests.",
-    "uiTests": "All 11 iPhone scenarios passed in a full run. Additional review-action flow passed on iPhone; review/retry and adaptive portrait/landscape screenshot flows passed on iPad.",
+    "unitTests": "21 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; covers indexed answers, empty positions and legacy history decoding.",
+    "uiTests": "All 12 iPhone scenarios passed in a full run. Final iPad build passed 3 targeted flows: results/history/save/retry, centered exit alert/cancel/finish/home, and Writing response history.",
     "deviceBuild": "Xcode 27.2 generic iOS Debug build succeeded with Apple Development signing; verified CloudKit container and Development environment in signed entitlements",
     "screenshots": "Captured running iPhone/iPad app with isolated UI-test data; landscape capture uses XCUIScreen to retain correct orientation metadata",
     "completedAt": "2026-11-19",
-    "result": "Question selection, English tutor drafts, native vocabulary selection, live settings sheet theme changes and persistence, generation/cancel, review/retry, history and mock navigation passed simulator tests.",
-    "toolchainNote": "Xcode emitted App Intents metadata/diagnostic collection warnings; no app compile errors."
+    "result": "Completion, history and centered alert screens verified. Review starts at the top; cancellation preserves the current screen; results route to history; save confirms; all indexed answers persist; history reopens original exercises. Existing selection, appearance, English UI, mock and generation/cancel checks passed.",
+    "toolchainNote": "Xcode emitted simulator diagnostics/debugger metadata warnings; builds and test suites succeeded."
   },
   "limitations": [
     "Live ChatGPT sign-in, usage limits, generation and inference require the user account; no live authenticated request was made during this task.",
@@ -142,6 +148,7 @@
     "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference.",
     "Live two-device CloudKit transfer remains unverified; schema must be deployed to Production before TestFlight/App Store. Background push sync is not implemented.",
     "Historical plain-text readingHistory entries remain local; current structured results synchronize.",
-    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture."
+    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture.",
+    "Older Reading/Listening history stored only the first answer; new questionAnswers records preserve all answers, but missing historical answers cannot be reconstructed."
   ]
 }

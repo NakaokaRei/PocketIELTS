@@ -34,7 +34,9 @@ In each part card, **Practice bundled questions** opens the included exercise. *
 
 ## Clear questions and useful next steps
 
-Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying.
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review and completion open at the top without a button morphing animation. Ending practice uses a centered confirmation alert; cancelling keeps the current answers.
+
+New Reading and Listening attempts preserve every answer, including unanswered positions. History shows a score card and an expandable question-by-question review. Older records keep their existing saved data; missing historical answers cannot be reconstructed.
 
 The tutor offers six editable question starters: meaning, grammar, paraphrases and examples, answer evidence, alternative choices and a hint. Selecting one fills the draft; you decide when to send it.
 
@@ -42,6 +44,12 @@ The tutor offers six editable question starters: meaning, grammar, paraphrases a
   <img src="Documentation/Screenshots/iphone-questions.png" width="250" alt="Question instructions and separate radio choices" />
   <img src="Documentation/Screenshots/iphone-review-actions.png" width="250" alt="Review with distinct result, save, AI and retry buttons" />
   <img src="Documentation/Screenshots/iphone-tutor-en.png" width="250" alt="English tutor with editable learning question suggestions" />
+</p>
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-completion.png" width="250" alt="Practice completion card with clear progress, home and retry actions" />
+  <img src="Documentation/Screenshots/iphone-history-detail.png" width="250" alt="History score card with expandable answers and save and retry actions" />
+  <img src="Documentation/Screenshots/iphone-exit-alert.png" width="250" alt="Centered end-practice alert with continue and end actions" />
 </p>
 
 ## Your language and appearance
