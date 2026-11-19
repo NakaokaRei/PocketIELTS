@@ -37,5 +37,5 @@ xcodebuild -project PocketIELTS.xcodeproj -scheme PocketIELTS \
   -parallel-testing-enabled NO \
   -skipMacroValidation \
   -disableAutomaticPackageResolution \
-  ONLY_ACTIVE_ARCH=YES \
+  ARCHS="$(uname -m)" ONLY_ACTIVE_ARCH=YES \
   CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= test
