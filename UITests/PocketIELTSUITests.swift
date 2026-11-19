@@ -237,7 +237,21 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["保存した問題はありません"].exists)
         app.buttons["saved.skill.Reading"].tap()
         XCTAssertTrue(app.staticTexts["Section 1"].exists)
-        capture("iphone-saved-questions")
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-saved-questions" : "iphone-saved-questions")
+        let delete = app.buttons["saved.delete"].firstMatch
+        for _ in 0..<8 where !delete.isHittable { app.swipeUp() }
+        delete.tap()
+        let confirmation = app.alerts["保存した問題を削除しますか？"]
+        XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
+        confirmation.buttons["キャンセル"].tap()
+        XCTAssertTrue(saved.exists)
+        delete.tap()
+        confirmation.buttons["削除"].tap()
+        XCTAssertTrue(app.staticTexts["保存した問題はありません"].waitForExistence(timeout: 5))
+        app.terminate(); app.launch()
+        for _ in 0..<8 where !savedPapers.isHittable { app.swipeUp() }
+        savedPapers.tap()
+        XCTAssertTrue(app.staticTexts["保存した問題はありません"].waitForExistence(timeout: 5))
         app.terminate(); app.launch()
         navigate("学習記録", tag: 1)
         XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()

@@ -390,3 +390,48 @@ extension PocketIELTSTests {
         XCTAssertTrue(SpeechAudio.segments("  ").isEmpty)
     }
 }
+
+extension PocketIELTSTests {
+    func testDeleteSavedPaperPreservesHistoryVocabularyAndCanSaveAgain() async throws {
+        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let entry = SavedExpression(expression: "ordinary", source: paper.id, sourceText: "ordinary", paper: paper)
+        let result = StudyResult(skill: paper.skill, title: paper.title, correct: 1, total: 1, paper: paper)
+        let date = Date(timeIntervalSince1970: 10)
+        var initial = StudyFeature.State()
+        initial.$paperData.withLock { $0 = try! StudyPersistence.encode([paper]) }
+        initial.$vocabularyData.withLock { $0 = try! StudyPersistence.encode([entry]) }
+        initial.$resultData.withLock { $0 = try! StudyPersistence.encode([result]) }
+        let store = TestStore(initialState: initial) { StudyFeature() } withDependencies: { $0.date.now = date }
+        await store.send(.deletePaper(paper.id)) {
+            $0.$paperData.withLock { $0 = try! StudyPersistence.encode([ExamUnit]()) }
+            $0.$deletedPaperData.withLock { $0 = try! StudyPersistence.encode([DeletedPaper(id: paper.id, date: date)]) }
+        }
+        XCTAssertTrue(store.state.papers.isEmpty)
+        XCTAssertEqual(store.state.records, [result])
+        XCTAssertEqual(store.state.vocabulary, [entry])
+        await store.send(.deletePaper(paper.id))
+        await store.send(.savePaper(paper)) {
+            $0.$deletedPaperData.withLock { $0 = try! StudyPersistence.encode([DeletedPaper]()) }
+            $0.$paperData.withLock { $0 = try! StudyPersistence.encode([paper]) }
+        }
+        XCTAssertEqual(store.state.papers, [paper])
+    }
+
+    func testDeletedSavedPaperSurvivesOfflineMergeAndExplicitResave() throws {
+        let paper = try XCTUnwrap(ExamUnit.load().first)
+        var left = CloudStudyJournal(), right = CloudStudyJournal()
+        try left.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 1))
+        right.merge(Array(left.items.values))
+        try left.capture(.init(deletedPapers: [.init(id: paper.id, date: Date(timeIntervalSince1970: 2))]), at: Date(timeIntervalSince1970: 2))
+        try right.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 3))
+        left.merge(Array(right.items.values)); right.merge(Array(left.items.values))
+        XCTAssertTrue(try left.snapshot().papers.isEmpty)
+        XCTAssertTrue(try right.snapshot().papers.isEmpty)
+        var relaunched = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(left))
+        XCTAssertEqual(try relaunched.snapshot().deletedPapers.map(\.id), [paper.id])
+        try relaunched.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 4))
+        right.merge(Array(relaunched.items.values))
+        XCTAssertEqual(try right.snapshot().papers, [paper])
+        XCTAssertTrue(try right.snapshot().deletedPapers.isEmpty)
+    }
+}

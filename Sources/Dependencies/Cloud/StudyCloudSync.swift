@@ -22,17 +22,25 @@ struct DeletedExpression: Codable, Equatable {
     var date: Date
 }
 
+struct DeletedPaper: Codable, Equatable {
+    var id: String
+    var date: Date
+}
+
 struct CloudStudySnapshot: Equatable {
+    var deletedPapers: [DeletedPaper]
     var deletedVocabulary: [DeletedExpression]
     var vocabulary: [SavedExpression]
     var results: [StudyResult]
     var papers: [ExamUnit]
 
     init(state: StudyFeature.State) {
+        deletedPapers = state.deletedPapers
         deletedVocabulary = state.deletedVocabulary
         vocabulary = state.vocabulary; results = state.records; papers = state.papers
     }
-    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = [], deletedVocabulary: [DeletedExpression] = []) {
+    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = [], deletedVocabulary: [DeletedExpression] = [], deletedPapers: [DeletedPaper] = []) {
+        self.deletedPapers = deletedPapers
         self.deletedVocabulary = deletedVocabulary
         self.vocabulary = vocabulary; self.results = results; self.papers = papers
     }
@@ -46,7 +54,12 @@ struct CloudStudySnapshot: Equatable {
             value.kind = "deletedWord"; value.modified = deleted.date
             return value
         }
-        return try tombstones + vocabulary.map { try item("word", $0.id.uuidString, $0) }
+        let paperTombstones = try deletedPapers.map { deleted -> CloudStudyItem in
+            var value = try item("paper", deleted.id, deleted)
+            value.kind = "deletedPaper"; value.modified = deleted.date
+            return value
+        }
+        return try tombstones + paperTombstones + vocabulary.map { try item("word", $0.id.uuidString, $0) }
             + results.map { try item("result", $0.id.uuidString, $0, recording: $0.recordingFile) }
             + papers.map { try item("paper", $0.id, $0) }
     }
@@ -74,7 +87,8 @@ struct CloudStudyJournal: Codable {
             vocabulary: sorted.filter { $0.kind == "word" }.map { try decoder.decode(SavedExpression.self, from: $0.payload) },
             results: sorted.filter { $0.kind == "result" }.map { try decoder.decode(StudyResult.self, from: $0.payload) }.sorted { $0.date > $1.date },
             papers: sorted.filter { $0.kind == "paper" }.map { try decoder.decode(ExamUnit.self, from: $0.payload) },
-            deletedVocabulary: sorted.filter { $0.kind == "deletedWord" }.map { try decoder.decode(DeletedExpression.self, from: $0.payload) })
+            deletedVocabulary: sorted.filter { $0.kind == "deletedWord" }.map { try decoder.decode(DeletedExpression.self, from: $0.payload) },
+            deletedPapers: sorted.filter { $0.kind == "deletedPaper" }.map { try decoder.decode(DeletedPaper.self, from: $0.payload) })
     }
     static func accepts(account: String, previous: String?) -> Bool { previous == nil || previous == account }
     static func safeRecordingURL(_ name: String, directory: URL) -> URL? {
@@ -112,7 +126,7 @@ final class StudyCloudSync {
     func captureLocalChanges() {
         guard !isTesting else { return }
         do {
-            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary))
+            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary, deletedPapers: store.deletedPapers))
             try persist()
         } catch { status = String(localized: "同期用データを保存できませんでした。端末の空き容量を確認してください。") }
     }
@@ -213,7 +227,7 @@ struct StudyCloudHost: View {
     }
     var body: some View {
         HomeScreen(store: store).environment(\.studyCloud, cloud)
-            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary)) { _, _ in cloud.captureLocalChanges() }
+            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary, deletedPapers: store.deletedPapers)) { _, _ in cloud.captureLocalChanges() }
             .task(id: phase) {
                 guard phase == .active else { cloud.captureLocalChanges(); return }
                 while !Task.isCancelled {

@@ -393,6 +393,7 @@ enum SavedPaperGrouping {
 struct SavedPapersScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var selectedSkill: String
+    @State private var deleting: ExamUnit?
     init(store: StoreOf<StudyFeature>, skill: String? = nil) {
         self.store = store
         _selectedSkill = State(initialValue: skill ?? SavedPaperGrouping.skills.first(where: { candidate in store.papers.contains { $0.skill == candidate } }) ?? "Reading")
@@ -430,20 +431,33 @@ struct SavedPapersScreen: View {
                             Text(String(format: String(localized: "%@件の問題"), String(papers.filter { SavedPaperGrouping.part($0) == group }.count))).font(StudyTypography.caption)
                         }.accessibilityAddTraits(.isHeader)
                         ForEach(papers.filter { SavedPaperGrouping.part($0) == group }) { paper in
-                            NavigationLink { ExamScreen(units: [paper], store: store) } label: {
-                                HStack(spacing: 16) {
-                                    VStack(alignment: .leading, spacing: 10) {
-                                        Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
-                                        Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
-                                    }
-                                    Spacer(minLength: 0); Image(systemName: "chevron.right")
-                                }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
-                            }.buttonStyle(.plain)
+                            HStack(alignment: .top, spacing: 12) {
+                                NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                                    HStack(spacing: 16) {
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
+                                            Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
+                                        }
+                                        Spacer(minLength: 0); Image(systemName: "chevron.right")
+                                    }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
+                                }.buttonStyle(.plain)
+                                Button(String(localized: "保存した問題を削除"), systemImage: "trash") { deleting = paper }
+                                    .labelStyle(.iconOnly).font(.system(size: 19))
+                                    .frame(width: 44, height: 44).contentShape(Rectangle())
+                                    .foregroundStyle(StudyColors.error).buttonStyle(.plain)
+                                    .accessibilityIdentifier("saved.delete")
+                            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                                .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
                         }
                     }
                 }
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)
+        .alert(String(localized: "保存した問題を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { paper in
+            Button(String(localized: "削除"), role: .destructive) { store.send(.deletePaper(paper.id)); deleting = nil }
+            Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
+        } message: { paper in
+            Text(paper.title + "\n\n" + String(localized: "学習履歴と保存した単語は残ります。"))
+        }
     }
 }

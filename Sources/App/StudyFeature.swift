@@ -18,6 +18,8 @@ struct StudyFeature {
         @Shared(.appStorage("vocabularyDetails")) var vocabularyData = Data()
         @Shared(.appStorage("studyResults")) var resultData = Data()
         @Shared(.appStorage("savedPapers")) var paperData = Data()
+        @Shared(.appStorage("deletedPapers")) var deletedPaperData = Data()
+        var deletedPapers: [DeletedPaper] { (try? JSONDecoder().decode([DeletedPaper].self, from: deletedPaperData)) ?? [] }
         @Shared(.appStorage("deletedVocabulary")) var deletedVocabularyData = Data()
         var deletedVocabulary: [DeletedExpression] { (try? JSONDecoder().decode([DeletedExpression].self, from: deletedVocabularyData)) ?? [] }
         var vocabulary: [SavedExpression] {
@@ -26,7 +28,7 @@ struct StudyFeature {
                 .map(SavedExpression.legacy)).filter { entry in !deletedVocabulary.contains { $0.id == entry.id } }
         }
         var records: [StudyResult] { (try? JSONDecoder().decode([StudyResult].self, from: resultData)) ?? [] }
-        var papers: [ExamUnit] { (try? JSONDecoder().decode([ExamUnit].self, from: paperData)) ?? [] }
+        var papers: [ExamUnit] { ((try? JSONDecoder().decode([ExamUnit].self, from: paperData)) ?? []).filter { paper in !deletedPapers.contains { $0.id == paper.id } } }
         @Shared(.appStorage("savedExpressions")) var words: Data = Data()
         @Shared(.appStorage("readingHistory")) var history: Data = Data()
         var entries: [String] { (try? JSONDecoder().decode([String].self, from: words)) ?? [] }
@@ -41,6 +43,7 @@ struct StudyFeature {
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
         case updateMeaning(UUID, String)
         case deleteExpression(UUID)
+        case deletePaper(String)
         case updateAssessment(UUID, PracticeAssessment)
         case ask(String, String), explained(String), askFailed(String), closeQuestion
     }
@@ -56,6 +59,7 @@ struct StudyFeature {
             switch action {
             case .settings: break
             case let .applyCloudSnapshot(snapshot):
+                if let data = try? StudyPersistence.encode(snapshot.deletedPapers) { state.$deletedPaperData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.deletedVocabulary) { state.$deletedVocabularyData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.vocabulary) { state.$vocabularyData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.results) { state.$resultData.withLock { $0 = data } }
@@ -126,8 +130,18 @@ struct StudyFeature {
                 var entries = state.vocabulary
                 for i in entries.indices where entries[i].id == id { entries[i].meaning = meaning }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
+            case let .deletePaper(id):
+                guard state.papers.contains(where: { $0.id == id }) else { return .none }
+                let remaining = state.papers.filter { $0.id != id }
+                let deleted = state.deletedPapers.filter { $0.id != id } + [DeletedPaper(id: id, date: now)]
+                if let data = try? StudyPersistence.encode(deleted) { state.$deletedPaperData.withLock { $0 = data } }
+                if let data = try? StudyPersistence.encode(remaining) { state.$paperData.withLock { $0 = data } }
             case let .savePaper(paper):
                 guard !state.papers.contains(where: { $0.id == paper.id }) else { return .none }
+                if state.deletedPapers.contains(where: { $0.id == paper.id }),
+                   let data = try? StudyPersistence.encode(state.deletedPapers.filter { $0.id != paper.id }) {
+                    state.$deletedPaperData.withLock { $0 = data }
+                }
                 if let data = try? StudyPersistence.encode([paper] + state.papers) { state.$paperData.withLock { $0 = data } }
             case let .updateAssessment(id, assessment):
                 var records = state.records
