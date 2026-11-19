@@ -6,8 +6,10 @@ result_path="${2:-TestResults.xcresult}"
 device_id=$(xcrun simctl list devices available --json | python3 -c '
 import json,sys
 family=sys.argv[1]
-for runtime, devices in reversed(list(json.load(sys.stdin)["devices"].items())):
-    if ".iOS-" not in runtime: continue
+runtimes = [(runtime, devices) for runtime, devices in json.load(sys.stdin)["devices"].items()
+            if ".iOS-" in runtime]
+for runtime, devices in sorted(runtimes, key=lambda item: tuple(
+        int(n) for n in item[0].split(".iOS-")[1].split("-")), reverse=True):
     matches=[d for d in devices if d["name"].startswith(family) and d.get("isAvailable")]
     if matches:
         print(matches[0]["udid"]); break
@@ -24,10 +26,11 @@ except subprocess.TimeoutExpired:
     sys.exit("Simulator did not finish booting within 180 seconds")
 PYBOOT
 xcodebuild -project PocketIELTS.xcodeproj -scheme PocketIELTS \
-  -destination "platform=iOS Simulator,id=$device_id" \
+  -destination "platform=iOS Simulator,id=$device_id,arch=$(uname -m)" \
   -derivedDataPath "${CI_DERIVED_DATA:-build}" \
   -resultBundlePath "$result_path" \
   -parallel-testing-enabled NO \
   -skipMacroValidation \
   -disableAutomaticPackageResolution \
+  ONLY_ACTIVE_ARCH=YES \
   CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= test

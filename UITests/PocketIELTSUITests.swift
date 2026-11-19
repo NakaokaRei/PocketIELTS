@@ -273,7 +273,10 @@ final class PocketIELTSUITests: XCTestCase {
         for _ in 0..<12 where !editor.isHittable { app.swipeUp(velocity: .fast) }
         XCTAssertTrue(editor.isHittable)
         editor.tap(); editor.typeText("Dear Sir, I am writing about the heater in my flat. It has not worked since Monday. Please arrange a repair this week. Yours faithfully, Alex")
-        app.buttons["入力を完了"].tap()
+        let dismissKeyboard = app.buttons["practice.dismissKeyboard"]
+        XCTAssertTrue(dismissKeyboard.waitForExistence(timeout: 5))
+        XCTAssertTrue(dismissKeyboard.isHittable)
+        dismissKeyboard.tap()
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         let review = app.buttons["practice.review"]
         for _ in 0..<10 {

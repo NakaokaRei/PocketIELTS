@@ -130,11 +130,12 @@ struct ExamScreen: View {
         .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
         .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button(String(localized: "入力を完了")) {
-                    answerFocused = false
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            if answerFocused {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(String(localized: "入力を完了")) {
+                        answerFocused = false
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }.accessibilityIdentifier("practice.dismissKeyboard")
                 }
             }
             if !isMock && !finished { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
