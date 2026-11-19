@@ -43,3 +43,20 @@ struct StudySecondaryButtonStyle: ButtonStyle {
             .opacity(isEnabled ? 1 : 0.45)
     }
 }
+
+/// Keeps study actions stable when their title or the surrounding content changes.
+struct StudyPrimaryButtonStyle: ButtonStyle {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.isEnabled) private var isEnabled
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .padding(.horizontal, 16).padding(.vertical, 8)
+            .foregroundStyle(colorScheme == .dark ? Color.black : Color.white)
+            .background(StudyColors.accent, in: RoundedRectangle(cornerRadius: 18))
+            .opacity(!isEnabled ? 0.45 : configuration.isPressed ? 0.8 : 1)
+            .contentShape(RoundedRectangle(cornerRadius: 18))
+    }
+}

@@ -106,6 +106,8 @@ struct ExamScreen: View {
                         if finished { results } else { exercise }
                     }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
                 }.scrollDismissesKeyboard(.interactively)
+                    .id("\(position)-\(finished)-\(showingReview)")
+                    .transaction { $0.animation = nil; $0.disablesAnimations = true }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -119,10 +121,10 @@ struct ExamScreen: View {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 }
             }
-            if !isMock { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
+            if !isMock && !finished { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
         }
-        .confirmationDialog(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd, titleVisibility: .visible) {
-            Button(String(localized: "練習を終了")) { finished = true; ended = Date() }
+        .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd) {
+            Button(String(localized: "練習を終了"), role: .destructive) { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription(); finished = true; ended = Date() }
             Button(String(localized: "続ける"), role: .cancel) {}
         } message: { Text(String(localized: "採点済みの結果と保存した表現は残ります。")) }
         .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
@@ -242,6 +244,7 @@ struct ExamScreen: View {
                 Button {
                     answerFocused = false
                     if !isMock && !showingReview {
+                        speaker.stopSpeaking(at: .immediate)
                         reviewed.insert(unit.id)
                         saveResult(unit)
                     } else { advance() }
@@ -249,9 +252,8 @@ struct ExamScreen: View {
                     Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "結果を見る")) : String(localized: "解答・振り返りを確認"),
                           systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
                         .frame(maxWidth: .infinity, minHeight: 28)
-                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.borderedProminent).controlSize(.large)
+                .buttonStyle(StudyPrimaryButtonStyle())
                 .disabled(audio.transcribing || audio.isRecording)
                 .accessibilityIdentifier("practice.review")
                 if !isMock {
@@ -280,7 +282,17 @@ struct ExamScreen: View {
 
     private var results: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text(isMock ? String(localized: "今回の模試結果") : String(localized: "練習を終了しました")).font(StudyTypography.japaneseTitle(30))
+            VStack(alignment: .leading, spacing: 16) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 40)).foregroundStyle(StudyColors.accent)
+                    .padding(16).background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 22))
+                Text(isMock ? String(localized: "今回の模試結果") : String(localized: "練習を終了しました"))
+                    .font(StudyTypography.japaneseTitle(28))
+                Text(String(localized: "技能別の推移は学習記録で確認できます。"))
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .padding(24).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
+                .accessibilityIdentifier("practice.completion")
             if isMock {
                 let records = store.records.filter { $0.attemptID == attemptID }
                 VStack(alignment: .leading, spacing: 16) {
@@ -304,13 +316,14 @@ struct ExamScreen: View {
                     }
                 }.padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             }
-            Text(String(localized: "技能別の推移は学習記録で確認できます。")).foregroundStyle(.secondary)
-            Button(String(localized: "学習記録を見る")) { dismiss(); navigation.progress() }.buttonStyle(.borderedProminent)
-            Button(String(localized: "ホームに戻る")) { dismiss(); navigation.home() }
-            Button(String(localized: "もう一度練習する")) {
+            Button(String(localized: "学習記録を見る"), systemImage: "chart.bar.xaxis") { dismiss(); navigation.progress() }
+                .buttonStyle(StudyPrimaryButtonStyle())
+            Button(String(localized: "ホームに戻る"), systemImage: "house") { dismiss(); navigation.home() }
+                .buttonStyle(StudySecondaryButtonStyle())
+            Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
                 position = 0; finished = false; answers = [:]; reviewed = []; recorded = []; evaluatingID = nil
                 started = Date(); ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
-            }
+            }.buttonStyle(StudySecondaryButtonStyle())
         }
     }
 
@@ -383,8 +396,9 @@ struct ExamScreen: View {
         }
         store.send(.record(StudyResult(id: id, skill: part.skill, title: part.title,
             correct: score(part), total: part.questions.count, isMock: isMock,
-            response: answers[part.id + "-0"], assessment: assessments[part.id],
-            recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID)))
+            response: part.questions.isEmpty ? answers[part.id + "-0"] : nil, assessment: assessments[part.id],
+            recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID,
+            questionAnswers: part.questions.isEmpty ? nil : part.questions.indices.map { answers[part.id + "-\($0)", default: ""] })))
         recorded.insert(part.id)
     }
     private func advance() {

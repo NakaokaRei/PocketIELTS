@@ -280,31 +280,73 @@ struct ResultDetailScreen: View {
     @State private var audio = SpeakingRecorder()
     @State private var evaluating = false
     @State private var error: String?
+    @State private var saved = false
     private var current: StudyResult { store.records.first { $0.id == result.id } ?? result }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text(current.skill).font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
-                Text(current.title).font(.title.bold())
-                Text(current.date, style: .date).foregroundStyle(.secondary)
-                if current.total > 0 { Text(String(format: String(localized: "%@ / %@ 正解"), String(current.correct), String(current.total))).font(.title2.bold()) }
-                if let response = current.response, !response.isEmpty {
-                    Text(String(localized: "あなたの回答")).font(.headline)
-                    Text(response).textSelection(.enabled)
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Label(current.skill, systemImage: current.skill == "Listening" ? "headphones" : current.skill == "Speaking" ? "mic" : current.skill == "Writing" ? "pencil" : "book")
+                            .font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                        Spacer()
+                        Text(current.date, style: .date).font(.caption).foregroundStyle(.secondary)
+                    }
+                    Text(current.title).font(StudyTypography.japaneseTitle(24))
+                    if current.total > 0 {
+                        Text(String(format: String(localized: "%@ / %@ 正解"), String(current.correct), String(current.total)))
+                            .font(.title2.bold()).foregroundStyle(StudyColors.accent)
+                        ProgressView(value: Double(current.correct), total: Double(current.total))
+                            .tint(StudyColors.accent)
+                    }
+                }.padding(24).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
+                if let answers = current.questionAnswers, let paper = current.paper {
+                    DisclosureGroup(String(localized: "あなたの回答")) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            ForEach(paper.questions.indices, id: \.self) { index in
+                                let question = paper.questions[index]
+                                let answer = index < answers.count ? answers[index] : ""
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Label("Question \(paper.firstQuestionNumber + index)", systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
+                                        .font(.headline).foregroundStyle(StudyColors.accent)
+                                    Text(question.displayPrompt(number: paper.firstQuestionNumber + index, localNumber: index + 1))
+                                    Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer))
+                                        .font(.subheadline).bold()
+                                    Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(.subheadline)
+                                    Text(question.explanation).font(.subheadline).foregroundStyle(.secondary)
+                                }.frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
+                            }
+                        }.padding(.top, 12)
+                    }.accessibilityIdentifier("history.answers")
                 }
-                if let file = current.recordingFile { Button(String(localized: "録音を聞く"), systemImage: "play.circle") { audio.playArchived(file) } }
+                if let response = current.response, !response.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(String(localized: "あなたの回答")).font(.headline)
+                        Text(response).textSelection(.enabled)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                }
+                if let file = current.recordingFile {
+                    Button(String(localized: "録音を聞く"), systemImage: "play.circle") { audio.playArchived(file) }
+                        .buttonStyle(StudySecondaryButtonStyle())
+                }
                 if let paper = current.paper {
                     if let assessment = current.assessment { AssessmentContent(assessment: assessment, paper: paper, store: store) }
                     if ["Writing", "Speaking"].contains(current.skill), let response = current.response, !response.isEmpty {
-                        Button(String(localized: "AIの講評を確認・更新")) { evaluating = true }.disabled(evaluating)
+                        Button(String(localized: "AIの講評を確認・更新"), systemImage: "sparkles") { evaluating = true }.buttonStyle(StudySecondaryButtonStyle()).disabled(evaluating)
                         if evaluating { ProgressView(String(localized: "講評中…")) }
                     }
-                    NavigationLink(String(localized: "この問題をもう一度練習")) { ExamScreen(units: [paper], store: store) }
-                    Button(String(localized: "この問題を保存")) { store.send(.savePaper(paper)) }
+                    NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                        Label(String(localized: "この問題をもう一度練習"), systemImage: "arrow.counterclockwise")
+                    }.buttonStyle(StudyPrimaryButtonStyle())
+                    Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(paper)); saved = true }
+                        .buttonStyle(StudySecondaryButtonStyle())
                 }
                 if let error = error ?? audio.error { Text(error).foregroundStyle(StudyColors.error) }
             }.padding(20).frame(maxWidth: 800, alignment: .leading).frame(maxWidth: .infinity)
         }
+        .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける"), role: .cancel) {} }
         .navigationTitle(String(localized: "学習の振り返り")).navigationBarTitleDisplayMode(.inline)
         .onDisappear { audio.stop() }
         .task(id: evaluating) {

@@ -94,7 +94,12 @@ struct StudyFeature {
                 let result = "Section \(state.section) · \(set.title) · \(correct)/\(set.questions.count)"
                 let data = try? StudyPersistence.encode([result] + state.results)
                 if let data { state.$history.withLock { $0 = data } }
-                let record = StudyResult(id: uuid(), date: now, skill: "Reading", title: set.title, correct: correct, total: set.questions.count)
+                let paper = ExamUnit(id: "Reading / Section \(state.section) · " + set.title,
+                                     skill: "Reading", title: set.title, directions: "", passages: set.passages,
+                                     questions: set.questions, audio: nil, oral: [])
+                let record = StudyResult(id: uuid(), date: now, skill: "Reading", title: set.title, correct: correct,
+                                         total: set.questions.count, paper: paper,
+                                         questionAnswers: set.questions.indices.map { state.answers[$0, default: ""] })
                 if let data = try? StudyPersistence.encode([record] + state.records) { state.$resultData.withLock { $0 = data } }
             case let .saveExpression(entry):
                 var entries = state.vocabulary

@@ -161,6 +161,7 @@ final class PocketIELTSUITests: XCTestCase {
         for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
         XCTAssertTrue(review.isHittable); review.tap()
         XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["答えと解説"].isHittable, "Review must start at the top, not retain the question scroll offset")
         let retry = app.buttons["practice.retry"]
         for _ in 0..<20 where !retry.isHittable { app.swipeUp(velocity: .fast) }
         XCTAssertTrue(retry.isHittable)
@@ -170,11 +171,53 @@ final class PocketIELTSUITests: XCTestCase {
         retry.tap()
         XCTAssertTrue(app.buttons["practice.review"].exists)
         app.buttons["practice.finish"].tap()
-        app.buttons["練習を終了"].tap()
+        let endAlert = app.alerts["練習を終了しますか？"]
+        XCTAssertTrue(endAlert.waitForExistence(timeout: 5))
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-exit-alert" : "iphone-exit-alert")
+        endAlert.buttons["続ける"].tap()
+        XCTAssertTrue(app.buttons["practice.finish"].exists)
+        app.buttons["practice.finish"].tap()
+        endAlert.buttons["練習を終了"].tap()
+        XCTAssertFalse(app.buttons["practice.finish"].exists)
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-completion" : "iphone-completion")
         XCTAssertTrue(app.buttons["ホームに戻る"].waitForExistence(timeout: 5))
         app.buttons["ホームに戻る"].tap()
         XCTAssertTrue(app.buttons["home.skill.Reading"].waitForExistence(timeout: 5))
     }
+    func testResultOpensHistoryAndPreservesAllAnswers() {
+        openReading()
+        let choice = app.buttons["answer.choice.0.TRUE"]
+        for _ in 0..<20 where !choice.isHittable { app.swipeUp(velocity: .fast) }
+        XCTAssertTrue(choice.isHittable)
+        choice.tap()
+        let review = app.buttons["practice.review"]
+        for _ in 0..<25 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        review.tap()
+        XCTAssertTrue(app.staticTexts["答えと解説"].isHittable)
+        for _ in 0..<20 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        review.tap()
+        XCTAssertTrue(app.staticTexts["練習を終了しました"].waitForExistence(timeout: 5))
+        let history = app.buttons["学習記録を見る"]
+        for _ in 0..<8 where !history.isHittable { app.swipeUp() }
+        history.tap()
+        let record = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-history-detail" : "iphone-history-detail")
+        app.buttons["この問題を保存"].tap()
+        XCTAssertTrue(app.alerts["保存しました"].waitForExistence(timeout: 5))
+        app.alerts.buttons["学習を続ける"].tap()
+        app.buttons["history.answers"].tap()
+        XCTAssertTrue(app.staticTexts["あなたの解答: TRUE"].waitForExistence(timeout: 5))
+        let unanswered = app.staticTexts["あなたの解答: 未回答"].firstMatch
+        for _ in 0..<5 where !unanswered.isHittable { app.swipeUp() }
+        XCTAssertTrue(unanswered.isHittable)
+        app.terminate(); app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]; app.launch()
+        navigate("学習記録", tag: 1)
+        XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()
+        app.buttons["この問題をもう一度練習"].tap()
+        XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
+    }
+
     func testSettingsHasChatGPTOnly() {
         app.buttons["home.settings"].tap()
         XCTAssertTrue(app.buttons["Sign in with ChatGPT"].waitForExistence(timeout: 5))

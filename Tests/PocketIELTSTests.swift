@@ -57,7 +57,10 @@ final class PocketIELTSTests: XCTestCase {
             $0.reviewed = true
             $0.$history.withLock { $0 = history }
             let record = StudyResult(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, date: Date(timeIntervalSince1970: 0),
-                                     skill: "Reading", title: "Opening hours", correct: 1, total: 1)
+                                     skill: "Reading", title: "Opening hours", correct: 1, total: 1,
+                                     paper: ExamUnit(id: "Reading / Section 2 · Opening hours", skill: "Reading", title: paper.title,
+                                                     directions: "", passages: paper.passages, questions: paper.questions, audio: nil, oral: []),
+                                     questionAnswers: ["monday"])
             $0.$resultData.withLock { $0 = try! StudyPersistence.encode([record]) }
         }
         await store.send(.review)
@@ -191,6 +194,19 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(StudyQuestionLayout(prose).formatted, prose)
         let decimal = ReadingSet.Question(instruction: "", prompt: "1.5 metres is the minimum distance.", answers: ["TRUE"], explanation: "")
         XCTAssertEqual(decimal.displayPrompt(number: 1, localNumber: 1), decimal.prompt)
+    }
+
+    func testQuestionAnswersPreserveGapsAndDecodeLegacyHistory() throws {
+        let result = StudyResult(skill: "Reading", title: "Practice", correct: 1, total: 3,
+                                 questionAnswers: ["TRUE", "", "C"])
+        let encoded = try StudyPersistence.encode(result)
+        XCTAssertEqual(try JSONDecoder().decode(StudyResult.self, from: encoded).questionAnswers, ["TRUE", "", "C"])
+        var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        legacy.removeValue(forKey: "questionAnswers")
+        legacy["response"] = "TRUE"
+        let decoded = try JSONDecoder().decode(StudyResult.self, from: JSONSerialization.data(withJSONObject: legacy))
+        XCTAssertNil(decoded.questionAnswers)
+        XCTAssertEqual(decoded.response, "TRUE")
     }
 
     func testEnglishAndJapaneseCatalogsAreBundled() throws {

@@ -78,6 +78,7 @@ struct StudyResult: Codable, Equatable, Identifiable {
     var recordingFile: String?
     var paper: ExamUnit?
     var attemptID: UUID?
+    var questionAnswers: [String]?
 
 }
 
