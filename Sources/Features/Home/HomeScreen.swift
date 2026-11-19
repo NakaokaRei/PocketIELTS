@@ -265,9 +265,6 @@ struct VocabularyScreen: View {
                         HStack(alignment: .top) {
                             Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
                             Spacer()
-                            Button(String(localized: "単語を削除"), systemImage: "trash") { deleting = entry }
-                                .labelStyle(.iconOnly).frame(width: 44, height: 44).foregroundStyle(StudyColors.error).buttonStyle(.plain)
-                                .accessibilityIdentifier("vocabulary.delete")
                         }
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
@@ -449,11 +446,6 @@ struct SavedPapersScreen: View {
                                         Spacer(minLength: 0)
                                     }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                                 }.buttonStyle(.plain)
-                                Button(String(localized: "保存した問題を削除"), systemImage: "trash") { deleting = paper }
-                                    .labelStyle(.iconOnly).font(.system(size: 19))
-                                    .frame(width: 44, height: 44).contentShape(Rectangle())
-                                    .foregroundStyle(StudyColors.error).buttonStyle(.plain)
-                                    .accessibilityIdentifier("saved.delete")
                             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                                 .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
                                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {

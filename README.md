@@ -9,7 +9,7 @@ Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-home.png" width="250" alt="iPhone home with four color-coded IELTS skills" />
   <img src="Documentation/Screenshots/iphone-selection.png" width="250" alt="Tap a word in a reading passage to save it with its original context" />
-  <img src="Documentation/Screenshots/iphone-vocabulary.png" width="250" alt="Vocabulary entry with AI questions, deletion and a link to the original exercise" />
+  <img src="Documentation/Screenshots/iphone-vocabulary.png" width="250" alt="Vocabulary entry with AI questions and a link to the original exercise" />
 </p>
 
 ## A complete study loop
@@ -170,7 +170,7 @@ If using `xcodebuild -clonedSourcePackagesDirPath`, also pass `LICENSE_PLIST_PAC
 
 <img src="Documentation/Screenshots/iphone-saved-questions.png" width="280" alt="Saved questions grouped by skill and section" />
 
-Saved questions are available from Home and the skill selection screens, grouped by Reading, Listening, Writing and Speaking, then by Section, Part or Task. Each skill shows its saved count. Use the trash button on a saved question to remove it after confirmation. Learning history and saved vocabulary are retained; deletion records sync through iCloud, and you can explicitly save the question again later.
+Saved questions are available from Home and the skill selection screens, grouped by Reading, Listening, Writing and Speaking, then by Section, Part or Task. Each skill shows its saved count. Swipe a saved question to reveal Delete, then confirm to remove it. Learning history and saved vocabulary are retained; deletion records sync through iCloud, and you can explicitly save the question again later.
 
 Listening audio uses separate, consistent voices for dialogue speakers. Speaker labels are excluded from spoken input. Generation progress shows the percentage of completed audio segments and reaches 100% before playback. Completed segments are cached on the device. Audio generation requires your own OpenAI API key and incurs API charges; ChatGPT sign-in remains separate.
 
