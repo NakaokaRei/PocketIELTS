@@ -4,7 +4,7 @@
 
 **Practice a skill. Save an expression. Pick up where you left off.**
 
-Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. The interface is currently in Japanese; practice materials are in English.
+Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. The interface supports **Japanese and English**, following your iOS app language. Practice materials remain in English.
 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-home.png" width="250" alt="iPhone home with four color-coded IELTS skills" />
@@ -31,6 +31,29 @@ Speaking feedback evaluates the transcript, not pronunciation or acoustic fluenc
 Fresh questions are prepared with a gently floating book, an estimated percentage and a count of completed, validated sections. The percentage is **a time-based estimate, not progress reported by the AI service**; each unfinished section stays below completion until its response is validated. The illustration animates separately from progress text at up to 60 updates per second. Reduce Motion keeps it still; inactive scenes pause it. Generation can be cancelled, and failed multi-part generation resumes from the sections already completed.
 
 In each part card, **Practice bundled questions** opens the included exercise. **Generate new questions** requests fresh material through ChatGPT.
+
+## Clear questions and useful next steps
+
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying.
+
+The tutor offers six editable question starters: meaning, grammar, paraphrases and examples, answer evidence, alternative choices and a hint. Selecting one fills the draft; you decide when to send it.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-questions.png" width="250" alt="Question instructions and separate radio choices" />
+  <img src="Documentation/Screenshots/iphone-review-actions.png" width="250" alt="Review with distinct result, save, AI and retry buttons" />
+  <img src="Documentation/Screenshots/iphone-tutor-en.png" width="250" alt="English tutor with editable learning question suggestions" />
+</p>
+
+## Your language and appearance
+
+Choose **System, Light or Dark** in Settings. The open settings sheet updates immediately, and the preference is saved on the device. App language follows the iOS language setting for Pocket IELTS. New AI explanations and feedback request the interface language; previously saved text is preserved in its original language.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-settings-en.png" width="250" alt="English settings and appearance choices" />
+  <img src="Documentation/Screenshots/iphone-settings-dark.png" width="250" alt="Japanese settings in dark mode" />
+</p>
+
+Translations are maintained in `Resources/Localizable.xcstrings` and `Resources/InfoPlist.xcstrings`, including permission descriptions.
 
 ## Made for iPad, too
 
