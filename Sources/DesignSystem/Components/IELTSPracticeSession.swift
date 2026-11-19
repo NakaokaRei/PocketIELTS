@@ -15,12 +15,31 @@ struct IELTSPracticeSession<Content: View>: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("終了") {
+                        Button(String(localized: "終了")) {
                             finish()
                             dismiss()
                         }
                     }
                 }
         }
+    }
+}
+
+/// A visible, full-hit-area action for supporting study tasks.
+struct StudySecondaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.subheadline.weight(.semibold))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .foregroundStyle(.tint)
+            .background(.tint.opacity(configuration.isPressed ? 0.20 : 0.08), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(.tint.opacity(0.35), lineWidth: 1))
+            .contentShape(RoundedRectangle(cornerRadius: 16))
+            .opacity(isEnabled ? 1 : 0.45)
     }
 }

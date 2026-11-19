@@ -21,6 +21,9 @@ struct PocketIELTSApp: App {
     }
 
     var body: some Scene {
-        WindowGroup { StudyCloudHost(store: store).tint(StudyColors.accent) }
+        WindowGroup {
+            StudyCloudHost(store: store).tint(StudyColors.accent)
+                .preferredColorScheme(store.settings.appearance == "light" ? .light : store.settings.appearance == "dark" ? .dark : nil)
+        }
     }
 }

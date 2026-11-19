@@ -5,6 +5,7 @@ import Foundation
 struct SettingsFeature {
     @ObservableState
     struct State: Equatable {
+        @Shared(.appStorage("appearance")) var appearance = "system"
         var account = AccountClient.Status()
         var connecting = false
         var canPractice: Bool { account.active != nil }
@@ -14,6 +15,7 @@ struct SettingsFeature {
         case refreshAccount, signIn(ChatGPTAccount.Profile?), signOut
         case accountChanged(AccountClient.Status, String?)
         case opened
+        case setAppearance(String)
     }
 
     @Dependency(AccountClient.self) var accounts
@@ -23,6 +25,10 @@ struct SettingsFeature {
             state.error = nil
             do {
                 switch action {
+                case let .setAppearance(value):
+                    guard ["system", "light", "dark"].contains(value) else { return .none }
+                    state.$appearance.withLock { $0 = value }
+                    return .none
                 case .refreshAccount, .signIn, .signOut:
                     guard !state.connecting else { return .none }
                     if case .refreshAccount = action {} else { state.connecting = true }

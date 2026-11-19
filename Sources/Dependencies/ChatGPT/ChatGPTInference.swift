@@ -17,7 +17,7 @@ enum ChatGPTInference {
         try check(response)
         let catalog = try JSONDecoder().decode(ModelCatalog.self, from: data)
         guard let model = catalog.models.first(where: { $0.visibility == "list" }) else {
-            throw StudyError.message("このChatGPTアカウントで利用できるモデルがありません。")
+            throw StudyError.message(String(localized: "このChatGPTアカウントで利用できるモデルがありません。"))
         }
         var request = URLRequest(url: URL(string: "https://api.openai.com/v1/responses")!)
         request.httpMethod = "POST"
@@ -39,19 +39,19 @@ enum ChatGPTInference {
             switch event.type {
             case "response.output_text.delta": text += event.delta ?? ""
             case "response.completed" where !text.isEmpty: return text
-            case "response.failed", "error": throw StudyError.message("応答を生成できませんでした。ChatGPTの利用枠と接続状態を確認してください。")
-            case "response.incomplete": throw StudyError.message("応答が途中で終了しました。")
+            case "response.failed", "error": throw StudyError.message(String(localized: "応答を生成できませんでした。ChatGPTの利用枠と接続状態を確認してください。"))
+            case "response.incomplete": throw StudyError.message(String(localized: "応答が途中で終了しました。"))
             default: continue
             }
         }
-        throw StudyError.message("完全な応答を受信できませんでした。")
+        throw StudyError.message(String(localized: "完全な応答を受信できませんでした。"))
     }
     private static func check(_ response: URLResponse) throws {
         switch (response as? HTTPURLResponse)?.statusCode {
         case 200: return
-        case 401, 403: throw StudyError.message("設定でChatGPTに再接続してください。")
-        case 429: throw StudyError.message("ChatGPTの利用上限に達しました。")
-        default: throw StudyError.message("ChatGPTに接続できませんでした。")
+        case 401, 403: throw StudyError.message(String(localized: "設定でChatGPTに再接続してください。"))
+        case 429: throw StudyError.message(String(localized: "ChatGPTの利用上限に達しました。"))
+        default: throw StudyError.message(String(localized: "ChatGPTに接続できませんでした。"))
         }
     }
 }

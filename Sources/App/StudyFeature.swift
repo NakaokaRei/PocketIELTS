@@ -130,12 +130,12 @@ struct StudyFeature {
                 guard !state.asking else { return .none }
                 let question = question.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !question.isEmpty else { return .none }
-                let conversation = state.messages.map { ($0.isUser ? "学習者: " : "チューター: ") + $0.text }.joined(separator: "\n")
+                let conversation = state.messages.map { ($0.isUser ? String(localized: "学習者: ") : String(localized: "チューター: ")) + $0.text }.joined(separator: "\n")
                 state.messages.append(TutorMessage(isUser: true, text: question))
                 state.asking = true
                 state.explanation = nil
                 return .run { send in
-                    let answer = try await client.explain(context + "\nこれまでの会話:\n" + conversation, question)
+                    let answer = try await client.explain(context + String(localized: "\nこれまでの会話:\n") + conversation, question)
                     try Task.checkCancellation()
                     await send(.explained(answer))
                 } catch: { error, send in

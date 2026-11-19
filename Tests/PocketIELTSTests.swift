@@ -169,6 +169,40 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertTrue(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
     }
 
+    func testInlineOptionsPreserveSemicolonsAndRemoveDuplicateNumber() {
+        let instruction = "Choose the correct letter, A, B or C. Write ONE LETTER only. A. Mill Lane Repair Morning; B. Oakfield Library; Collecting Reserved Books; C. Community Garden."
+        let layout = StudyQuestionLayout(instruction)
+        XCTAssertEqual(layout.options.map(\.label), ["A", "B", "C"])
+        XCTAssertEqual(layout.options[1].text, "Oakfield Library; Collecting Reserved Books")
+        XCTAssertTrue(layout.formatted.contains("\n\nB. Oakfield"))
+        let question = ReadingSet.Question(instruction: instruction, prompt: "1. 1. how to collect a reserved item", answers: ["B"], explanation: "")
+        XCTAssertEqual(question.displayPrompt(number: 14, localNumber: 1), "how to collect a reserved item")
+        XCTAssertEqual(question.choiceText("B"), "B. Oakfield Library; Collecting Reserved Books")
+    }
+
+    func testQuestionLayoutHandlesBundledOptionsAndPreservesOrdinaryProse() throws {
+        let units = try ExamUnit.load()
+        let choice = try XCTUnwrap(units.first { $0.id == "Listening / Part 2" }?.questions.first)
+        XCTAssertEqual(StudyQuestionLayout(choice.prompt).options.map(\.label), ["A", "B", "C"])
+        XCTAssertEqual(choice.choiceText("B"), "B. Beside the fountain")
+        let heading = try XCTUnwrap(units.first { $0.id == "Reading / Section 3" }?.questions.first)
+        XCTAssertEqual(StudyQuestionLayout(heading.instruction).options.count, 6)
+        let prose = "A library needs space. B. Smith manages it; opening times vary."
+        XCTAssertEqual(StudyQuestionLayout(prose).formatted, prose)
+        let decimal = ReadingSet.Question(instruction: "", prompt: "1.5 metres is the minimum distance.", answers: ["TRUE"], explanation: "")
+        XCTAssertEqual(decimal.displayPrompt(number: 1, localNumber: 1), decimal.prompt)
+    }
+
+    func testEnglishAndJapaneseCatalogsAreBundled() throws {
+        let english = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "en", ofType: "lproj"))))
+        let japanese = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "ja", ofType: "lproj"))))
+        XCTAssertEqual(english.localizedString(forKey: "設定", value: nil, table: nil), "Settings")
+        XCTAssertEqual(japanese.localizedString(forKey: "設定", value: nil, table: nil), "設定")
+        let format = english.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
+        XCTAssertEqual(String(format: format, "1", "3"), "Sections ready: 1 / 3")
+        XCTAssertTrue(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Record"))
+    }
+
     func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
         let word = SavedExpression(expression: "library", source: "Reading", sourceText: "The library is open.")
         var phone = CloudStudyJournal(), tablet = CloudStudyJournal()

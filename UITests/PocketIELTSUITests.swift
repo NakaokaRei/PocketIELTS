@@ -8,7 +8,7 @@ final class PocketIELTSUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments = ["--ui-testing", "--ui-reset"]
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing", "--ui-reset"]
         app.launch()
         XCUIDevice.shared.orientation = .portrait
     }
@@ -24,6 +24,17 @@ final class PocketIELTSUITests: XCTestCase {
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
+    private func backgroundBrightness() -> Double {
+        let image = XCUIScreen.main.screenshot().image.cgImage!
+        var pixel = [UInt8](repeating: 0, count: 4)
+        let context = CGContext(data: &pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+                                space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        context.translateBy(x: -CGFloat(image.width) * 0.03, y: -CGFloat(image.height) * 0.5)
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        return Double(Int(pixel[0]) + Int(pixel[1]) + Int(pixel[2])) / (3 * 255)
+    }
+
     private func openReading() {
         let reading = app.buttons["home.skill.Reading"]
         XCTAssertTrue(reading.waitForExistence(timeout: 10)); reading.tap()
@@ -40,12 +51,12 @@ final class PocketIELTSUITests: XCTestCase {
         save.tap()
         XCTAssertTrue(app.staticTexts["単語帳に保存しました"].waitForExistence(timeout: 5))
         app.terminate()
-        app.launchArguments = ["--ui-testing"]
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
         app.launch()
         navigate("単語帳", tag: 2)
         XCTAssertTrue(app.buttons["元の問題を復習"].waitForExistence(timeout: 5))
         app.terminate()
-        app.launchArguments = ["--ui-testing"]
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
         app.launch()
         navigate("単語帳", tag: 2)
         XCTAssertTrue(app.buttons["元の問題を復習"].waitForExistence(timeout: 5))
@@ -65,12 +76,75 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.menuItems["AIに質問"].waitForExistence(timeout: 5))
         app.menuItems["AIに質問"].tap()
         XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
-        XCTAssertTrue(app.textFields["追加で質問…"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["tutor.quick.0"].exists)
+        app.buttons["tutor.quick.0"].tap()
+        XCTAssertTrue((app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.value as? String ?? "").contains("この文脈での意味"))
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-tutor" : "iphone-tutor")
+    }
+
+    func testReadableChoicesAndAnswerSelection() {
+        app.buttons["home.skill.Listening"].tap()
+        app.buttons["part.open.Listening / Part 2"].tap()
+        let choice = app.buttons["answer.choice.0.B"]
+        for _ in 0..<10 where !choice.isHittable { app.swipeUp() }
+        XCTAssertTrue(choice.isHittable)
+        XCTAssertTrue(app.staticTexts["Question 11"].exists)
+        XCTAssertTrue(app.textViews["study.text.Listening / Part 2choice-0-B"].exists)
+        choice.tap()
+        XCTAssertEqual(choice.value as? String, "選択済み")
+        capture("iphone-questions")
+    }
+
+    func testAppearancePersistsAndCanFollowSystem() {
+        app.buttons["home.settings"].tap()
+        let picker = app.segmentedControls["settings.appearance"]
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        picker.buttons["ダーク"].tap()
+        XCTAssertTrue(picker.buttons["ダーク"].isSelected)
+        XCTAssertLessThan(backgroundBrightness(), 0.4, "The open settings sheet must become dark")
+        capture("iphone-settings-dark")
+        app.buttons["完了"].tap()
+        capture("iphone-home-dark")
+        app.terminate(); app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]; app.launch()
+        app.buttons["home.settings"].tap()
+        XCTAssertTrue(picker.buttons["ダーク"].isSelected)
+        picker.buttons["ライト"].tap()
+        XCTAssertTrue(picker.buttons["ライト"].isSelected)
+        XCTAssertGreaterThan(backgroundBrightness(), 0.6, "The open settings sheet must become light")
+        capture("iphone-settings-light")
+        picker.buttons["システム"].tap()
+        XCTAssertTrue(picker.buttons["システム"].isSelected)
+    }
+
+    func testEnglishInterfaceAndTutorSuggestions() {
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "--ui-testing", "--ui-reset"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["What will you practice today?"].waitForExistence(timeout: 5))
+        capture("iphone-home-en")
+        app.buttons["home.settings"].tap()
+        let picker = app.segmentedControls["settings.appearance"]
+        XCTAssertTrue(picker.buttons["System"].waitForExistence(timeout: 5))
+        XCTAssertTrue(picker.buttons["Light"].exists)
+        XCTAssertTrue(picker.buttons["Dark"].exists)
+        capture("iphone-settings-en")
+        app.buttons["Done"].tap()
+        openReading()
+        let passage = app.textViews["study.text.Reading / Section 1passage-0"]
+        passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
+        XCTAssertTrue(app.menuItems["Save word"].waitForExistence(timeout: 5))
+        app.menuItems["Ask AI"].tap()
+        XCTAssertTrue(app.buttons["tutor.quick.0"].waitForExistence(timeout: 5))
+        app.buttons["tutor.quick.0"].tap()
+        let input = app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch
+        XCTAssertTrue((input.value as? String ?? "").contains("simple English"))
+        capture("iphone-tutor-en")
     }
 
     func testGenerationLoadingAndCancel() {
         app.terminate()
-        app.launchArguments = ["--ui-testing", "--ui-reset", "--ui-generation-preview"]
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing", "--ui-reset", "--ui-generation-preview"]
         app.launch()
         app.buttons["home.skill.Reading"].tap()
         app.buttons["新しい問題を生成して練習"].firstMatch.tap()
@@ -89,7 +163,11 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
         let retry = app.buttons["practice.retry"]
         for _ in 0..<20 where !retry.isHittable { app.swipeUp(velocity: .fast) }
-        XCTAssertTrue(retry.isHittable); retry.tap()
+        XCTAssertTrue(retry.isHittable)
+        XCTAssertTrue(app.buttons["practice.save"].isHittable)
+        XCTAssertTrue(app.buttons["practice.ask"].isHittable)
+        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-review-actions" : "iphone-review-actions")
+        retry.tap()
         XCTAssertTrue(app.buttons["practice.review"].exists)
         app.buttons["practice.finish"].tap()
         app.buttons["練習を終了"].tap()
@@ -119,7 +197,7 @@ final class PocketIELTSUITests: XCTestCase {
         }
         review.tap()
         XCTAssertTrue(app.buttons["AIの講評を見る"].waitForExistence(timeout: 5))
-        app.terminate(); app.launchArguments = ["--ui-testing"]; app.launch()
+        app.terminate(); app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]; app.launch()
         navigate("学習記録", tag: 1)
         let history = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Writing")).firstMatch
         for _ in 0..<8 where !history.isHittable { app.swipeUp(velocity: .fast) }
@@ -154,7 +232,7 @@ final class PocketIELTSUITests: XCTestCase {
         capture(prefix + "-selection")
         app.menuItems["単語帳に追加"].tap()
         app.terminate()
-        app.launchArguments = ["--ui-testing"]
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
         app.launch()
         navigate("単語帳", tag: 2)
         XCTAssertTrue(app.buttons["元の問題を復習"].waitForExistence(timeout: 5))

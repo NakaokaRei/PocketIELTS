@@ -51,7 +51,7 @@ final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate {
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
         guard var presenter = scene?.keyWindow?.rootViewController else {
-            finish(.failure(StudyError.message("認証画面を開けませんでした。"))); return
+            finish(.failure(StudyError.message(String(localized: "認証画面を開けませんでした。")))); return
         }
         while let next = presenter.presentedViewController { presenter = next }
         let safari = SFSafariViewController(url: url)
