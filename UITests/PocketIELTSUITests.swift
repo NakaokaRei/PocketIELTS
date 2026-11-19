@@ -12,6 +12,11 @@ final class PocketIELTSUITests: XCTestCase {
         app.launch()
         XCUIDevice.shared.orientation = .portrait
     }
+    override func tearDown() {
+        app.terminate()
+        app = nil
+        super.tearDown()
+    }
     private func navigate(_ title: String, tag: Int) {
         if app.tabBars.buttons[title].exists { app.tabBars.buttons[title].tap() }
         else {
@@ -328,7 +333,10 @@ final class PocketIELTSUITests: XCTestCase {
         for _ in 0..<12 where !editor.isHittable { app.swipeUp(velocity: .fast) }
         XCTAssertTrue(editor.isHittable)
         editor.tap(); editor.typeText("Dear Sir, I am writing about the heater in my flat. It has not worked since Monday. Please arrange a repair this week. Yours faithfully, Alex")
-        app.buttons["入力を完了"].tap()
+        let dismissKeyboard = app.buttons["practice.dismissKeyboard"]
+        XCTAssertTrue(dismissKeyboard.waitForExistence(timeout: 5))
+        XCTAssertTrue(dismissKeyboard.isHittable)
+        dismissKeyboard.tap()
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         let review = app.buttons["practice.review"]
         for _ in 0..<10 {
@@ -336,7 +344,9 @@ final class PocketIELTSUITests: XCTestCase {
             app.swipeUp(velocity: .fast)
         }
         review.tap()
-        XCTAssertTrue(app.buttons["AIの講評を見る"].waitForExistence(timeout: 5))
+        let assessment = app.buttons["AIの講評を見る"]
+        for _ in 0..<8 where !assessment.isHittable { app.swipeUp() }
+        XCTAssertTrue(assessment.waitForExistence(timeout: 5))
         app.terminate(); app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]; app.launch()
         navigate("学習記録", tag: 1)
         let history = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Writing")).firstMatch
