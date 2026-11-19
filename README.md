@@ -175,3 +175,24 @@ Saved questions are available from Home and the skill selection screens, grouped
 Listening audio uses separate, consistent voices for dialogue speakers. Speaker labels are excluded from spoken input. Generation progress shows the percentage of completed audio segments and reaches 100% before playback. Completed segments are cached on the device. Audio generation requires your own OpenAI API key and incurs API charges; ChatGPT sign-in remains separate.
 
 AI tutor answers use Apple's Foundation Markdown parser with native selectable text for headings, emphasis and lists. Selected words can still be saved.
+
+
+## Offline learning and your own vocabulary
+
+Open **Offline practice** on Home to choose from the 12 bundled General Training parts: 3 Reading sections, 4 Listening parts, 2 Writing tasks and 3 Speaking parts. The included Reading passages, 40 questions, marking and explanations need no sign-in or internet. Writing prompts and Speaking topics are also bundled. AI feedback, live conversations and generating new Listening audio require internet; audio is not preinstalled with the app.
+
+Vocabulary has two separate areas: **My vocabulary** for your saved expressions, and **IELTS word library** with 60 original words, English definitions and examples. The three levels (Foundation 4–5, Developing 5.5–6.5 and Advanced 7+) are study guides, not official IELTS word lists or score guarantees. The standard collection is available offline and never populates or changes your personal saved words.
+
+Tap **+** in Vocabulary to add a word or phrase and an optional example sentence. You can ask the AI tutor about the entered expression before saving, or from its saved card afterward. Blank entries and duplicate manually added words are prevented. Personal entries use the existing iCloud synchronization and swipe-to-delete flow.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-word-library.png" width="250" alt="Separate offline vocabulary collection with three learning levels and English examples" />
+  <img src="Documentation/Screenshots/iphone-offline-library.png" width="250" alt="Offline practice library with bundled Reading sections" />
+  <img src="Documentation/Screenshots/ipad-add-vocabulary.png" width="320" alt="iPad vocabulary editor with optional example, AI question and save actions" />
+</p>
+
+## Signing in on Mac
+
+For **My Mac (Designed for iPad)**, ChatGPT sign-in now uses `ASWebAuthenticationSession` while the app keeps its loopback listener alive. The previous Safari view-controller path is retained on iPhone and iPad. [Apple documents the external-browser behavior of Safari view controllers on Mac Catalyst](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller).
+
+After updating, start a new sign-in from Settings; an old localhost error tab belongs to an expired attempt and cannot complete a new sign-in. The callback is checked against the original OAuth state, and the listener is cleaned up after completion or cancellation. A local integration test verifies the callback without an OpenAI request. Live account authentication still requires verification on the Mac with the user's account.

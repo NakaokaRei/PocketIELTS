@@ -93,6 +93,11 @@ struct HomeScreen: View {
     }
     private var summaryCards: some View {
         VStack(spacing: 24) {
+        NavigationLink { OfflineLibraryScreen(units: units, store: store) } label: {
+            Label(String(localized: "Offline practice"), systemImage: "books.vertical.fill")
+                .font(StudyTypography.button).frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+        }.buttonStyle(.plain).accessibilityIdentifier("home.offline")
         NavigationLink { SavedPapersScreen(store: store) } label: {
             HStack(spacing: 12) {
                 Image(systemName: "bookmark.fill").font(.title2)
@@ -248,6 +253,7 @@ struct ProgressScreen: View {
 
 struct VocabularyScreen: View {
     let store: StoreOf<StudyFeature>
+    @State private var adding = false
     @State private var deleting: SavedExpression?
     @State private var tutor = false
     @State private var context = ""
@@ -255,13 +261,20 @@ struct VocabularyScreen: View {
     var body: some View {
         List {
             Section {
-                Text(String(localized: "保存した表現")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                NavigationLink { VocabularyLibraryScreen(store: store) } label: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label(String(localized: "IELTS word library"), systemImage: "books.vertical.fill").font(StudyTypography.heading)
+                        Text(String(localized: "60 words · 3 levels · Offline")).font(StudyTypography.subheadline)
+                    }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                        .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
+                }.buttonStyle(.plain).accessibilityIdentifier("vocabulary.library")
+                Text(String(localized: "My vocabulary")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                 if store.vocabulary.isEmpty {
                     ContentUnavailableView(String(localized: "単語帳は空です"), systemImage: "book", description: Text(String(localized: "本文や解説を長押しして表現を追加できます。")))
                 }
                 ForEach(store.vocabulary) { entry in
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(entry.source).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
+                        Text(entry.sourceID == "manual" ? String(localized: "My vocabulary") : entry.source).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                         HStack(alignment: .top) {
                             Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
                             Spacer()
@@ -287,6 +300,11 @@ struct VocabularyScreen: View {
         }.listStyle(.plain).scrollContentBackground(.hidden)
             .frame(maxWidth: 800).frame(maxWidth: .infinity)
             .background(Color(uiColor: .systemGroupedBackground))
+        .toolbar { ToolbarItem(placement: .topBarTrailing) {
+            Button(String(localized: "Add vocabulary"), systemImage: "plus") { adding = true }
+                .accessibilityIdentifier("vocabulary.add")
+        } }
+        .sheet(isPresented: $adding) { AddVocabularyScreen(store: store) }
         .alert(String(localized: "この単語を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { entry in
             Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id)); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }

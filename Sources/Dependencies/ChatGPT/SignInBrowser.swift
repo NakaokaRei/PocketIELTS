@@ -1,9 +1,26 @@
+import AuthenticationServices
 import Network
 import SafariServices
 
-/// Safari keeps the app active while the system browser follows the IPv4 loopback redirect.
+/// Owns the IPv4 loopback listener for the entire authentication session.
+/// iOS uses in-app Safari; iPad apps on Mac use a system authentication session.
 @MainActor
-final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate {
+final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate, ASWebAuthenticationPresentationContextProviding {
+    private var authenticationSession: ASWebAuthenticationSession?
+    private let presentForTesting: ((URL) -> Void)?
+
+    init(presentForTesting: ((URL) -> Void)? = nil) {
+        self.presentForTesting = presentForTesting
+        super.init()
+    }
+
+    static var usesSystemAuthentication: Bool {
+        #if targetEnvironment(macCatalyst)
+        true
+        #else
+        ProcessInfo.processInfo.isiOSAppOnMac
+        #endif
+    }
     private var browser: SFSafariViewController?
     private var listener: NWListener?
     private var pending: CheckedContinuation<(URL, URL), Error>?
@@ -47,7 +64,27 @@ final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate {
         } onCancel: { Task { @MainActor in self.finish(.failure(CancellationError())) } }
     }
 
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }?.keyWindow ?? ASPresentationAnchor()
+    }
+
     private func present(_ url: URL) {
+        if let presentForTesting { presentForTesting(url); return }
+        if Self.usesSystemAuthentication {
+            // On Mac, SafariViewController hands off to an external browser. Its
+            // dismissal must not terminate the loopback listener before OAuth returns.
+            // Keep a system authentication session alive until the listener completes.
+            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: nil) { [weak self] _, error in
+                Task { @MainActor in
+                    if let error { self?.finish(.failure(error)) }
+                }
+            }
+            session.presentationContextProvider = self
+            authenticationSession = session
+            if !session.start() { finish(.failure(URLError(.cannotConnectToHost))) }
+            return
+        }
         let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
             .first { $0.activationState == .foregroundActive }
         guard var presenter = scene?.keyWindow?.rootViewController else {
@@ -108,6 +145,8 @@ final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate {
         listener = nil
         for connection in connections.values { connection.cancel() }
         connections.removeAll()
+        authenticationSession?.cancel()
+        authenticationSession = nil
         browser?.dismiss(animated: true)
         browser = nil
         pending.resume(with: result)

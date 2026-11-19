@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+ A02000000000000000000001 = {isa = PBXBuildFile; fileRef = A02000000000000000000002; };
  A01900000000000000000001 /* SpeakingConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01900000000000000000002; };
  A01100000000000000000001 /* ListeningAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000002; };
 		B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000004 /* InfoPlist.xcstrings */; };
@@ -53,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+ A02000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyLibrary.swift; sourceTree = "<group>"; };
  A01900000000000000000002 /* SpeakingConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingConversation.swift; sourceTree = "<group>"; };
  A01100000000000000000002 /* ListeningAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningAudio.swift; sourceTree = "<group>"; };
 		B7A002000000000000000004 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				AA865B7E47DB2BBB078CE65E /* HomeScreen.swift */,
+ A02000000000000000000002,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -472,6 +475,7 @@
 				C4DA482D9A7B4FE68ED2286B /* StudySpacing.swift in Sources */,
 				4D21F79A5608C3D359256B5B /* StudyTypography.swift in Sources */,
 				41E74FB0095767DA2A5F28C5 /* HomeScreen.swift in Sources */,
+ A02000000000000000000001,
 				1C14DA6C771A646B3C3C1441 /* PracticeScreen.swift in Sources */,
 				679B5B2CDEAE57E1A1265877 /* SettingsFeature.swift in Sources */,
 				7D0B4D53CA4E8E6E023CB55C /* SettingsScreen.swift in Sources */,

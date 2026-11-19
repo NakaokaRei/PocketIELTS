@@ -46,6 +46,50 @@ final class PocketIELTSUITests: XCTestCase {
         let part = app.buttons["part.open.Reading / Section 1"]
         XCTAssertTrue(part.waitForExistence(timeout: 5)); part.tap()
     }
+
+    func testManualVocabularyAndSeparateLibrary() {
+        navigate("単語帳", tag: 2)
+        app.buttons["vocabulary.add"].tap()
+        let field = app.descendants(matching: .any).matching(identifier: "vocabulary.expression").firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["vocabulary.saveManual"].isEnabled)
+        field.tap(); field.typeText("resilient")
+        if app.buttons["入力を完了"].exists { app.buttons["入力を完了"].tap() }
+        capture("iphone-add-vocabulary")
+        app.buttons["vocabulary.composeAI"].tap()
+        XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["tutor.quick.0"].exists)
+        app.buttons["完了"].tap()
+        app.buttons["vocabulary.saveManual"].tap()
+        XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
+        capture("iphone-my-vocabulary")
+        app.buttons["vocabulary.library"].tap()
+        XCTAssertTrue(app.staticTexts["accommodation"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["resilient"].exists)
+        capture("iphone-word-library")
+        app.buttons["library.level.2"].tap()
+        let ask = app.buttons["library.ask.alleviate"]
+        for _ in 0..<4 where !ask.isHittable { app.swipeUp() }
+        ask.tap()
+        XCTAssertTrue(app.staticTexts["alleviate"].waitForExistence(timeout: 5))
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(ja)", "--ui-testing"]
+        app.launch(); navigate("単語帳", tag: 2)
+        XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
+    }
+
+    func testOfflineLibraryOpensBundledReading() {
+        let library = app.buttons["home.offline"]
+        for _ in 0..<6 where !library.isHittable { app.swipeUp() }
+        library.tap()
+        let reading = app.buttons["offline.open.Reading / Section 1"]
+        XCTAssertTrue(reading.waitForExistence(timeout: 5))
+        capture("iphone-offline-library")
+        reading.tap()
+        XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.textViews["study.text.Reading / Section 1passage-0"].exists)
+    }
+
     func testTapExpressionSaveAndReopenAfterRelaunch() {
         openReading()
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]

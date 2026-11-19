@@ -6,6 +6,40 @@ import ComposableArchitecture
 
 @MainActor
 final class PocketIELTSTests: XCTestCase {
+    func testLoopbackAuthenticationSurvivesInvalidRequestAndCompletes() async throws {
+        let opened = expectation(description: "Browser opens only after listener is ready")
+        var redirect: URL?
+        let browser = SignInBrowser(presentForTesting: { redirect = $0; opened.fulfill() })
+        let task = Task { try await browser.authorize(state: "test-state") { $0 } }
+        defer { task.cancel() }
+        await fulfillment(of: [opened], timeout: 5)
+        let base = try XCTUnwrap(redirect)
+        XCTAssertEqual(base.host, "127.0.0.1")
+        let session = URLSession(configuration: .ephemeral)
+        defer { session.invalidateAndCancel() }
+        // A stale browser tab cannot consume the active sign-in attempt.
+        let invalid = URL(string: base.absoluteString + "?state=wrong&code=fixture")!
+        _ = try? await session.data(from: invalid)
+        let valid = URL(string: base.absoluteString + "?state=test-state&code=fixture")!
+        let (data, response) = try await session.data(from: valid)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("Pocket IELTS"))
+        let (callback, returnedRedirect) = try await task.value
+        XCTAssertEqual(callback, valid)
+        XCTAssertEqual(returnedRedirect, base)
+    }
+
+    func testOfflineLibraryHasAllPartsAndIndependentVocabulary() throws {
+        let units = try ExamUnit.load()
+        XCTAssertEqual(units.count, 12)
+        XCTAssertEqual(units.filter { $0.skill == "Reading" }.flatMap(\.questions).count, 40)
+        XCTAssertEqual(units.filter { $0.skill == "Listening" }.flatMap(\.questions).count, 40)
+        XCTAssertEqual(StarterWord.all.count, 60)
+        XCTAssertEqual(Set(StarterWord.all.map(\.id)).count, 60)
+        for level in 0..<3 { XCTAssertEqual(StarterWord.all.filter { $0.level == level }.count, 20) }
+        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.definition.isEmpty && !$0.example.isEmpty })
+    }
+
     func testSpeakingReceivedAudioActuallyRendersAndInterruptionClearsIt() throws {
         // Exercise the real AVAudioEngine graph offline: no microphone, key, or API call.
         let engine = AVAudioEngine()
