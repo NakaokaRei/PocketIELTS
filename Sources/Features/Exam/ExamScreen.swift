@@ -84,7 +84,6 @@ struct ExamScreen: View {
     @State private var context = ""
     @State private var saved = false
     @State private var recording = false
-    @State private var vocabulary = false
     @State private var settings = false
     @State private var audio = SpeakingRecorder()
     private var unit: ExamUnit { units[position] }
@@ -145,7 +144,6 @@ struct ExamScreen: View {
             TutorScreen(store: store, context: context)
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
-        .sheet(isPresented: $vocabulary) { NavigationStack { VocabularyScreen(store: store).navigationTitle("単語帳").toolbar { Button("完了") { vocabulary = false } } } }
         .sheet(isPresented: $recording, onDismiss: { audio.stop() }) {
             RecordingScreen(recorder: audio, title: unit.id, prompt: ([unit.title] + unit.passages + unit.oral).joined(separator: "\n\n"))
         }
@@ -279,7 +277,7 @@ struct ExamScreen: View {
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            if let script = part.audio { DisclosureGroup("スクリプト") { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }, onVocabulary: { vocabulary = true }) } }
+            if let script = part.audio { DisclosureGroup("スクリプト") { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }) } }
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
@@ -326,7 +324,7 @@ struct ExamScreen: View {
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
             onAsk: isMock ? nil : { openTutor(material(unit) + "\n選択範囲: " + $0.expression) },
-            onSavePaper: { store.send(.savePaper(unit)) }, onVocabulary: isMock ? nil : { vocabulary = true }, allowsAI: !isMock)
+            onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
         store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
@@ -542,6 +540,7 @@ struct GeneratedExamScreen: View {
     let store: StoreOf<StudyFeature>
     var isMock = false
     @State private var generated: [ExamUnit] = []
+    @State private var generationStarted = Date()
     @State private var error: String?
     @State private var attempt = 0
     @State private var settings = false
@@ -551,21 +550,37 @@ struct GeneratedExamScreen: View {
             if generated.count == templates.count && !generated.isEmpty {
                 ExamScreen(units: generated, store: store, isMock: isMock)
             } else {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("問題を生成中…").font(StudyTypography.title)
-                    if let error {
-                        Text(error).foregroundStyle(StudyColors.error)
-                        Button("もう一度生成") { self.error = nil; attempt += 1 }
-                        Button("ChatGPTの接続設定") { settings = true }
-                    } else { ProgressView("新しい問題を準備しています。\(generated.count) / \(templates.count)") }
-                    Button("キャンセルして戻る") { dismiss() }
-                }.padding(20)
+                GeometryReader { geometry in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            if let error {
+                                Label("生成を完了できませんでした", systemImage: "book.closed").font(.title2.bold())
+                                Text(error).foregroundStyle(StudyColors.error)
+                                Button("もう一度生成") { self.error = nil; attempt += 1 }
+                                Button("ChatGPTの接続設定") { settings = true }
+                            } else {
+                                GenerationLoadingView(completed: generated.count, total: templates.count,
+                                                      started: generationStarted)
+                            }
+                            Button("キャンセルして戻る") { dismiss() }
+                        }.padding(24).frame(maxWidth: 480)
+                            .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                    }
+                }
             }
         }
         .task(id: attempt) {
+            #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--ui-testing"),
+               ProcessInfo.processInfo.arguments.contains("--ui-generation-preview") {
+                try? await Task.sleep(for: .seconds(120))
+                return
+            }
+            #endif
             guard !templates.isEmpty else { error = "教材がありません。"; return }
             do {
                 for template in templates.dropFirst(generated.count) {
+                    generationStarted = Date()
                     let unit = try await StudyClient.generateUnit(like: template)
                     try Task.checkCancellation()
                     generated.append(unit)
@@ -598,6 +613,60 @@ struct AssessmentContent: View {
                     sourceText: entry.sourceText, meaning: entry.meaning, paper: paper,
                     sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
             }, onSavePaper: { store.send(.savePaper(paper)) })
+        }
+    }
+}
+
+/// An explicitly estimated indicator: only validated units count as completed.
+private struct GenerationLoadingView: View {
+    let completed: Int
+    let total: Int
+    let started: Date
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: reduceMotion ? 1 : 0.25)) { timeline in
+            let elapsed = max(0, timeline.date.timeIntervalSince(started))
+            let estimate = (Double(completed) + min(0.9, 0.9 * (1 - exp(-elapsed / 45)))) / Double(max(1, total))
+            VStack(spacing: 24) {
+                ZStack {
+                    Circle().fill(StudyColors.reading).frame(width: 196, height: 196)
+                    ForEach(0..<4) { index in
+                        Image(systemName: index.isMultiple(of: 2) ? "sparkle" : "circle.fill")
+                            .font(.system(size: index.isMultiple(of: 2) ? 22 : 8))
+                            .foregroundStyle(StudyColors.accent.opacity(0.65))
+                            .offset(x: index.isMultiple(of: 2) ? -90 : 90,
+                                    y: CGFloat(index - 2) * 42 + (reduceMotion ? 0 : sin(elapsed + Double(index)) * 6))
+                    }
+                    ZStack {
+                        Image(systemName: "book.fill")
+                            .font(.system(size: 100)).foregroundStyle(StudyColors.accent)
+                        HStack(spacing: 38) {
+                            Capsule().frame(width: 5, height: 8)
+                            Capsule().frame(width: 5, height: 8)
+                        }.foregroundStyle(.white).offset(x: 5, y: -10)
+                        Text("⌣").font(.system(size: 26, weight: .bold)).foregroundStyle(.white).offset(x: 5, y: 6)
+                    }
+                    .rotationEffect(.degrees(reduceMotion ? 0 : sin(elapsed * 1.8) * 5))
+                    .offset(y: reduceMotion ? 0 : sin(elapsed * 1.8) * 7)
+                }.frame(height: 220).accessibilityHidden(true)
+                VStack(spacing: 10) {
+                    Text("あなただけの問題を準備中").font(StudyTypography.roundedTitle(24))
+                    Text("小さな一歩が、大きな自信に。").font(.subheadline).foregroundStyle(.secondary)
+                }
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("進捗の目安").font(.subheadline)
+                        Spacer()
+                        Text("約 \(Int(estimate * 100))% ").monospacedDigit().bold()
+                    }
+                    ProgressView(value: estimate).tint(StudyColors.accent)
+                    Text("生成・確認済み \(completed) / \(total) セクション")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Text(elapsed > 90 ? "もう少し時間がかかっています。完了までこの画面でお待ちください。" : "本文・設問・解説を作成しています。表示は時間に基づく目安です。")
+                        .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                }.padding(20).background(StudyColors.reading.opacity(0.5), in: RoundedRectangle(cornerRadius: 20))
+            }
         }
     }
 }

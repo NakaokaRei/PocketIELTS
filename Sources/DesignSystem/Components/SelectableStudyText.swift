@@ -9,92 +9,29 @@ struct SelectableStudyText: View {
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
     var onSavePaper: (() -> Void)? = nil
-    var onVocabulary: (() -> Void)? = nil
     var allowsAI = true
-    @State private var selected: Entry?
-    @State private var afterDismiss: (() -> Void)?
-
-    var body: some View {
-        StudyTextView(text: text, sourceID: sourceID, onSave: { selected = $0 },
-                      onAsk: onAsk, onSelect: { selected = $0 })
-            .sheet(item: $selected, onDismiss: {
-                let action = afterDismiss
-                afterDismiss = nil
-                action?()
-            }) { entry in
-                SelectionActionsScreen(entry: entry, allowsAI: allowsAI, onSave: onSave, onAsk: onAsk.map { action in
-                    { value in afterDismiss = { action(value) }; selected = nil }
-                }, onSavePaper: onSavePaper, onVocabulary: onVocabulary.map { action in
-                    { afterDismiss = action; selected = nil }
-                })
-                .presentationDetents([.medium, .large])
-            }
-    }
-}
-
-private struct SelectionActionsScreen: View {
-    let entry: SelectableStudyText.Entry
-    let allowsAI: Bool
-    let onSave: (SelectableStudyText.Entry) -> Void
-    let onAsk: ((SelectableStudyText.Entry) -> Void)?
-    let onSavePaper: (() -> Void)?
-    let onVocabulary: (() -> Void)?
-    @Environment(\.dismiss) private var dismiss
-    @State private var meaning = ""
     @State private var saved = false
-    @State private var paperSaved = false
-    @State private var translating = false
-    @State private var error: String?
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    if saved {
-                        Label("単語帳に保存しました", systemImage: "checkmark.circle.fill")
-                            .font(.headline).foregroundStyle(StudyColors.accent)
-                    }
-                    Text(entry.expression).font(StudyTypography.roundedTitle(28)).textSelection(.enabled)
-                    if saved {
-                        if !meaning.isEmpty { Text(meaning) }
-                        Button("学習を続ける") { dismiss() }.buttonStyle(.borderedProminent)
-                        if let onVocabulary { Button("単語帳を見る", action: onVocabulary) }
-                    } else {
-                        Text(StudyTextSelection.excerpt(entry.sourceText, range: entry.utf16Range, expression: entry.expression)).font(.subheadline).foregroundStyle(.secondary)
-                            .textSelection(.enabled)
-                        TextField("意味・メモ（任意）", text: $meaning, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                        if allowsAI {
-                            Button("意味をAIで調べる") { translating = true; error = nil }.disabled(translating)
-                        }
-                        if translating { ProgressView("意味を確認中…") }
-                        if let error { Text(error).font(.footnote).foregroundStyle(StudyColors.error) }
-                        Button("選んだ表現を単語帳に追加", systemImage: "text.badge.plus") {
-                            var value = entry; value.meaning = meaning
-                            onSave(value); saved = true
-                        }.buttonStyle(.borderedProminent).disabled(translating)
-                        if let onAsk { Button("選んだ表現をAIに質問") { onAsk(entry) } }
-                        if let onSavePaper {
-                            Button(paperSaved ? "問題を保存しました" : "この問題を復習用に保存", systemImage: paperSaved ? "checkmark" : "bookmark") {
-                                onSavePaper(); paperSaved = true
-                            }.disabled(paperSaved)
-                        }
-                    }
-                }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        StudyTextView(text: text, sourceID: sourceID, onSave: { entry in
+            onSave(entry)
+            saved = true
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            UIAccessibility.post(notification: .announcement, argument: "単語帳に保存しました")
+        }, onAsk: allowsAI ? onAsk : nil, onSavePaper: onSavePaper)
+        .overlay(alignment: .top) {
+            if saved {
+                Label("単語帳に保存しました", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline.bold()).padding(12)
+                    .background(.regularMaterial, in: Capsule())
+                    .allowsHitTesting(false).accessibilityIdentifier("selection.saved")
             }
-            .navigationTitle("テキスト選択").navigationBarTitleDisplayMode(.inline)
-            .toolbar { Button("閉じる") { dismiss() } }
-            .task(id: translating) {
-                guard translating else { return }
-                do {
-                    let result = try await StudyClient.liveValue.explain(entry.sourceText,
-                        "選択した表現「\(entry.expression)」のこの文脈での意味を、単語帳用に短い日本語訳だけで答えてください。")
-                    try Task.checkCancellation()
-                    meaning = result
-                } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
-                translating = false
-            }
-        }.tint(StudyColors.accent)
+        }
+        .task(id: saved) {
+            guard saved else { return }
+            try? await Task.sleep(for: .seconds(2))
+            saved = false
+        }
     }
 }
 
@@ -115,15 +52,19 @@ struct StudyTextView: UIViewRepresentable {
     let sourceID: String
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
-    var onSelect: ((Entry) -> Void)? = nil
+    var onSavePaper: (() -> Void)? = nil
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
     func makeUIView(context: Context) -> UITextView {
         let view = UITextView()
+        let menu = UIEditMenuInteraction(delegate: context.coordinator)
+        view.addInteraction(menu)
+        context.coordinator.menu = menu
         view.delegate = context.coordinator
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.selectWord(_:)))
         tap.cancelsTouchesInView = false
+        tap.delegate = context.coordinator
         view.addGestureRecognizer(tap)
         view.accessibilityIdentifier = "study.text.\(sourceID)"
         view.isEditable = false
@@ -153,18 +94,45 @@ struct StudyTextView: UIViewRepresentable {
         return uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
     }
 
-    final class Coordinator: NSObject, UITextViewDelegate {
+    final class Coordinator: NSObject, UITextViewDelegate, UIEditMenuInteractionDelegate, UIGestureRecognizerDelegate {
+        var selectionAtTouch = false
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+            selectionAtTouch = (gestureRecognizer.view as? UITextView)?.selectedRange.length ?? 0 > 0
+            return true
+        }
+        weak var menu: UIEditMenuInteraction?
         var content: StudyTextView
         init(_ content: StudyTextView) { self.content = content }
 
         @objc func selectWord(_ gesture: UITapGestureRecognizer) {
-            guard let view = gesture.view as? UITextView,
+            guard let view = gesture.view as? UITextView else { return }
+            if selectionAtTouch {
+                StudySelectionDismissal.shared.clear()
+                return
+            }
+            guard
                   let position = view.closestPosition(to: gesture.location(in: view)),
                   let word = view.tokenizer.rangeEnclosingPosition(position, with: .word, inDirection: UITextDirection(rawValue: UITextStorageDirection.forward.rawValue)),
                   let expression = view.text(in: word), !expression.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-            let range = NSRange(location: view.offset(from: view.beginningOfDocument, to: word.start), length: view.offset(from: word.start, to: word.end))
-            view.selectedTextRange = word
-            content.onSelect?(Entry(expression: expression, sourceText: content.text, sourceID: content.sourceID, utf16Range: range))
+            DispatchQueue.main.async { [weak self, weak view] in
+                guard let self, let view else { return }
+                StudySelectionDismissal.shared.activate(view, menu: self.menu)
+                view.becomeFirstResponder()
+                view.selectedTextRange = word
+                self.menu?.presentEditMenu(with: UIEditMenuConfiguration(identifier: nil,
+                    sourcePoint: CGPoint(x: view.firstRect(for: word).midX, y: view.firstRect(for: word).maxY)))
+            }
+        }
+
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            if textView.selectedRange.length > 0 { StudySelectionDismissal.shared.activate(textView, menu: menu) }
+        }
+
+        func editMenuInteraction(_ interaction: UIEditMenuInteraction,
+                                 menuFor configuration: UIEditMenuConfiguration,
+                                 suggestedActions: [UIMenuElement]) -> UIMenu? {
+            guard let view = interaction.view as? UITextView else { return nil }
+            return textView(view, editMenuForTextIn: view.selectedRange, suggestedActions: suggestedActions)
         }
 
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange,
@@ -178,15 +146,79 @@ struct StudyTextView: UIViewRepresentable {
                               sourceID: current.sourceID, utf16Range: range)
             var actions: [UIMenuElement] = [
                 UIAction(title: "単語帳に追加", image: UIImage(systemName: "text.badge.plus")) { _ in
+                    StudySelectionDismissal.shared.clear()
                     current.onSave(entry)
                 }
             ]
             if let ask = current.onAsk {
                 actions.append(UIAction(title: "AIに質問", image: UIImage(systemName: "bubble.left")) { _ in
+                    StudySelectionDismissal.shared.clear()
                     ask(entry)
                 })
             }
-            return UIMenu(children: actions + suggestedActions)
+            if let savePaper = current.onSavePaper {
+                actions.append(UIAction(title: "問題を保存", image: UIImage(systemName: "bookmark")) { _ in
+                    StudySelectionDismissal.shared.clear()
+                    savePaper()
+                })
+            }
+            actions.append(UIAction(title: "コピー", image: UIImage(systemName: "doc.on.doc")) { _ in
+                UIPasteboard.general.string = entry.expression
+                StudySelectionDismissal.shared.clear()
+            })
+            return UIMenu(children: actions)
         }
     }
+}
+
+/// One non-consuming recognizer per active window; taps outside the text end selection.
+@MainActor
+private final class StudySelectionDismissal: NSObject, UIGestureRecognizerDelegate {
+    static let shared = StudySelectionDismissal()
+    private weak var active: UITextView?
+    private weak var menu: UIEditMenuInteraction?
+    private weak var window: UIWindow?
+    private lazy var tap = UITapGestureRecognizer(target: self, action: #selector(outsideTap(_:)))
+
+    func activate(_ view: UITextView, menu: UIEditMenuInteraction?) {
+        if active !== view { clear() }
+        active = view
+        self.menu = menu
+        if let nextWindow = view.window, window !== nextWindow {
+            window?.removeGestureRecognizer(tap)
+            tap.cancelsTouchesInView = false
+            tap.delegate = self
+            nextWindow.addGestureRecognizer(tap)
+            window = nextWindow
+        }
+    }
+
+    func clear() {
+        let previous = active
+        active = nil
+        menu?.dismissMenu()
+        menu = nil
+        previous?.selectedRange = NSRange(location: 0, length: 0)
+        previous?.resignFirstResponder()
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard let active else { return false }
+        guard !(touch.view?.isDescendant(of: active) ?? false) else { return false }
+        // The edit menu is presented above the content. Never consume its taps:
+        // dismissing it here would prevent the chosen UIAction from executing.
+        var ancestor = active.superview
+        while let view = ancestor {
+            if view is UIScrollView {
+                return touch.view?.isDescendant(of: view) ?? false
+            }
+            ancestor = view.superview
+        }
+        return false
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool { true }
+
+    @objc private func outsideTap(_ gesture: UITapGestureRecognizer) { clear() }
 }

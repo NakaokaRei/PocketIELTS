@@ -6,7 +6,6 @@ struct PracticeScreen: View {
     @State private var tutor = false
     @State private var context = ""
     @State private var saved = false
-    @State private var vocabulary = false
 
     var body: some View {
         IELTSPracticeSession(title: "Reading / Section \(store.section)", finish: { store.send(.finish) }) {
@@ -54,7 +53,6 @@ struct PracticeScreen: View {
             }
         }
         .alert("保存しました", isPresented: $saved) { Button("学習を続ける") {} }
-        .sheet(isPresented: $vocabulary) { NavigationStack { VocabularyScreen(store: store).navigationTitle("単語帳").toolbar { Button("完了") { vocabulary = false } } } }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context)
         }
@@ -73,7 +71,7 @@ struct PracticeScreen: View {
                 store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
                     skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [])))
             }
-        } onVocabulary: { vocabulary = true }
+        }
     }
 
     private func openTutor(_ selection: String) {

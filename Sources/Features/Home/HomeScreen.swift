@@ -153,11 +153,13 @@ struct HomeScreen: View {
                             HStack {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
+                                    Label("収録問題で練習", systemImage: "book.closed").font(.caption.bold())
                                     Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(.subheadline)
                                 }
                                 Spacer(); Image(systemName: "chevron.right")
                             }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                         }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
+                        Divider()
                         NavigationLink { GeneratedExamScreen(templates: [part], store: store) } label: {
                             Label("新しい問題を生成して練習", systemImage: "sparkles").font(.subheadline)
                         }

@@ -35,11 +35,14 @@ final class PocketIELTSUITests: XCTestCase {
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         XCTAssertTrue(passage.waitForExistence(timeout: 5))
         passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
-        let save = app.buttons["選んだ表現を単語帳に追加"]
+        let save = app.menuItems["単語帳に追加"]
         XCTAssertTrue(save.waitForExistence(timeout: 5))
         save.tap()
         XCTAssertTrue(app.staticTexts["単語帳に保存しました"].waitForExistence(timeout: 5))
-        app.buttons["単語帳を見る"].tap()
+        app.terminate()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        navigate("単語帳", tag: 2)
         XCTAssertTrue(app.buttons["元の問題を復習"].waitForExistence(timeout: 5))
         app.terminate()
         app.launchArguments = ["--ui-testing"]
@@ -49,6 +52,35 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["元の問題を復習"].tap()
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
     }
+    func testSelectionDismissesOutsideAndAsksDirectly() {
+        openReading()
+        let passage = app.textViews["study.text.Reading / Section 1passage-0"]
+        let word = passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12))
+        word.tap()
+        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
+        app.staticTexts["Community services"].tap()
+        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForNonExistence(timeout: 5))
+        word.press(forDuration: 1)
+        XCTAssertTrue(app.menuItems["AIに質問"].waitForExistence(timeout: 5))
+        app.menuItems["AIに質問"].tap()
+        XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
+        XCTAssertTrue(app.textFields["追加で質問…"].waitForExistence(timeout: 5))
+    }
+
+    func testGenerationLoadingAndCancel() {
+        app.terminate()
+        app.launchArguments = ["--ui-testing", "--ui-reset", "--ui-generation-preview"]
+        app.launch()
+        app.buttons["home.skill.Reading"].tap()
+        app.buttons["新しい問題を生成して練習"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["あなただけの問題を準備中"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["進捗の目安"].exists)
+        capture("iphone-generation")
+        app.buttons["キャンセルして戻る"].tap()
+        XCTAssertTrue(app.buttons["part.open.Reading / Section 1"].waitForExistence(timeout: 5))
+    }
+
     func testReviewRetryAndReturnHome() {
         openReading()
         let review = app.buttons["practice.review"]
@@ -118,10 +150,13 @@ final class PocketIELTSUITests: XCTestCase {
         capture(prefix + "-reading")
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
-        XCTAssertTrue(app.buttons["選んだ表現を単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
         capture(prefix + "-selection")
-        app.buttons["選んだ表現を単語帳に追加"].tap()
-        app.buttons["単語帳を見る"].tap()
+        app.menuItems["単語帳に追加"].tap()
+        app.terminate()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        navigate("単語帳", tag: 2)
         XCTAssertTrue(app.buttons["元の問題を復習"].waitForExistence(timeout: 5))
         capture(prefix + "-vocabulary")
         app.terminate(); app.launch()

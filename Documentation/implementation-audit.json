@@ -19,13 +19,13 @@
       "name": "Choose sections and parts",
       "figmaNodes": "10:32,10:453,10:1010,10:1295",
       "source": "Sources/Features/Home/HomeScreen.swift",
-      "implemented": "All 12 complete General Training parts; bundled and newly generated variants"
+      "implemented": "All 12 complete General Training parts; separate labeled bundled-practice and fresh-generation actions"
     },
     {
       "name": "Generate and cancel",
       "figmaNodes": "5:54",
       "source": "Sources/Features/Exam/ExamScreen.swift",
-      "implemented": "Full material generation, progress, cancellation, partial retry, auth error path"
+      "implemented": "Animated book with Reduce Motion support; explicitly time-estimated percentage capped at 90% per unfinished section, validated completion count, cancellation, partial retry and auth errors"
     },
     {
       "name": "Read / listen / answer",
@@ -37,7 +37,7 @@
       "name": "Tap and select expressions",
       "figmaNodes": "24:462",
       "source": "Sources/DesignSystem/Components/SelectableStudyText.swift",
-      "implemented": "Single-tap word, native long-press phrase selection, save/ask/save-paper actions, optional meaning lookup"
+      "implemented": "Native single-tap/long-press edit menu; direct save, AI question, copy and save-paper actions; nonmodal saved toast; outside-content taps clear selection without intercepting menu actions"
     },
     {
       "name": "Vocabulary persistence",
@@ -102,11 +102,11 @@
   ],
   "validation": {
     "unitTests": "17 passed on iPhone 17 Pro and iPad Pro 11-inch (M5), iOS 26.5; includes 3 new cloud journal/conflict tests",
-    "uiTests": "6 iPhone scenarios passed in final full run. All 6 iPad scenarios passed across the initial run and targeted navigation/screenshot reruns after fixes.",
+    "uiTests": "All 8 iPhone scenarios passed across full and targeted runs after fixes. iPad: 6 existing scenarios plus native selection/AI flow passed across full and targeted runs; latest save/selection/portrait-landscape screenshot rerun passed 3/3.",
     "deviceBuild": "Xcode 27.2 generic iOS Debug build succeeded with Apple Development signing; verified CloudKit container and Development environment in signed entitlements",
     "screenshots": "Captured running iPhone/iPad app with isolated UI-test data; landscape capture uses XCUIScreen to retain correct orientation metadata",
     "completedAt": "2026-11-19",
-    "result": "iPhone final suite: 23 tests, zero failures. iPad navigation and portrait/landscape checks passed.",
+    "result": "17 unit tests passed; changed native selection/save/AI flows passed on iPhone and iPad. Generation/cancel passed on iPhone. Live cloud/auth/audio checks remain listed below.",
     "toolchainNote": "Xcode emitted App Intents metadata/diagnostic collection warnings; no app compile errors."
   },
   "limitations": [
@@ -117,6 +117,7 @@
     "Microphone capture and transcription need a physical-device permission/audio check.",
     "Native iOS navigation and sheet geometry adapt to device size and OS; Figma content, colors, typography and functional states are the reference.",
     "Live two-device CloudKit transfer remains unverified; schema must be deployed to Production before TestFlight/App Store. Background push sync is not implemented.",
-    "Historical plain-text readingHistory entries remain local; current structured results synchronize."
+    "Historical plain-text readingHistory entries remain local; current structured results synchronize.",
+    "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture."
   ]
 }
