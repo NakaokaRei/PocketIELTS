@@ -4766,7 +4766,8 @@
             "value": "保存した問題を削除"
           }
         }
-      }
+      },
+      "extractionState": "stale"
     },
     "保存した問題を削除しますか？": {
       "localizations": {
@@ -4782,7 +4783,8 @@
             "value": "保存した問題を削除しますか？"
           }
         }
-      }
+      },
+      "extractionState": "stale"
     },
     "学習履歴と保存した単語は残ります。": {
       "localizations": {
@@ -4796,6 +4798,483 @@
           "stringUnit": {
             "state": "translated",
             "value": "学習履歴と保存した単語は残ります。"
+          }
+        }
+      },
+      "extractionState": "stale"
+    },
+    "Mini · 費用を抑える": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mini · Lower cost"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mini · 費用を抑える"
+          }
+        }
+      }
+    },
+    "標準 · 高品質": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard · Higher quality"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準 · 高品質"
+          }
+        }
+      }
+    },
+    "文字起こしを仕上げています…": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finishing your transcript…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字起こしを仕上げています…"
+          }
+        }
+      }
+    },
+    "マイクはオフです": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Microphone is muted"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクはオフです"
+          }
+        }
+      }
+    },
+    "AI試験官と話してみましょう": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talk with your AI examiner"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI試験官と話してみましょう"
+          }
+        }
+      }
+    },
+    "聞いています": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening to you"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聞いています"
+          }
+        }
+      }
+    },
+    "返答を考えています": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thinking of a reply"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返答を考えています"
+          }
+        }
+      }
+    },
+    "AI試験官が話しています": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your AI examiner is speaking"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI試験官が話しています"
+          }
+        }
+      }
+    },
+    "会話を終了しました": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation ended"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会話を終了しました"
+          }
+        }
+      }
+    },
+    "設定でマイクへのアクセスを許可してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow microphone access in Settings."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定でマイクへのアクセスを許可してください。"
+          }
+        }
+      }
+    },
+    "音声接続が切れました。接続状況とAPI設定を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice connection was lost. Check your connection and API settings."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声接続が切れました。接続状況とAPI設定を確認してください。"
+          }
+        }
+      }
+    },
+    "音声接続がタイムアウトしました。もう一度お試しください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice connection timed out. Please try again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声接続がタイムアウトしました。もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "接続が遅いため会話を停止しました。もう一度お試しください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The connection is too slow, so the conversation was stopped. Please try again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続が遅いため会話を停止しました。もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "一部の音声を文字起こしできませんでした。回答を確認・修正してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some speech could not be transcribed. Please review and edit your answer."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一部の音声を文字起こしできませんでした。回答を確認・修正してください。"
+          }
+        }
+      }
+    },
+    "AIの応答を完了できませんでした。APIの利用状況を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The AI response could not finish. Check your API usage."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AIの応答を完了できませんでした。APIの利用状況を確認してください。"
+          }
+        }
+      }
+    },
+    "音声APIでエラーが発生しました。キー・モデルの利用権限・残高を確認してください。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice API returned an error. Check your key, model access, and credit balance."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声APIでエラーが発生しました。キー・モデルの利用権限・残高を確認してください。"
+          }
+        }
+      }
+    },
+    "AI生成音声との英会話です。話し終わると返答し、途中で話しかけることもできます。音声と文字起こしはOpenAIへ送信され、ChatGPTプランとは別にAPI料金がかかります。1回最大15分です。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practice English with an AI-generated voice. It responds when you finish, and you can interrupt it. Audio and transcripts are sent to OpenAI. API charges are separate from your ChatGPT plan. Sessions last up to 15 minutes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI生成音声との英会話です。話し終わると返答し、途中で話しかけることもできます。音声と文字起こしはOpenAIへ送信され、ChatGPTプランとは別にAPI料金がかかります。1回最大15分です。"
+          }
+        }
+      }
+    },
+    "音声会話を始める": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start voice conversation"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声会話を始める"
+          }
+        }
+      }
+    },
+    "マイクをオン": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unmute microphone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクをオン"
+          }
+        }
+      }
+    },
+    "マイクをオフ": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute microphone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マイクをオフ"
+          }
+        }
+      }
+    },
+    "会話を終了": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End conversation"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会話を終了"
+          }
+        }
+      }
+    },
+    "会話の文字起こし": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation transcript"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会話の文字起こし"
+          }
+        }
+      }
+    },
+    "AI試験官": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI examiner"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI試験官"
+          }
+        }
+      }
+    },
+    "回答を使って振り返る": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review my answers"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回答を使って振り返る"
+          }
+        }
+      }
+    },
+    "Speaking 音声会話": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speaking voice conversation"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speaking 音声会話"
+          }
+        }
+      }
+    },
+    "AI試験官と音声会話": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talk with an AI examiner"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI試験官と音声会話"
+          }
+        }
+      }
+    },
+    "会話モデル": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation model"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会話モデル"
+          }
+        }
+      }
+    },
+    "Miniが初期設定です。標準モデルは料金が高くなります。変更は次の会話から適用されます。リスニングと同じAPIキーを使用し、ChatGPTプランとは別に課金されます。": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mini is the default. Standard costs more. Changes apply to your next conversation. Speaking uses the same API key as Listening, with charges separate from your ChatGPT plan."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miniが初期設定です。標準モデルは料金が高くなります。変更は次の会話から適用されます。リスニングと同じAPIキーを使用し、ChatGPTプランとは別に課金されます。"
           }
         }
       }

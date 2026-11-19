@@ -5,6 +5,7 @@ struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.studyCloud) private var cloud
     let store: StoreOf<SettingsFeature>
+    @AppStorage(SpeakingModel.preferenceKey) private var speakingModel = SpeakingModel.mini.rawValue
     @State private var speechKey = ""
     @State private var speechKeySaved = false
     @State private var speechKeyError: String?
@@ -58,6 +59,15 @@ struct SettingsScreen: View {
                     if let speechKeyError { Text(speechKeyError).foregroundStyle(StudyColors.error) }
                 } header: { Text(String(localized: "リスニング音声の生成")) }
                 footer: { Text(String(localized: "音声生成はOpenAI APIを使用し、ChatGPTプランとは別に課金されます。キーはこの端末のKeychainに保存され、iCloudには同期されません。")) }
+                Section {
+                    Picker(String(localized: "会話モデル"), selection: $speakingModel) {
+                        ForEach(SpeakingModel.allCases, id: \.rawValue) { model in
+                            Text(model.title).tag(model.rawValue)
+                        }
+                    }.accessibilityIdentifier("settings.speakingModel")
+                    Text(SpeakingModel.resolve(speakingModel).rawValue).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                } header: { Text(String(localized: "Speaking 音声会話")) }
+                footer: { Text(String(localized: "Miniが初期設定です。標準モデルは料金が高くなります。変更は次の会話から適用されます。リスニングと同じAPIキーを使用し、ChatGPTプランとは別に課金されます。")) }
                 if let cloud {
                     Section {
                         Toggle(String(localized: "iCloudで同期"), isOn: Binding(get: { cloud.enabled }, set: { cloud.enabled = $0; if $0 { Task { await cloud.sync() } } }))
@@ -83,6 +93,7 @@ struct SettingsScreen: View {
             .onDisappear { speechKey = "" }
             .onAppear {
                 speechKeySaved = (try? KeyStore.read(account: SpeechCredentials.account)) != nil
+                speakingModel = SpeakingModel.resolve(speakingModel).rawValue
                 store.send(.opened)
                 store.send(.refreshAccount)
             }

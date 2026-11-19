@@ -43,13 +43,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Record and replay your Speaking responses for practice."
+            "value": "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speakingの回答を録音して聞き直すためにマイクを使用します。"
+            "value": "Speakingの回答録音とAI試験官との音声会話にマイクを使用します。音声会話では音声をOpenAIへ送信します。"
           }
         }
       }

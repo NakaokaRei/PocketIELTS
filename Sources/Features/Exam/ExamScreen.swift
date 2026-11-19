@@ -102,6 +102,7 @@ struct ExamScreen: View {
     @State private var context = ""
     @State private var saved = false
     @State private var recording = false
+    @State private var conversation = false
     @State private var settings = false
     @State private var audio = SpeakingRecorder()
     private var unit: ExamUnit { units[position] }
@@ -164,6 +165,9 @@ struct ExamScreen: View {
             TutorScreen(store: store, context: context)
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
+        .fullScreenCover(isPresented: $conversation) {
+            SpeakingConversationScreen(unit: unit) { text in answers[unit.id + "-0"] = text }
+        }
         .sheet(isPresented: $recording, onDismiss: { audio.stop() }) {
             RecordingScreen(recorder: audio, title: unit.id, prompt: ([unit.title] + unit.passages + unit.oral).joined(separator: "\n\n"))
         }
@@ -234,6 +238,9 @@ struct ExamScreen: View {
                     Button(String(localized: "質問を聞く"), systemImage: "speaker.wave.2") { speak(unit.oral[index]) }
                 }
                 if unit.skill == "Speaking" {
+                    Button(String(localized: "AI試験官と音声会話"), systemImage: "waveform") {
+                        speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription(); conversation = true
+                    }.buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("speaking.conversation")
                     Button(String(localized: "マイクで回答"), systemImage: "mic.fill") {
                         speaker.stopSpeaking(at: .immediate)
                         recording = true

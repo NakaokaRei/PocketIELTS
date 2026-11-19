@@ -259,6 +259,31 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
     }
 
+    func testSpeakingModelSelectionPersistsAndConversationOpens() {
+        app.buttons["home.settings"].tap()
+        let model = app.buttons["settings.speakingModel"]
+        for _ in 0..<8 where !model.isHittable { app.swipeUp() }
+        XCTAssertTrue(model.isHittable)
+        model.tap()
+        app.buttons["標準 · 高品質"].tap()
+        capture("iphone-speaking-model-settings")
+        app.buttons["完了"].tap()
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
+        app.launch()
+        app.buttons["home.skill.Speaking"].tap()
+        app.buttons["part.open.Speaking / Part 1"].tap()
+        let voice = app.buttons["speaking.conversation"]
+        for _ in 0..<12 where !voice.isHittable { app.swipeUp() }
+        XCTAssertTrue(voice.isHittable); voice.tap()
+        XCTAssertTrue(app.buttons["speaking.start"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["標準 · 高品質"].exists)
+        capture("iphone-speaking-conversation")
+        app.buttons["閉じる"].tap()
+        XCTAssertTrue(voice.waitForExistence(timeout: 5))
+        // Never start a paid API session or request microphone access in UI tests.
+    }
+
     func testSettingsSeparatesChatGPTAndAudioAPI() {
         app.buttons["home.settings"].tap()
         XCTAssertTrue(app.buttons["Sign in with ChatGPT"].waitForExistence(timeout: 5))

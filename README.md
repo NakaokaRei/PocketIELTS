@@ -18,9 +18,11 @@ Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on 
 - **Vocabulary in context:** tap a word, or long-press to select a phrase, in passages, questions and explanations. Use the native selection menu to save immediately or ask the AI tutor, without an extra action sheet. Tap elsewhere to clear the selection. Edit meanings later in Vocabulary; the source sentence and original exercise stay attached.
 - **Reading and Listening:** answer questions, review explanations and retry. Listening can generate natural British-English audio through the OpenAI Speech API, cache it locally, and play, pause, stop or seek. Playback and pending generation stop when leaving the screen.
 - **Writing:** compose a response with a word count, then request criterion-based feedback and an improved example.
-- **Speaking:** record and replay an answer, transcribe it on-device where supported, and edit the transcript before requesting feedback. Manual transcription remains available.
+- **Speaking:** talk with an AI examiner using the Realtime API, with automatic turn detection, interruption, microphone mute, and a reviewable transcript. Mini (`gpt-realtime-2.1-mini`) is the default; Settings can select Standard (`gpt-realtime-2.1`) for the next session. Voice sessions use your personal audio API key and have separate API and transcription charges. Sessions stop on dismissal, backgrounding, interruption, or after 15 minutes. You can also record and replay an answer, transcribe it on-device where supported, and edit the transcript before requesting feedback. Manual transcription remains available.
 - **Mock practice:** work through all 12 parts, with an elapsed-time display and feedback deferred until the end.
 - **Learning history:** revisit answers, feedback, recordings and source exercises. Track formative IELTS-band and CEFR estimates as evidence accumulates.
+
+<img src="Documentation/Screenshots/iphone-speaking-conversation.png" width="280" alt="Speaking conversation with an AI examiner and selected voice model" />
 
 Speaking feedback evaluates the transcript, not pronunciation or acoustic fluency. Estimates are learning guidance, not official IELTS test results.
 
@@ -92,7 +94,7 @@ Turning sync off keeps local data. Changing Apple Accounts pauses sync to avoid 
 
 Connect through **Sign in with ChatGPT** in Settings. Text generation continues to use ChatGPT sign-in. Optional listening audio has a separate personal API-key field, a key-creation link and an API-usage link. Keys are stored in device-only Keychain; audio API usage is billed separately. Fresh exercise generation, word explanations, tutor conversations and assessments require a working ChatGPT connection and available usage. Bundled exercises and local study features work without an AI connection.
 
-Authentication is stored in the device Keychain. When you explicitly request AI help, relevant exercise text and your question or written/transcribed response are sent to OpenAI. Speaking transcription requests on-device recognition; recorded audio is not sent to the text-feedback endpoint. With iCloud sync enabled, archived recordings are uploaded to your private CloudKit database.
+Authentication is stored in the device Keychain. When you explicitly request AI help, relevant exercise text and your question or written/transcribed response are sent to OpenAI. The recording workflow requests on-device recognition; recorded audio is not sent to the text-feedback endpoint. Realtime Speaking sends microphone audio to OpenAI for conversation and input transcription (`gpt-transcribe`); only the candidate’s transcript is passed to the existing feedback workflow. The app does not archive Realtime audio. Live microphone/speaker behavior and paid API connectivity require a device test with your own configured key; automated tests do not make paid requests. With iCloud sync enabled, archived recordings are uploaded to your private CloudKit database.
 
 ## Build and run
 

@@ -6,6 +6,53 @@ import ComposableArchitecture
 
 @MainActor
 final class PocketIELTSTests: XCTestCase {
+    func testSpeakingDefaultsToMiniAndBuildsSelectedModelSession() throws {
+        XCTAssertEqual(SpeakingModel.resolve(nil), .mini)
+        XCTAssertEqual(SpeakingModel.resolve("unknown"), .mini)
+        XCTAssertEqual(SpeakingModel.resolve(SpeakingModel.standard.rawValue), .standard)
+        let unit = try XCTUnwrap(ExamUnit.load().first { $0.skill == "Speaking" })
+        for model in SpeakingModel.allCases {
+            let request = SpeakingProtocol.request(model: model, key: "test-only")
+            XCTAssertTrue(request.url!.absoluteString.contains(model.rawValue))
+            let event = SpeakingProtocol.configuration(unit: unit, model: model)
+            let session = try XCTUnwrap(event["session"] as? [String: Any])
+            XCTAssertEqual(session["model"] as? String, model.rawValue)
+            let audio = try XCTUnwrap(session["audio"] as? [String: Any])
+            let input = try XCTUnwrap(audio["input"] as? [String: Any])
+            let vad = try XCTUnwrap(input["turn_detection"] as? [String: Any])
+            XCTAssertEqual(vad["type"] as? String, "semantic_vad")
+            XCTAssertEqual(vad["interrupt_response"] as? Bool, true)
+            XCTAssertNoThrow(try SpeakingProtocol.encode(event))
+        }
+    }
+
+    func testSpeakingTranscriptUsesCommittedOrderAndOnlyCandidateAnswers() {
+        let session = SpeakingConversation(phase: .listening)
+        session.handle(["type": "input_audio_buffer.committed", "item_id": "first"])
+        session.handle(["type": "input_audio_buffer.committed", "item_id": "second"])
+        session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "second", "transcript": "Second answer"])
+        session.handle(["type": "response.output_audio_transcript.done", "item_id": "examiner", "transcript": "Where do you live?"])
+        session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "first", "transcript": "First answer"])
+        XCTAssertEqual(session.userTranscript, "First answer\n\nSecond answer")
+        session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "first", "transcript": "Corrected answer"])
+        XCTAssertEqual(session.turns.count, 3)
+        XCTAssertEqual(session.userTranscript, "Corrected answer\n\nSecond answer")
+        session.stop()
+        session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "late", "transcript": "Ignored"])
+        XCTAssertEqual(session.phase, .ended)
+        XCTAssertEqual(session.turns.count, 3)
+        session.stop() // Dismissal and interruption may both stop a session.
+    }
+
+    func testSpeakingErrorsEndSessionWithoutExposingServerPayload() {
+        let session = SpeakingConversation(phase: .thinking)
+        session.handle(["type": "error", "error": ["message": "sensitive server payload"]])
+        XCTAssertFalse(session.active)
+        XCTAssertNotNil(session.error)
+        XCTAssertFalse(session.error!.contains("sensitive"))
+        XCTAssertThrowsError(try SpeakingProtocol.decode(.string("[]")))
+    }
+
     func testAnswerAcceptsAlternativeSpellingAndWhitespace() {
         let question = ReadingSet.Question(instruction: "Write two words.", prompt: "Where?",
                                           answers: ["town centre", "town center"], explanation: "Location")
@@ -224,7 +271,9 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(japanese.localizedString(forKey: "設定", value: nil, table: nil), "設定")
         let format = english.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
         XCTAssertEqual(String(format: format, "1", "3"), "Sections ready: 1 / 3")
-        XCTAssertTrue(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Record"))
+        XCTAssertTrue(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Voice conversations send audio to OpenAI"))
+        XCTAssertEqual(english.localizedString(forKey: "音声会話を始める", value: nil, table: nil), "Start voice conversation")
+        XCTAssertEqual(japanese.localizedString(forKey: "音声会話を始める", value: nil, table: nil), "音声会話を始める")
     }
 
     func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
