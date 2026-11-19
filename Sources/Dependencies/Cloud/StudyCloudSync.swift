@@ -17,15 +17,23 @@ struct CloudStudyItem: Codable, Equatable {
     }
 }
 
+struct DeletedExpression: Codable, Equatable {
+    var id: UUID
+    var date: Date
+}
+
 struct CloudStudySnapshot: Equatable {
+    var deletedVocabulary: [DeletedExpression]
     var vocabulary: [SavedExpression]
     var results: [StudyResult]
     var papers: [ExamUnit]
 
     init(state: StudyFeature.State) {
+        deletedVocabulary = state.deletedVocabulary
         vocabulary = state.vocabulary; results = state.records; papers = state.papers
     }
-    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = []) {
+    init(vocabulary: [SavedExpression] = [], results: [StudyResult] = [], papers: [ExamUnit] = [], deletedVocabulary: [DeletedExpression] = []) {
+        self.deletedVocabulary = deletedVocabulary
         self.vocabulary = vocabulary; self.results = results; self.papers = papers
     }
     func items(at date: Date) throws -> [CloudStudyItem] {
@@ -33,7 +41,12 @@ struct CloudStudySnapshot: Equatable {
             let key = kind + "-" + SHA256.hash(data: Data(id.utf8)).map { String(format: "%02x", $0) }.joined()
             return try .init(key: key, kind: kind, payload: StudyPersistence.encode(value), modified: date, revision: UUID().uuidString, recording: recording)
         }
-        return try vocabulary.map { try item("word", $0.id.uuidString, $0) }
+        let tombstones = try deletedVocabulary.map { deleted -> CloudStudyItem in
+            var value = try item("word", deleted.id.uuidString, deleted)
+            value.kind = "deletedWord"; value.modified = deleted.date
+            return value
+        }
+        return try tombstones + vocabulary.map { try item("word", $0.id.uuidString, $0) }
             + results.map { try item("result", $0.id.uuidString, $0, recording: $0.recordingFile) }
             + papers.map { try item("paper", $0.id, $0) }
     }
@@ -60,7 +73,8 @@ struct CloudStudyJournal: Codable {
         return try .init(
             vocabulary: sorted.filter { $0.kind == "word" }.map { try decoder.decode(SavedExpression.self, from: $0.payload) },
             results: sorted.filter { $0.kind == "result" }.map { try decoder.decode(StudyResult.self, from: $0.payload) }.sorted { $0.date > $1.date },
-            papers: sorted.filter { $0.kind == "paper" }.map { try decoder.decode(ExamUnit.self, from: $0.payload) })
+            papers: sorted.filter { $0.kind == "paper" }.map { try decoder.decode(ExamUnit.self, from: $0.payload) },
+            deletedVocabulary: sorted.filter { $0.kind == "deletedWord" }.map { try decoder.decode(DeletedExpression.self, from: $0.payload) })
     }
     static func accepts(account: String, previous: String?) -> Bool { previous == nil || previous == account }
     static func safeRecordingURL(_ name: String, directory: URL) -> URL? {
@@ -98,7 +112,7 @@ final class StudyCloudSync {
     func captureLocalChanges() {
         guard !isTesting else { return }
         do {
-            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers))
+            try journal.capture(CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary))
             try persist()
         } catch { status = String(localized: "同期用データを保存できませんでした。端末の空き容量を確認してください。") }
     }
@@ -199,7 +213,7 @@ struct StudyCloudHost: View {
     }
     var body: some View {
         HomeScreen(store: store).environment(\.studyCloud, cloud)
-            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers)) { _, _ in cloud.captureLocalChanges() }
+            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary)) { _, _ in cloud.captureLocalChanges() }
             .task(id: phase) {
                 guard phase == .active else { cloud.captureLocalChanges(); return }
                 while !Task.isCancelled {

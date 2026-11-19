@@ -31,7 +31,7 @@ struct StudySecondaryButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.subheadline.weight(.semibold))
+            .font(StudyTypography.button)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, minHeight: 44)
             .padding(.horizontal, 12)
@@ -50,7 +50,7 @@ struct StudyPrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline)
+            .font(StudyTypography.headline)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, minHeight: 44)
             .padding(.horizontal, 16).padding(.vertical, 8)

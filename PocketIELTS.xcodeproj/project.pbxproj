@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+ A01100000000000000000003 /* Licenses in Resources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000004; };
+ A01100000000000000000001 /* ListeningAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000002; };
 		B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000004 /* InfoPlist.xcstrings */; };
 		B7A002000000000000000001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000002 /* Localizable.xcstrings */; };
 		B7A001000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A001000000000000000002 /* Assets.xcassets */; };
@@ -51,6 +53,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+ A01100000000000000000004 /* Licenses */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Licenses; sourceTree = SOURCE_ROOT; };
+ A01100000000000000000002 /* ListeningAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningAudio.swift; sourceTree = "<group>"; };
 		B7A002000000000000000004 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		B7A002000000000000000002 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		B7A001000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -275,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				74290FBE07E403D3FA46FB1A /* ExamScreen.swift */,
+ A01100000000000000000002 /* ListeningAudio.swift */,
 			);
 			name = Exam;
 			path = Exam;
@@ -397,6 +402,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+ A01100000000000000000003 /* Licenses in Resources */,
 				F4731DBD8262741070CE03B1 /* GeneralTraining.json in Resources */,
 				B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */,
 				B7A002000000000000000001 /* Localizable.xcstrings in Resources */,
@@ -451,6 +457,7 @@
 				999E5C8551D01A8092F8A161 /* ChatGPTInference.swift in Sources */,
 				434451488BD08B41D695C93E /* SignInBrowser.swift in Sources */,
 				4402C5C9A38604E1220F81F0 /* ExamScreen.swift in Sources */,
+ A01100000000000000000001 /* ListeningAudio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

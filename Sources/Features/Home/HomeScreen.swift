@@ -93,9 +93,20 @@ struct HomeScreen: View {
     }
     private var summaryCards: some View {
         VStack(spacing: 24) {
+        NavigationLink { SavedPapersScreen(store: store) } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "bookmark.fill").font(.title2)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(String(localized: "保存した問題から練習")).font(StudyTypography.headline)
+                    Text(String(format: String(localized: "%@件の問題"), String(store.papers.count))).font(StudyTypography.subheadline)
+                }
+                Spacer(); Image(systemName: "chevron.right")
+            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+        }.buttonStyle(.plain).accessibilityIdentifier("home.savedPapers")
         NavigationLink { history.navigationTitle(String(localized: "学習記録")) } label: {
                         VStack(alignment: .leading, spacing: StudySpacing.contentInset) {
-                            Text(String(localized: "現在の推定レベル")).font(.subheadline.bold())
+                            Text(String(localized: "現在の推定レベル")).font(StudyTypography.subheadline.bold())
                             HStack {
                                 metric("IELTS Overall")
                                 metric(String(localized: "CEFR 目安"))
@@ -110,7 +121,7 @@ struct HomeScreen: View {
                         HStack {
                             VStack(alignment: .leading, spacing: StudySpacing.related) {
                                 Text(String(localized: "模擬テスト")).font(StudyTypography.japaneseTitle(24, relativeTo: .title2))
-                                Text(String(localized: "4技能をまとめて腕試し")).font(.subheadline)
+                                Text(String(localized: "4技能をまとめて腕試し")).font(StudyTypography.subheadline)
                             }
                             Spacer()
                             Image(systemName: "arrow.right").font(.title3.bold())
@@ -124,7 +135,7 @@ struct HomeScreen: View {
         VStack(alignment: .leading, spacing: StudySpacing.related) {
             Text(title == String(localized: "CEFR 目安") ? StudyBand.cefr(StudyBand.overall(store.records)) : StudyBand.label(StudyBand.overall(store.records)))
                 .font(StudyTypography.roundedTitle(30))
-            Text(title).font(.caption)
+            Text(title).font(StudyTypography.caption)
         }.frame(maxWidth: .infinity, alignment: .leading).accessibilityLabel(title + " " + (title == String(localized: "CEFR 目安") ? StudyBand.cefr(StudyBand.overall(store.records)) : StudyBand.label(StudyBand.overall(store.records))))
     }
 
@@ -144,28 +155,31 @@ struct HomeScreen: View {
         let noun = skill == "Reading" ? "Section" : skill == "Writing" ? "Task" : "Part"
         return ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("GENERAL TRAINING").font(.caption.bold()).foregroundStyle(StudyColors.accent)
+                Text("GENERAL TRAINING").font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                 Text(skill).font(StudyTypography.roundedTitle(34))
-                Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(.headline)
+                NavigationLink { SavedPapersScreen(store: store, skill: skill) } label: {
+                    Label(String(localized: "保存した問題から練習"), systemImage: "bookmark.fill")
+                }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("part.savedPapers")
+                Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(StudyTypography.headline)
                 ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
                     VStack(alignment: .leading, spacing: 16) {
                         NavigationLink { ExamScreen(units: [part], store: store) } label: {
                             HStack {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
-                                    Label(String(localized: "収録問題で練習"), systemImage: "book.closed").font(.caption.bold())
-                                    Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(.subheadline)
+                                    Label(String(localized: "収録問題で練習"), systemImage: "book.closed").font(StudyTypography.caption.bold())
+                                    Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(StudyTypography.subheadline)
                                 }
                                 Spacer(); Image(systemName: "chevron.right")
                             }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                         }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
                         Divider()
                         NavigationLink { GeneratedExamScreen(templates: [part], store: store) } label: {
-                            Label(String(localized: "新しい問題を生成して練習"), systemImage: "sparkles").font(.subheadline)
+                            Label(String(localized: "新しい問題を生成して練習"), systemImage: "sparkles").font(StudyTypography.subheadline)
                         }
                     }.padding(20).background(tint, in: RoundedRectangle(cornerRadius: 20))
                 }
-                Text(String(localized: "選んだ区分の全文・全設問で練習します。")).font(.footnote).foregroundStyle(.secondary)
+                Text(String(localized: "選んだ区分の全文・全設問で練習します。")).font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
             }.padding(20).frame(maxWidth: 760).frame(maxWidth: .infinity).foregroundStyle(StudyColors.ink)
         }.navigationTitle(String(localized: "パート選択")).navigationBarTitleDisplayMode(.inline)
@@ -188,11 +202,11 @@ struct ProgressScreen: View {
             VStack(alignment: .leading, spacing: 28) {
                 Text(String(localized: "いまのレベル")).font(StudyTypography.japaneseTitle(30))
                 VStack(alignment: .leading, spacing: 22) {
-                    Text(String(localized: "推定 IELTS Overall")).font(.headline).foregroundStyle(StudyColors.reading)
+                    Text(String(localized: "推定 IELTS Overall")).font(StudyTypography.headline).foregroundStyle(StudyColors.reading)
                     HStack { Text(StudyBand.label(StudyBand.overall(store.records))).font(StudyTypography.roundedTitle(30)); Spacer(); Text("CEFR  " + StudyBand.cefr(StudyBand.overall(store.records))).bold() }
                 }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(.white).background(StudyColors.levelCard, in: RoundedRectangle(cornerRadius: 20))
-                Text(String(localized: "技能別の推定バンド")).font(.title2.bold())
+                Text(String(localized: "技能別の推定バンド")).font(StudyTypography.heading)
                 ForEach(["Reading", "Listening", "Writing", "Speaking"], id: \.self) { skill in
                     let records = store.records.filter { $0.skill == skill }
                     let total = records.reduce(0) { $0 + $1.total }
@@ -201,32 +215,32 @@ struct ProgressScreen: View {
                         HStack {
                             Text(skill).bold(); Spacer()
                             Text(StudyBand.label(StudyBand.skill(skill, records: store.records)))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(StudyColors.secondaryText)
                         }
                         ProgressView(value: (StudyBand.skill(skill, records: store.records) ?? 0) / 9)
-                        Text(total > 0 ? String(format: String(localized: "%@ / %@問 正解"), String(correct), String(total)) : String(format: String(localized: "%@回練習"), String(records.count))).font(.caption).foregroundStyle(.secondary)
+                        Text(total > 0 ? String(format: String(localized: "%@ / %@問 正解"), String(correct), String(total)) : String(format: String(localized: "%@回練習"), String(records.count))).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     }
                 }
                 Text(String(localized: "直近の演習からの学習用推定です。Reading・Listeningは10問以上、Writing・SpeakingはAI講評があると表示します。Speakingの発音・音声の流暢さは含みません。公式スコアではありません。"))
-                    .font(.footnote).foregroundStyle(.secondary)
-                Text(String(localized: "学習履歴")).font(.title2.bold())
+                    .font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
+                Text(String(localized: "学習履歴")).font(StudyTypography.heading)
                 if store.records.isEmpty && store.results.isEmpty {
                     ContentUnavailableView(String(localized: "学習記録はまだありません"), systemImage: "chart.bar")
                 }
                 ForEach(store.records) { result in
                     NavigationLink { ResultDetailScreen(result: result, store: store) } label: {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(result.skill + (result.isMock ? String(localized: " · 模擬テスト") : "")).font(.caption).foregroundStyle(StudyColors.accent)
+                        Text(result.skill + (result.isMock ? String(localized: " · 模擬テスト") : "")).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
                         Text(result.title).bold()
                         HStack {
                             Text(result.total > 0 ? String(format: String(localized: "%@ / %@ 正解"), String(result.correct), String(result.total)) : String(localized: "練習完了"))
                             Spacer(); Text(result.date, style: .date)
-                        }.font(.caption).foregroundStyle(.secondary)
+                        }.font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     }.frame(maxWidth: .infinity, alignment: .leading).padding()
                         .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                     }.buttonStyle(.plain)
                 }
-                ForEach(Array(store.results.enumerated()), id: \.offset) { Text($0.element).font(.footnote) }
+                ForEach(Array(store.results.enumerated()), id: \.offset) { Text($0.element).font(StudyTypography.footnote) }
             }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }
     }
@@ -234,43 +248,47 @@ struct ProgressScreen: View {
 
 struct VocabularyScreen: View {
     let store: StoreOf<StudyFeature>
+    @State private var deleting: SavedExpression?
+    @State private var tutor = false
+    @State private var context = ""
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
-                Text(String(localized: "保存した表現")).font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                Text(String(localized: "保存した表現")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                 if store.vocabulary.isEmpty {
                     ContentUnavailableView(String(localized: "単語帳は空です"), systemImage: "book", description: Text(String(localized: "本文や解説を長押しして表現を追加できます。")))
                 }
                 ForEach(store.vocabulary) { entry in
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(entry.source).font(.caption.bold()).foregroundStyle(StudyColors.accent)
-                        Text(entry.expression).font(.title2.bold()).textSelection(.enabled)
-                        TextField(String(localized: "意味・メモを追加"), text: Binding(get: {
-                            store.vocabulary.first { $0.id == entry.id }?.meaning ?? ""
-                        }, set: { store.send(.updateMeaning(entry.id, $0)) }), axis: .vertical)
-                        if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(.subheadline).textSelection(.enabled) }
+                        Text(entry.source).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
+                        HStack(alignment: .top) {
+                            Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
+                            Spacer()
+                            Button(String(localized: "単語を削除"), systemImage: "trash") { deleting = entry }
+                                .labelStyle(.iconOnly).frame(width: 44, height: 44).foregroundStyle(StudyColors.error)
+                                .accessibilityIdentifier("vocabulary.delete")
+                        }
+                        if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
+                        Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
+                            context = entry.expression + "\n\n" + entry.sourceText + "\n\n" + entry.meaning
+                            tutor = true
+                        }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.askAI")
                         if let paper = entry.paper {
                             NavigationLink(String(localized: "元の問題を復習")) { ExamScreen(units: [paper], store: store) }
                         }
                     }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
                 }
-                NavigationLink {
-                    List {
-                        Text(String(localized: "保存した問題を選ぶと、もう一度練習できます。"))
-                        if store.papers.isEmpty { ContentUnavailableView(String(localized: "保存した問題はありません"), systemImage: "book") }
-                        ForEach(store.papers) { paper in
-                            NavigationLink { ExamScreen(units: [paper], store: store) } label: {
-                                VStack(alignment: .leading) { Text(paper.id).font(.caption); Text(paper.title).bold() }
-                            }
-                        }
-                    }.navigationTitle(String(localized: "保存した問題"))
-                } label: {
-                    HStack { Text(String(localized: "保存した問題を見る")).bold(); Spacer(); Image(systemName: "chevron.right") }
-                        .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
-                }
+
             }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.background(Color(uiColor: .systemGroupedBackground))
+        .alert(String(localized: "この単語を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { entry in
+            Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id)); deleting = nil }
+            Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
+        } message: { entry in Text(entry.expression) }
+        .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
+            TutorScreen(store: store, context: context, vocabularyMode: true)
+        }
     }
 }
 
@@ -288,14 +306,14 @@ struct ResultDetailScreen: View {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Label(current.skill, systemImage: current.skill == "Listening" ? "headphones" : current.skill == "Speaking" ? "mic" : current.skill == "Writing" ? "pencil" : "book")
-                            .font(.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                            .font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                         Spacer()
-                        Text(current.date, style: .date).font(.caption).foregroundStyle(.secondary)
+                        Text(current.date, style: .date).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     }
                     Text(current.title).font(StudyTypography.japaneseTitle(24))
                     if current.total > 0 {
                         Text(String(format: String(localized: "%@ / %@ 正解"), String(current.correct), String(current.total)))
-                            .font(.title2.bold()).foregroundStyle(StudyColors.accent)
+                            .font(StudyTypography.heading).foregroundStyle(StudyColors.accent)
                         ProgressView(value: Double(current.correct), total: Double(current.total))
                             .tint(StudyColors.accent)
                     }
@@ -308,12 +326,12 @@ struct ResultDetailScreen: View {
                                 let answer = index < answers.count ? answers[index] : ""
                                 VStack(alignment: .leading, spacing: 8) {
                                     Label("Question \(paper.firstQuestionNumber + index)", systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
-                                        .font(.headline).foregroundStyle(StudyColors.accent)
+                                        .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
                                     Text(question.displayPrompt(number: paper.firstQuestionNumber + index, localNumber: index + 1))
                                     Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer))
-                                        .font(.subheadline).bold()
-                                    Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(.subheadline)
-                                    Text(question.explanation).font(.subheadline).foregroundStyle(.secondary)
+                                        .font(StudyTypography.subheadline).bold()
+                                    Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(StudyTypography.subheadline)
+                                    Text(question.explanation).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                             }
@@ -322,7 +340,7 @@ struct ResultDetailScreen: View {
                 }
                 if let response = current.response, !response.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(String(localized: "あなたの回答")).font(.headline)
+                        Text(String(localized: "あなたの回答")).font(StudyTypography.headline)
                         Text(response).textSelection(.enabled)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                         .padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
@@ -358,5 +376,35 @@ struct ResultDetailScreen: View {
             } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
             evaluating = false
         }
+    }
+}
+
+struct SavedPapersScreen: View {
+    let store: StoreOf<StudyFeature>
+    var skill: String?
+    private var papers: [ExamUnit] { store.papers.filter { skill == nil || $0.skill == skill } }
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(String(localized: "保存した問題を選ぶと、もう一度練習できます。"))
+                    .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                if papers.isEmpty {
+                    ContentUnavailableView(String(localized: "保存した問題はありません"), systemImage: "bookmark", description: Text(String(localized: "解説画面の「この問題を保存」から追加できます。")))
+                }
+                ForEach(papers) { paper in
+                    NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                        HStack(spacing: 16) {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text(paper.id).font(StudyTypography.subheadline).foregroundStyle(StudyColors.accent)
+                                Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
+                                Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
+                            }
+                            Spacer(minLength: 0); Image(systemName: "chevron.right")
+                        }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                            .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                    }.buttonStyle(.plain)
+                }
+            }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
+        }.navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)
     }
 }

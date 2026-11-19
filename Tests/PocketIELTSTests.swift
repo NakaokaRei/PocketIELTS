@@ -1,3 +1,4 @@
+import AVFoundation
 import XCTest
 import UIKit
 import ComposableArchitecture
@@ -196,6 +197,13 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(decimal.displayPrompt(number: 1, localNumber: 1), decimal.prompt)
     }
 
+    func testBrandFontsLoadWithoutFallback() {
+        _ = StudyTypography.body
+        for name in ["ZenMaruGothic-Regular", "ZenMaruGothic-Bold", "ZenMaruGothic-Black", "Nunito-Regular", "Nunito-Bold", "Nunito-Black"] {
+            XCTAssertNotNil(UIFont(name: name, size: 17), "Bundled font must load: \(name)")
+        }
+    }
+
     func testQuestionAnswersPreserveGapsAndDecodeLegacyHistory() throws {
         let result = StudyResult(skill: "Reading", title: "Practice", correct: 1, total: 3,
                                  questionAnswers: ["TRUE", "", "C"])
@@ -264,4 +272,80 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertNotNil(CloudStudyJournal.safeRecordingURL("answer.m4a", directory: folder))
     }
 
+}
+
+
+extension PocketIELTSTests {
+    func testGenerationCompletionReachesExactly100WithoutRegression() {
+        for count in [0, 1, 11] {
+            let from = GenerationProgress.estimate(completed: count, total: 12, elapsed: 60)
+            let values = (0...100).map { GenerationProgress.finish(from: from, elapsed: Double($0) / 100) }
+            XCTAssertEqual(values.first!, from)
+            XCTAssertEqual(values.last!, 1)
+            XCTAssertTrue(zip(values, values.dropFirst()).allSatisfy { $0 <= $1 })
+        }
+        XCTAssertLessThan(GenerationProgress.estimate(completed: 1, total: 1, elapsed: 1000), 1)
+    }
+    func testAudioChunkingPreservesScriptAndAPIRequest() throws {
+        let script = String(repeating: "Speaker A: Hello. Speaker B: Good morning!\n", count: 400)
+        let chunks = SpeechAudio.chunks(script)
+        XCTAssertEqual(chunks.joined(), script)
+        XCTAssertTrue(chunks.allSatisfy { !$0.isEmpty && $0.count <= 2800 })
+        XCTAssertEqual(SpeechAudio.chunks(String(repeating: "a", count: 6000)).joined().count, 6000)
+        let request = try SpeechAudio.request(text: chunks[0], key: "test-only-not-a-key")
+        XCTAssertEqual(request.url?.path, "/v1/audio/speech")
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: String])
+        XCTAssertEqual(json["response_format"], "pcm")
+        XCTAssertEqual(json["input"], chunks[0])
+        XCTAssertThrowsError(try SpeechAudio.validate(HTTPURLResponse(url: request.url!, statusCode: 429, httpVersion: nil, headerFields: nil)!, data: Data()))
+    }
+    @MainActor func testAudioStopRejectsLateGenerationAndResetsPlayback() async throws {
+        let player = ListeningPlayer()
+        let pcm = Data(repeating: 0, count: 48000)
+        let wave = SpeechAudio.wave(pcm)
+        let decoded = try AVAudioPlayer(data: wave)
+        XCTAssertEqual(decoded.duration, 1, accuracy: 0.01)
+        player.play(script: "Test") { _, _ in
+            try? await Task.sleep(for: .milliseconds(100))
+            return wave
+        }
+        XCTAssertTrue(player.generating)
+        player.stop()
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertFalse(player.generating)
+        XCTAssertNil(player.player)
+        player.play(script: "Test") { _, _ in wave }
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertNotNil(player.player)
+        player.stop()
+        XCTAssertFalse(player.player?.isPlaying ?? true)
+        XCTAssertEqual(player.player?.currentTime, 0)
+    }
+}
+
+extension PocketIELTSTests {
+    func testCloudDeletionDoesNotResurrectOfflineVocabulary() throws {
+        let entry = SavedExpression(expression: "ordinary", source: "Reading", sourceText: "An ordinary day.")
+        var left = CloudStudyJournal(), right = CloudStudyJournal()
+        try left.capture(.init(vocabulary: [entry]), at: Date(timeIntervalSince1970: 1))
+        right.merge(Array(left.items.values))
+        try left.capture(.init(deletedVocabulary: [.init(id: entry.id, date: Date(timeIntervalSince1970: 2))]), at: Date(timeIntervalSince1970: 2))
+        left.merge(Array(right.items.values)); right.merge(Array(left.items.values))
+        XCTAssertTrue(try left.snapshot().vocabulary.isEmpty)
+        XCTAssertTrue(try right.snapshot().vocabulary.isEmpty)
+        XCTAssertEqual(try right.snapshot().deletedVocabulary.map(\.id), [entry.id])
+        var relaunched = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(right))
+        try relaunched.capture(try right.snapshot(), at: Date(timeIntervalSince1970: 3))
+        XCTAssertTrue(try relaunched.snapshot().vocabulary.isEmpty)
+    }
+}
+
+extension PocketIELTSTests {
+    func testLicensePlistNoticesAreBundledAndReadable() throws {
+        let notices = try OSSNotice.load()
+        XCTAssertGreaterThanOrEqual(notices.count, 17)
+        XCTAssertTrue(notices.contains { $0.title.contains("Nunito") })
+        XCTAssertTrue(notices.contains { $0.title.contains("swift-composable-architecture") })
+        XCTAssertTrue(notices.allSatisfy { $0.text.count > 100 })
+    }
 }

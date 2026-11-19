@@ -6,3 +6,7 @@ DerivedData/
 .env.*
 *.p12
 *.mobileprovision
+
+# Local CI outputs
+/TestResults*.xcresult/
+/test-*.log

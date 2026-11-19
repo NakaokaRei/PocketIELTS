@@ -88,6 +88,7 @@ struct PracticeScreen: View {
 struct TutorScreen: View {
     let store: StoreOf<StudyFeature>
     let context: String
+    var vocabularyMode = false
     @State private var draft = ""
     @State private var settings = false
     @Environment(\.dismiss) private var dismiss
@@ -96,16 +97,16 @@ struct TutorScreen: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
-                        DisclosureGroup(String(localized: "質問の対象")) { Text(context).font(.footnote).textSelection(.enabled) }
+                        DisclosureGroup(String(localized: "質問の対象")) { Text(context).font(StudyTypography.footnote).textSelection(.enabled) }
                             .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 18))
                         VStack(alignment: .leading, spacing: 12) {
-                            Text(String(localized: "よくある質問")).font(.headline)
+                            Text(String(localized: "よくある質問")).font(StudyTypography.headline)
                             Text(String(localized: "選ぶと入力欄に入ります。編集して送信できます。"))
-                                .font(.caption).foregroundStyle(.secondary)
+                                .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                             LazyVGrid(columns: [GridItem(.adaptive(minimum: 145), spacing: 10)], spacing: 10) {
-                                ForEach(Array(TutorQuickQuestion.all.enumerated()), id: \.offset) { index, item in
+                                ForEach(Array((vocabularyMode ? TutorQuickQuestion.vocabulary : TutorQuickQuestion.all).enumerated()), id: \.offset) { index, item in
                                     Button { draft = item.prompt } label: {
-                                        Text(item.title).font(.subheadline).multilineTextAlignment(.leading)
+                                        Text(item.title).font(StudyTypography.subheadline).multilineTextAlignment(.leading)
                                             .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).padding(.horizontal, 12)
                                             .background(StudyColors.reading.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
                                     }.buttonStyle(.plain).foregroundStyle(StudyColors.accent)
@@ -116,7 +117,7 @@ struct TutorScreen: View {
                         if !store.settings.canPractice { Button(String(localized: "ChatGPTの接続設定")) { settings = true } }
                         ForEach(store.messages) { message in
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(message.isUser ? String(localized: "あなた") : String(localized: "AIチューター")).font(.caption.bold()).foregroundStyle(StudyColors.accent)
+                                Text(message.isUser ? String(localized: "あなた") : String(localized: "AIチューター")).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                                 SelectableStudyText(text: message.text, sourceID: message.id.uuidString) { entry in
                                     store.send(.saveExpression(SavedExpression(expression: entry.expression,
                                         source: String(localized: "AIチューター"), sourceText: entry.sourceText, meaning: entry.meaning, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
@@ -150,6 +151,9 @@ struct TutorScreen: View {
 }
 
 enum TutorQuickQuestion {
+    static var vocabulary: [(title: String, prompt: String)] {
+        [all[0], (String(localized: "使い方を教えて"), String(localized: "この表現の使い方と、よく一緒に使う語を例文付きで教えてください。")), all[2], all[1]]
+    }
     static let all: [(title: String, prompt: String)] = [
         (String(localized: "この意味は？"), String(localized: "選択した表現や文の、この文脈での意味をやさしい日本語で教えてください。")),
         (String(localized: "文法・文の構造"), String(localized: "選択した英文の文法と文の構造を、主語・動詞などに分けて説明してください。")),

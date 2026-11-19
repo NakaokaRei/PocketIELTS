@@ -1,0 +1,15 @@
+options:
+  xcodeprojPath: PocketIELTS.xcodeproj
+  prefix: Acknowledgements
+  addVersionNumbers: true
+  addSources: true
+  suppressOpeningDirectory: true
+  failIfMissingLicense: true
+  sandboxMode: true
+manual:
+  - name: Nunito
+    file: Resources/Fonts/Nunito-LICENSE.txt
+    licenseType: OFL-1.1
+  - name: Zen Maru Gothic
+    file: Resources/Fonts/ZenMaruGothic-LICENSE.txt
+    licenseType: OFL-1.1
