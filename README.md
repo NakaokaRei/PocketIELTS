@@ -1,5 +1,7 @@
 # Pocket IELTS
 
+<img src="Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-Light.png" width="128" alt="Pocket IELTS smiling pocket-book app icon" />
+
 **Practice a skill. Save an expression. Pick up where you left off.**
 
 Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. The interface is currently in Japanese; practice materials are in English.
@@ -26,7 +28,7 @@ Speaking feedback evaluates the transcript, not pronunciation or acoustic fluenc
 
 <img src="Documentation/Screenshots/iphone-generation.png" width="280" alt="A smiling book with estimated progress during question generation" />
 
-Fresh questions are prepared with a gently floating book, an estimated percentage and a count of completed, validated sections. The percentage is **a time-based estimate, not progress reported by the AI service**; each unfinished section stays below completion until its response is validated. Reduce Motion keeps the illustration still. Generation can be cancelled, and failed multi-part generation resumes from the sections already completed.
+Fresh questions are prepared with a gently floating book, an estimated percentage and a count of completed, validated sections. The percentage is **a time-based estimate, not progress reported by the AI service**; each unfinished section stays below completion until its response is validated. The illustration animates separately from progress text at up to 60 updates per second. Reduce Motion keeps it still; inactive scenes pause it. Generation can be cancelled, and failed multi-part generation resumes from the sections already completed.
 
 In each part card, **Practice bundled questions** opens the included exercise. **Generate new questions** requests fresh material through ChatGPT.
 
@@ -101,3 +103,5 @@ Screenshots show the running app in the iOS 26.5 simulator using isolated test s
 ## Credits
 
 The display typography uses **Nunito** and **Zen Maru Gothic**. Their Open Font License files are included in `Resources/Fonts`. System controls and icons use SwiftUI, UIKit and SF Symbols.
+
+The original [pocket-book app icon](Documentation/Brand/README.md) includes light, dark and tinted appearances, with editable SVGs and a reproducible asset generator.

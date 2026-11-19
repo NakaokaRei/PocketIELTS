@@ -622,13 +622,43 @@ private struct GenerationLoadingView: View {
     let completed: Int
     let total: Int
     let started: Date
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some View {
-        TimelineView(.periodic(from: .now, by: reduceMotion ? 1 : 0.25)) { timeline in
+        TimelineView(.periodic(from: .now, by: 1)) { timeline in
             let elapsed = max(0, timeline.date.timeIntervalSince(started))
             let estimate = (Double(completed) + min(0.9, 0.9 * (1 - exp(-elapsed / 45)))) / Double(max(1, total))
             VStack(spacing: 24) {
+                LoadingBookMascot()
+                VStack(spacing: 10) {
+                    Text("あなただけの問題を準備中").font(StudyTypography.roundedTitle(24))
+                    Text("小さな一歩が、大きな自信に。").font(.subheadline).foregroundStyle(.secondary)
+                }
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("進捗の目安").font(.subheadline)
+                        Spacer()
+                        Text("約 \(Int(estimate * 100))% ").monospacedDigit().bold()
+                    }
+                    ProgressView(value: estimate).tint(StudyColors.accent)
+                    Text("生成・確認済み \(completed) / \(total) セクション")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Text(elapsed > 90 ? "もう少し時間がかかっています。完了までこの画面でお待ちください。" : "本文・設問・解説を作成しています。表示は時間に基づく目安です。")
+                        .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                }.padding(20).background(StudyColors.reading.opacity(0.5), in: RoundedRectangle(cornerRadius: 20))
+            }
+        }
+    }
+}
+
+/// Only the illustration updates at display cadence; progress text updates once a second.
+private struct LoadingBookMascot: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var animationStarted = Date()
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 60.0,
+                                paused: reduceMotion || scenePhase != .active)) { timeline in
+            let elapsed = max(0, timeline.date.timeIntervalSince(animationStarted))
                 ZStack {
                     Circle().fill(StudyColors.reading).frame(width: 196, height: 196)
                     ForEach(0..<4) { index in
@@ -650,23 +680,6 @@ private struct GenerationLoadingView: View {
                     .rotationEffect(.degrees(reduceMotion ? 0 : sin(elapsed * 1.8) * 5))
                     .offset(y: reduceMotion ? 0 : sin(elapsed * 1.8) * 7)
                 }.frame(height: 220).accessibilityHidden(true)
-                VStack(spacing: 10) {
-                    Text("あなただけの問題を準備中").font(StudyTypography.roundedTitle(24))
-                    Text("小さな一歩が、大きな自信に。").font(.subheadline).foregroundStyle(.secondary)
-                }
-                VStack(spacing: 12) {
-                    HStack {
-                        Text("進捗の目安").font(.subheadline)
-                        Spacer()
-                        Text("約 \(Int(estimate * 100))% ").monospacedDigit().bold()
-                    }
-                    ProgressView(value: estimate).tint(StudyColors.accent)
-                    Text("生成・確認済み \(completed) / \(total) セクション")
-                        .font(.footnote).foregroundStyle(.secondary)
-                    Text(elapsed > 90 ? "もう少し時間がかかっています。完了までこの画面でお待ちください。" : "本文・設問・解説を作成しています。表示は時間に基づく目安です。")
-                        .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                }.padding(20).background(StudyColors.reading.opacity(0.5), in: RoundedRectangle(cornerRadius: 20))
-            }
         }
     }
 }

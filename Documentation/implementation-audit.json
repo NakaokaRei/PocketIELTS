@@ -98,6 +98,12 @@
       "figmaNodes": "99:2578,101:2601,101:2649",
       "source": "Sources/App/IELTSNavigation.swift",
       "implemented": "Native sidebar; adaptive dashboard columns; readable content widths; portrait/landscape; reset complete navigation on return home"
+    },
+    {
+      "name": "Pocket-book app icon and smooth loading",
+      "figmaNodes": "122:2766,114:2656",
+      "source": "Resources/Assets.xcassets/AppIcon.appiconset; Sources/Features/Exam/ExamScreen.swift",
+      "implemented": "Original opaque 1024px light/dark/tinted artwork with matching editable SVGs; display-driven mascot redraws at up to 60 Hz, progress at 1 Hz; Reduce Motion and scene inactivity pause animation"
     }
   ],
   "validation": {
