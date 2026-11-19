@@ -1,7 +1,7 @@
 {
   "figma": "https://www.figma.com/design/bYd2T51eVSh9tDzzehJtMa/IETLS_Study",
   "toolchain": "Xcode 27.2 (27B52)",
-  "branch": "codex/figma-functional-parity",
+  "branch": "main",
   "features": [
     {
       "name": "Home / settings symbol",
@@ -13,7 +13,7 @@
       "name": "ChatGPT-only account",
       "figmaNodes": "62:2578",
       "source": "Sources/Features/Settings/SettingsScreen.swift",
-      "implemented": "OAuth sign-in, saved profiles, sign-out, usage link; API key UI and fallback removed"
+      "implemented": "ChatGPT OAuth for text AI; separate optional personal speech API key in device-only Keychain."
     },
     {
       "name": "Choose sections and parts",
@@ -29,9 +29,9 @@
     },
     {
       "name": "Read / listen / answer",
-      "figmaNodes": "57:2104",
+      "figmaNodes": "159:3519,167:3569",
       "source": "Sources/Features/Exam/ExamScreen.swift",
-      "implemented": "Full passage, TTS playback, correct question numbering, text/menu answers, explanations"
+      "implemented": "Generated, cached dialogue audio with stable voices, no speaker labels, completed-segment percentage and 100% hold; pause, seek, stop, lifecycle cancellation."
     },
     {
       "name": "Tap and select expressions",
@@ -41,15 +41,15 @@
     },
     {
       "name": "Vocabulary persistence",
-      "figmaNodes": "24:474,5:100",
+      "figmaNodes": "5:100",
       "source": "Sources/Features/Home/HomeScreen.swift",
-      "implemented": "Selected expression, editable meaning, sentence context, original full material and selection offsets"
+      "implemented": "Selected expression and source context, direct AI questions, delete confirmation and cloud deletion tombstones; no manual meaning entry."
     },
     {
       "name": "Saved paper practice",
-      "figmaNodes": "29:1373",
+      "figmaNodes": "159:3476",
       "source": "Sources/Features/Home/HomeScreen.swift",
-      "implemented": "Persist complete original exercise and reopen for another attempt"
+      "implemented": "Home/part-picker entry; four skill selectors with counts and per Section/Part/Task groups; replay preserved materials."
     },
     {
       "name": "AI tutor conversation",
@@ -150,5 +150,14 @@
     "Historical plain-text readingHistory entries remain local; current structured results synchronize.",
     "Generation percentage is a clearly labeled elapsed-time estimate, not server-reported completion. Loading screenshot uses a DEBUG-only UI-test fixture.",
     "Older Reading/Listening history stored only the first answer; new questionAnswers records preserve all answers, but missing historical answers cannot be reconstructed."
-  ]
+  ],
+  "latestVerification": {
+    "date": "2026-11-19",
+    "unitTests": 30,
+    "targetedIPhoneUITests": 3,
+    "paidSpeechAPI": "Not called; user will configure key. Audible voice quality unverified.",
+    "markdown": "Foundation AttributedString(markdown:) with native selectable rendering.",
+    "figmaMarkdown": "167:3583",
+    "targetedIPadUITests": 2
+  }
 }

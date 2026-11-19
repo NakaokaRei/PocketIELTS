@@ -9,7 +9,7 @@ Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-home.png" width="250" alt="iPhone home with four color-coded IELTS skills" />
   <img src="Documentation/Screenshots/iphone-selection.png" width="250" alt="Tap a word in a reading passage to save it with its original context" />
-  <img src="Documentation/Screenshots/iphone-vocabulary.png" width="250" alt="Vocabulary entry with a meaning field and a link to the original exercise" />
+  <img src="Documentation/Screenshots/iphone-vocabulary.png" width="250" alt="Vocabulary entry with AI questions, deletion and a link to the original exercise" />
 </p>
 
 ## A complete study loop
@@ -158,6 +158,8 @@ Scripts/generate-licenses.sh /path/to/DerivedData/SourcePackages
 CI uses LicensePlist 3.28.3 with a verified download checksum and regenerates notices from resolved package sources without network license lookups. `Scripts/check-licenses.py` checks package and font coverage. Commit regenerated `Resources/Licenses` when updating dependencies locally.
 
 ### Saved practice and audio playback
+
+<img src="Documentation/Screenshots/iphone-saved-questions.png" width="280" alt="Saved questions grouped by skill and section" />
 
 Saved questions are available from Home and the skill selection screens, grouped by Reading, Listening, Writing and Speaking, then by Section, Part or Task. Each skill shows its saved count.
 
