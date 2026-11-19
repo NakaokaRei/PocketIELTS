@@ -251,6 +251,7 @@ struct VocabularyScreen: View {
     @State private var deleting: SavedExpression?
     @State private var tutor = false
     @State private var context = ""
+    @State private var selectedText: String?
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
@@ -271,6 +272,7 @@ struct VocabularyScreen: View {
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
                             context = entry.expression + "\n\n" + entry.sourceText + "\n\n" + entry.meaning
+                            selectedText = entry.expression
                             tutor = true
                         }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.askAI")
                         if let paper = entry.paper {
@@ -287,7 +289,7 @@ struct VocabularyScreen: View {
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
         } message: { entry in Text(entry.expression) }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
-            TutorScreen(store: store, context: context, vocabularyMode: true)
+            TutorScreen(store: store, context: context, selectedText: selectedText, vocabularyMode: true)
         }
     }
 }

@@ -5,6 +5,7 @@ struct PracticeScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var tutor = false
     @State private var context = ""
+    @State private var selectedText: String?
     @State private var saved = false
 
     var body: some View {
@@ -59,7 +60,7 @@ struct PracticeScreen: View {
         }
         .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける")) {} }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
-            TutorScreen(store: store, context: context)
+            TutorScreen(store: store, context: context, selectedText: selectedText)
         }
     }
 
@@ -71,7 +72,7 @@ struct PracticeScreen: View {
             }
             store.send(.saveExpression(SavedExpression(expression: entry.expression,
                 source: "Reading / Section \(store.section)", sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
-        } onAsk: { entry in openTutor(entry.sourceText + String(localized: "\n選択範囲: ") + entry.expression) } onSavePaper: {
+        } onAsk: { entry in openTutor(entry.sourceText + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) } onSavePaper: {
             if let set = store.session {
                 store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
                     skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [])))
@@ -79,8 +80,9 @@ struct PracticeScreen: View {
         }
     }
 
-    private func openTutor(_ selection: String) {
-        context = selection
+    private func openTutor(_ context: String, selection: String? = nil) {
+        self.context = context
+        selectedText = selection
         tutor = true
     }
 }
@@ -88,6 +90,7 @@ struct PracticeScreen: View {
 struct TutorScreen: View {
     let store: StoreOf<StudyFeature>
     let context: String
+    var selectedText: String? = nil
     var vocabularyMode = false
     @State private var draft = ""
     @State private var settings = false
@@ -97,8 +100,7 @@ struct TutorScreen: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
-                        DisclosureGroup(String(localized: "質問の対象")) { Text(context).font(StudyTypography.footnote).textSelection(.enabled) }
-                            .padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 18))
+                        TutorSubjectCard(text: selectedText ?? context)
                         VStack(alignment: .leading, spacing: 12) {
                             Text(String(localized: "よくある質問")).font(StudyTypography.headline)
                             Text(String(localized: "選ぶと入力欄に入ります。編集して送信できます。"))
@@ -162,4 +164,30 @@ enum TutorQuickQuestion {
         (String(localized: "他の選択肢との違い"), String(localized: "この問題で他の選択肢が合わない理由と、見分けるポイントを教えてください。")),
         (String(localized: "ヒントだけほしい"), String(localized: "正解はまだ言わず、この問題を自分で解くためのヒントを一つください。"))
     ]
+}
+
+
+/// The visible subject is the exact selection; full exercise context is still sent to AI.
+struct TutorSubjectCard: View {
+    let text: String
+    @State private var expanded = false
+    private var isLong: Bool { text.count > 160 || text.components(separatedBy: .newlines).count > 4 }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(String(localized: "質問の対象"), systemImage: "text.quote")
+                .font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
+            Text(text).font(StudyTypography.body).textSelection(.enabled)
+                .lineLimit(isLong && !expanded ? 4 : nil)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityIdentifier("tutor.subject")
+            if isLong {
+                Button(expanded ? String(localized: "折りたたむ") : String(localized: "全文を見る"), systemImage: expanded ? "chevron.up" : "chevron.down") {
+                    expanded.toggle()
+                }.font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                    .accessibilityIdentifier("tutor.subject.expand")
+            }
+        }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
+            .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 18))
+            .onChange(of: text) { _, _ in expanded = false }
+    }
 }

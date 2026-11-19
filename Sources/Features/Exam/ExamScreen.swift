@@ -100,6 +100,7 @@ struct ExamScreen: View {
     @State private var ended: Date?
     @State private var tutor = false
     @State private var context = ""
+    @State private var selectedText: String?
     @State private var saved = false
     @State private var recording = false
     @State private var conversation = false
@@ -162,7 +163,7 @@ struct ExamScreen: View {
         }
         .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける"), role: .cancel) {} }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
-            TutorScreen(store: store, context: context)
+            TutorScreen(store: store, context: context, selectedText: selectedText)
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         .fullScreenCover(isPresented: $conversation) {
@@ -362,7 +363,7 @@ struct ExamScreen: View {
                     Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)
-                    } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression) }
+                    } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) }
                 }
             }
             if part.questions.isEmpty {
@@ -397,14 +398,14 @@ struct ExamScreen: View {
     }
     private func selectable(_ text: String, id: String) -> some View {
         SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
-            onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression) },
+            onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
             onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
         store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
                                                   sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
     }
-    private func openTutor(_ value: String) { context = value; tutor = true }
+    private func openTutor(_ value: String, selection: String? = nil) { context = value; selectedText = selection; tutor = true }
     private func material(_ part: ExamUnit) -> String {
         ([part.id, part.title, part.directions] + part.passages + part.questions.map { $0.prompt + "\n" + $0.explanation } + part.oral + [part.audio ?? ""]).joined(separator: "\n")
     }

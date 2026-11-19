@@ -92,6 +92,11 @@ final class PocketIELTSUITests: XCTestCase {
         app.menuItems["AIに質問"].tap()
         XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
         XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.waitForExistence(timeout: 5))
+        let subject = app.staticTexts["tutor.subject"]
+        XCTAssertTrue(subject.isHittable, "The selected text must be visible without expanding anything")
+        XCTAssertFalse(subject.label.isEmpty)
+        XCTAssertLessThan(subject.label.count, 80, "Show the selected word, not the full exercise context")
+        XCTAssertFalse(app.buttons["tutor.subject.expand"].exists)
         XCTAssertTrue(app.buttons["tutor.quick.0"].exists)
         app.buttons["tutor.quick.0"].tap()
         XCTAssertTrue((app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.value as? String ?? "").contains("この文脈での意味"))
@@ -183,6 +188,17 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["practice.save"].isHittable)
         XCTAssertTrue(app.buttons["practice.ask"].isHittable)
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-review-actions" : "iphone-review-actions")
+        app.buttons["practice.ask"].tap()
+        let subject = app.staticTexts["tutor.subject"]
+        XCTAssertTrue(subject.waitForExistence(timeout: 5))
+        XCTAssertTrue(subject.isHittable)
+        let collapsedHeight = subject.frame.height
+        let expand = app.buttons["tutor.subject.expand"]
+        XCTAssertTrue(expand.isHittable)
+        capture("iphone-tutor-long-subject")
+        expand.tap()
+        XCTAssertGreaterThan(subject.frame.height, collapsedHeight)
+        app.buttons["完了"].tap()
         retry.tap()
         XCTAssertTrue(app.buttons["practice.review"].exists)
         app.buttons["practice.finish"].tap()
