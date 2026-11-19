@@ -315,7 +315,7 @@ extension PocketIELTSTests {
         XCTAssertFalse(player.generating)
         XCTAssertNil(player.player)
         player.play(script: "Test") { _, _ in wave }
-        try await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(for: .milliseconds(850))
         XCTAssertNotNil(player.player)
         player.stop()
         XCTAssertFalse(player.player?.isPlaying ?? true)
@@ -347,5 +347,46 @@ extension PocketIELTSTests {
         XCTAssertTrue(notices.contains { $0.title.contains("Nunito") })
         XCTAssertTrue(notices.contains { $0.title.contains("swift-composable-architecture") })
         XCTAssertTrue(notices.allSatisfy { $0.text.count > 100 })
+    }
+}
+
+extension PocketIELTSTests {
+    @MainActor func testMarkdownRendersStructureAndPreservesVisibleSelectionOffsets() {
+        let source = "## Meaning\n\n**Buying** means buying.\n\n- First item\n- Second item\n\n1. Example one\n2. Example two\n\n`purchase`"
+        let rendered = StudyMarkdown.render(source)
+        XCTAssertFalse(rendered.string.contains("**"))
+        XCTAssertFalse(rendered.string.contains("##"))
+        XCTAssertTrue(rendered.string.contains("•  First item"))
+        XCTAssertTrue(rendered.string.contains("2.  Example two"))
+        let range = (rendered.string as NSString).range(of: "Buying")
+        XCTAssertEqual((rendered.string as NSString).substring(with: range), "Buying")
+        let font = rendered.attribute(.font, at: range.location, effectiveRange: nil) as? UIFont
+        XCTAssertTrue(font?.fontDescriptor.symbolicTraits.contains(.traitBold) == true)
+        XCTAssertTrue(rendered.string.contains("purchase"))
+        XCTAssertFalse(rendered.string.contains("`"))
+    }
+    func testSavedPapersGroupByRealSkillPartNotTitle() throws {
+        let papers = try ExamUnit.load()
+        XCTAssertEqual(Set(papers.filter { $0.skill == "Reading" }.map(SavedPaperGrouping.part)), ["Section 1", "Section 2", "Section 3"])
+        XCTAssertEqual(Set(papers.filter { $0.skill == "Listening" }.map(SavedPaperGrouping.part)), ["Part 1", "Part 2", "Part 3", "Part 4"])
+        let paper = ExamUnit(id: "Reading / Section 1 · Section 3 of the museum", skill: "Reading", title: "Section 3 of the museum", directions: "", passages: [], questions: [], audio: nil, oral: [])
+        XCTAssertEqual(SavedPaperGrouping.part(paper), "Section 1")
+    }
+}
+
+
+extension PocketIELTSTests {
+    func testDialogueAudioRemovesLabelsAndKeepsVoicesStable() throws {
+        let parts = SpeechAudio.segments("Receptionist: Welcome.\nCaller: Hello!\nReceptionist: We open at 9:30.\nPlease arrive early.")
+        XCTAssertEqual(parts.map(\.text), ["Welcome.", "Hello!", "We open at 9:30.\nPlease arrive early."])
+        XCTAssertEqual(parts[0].voice, parts[2].voice)
+        XCTAssertNotEqual(parts[0].voice, parts[1].voice)
+        let request = try SpeechAudio.request(text: parts[1].text, key: "test", voice: parts[1].voice)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: String])
+        XCTAssertEqual(json["voice"], parts[1].voice)
+        XCTAssertEqual(json["input"], "Hello!")
+        XCTAssertEqual(SpeechAudio.segments("We open at 9:30. Bring this: your card.").first?.text, "We open at 9:30. Bring this: your card.")
+        XCTAssertEqual(SpeechAudio.segments("**Emma:** Good morning.\n**Tom:** Hello.").map(\.text), ["Good morning.", "Hello."])
+        XCTAssertTrue(SpeechAudio.segments("  ").isEmpty)
     }
 }

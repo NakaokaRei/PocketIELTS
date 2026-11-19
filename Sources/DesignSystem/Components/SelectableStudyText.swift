@@ -10,6 +10,7 @@ struct SelectableStudyText: View {
     var onAsk: ((Entry) -> Void)? = nil
     var onSavePaper: (() -> Void)? = nil
     var allowsAI = true
+    var markdown = false
     @State private var saved = false
 
     var body: some View {
@@ -18,7 +19,7 @@ struct SelectableStudyText: View {
             saved = true
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             UIAccessibility.post(notification: .announcement, argument: String(localized: "単語帳に保存しました"))
-        }, onAsk: allowsAI ? onAsk : nil, onSavePaper: onSavePaper)
+        }, onAsk: allowsAI ? onAsk : nil, onSavePaper: onSavePaper, markdown: markdown)
         .overlay(alignment: .top) {
             if saved {
                 Label(String(localized: "単語帳に保存しました"), systemImage: "checkmark.circle.fill")
@@ -53,6 +54,7 @@ struct StudyTextView: UIViewRepresentable {
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
     var onSavePaper: (() -> Void)? = nil
+    var markdown = false
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -83,8 +85,9 @@ struct StudyTextView: UIViewRepresentable {
     func updateUIView(_ view: UITextView, context: Context) {
         let changedSource = context.coordinator.content.sourceID != sourceID
         context.coordinator.content = self
-        if changedSource || view.text != text {
-            view.text = text
+        let rendered = markdown ? StudyMarkdown.render(text) : NSAttributedString(string: text, attributes: [.font: StudyTypography.bodyFont, .foregroundColor: StudyColors.bodyText])
+        if changedSource || !view.attributedText.isEqual(to: rendered) {
+            view.attributedText = rendered
             view.selectedRange = NSRange(location: 0, length: 0)
         }
     }
@@ -138,11 +141,11 @@ struct StudyTextView: UIViewRepresentable {
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange,
                       suggestedActions: [UIMenuElement]) -> UIMenu? {
             let current = content
-            guard range.length > 0, textView.text == current.text,
-                  let selection = Range(range, in: current.text) else { return nil }
-            let expression = String(current.text[selection])
+            let displayed = textView.text ?? ""
+            guard range.length > 0, let selection = Range(range, in: displayed) else { return nil }
+            let expression = String(displayed[selection])
             guard !expression.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-            let entry = Entry(expression: expression, sourceText: current.text,
+            let entry = Entry(expression: expression, sourceText: displayed,
                               sourceID: current.sourceID, utf16Range: range)
             var actions: [UIMenuElement] = [
                 UIAction(title: String(localized: "単語帳に追加"), image: UIImage(systemName: "text.badge.plus")) { _ in
@@ -221,4 +224,59 @@ private final class StudySelectionDismissal: NSObject, UIGestureRecognizerDelega
                            shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool { true }
 
     @objc private func outsideTap(_ gesture: UITapGestureRecognizer) { clear() }
+}
+
+
+/// Foundation parses CommonMark; UIKit preserves native selection and word actions.
+enum StudyMarkdown {
+    static func render(_ source: String) -> NSAttributedString {
+        guard let parsed = try? AttributedString(markdown: source, options: .init(interpretedSyntax: .full)) else {
+            return NSAttributedString(string: source, attributes: [.font: StudyTypography.bodyFont, .foregroundColor: StudyColors.bodyText])
+        }
+        let output = NSMutableAttributedString(string: "")
+        var previousBlock: Int?
+        var previousRow: Int?
+        for run in parsed.runs {
+            let components = run.presentationIntent?.components ?? []
+            let block = components.first?.identity
+            var heading: Int?, ordinal: Int?, ordered = false, depth = 0, quote = false, code = false, rowID: Int?, tableHeader = false
+            for component in components {
+                switch component.kind {
+                case .header(let level): heading = level
+                case .listItem(let value): if ordinal == nil { ordinal = value }
+                case .orderedList: if depth == 0 { ordered = true }; depth += 1
+                case .unorderedList: depth += 1
+                case .blockQuote: quote = true
+                case .codeBlock: code = true
+                case .tableHeaderRow: rowID = component.identity; tableHeader = true
+                case .tableRow: rowID = component.identity
+                default: break
+                }
+            }
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineSpacing = 4
+            paragraph.paragraphSpacing = heading == nil ? 12 : 16
+            paragraph.headIndent = CGFloat(max(0, depth - 1)) * 18 + (ordinal == nil ? 0 : 24) + (quote ? 14 : 0)
+            paragraph.firstLineHeadIndent = CGFloat(max(0, depth - 1)) * 18 + (quote ? 14 : 0)
+            var font = StudyTypography.bodyFont
+            if let heading { font = UIFont.preferredFont(forTextStyle: heading == 1 ? .title2 : heading == 2 ? .title3 : .headline) }
+            let inline = run.inlinePresentationIntent ?? []
+            if code || inline.contains(.code) { font = .monospacedSystemFont(ofSize: font.pointSize * 0.92, weight: .regular) }
+            var traits = font.fontDescriptor.symbolicTraits
+            if heading != nil || tableHeader || inline.contains(.stronglyEmphasized) { traits.insert(.traitBold) }
+            if inline.contains(.emphasized) { traits.insert(.traitItalic) }
+            if let descriptor = font.fontDescriptor.withSymbolicTraits(traits) { font = UIFont(descriptor: descriptor, size: font.pointSize) }
+            var attrs: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: StudyColors.bodyText, .paragraphStyle: paragraph]
+            if inline.contains(.strikethrough) { attrs[.strikethroughStyle] = NSUnderlineStyle.single.rawValue }
+            if code || inline.contains(.code) { attrs[.backgroundColor] = UIColor.secondarySystemBackground }
+            if let link = run.link, ["https", "http"].contains(link.scheme?.lowercased() ?? "") { attrs[.link] = link }
+            if block != previousBlock {
+                if output.length > 0 { output.append(NSAttributedString(string: rowID != nil && rowID == previousRow ? "  |  " : "\n", attributes: attrs)) }
+                if let ordinal { output.append(NSAttributedString(string: ordered ? "\(ordinal).  " : "•  ", attributes: attrs)) }
+                previousBlock = block; previousRow = rowID
+            }
+            output.append(NSAttributedString(string: String(parsed[run.range].characters), attributes: attrs))
+        }
+        return output
+    }
 }

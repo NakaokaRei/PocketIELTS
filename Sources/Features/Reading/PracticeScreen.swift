@@ -118,10 +118,10 @@ struct TutorScreen: View {
                         ForEach(store.messages) { message in
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(message.isUser ? String(localized: "あなた") : String(localized: "AIチューター")).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
-                                SelectableStudyText(text: message.text, sourceID: message.id.uuidString) { entry in
+                                SelectableStudyText(text: message.text, sourceID: message.id.uuidString, onSave: { entry in
                                     store.send(.saveExpression(SavedExpression(expression: entry.expression,
                                         source: String(localized: "AIチューター"), sourceText: entry.sourceText, meaning: entry.meaning, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
-                                }
+                                }, markdown: !message.isUser)
                             }.padding().frame(maxWidth: .infinity, alignment: .leading)
                                 .background(message.isUser ? StudyColors.mockCard : Color.clear, in: RoundedRectangle(cornerRadius: 18))
                         }

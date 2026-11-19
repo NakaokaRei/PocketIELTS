@@ -53,11 +53,13 @@ struct MockIntroScreen: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    Toggle(isOn: $generate) {
+                    HStack(alignment: .top, spacing: 12) {
                         Label(String(localized: "新しい問題を生成する"), systemImage: "sparkles")
-                            .font(StudyTypography.button)
+                            .font(StudyTypography.button).fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                        Toggle(String(localized: "新しい問題を生成する"), isOn: $generate)
+                            .labelsHidden().fixedSize().accessibilityIdentifier("mock.generate")
                     }
-                    .accessibilityIdentifier("mock.generate")
                     Text(generate ? String(localized: "新しい問題を生成します。") : String(localized: "収録問題を使用します。Writing・Speakingは終了後にAI講評を確認できます。"))
                         .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
                 }.padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
@@ -616,7 +618,7 @@ struct GeneratedExamScreen: View {
     @State private var settings = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        Group {
+        ZStack {
             if showQuestions {
                 ExamScreen(units: generated, store: store, isMock: isMock)
                     .transition(reduceMotion ? .opacity : .move(edge: .trailing).combined(with: .opacity))
@@ -638,9 +640,9 @@ struct GeneratedExamScreen: View {
                         }.padding(24).frame(maxWidth: 480)
                             .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                     }
-                }
+                }.transition(reduceMotion ? .opacity : .move(edge: .leading).combined(with: .opacity))
             }
-        }
+        }.clipped()
         .task(id: attempt) {
             #if DEBUG
             if ProcessInfo.processInfo.arguments.contains("--ui-testing"),

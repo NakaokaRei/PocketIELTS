@@ -156,3 +156,11 @@ Scripts/generate-licenses.sh /path/to/DerivedData/SourcePackages
 ```
 
 CI uses LicensePlist 3.28.3 with a verified download checksum and regenerates notices from resolved package sources without network license lookups. `Scripts/check-licenses.py` checks package and font coverage. Commit regenerated `Resources/Licenses` when updating dependencies locally.
+
+### Saved practice and audio playback
+
+Saved questions are available from Home and the skill selection screens, grouped by Reading, Listening, Writing and Speaking, then by Section, Part or Task. Each skill shows its saved count.
+
+Listening audio uses separate, consistent voices for dialogue speakers. Speaker labels are excluded from spoken input. Generation progress shows the percentage of completed audio segments and reaches 100% before playback. Completed segments are cached on the device. Audio generation requires your own OpenAI API key and incurs API charges; ChatGPT sign-in remains separate.
+
+AI tutor answers use Apple's Foundation Markdown parser with native selectable text for headings, emphasis and lists. Selected words can still be saved.

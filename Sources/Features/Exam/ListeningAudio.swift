@@ -27,7 +27,50 @@ enum SpeechAudio {
         return result
     }
 
-    static func request(text: String, key: String) throws -> URLRequest {
+    struct Segment: Equatable {
+        let text: String
+        let voice: String
+        let speaker: String?
+    }
+
+    /// Labels are metadata, never spoken input. A voice stays stable across turns.
+    static func segments(_ script: String) -> [Segment] {
+        let pattern = #"^\s*(?:\*\*)?([A-Za-z][A-Za-z0-9 .’'()_-]{0,39}?)(?:\*\*)?\s*[:：]\s*(?:\*\*)?\s*(.*)$"#
+        let regex = try! NSRegularExpression(pattern: pattern)
+        let lines = script.components(separatedBy: .newlines)
+        let ignored = Set(["note", "notes", "time", "answer", "example", "important", "instructions"])
+        func label(_ line: String) -> (String, String)? {
+            let ns = line as NSString
+            guard let match = regex.firstMatch(in: line, range: NSRange(location: 0, length: ns.length)) else { return nil }
+            let name = ns.substring(with: match.range(at: 1)).trimmingCharacters(in: .whitespaces)
+            guard !ignored.contains(name.lowercased()) else { return nil }
+            return (name, ns.substring(with: match.range(at: 2)))
+        }
+        let labels = lines.compactMap(label)
+        let counts = Dictionary(labels.map { ($0.0.lowercased(), 1) }, uniquingKeysWith: +)
+        let roles = Set(["narrator", "speaker", "lecturer", "guide", "receptionist", "caller", "student", "tutor", "man", "woman", "interviewer"])
+        var voices: [String: String] = [:]
+        let palette = ["marin", "cedar", "coral", "ash", "sage", "verse", "ballad", "onyx"]
+        var turns: [(String?, String)] = []
+        for line in lines {
+            if let (name, words) = label(line), counts.count > 1 || counts[name.lowercased(), default: 0] > 1 || roles.contains(name.lowercased()) {
+                turns.append((name, words))
+            } else if !turns.isEmpty {
+                turns[turns.count - 1].1 += "\n" + line
+            } else if !line.trimmingCharacters(in: .whitespaces).isEmpty {
+                turns.append((nil, line))
+            }
+        }
+        return turns.flatMap { speaker, words -> [Segment] in
+            let key = speaker?.lowercased() ?? "narrator"
+            if voices[key] == nil { voices[key] = palette[voices.count % palette.count] }
+            return chunks(words.trimmingCharacters(in: .whitespacesAndNewlines)).map {
+                Segment(text: $0, voice: voices[key]!, speaker: speaker)
+            }
+        }
+    }
+
+    static func request(text: String, key: String, voice: String = SpeechAudio.voice) throws -> URLRequest {
         var request = URLRequest(url: URL(string: "https://api.openai.com/v1/audio/speech")!)
         request.httpMethod = "POST"
         request.timeoutInterval = 180
@@ -60,21 +103,23 @@ enum SpeechAudio {
         let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("ListeningAudio", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         var pcm = Data()
-        let parts = chunks(text)
+        let parts = segments(text)
+        await progress(0, parts.count)
         for (index, part) in parts.enumerated() {
             try Task.checkCancellation()
-            let hash = SHA256.hash(data: Data((model + voice + instructions + part).utf8)).map { String(format: "%02x", $0) }.joined()
+            let hash = SHA256.hash(data: Data(("dialogue-v1" + model + part.voice + instructions + part.text).utf8)).map { String(format: "%02x", $0) }.joined()
             let url = directory.appendingPathComponent(hash + ".pcm")
             if let cached = try? Data(contentsOf: url), !cached.isEmpty, cached.count.isMultiple(of: 2) {
                 pcm.append(cached)
             } else {
                 guard let key = try KeyStore.read(account: SpeechCredentials.account), !key.isEmpty else { throw StudyError.message(String(localized: "設定で音声生成用のAPIキーを登録してください。")) }
-                let (data, response) = try await URLSession.shared.data(for: request(text: part, key: key))
+                let (data, response) = try await URLSession.shared.data(for: request(text: part.text, key: key, voice: part.voice))
                 try Task.checkCancellation()
                 try validate(response, data: data)
                 try data.write(to: url, options: .atomic)
                 pcm.append(data)
             }
+            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: 7200)) } // 150 ms between turns.
             await progress(index + 1, parts.count)
         }
         guard !pcm.isEmpty else { throw StudyError.message(String(localized: "音声データを読み込めませんでした。")) }
@@ -103,7 +148,7 @@ enum SpeechAudio {
             return
         }
         guard !generating else { return }
-        error = nil; generating = true; completed = 0; total = SpeechAudio.chunks(script).count
+        error = nil; generating = true; completed = 0; total = SpeechAudio.segments(script).count
         let id = UUID(); generationID = id
         operation = Task { [weak self] in
             do {
@@ -113,6 +158,10 @@ enum SpeechAudio {
                 }
                 try Task.checkCancellation()
                 guard let self, self.generationID == id else { return }
+                self.completed = self.total
+                try await Task.sleep(for: .milliseconds(650))
+                try Task.checkCancellation()
+                guard self.generationID == id else { return }
                 self.player = try AVAudioPlayer(data: data)
                 self.generating = false
                 self.play(script: script)
@@ -142,8 +191,16 @@ struct ListeningAudioView: View {
                 Label(String(localized: "リスニング音声"), systemImage: "headphones").font(StudyTypography.heading)
                 Text(String(localized: "AI生成音声 · 英国英語")).font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
                 if playback.generating {
-                    ProgressView()
-                    Text(String(format: String(localized: "音声を生成中 %@ / %@"), String(playback.completed), String(playback.total))).font(StudyTypography.subheadline)
+                    let fraction = Double(playback.completed) / Double(max(1, playback.total))
+                    HStack {
+                        Text(playback.completed == playback.total ? String(localized: "再生の準備ができました") : String(localized: "音声を生成中"))
+                        Spacer()
+                        Text("\(Int(fraction * 100))%").monospacedDigit()
+                    }.font(StudyTypography.button)
+                    ProgressView(value: fraction).animation(.easeInOut(duration: 0.35), value: fraction)
+                    Text(String(format: String(localized: "生成済み %@ / %@ 音声区間"), String(playback.completed), String(playback.total))).font(StudyTypography.footnote)
+                    Text(String(localized: "完了した音声区間の割合です。区間の生成中は数値が止まることがあります。"))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 }
                 if let player = playback.player {
                     Slider(value: Binding(get: { player.currentTime }, set: { playback.seek($0) }), in: 0...max(0.01, player.duration))

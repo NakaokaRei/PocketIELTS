@@ -49,7 +49,7 @@ struct StudyClient: DependencyKey {
         Create a new original IELTS General Training exercise for \(template.id).
         Match the task format, number of questions, length and difficulty of this example.
         Use English for material and \(explanationLanguage) for answer explanations. All answers must be grounded in the material.
-        For Listening provide a complete spoken script in audio. For Speaking provide interview questions in oral.
+        For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, provide only spoken words. For Speaking provide interview questions in oral.
         Put every option on its own line with a letter or roman-numeral label. Do not prefix question prompts with question numbers.
         Return only a JSON object with exactly the same keys and value types as the example.
         Example: \(example)

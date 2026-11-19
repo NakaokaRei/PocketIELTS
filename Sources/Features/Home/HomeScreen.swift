@@ -274,7 +274,7 @@ struct VocabularyScreen: View {
                             tutor = true
                         }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.askAI")
                         if let paper = entry.paper {
-                            NavigationLink(String(localized: "元の問題を復習")) { ExamScreen(units: [paper], store: store) }
+                            NavigationLink { ExamScreen(units: [paper], store: store) } label: { Label(String(localized: "元の問題を復習"), systemImage: "book") }.buttonStyle(StudySecondaryButtonStyle())
                         }
                     }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
@@ -379,30 +379,69 @@ struct ResultDetailScreen: View {
     }
 }
 
+enum SavedPaperGrouping {
+    static let skills = ["Reading", "Listening", "Writing", "Speaking"]
+    static func part(_ paper: ExamUnit) -> String {
+        let prefix = paper.id.components(separatedBy: " · ")[0]
+        let noun = paper.skill == "Reading" ? "Section" : paper.skill == "Writing" ? "Task" : "Part"
+        let count = paper.skill == "Reading" || paper.skill == "Speaking" ? 3 : paper.skill == "Writing" ? 2 : 4
+        for index in 1...count where prefix.hasSuffix("\(noun) \(index)") { return "\(noun) \(index)" }
+        return String(localized: "その他")
+    }
+}
+
 struct SavedPapersScreen: View {
     let store: StoreOf<StudyFeature>
-    var skill: String?
-    private var papers: [ExamUnit] { store.papers.filter { skill == nil || $0.skill == skill } }
+    @State private var selectedSkill: String
+    init(store: StoreOf<StudyFeature>, skill: String? = nil) {
+        self.store = store
+        _selectedSkill = State(initialValue: skill ?? SavedPaperGrouping.skills.first(where: { candidate in store.papers.contains { $0.skill == candidate } }) ?? "Reading")
+    }
+    private var papers: [ExamUnit] { store.papers.filter { $0.skill == selectedSkill } }
+    private var groups: [String] { Array(Set(papers.map(SavedPaperGrouping.part))).sorted { $0.localizedStandardCompare($1) == .orderedAscending } }
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(String(localized: "保存した問題を選ぶと、もう一度練習できます。"))
+            VStack(alignment: .leading, spacing: 24) {
+                Text(String(localized: "技能とパートを選んで、保存した問題を復習できます。"))
                     .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    ForEach(Array(SavedPaperGrouping.skills.enumerated()), id: \.element) { index, skill in
+                        Button { selectedSkill = skill } label: {
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack { Image(systemName: ["book", "headphones", "pencil", "mic"][index]); Spacer(); if selectedSkill == skill { Image(systemName: "checkmark.circle.fill") } }
+                                Text(skill).font(StudyTypography.roundedTitle(20))
+                                Text(String(format: String(localized: "%@件の問題"), String(store.papers.filter { $0.skill == skill }.count))).font(StudyTypography.caption)
+                            }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                                .background([StudyColors.reading, StudyColors.listening, StudyColors.writing, StudyColors.speaking][index], in: RoundedRectangle(cornerRadius: 18))
+                                .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(selectedSkill == skill ? StudyColors.accent : .clear, lineWidth: 2))
+                        }.buttonStyle(.plain).foregroundStyle(StudyColors.ink)
+                            .accessibilityAddTraits(selectedSkill == skill ? .isSelected : [])
+                            .accessibilityIdentifier("saved.skill.\(skill)")
+                    }
+                }
                 if papers.isEmpty {
                     ContentUnavailableView(String(localized: "保存した問題はありません"), systemImage: "bookmark", description: Text(String(localized: "解説画面の「この問題を保存」から追加できます。")))
                 }
-                ForEach(papers) { paper in
-                    NavigationLink { ExamScreen(units: [paper], store: store) } label: {
-                        HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text(paper.id).font(StudyTypography.subheadline).foregroundStyle(StudyColors.accent)
-                                Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
-                                Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
-                            }
-                            Spacer(minLength: 0); Image(systemName: "chevron.right")
-                        }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
-                            .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
-                    }.buttonStyle(.plain)
+                ForEach(groups, id: \.self) { group in
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text(group).font(StudyTypography.heading)
+                            Spacer()
+                            Text(String(format: String(localized: "%@件の問題"), String(papers.filter { SavedPaperGrouping.part($0) == group }.count))).font(StudyTypography.caption)
+                        }.accessibilityAddTraits(.isHeader)
+                        ForEach(papers.filter { SavedPaperGrouping.part($0) == group }) { paper in
+                            NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                                HStack(spacing: 16) {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
+                                        Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
+                                    }
+                                    Spacer(minLength: 0); Image(systemName: "chevron.right")
+                                }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                            }.buttonStyle(.plain)
+                        }
+                    }
                 }
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)

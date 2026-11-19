@@ -4645,6 +4645,104 @@
           }
         }
       }
+    },
+    "その他": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その他"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "技能とパートを選んで、保存した問題を復習できます。": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "技能とパートを選んで、保存した問題を復習できます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a skill and part to revisit your saved questions."
+          }
+        }
+      }
+    },
+    "再生の準備ができました": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready to play"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再生の準備ができました"
+          }
+        }
+      }
+    },
+    "音声を生成中": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generating audio"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声を生成中"
+          }
+        }
+      }
+    },
+    "生成済み %@ / %@ 音声区間": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generated %@ / %@ audio segments"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成済み %@ / %@ 音声区間"
+          }
+        }
+      }
+    },
+    "完了した音声区間の割合です。区間の生成中は数値が止まることがあります。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress reflects completed audio segments. It may pause while a segment is being generated."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了した音声区間の割合です。区間の生成中は数値が止まることがあります。"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
