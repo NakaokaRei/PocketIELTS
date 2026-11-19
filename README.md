@@ -181,7 +181,7 @@ AI tutor answers use Apple's Foundation Markdown parser with native selectable t
 
 Open **Offline practice** on Home to choose from the 12 bundled General Training parts: 3 Reading sections, 4 Listening parts, 2 Writing tasks and 3 Speaking parts. The included Reading passages, 40 questions, marking and explanations need no sign-in or internet. Writing prompts and Speaking topics are also bundled. AI feedback, live conversations and generating new Listening audio require internet; audio is not preinstalled with the app.
 
-Vocabulary has two separate areas: **My vocabulary** for your saved expressions, and **IELTS word library** with 60 original words, English definitions and examples. The three levels (Foundation 4–5, Developing 5.5–6.5 and Advanced 7+) are study guides, not official IELTS word lists or score guarantees. The standard collection is available offline and never populates or changes your personal saved words.
+Vocabulary has two separate areas: **My vocabulary** for your saved expressions, and **IELTS word library** with **1,000 words** and English definitions (examples where available): 60 original entries plus 940 curated WordNet 3.0 entries. The three levels (Foundation 4–5, Developing 5.5–6.5 and Advanced 7+) are study guides, not official IELTS word lists or score guarantees. The standard collection is available offline and never populates or changes your personal saved words.
 
 Tap **+** in Vocabulary to add a word or phrase and an optional example sentence. You can ask the AI tutor about the entered expression before saving, or from its saved card afterward. Blank entries and duplicate manually added words are prevented. Personal entries use the existing iCloud synchronization and swipe-to-delete flow.
 
@@ -196,3 +196,13 @@ Tap **+** in Vocabulary to add a word or phrase and an optional example sentence
 For **My Mac (Designed for iPad)**, ChatGPT sign-in now uses `ASWebAuthenticationSession` while the app keeps its loopback listener alive. The previous Safari view-controller path is retained on iPhone and iPad. [Apple documents the external-browser behavior of Safari view controllers on Mac Catalyst](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller).
 
 After updating, start a new sign-in from Settings; an old localhost error tab belongs to an expired attempt and cannot complete a new sign-in. The callback is checked against the original OAuth state, and the listener is cleaned up after completion or cancellation. A local integration test verifies the callback without an OpenAI request. Live account authentication still requires verification on the Mac with the user's account.
+
+### Vocabulary sources and waiting-time practice
+
+The offline library contains 333 Foundation, 333 Developing and 334 Advanced words. Search by word or English definition within the selected level. The levels are editorial learning guides, not official IELTS or CEFR classifications.
+
+Definitions and available examples for 940 entries come from [Princeton WordNet 3.0](https://wordnet.princeton.edu/). Each selected lexical sense is pinned in `Scripts/vocabulary-selection.json`. The database subset and [full license](Resources/Vocabulary/WordNet-LICENSE.txt) are bundled with the app, and its notice appears in Settings → OSS licenses through LicensePlist. The original 60 definitions and examples remain unchanged. Rebuild the subset from the official unpacked WordNet 3.0 `dict/` directory with `python3 Scripts/import-wordnet.py /path/to/dict` (no runtime download).
+
+While new exercises are generated, an optional recall card prioritizes **your saved words**. It hides the selected expression in its saved context; if there is no usable context, it uses a matching library definition or a spelling prompt. Reveal the answer and move to the next word. When no personal words are saved, the standard library supplies prompts. This is self-review, not automatic grading, and does not alter your saved data or learning scores. It works locally without an extra API request and never delays completion: the exercise still opens automatically after the progress reaches 100%.
+
+<img src="Documentation/Screenshots/iphone-generation-quiz.png" width="250" alt="Optional vocabulary recall card while exercises are generated" />

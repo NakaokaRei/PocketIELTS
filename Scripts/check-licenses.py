@@ -8,7 +8,7 @@ licenses = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else root / 'Resources
 index = plistlib.loads((licenses / 'Acknowledgements.plist').read_bytes())
 files = [row['File'] for row in index['PreferenceSpecifiers'] if row.get('Type') == 'PSChildPaneSpecifier']
 resolved = json.loads((root / 'PocketIELTS.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved').read_text())
-expected = {pin['identity'] for pin in resolved['pins']} | {'Nunito', 'Zen Maru Gothic'}
+expected = {pin['identity'] for pin in resolved['pins']} | {'Nunito', 'Zen Maru Gothic', 'WordNet 3.0'}
 actual = {pathlib.Path(name).name for name in files}
 missing = expected - actual
 extra = actual - expected

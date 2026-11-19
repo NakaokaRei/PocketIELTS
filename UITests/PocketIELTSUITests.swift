@@ -219,12 +219,33 @@ final class PocketIELTSUITests: XCTestCase {
         app.terminate()
         app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing", "--ui-reset", "--ui-generation-preview"]
         app.launch()
+        navigate("単語帳", tag: 2)
+        app.buttons["vocabulary.add"].tap()
+        let field = app.descendants(matching: .any).matching(identifier: "vocabulary.expression").firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap(); field.typeText("available")
+        if app.buttons["入力を完了"].exists { app.buttons["入力を完了"].tap() }
+        app.buttons["vocabulary.saveManual"].tap()
+        navigate("ホーム", tag: 0)
         app.buttons["home.skill.Reading"].tap()
         app.buttons["新しい問題を生成して練習"].firstMatch.tap()
         XCTAssertTrue(app.staticTexts["あなただけの問題を準備中"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["進捗の目安"].exists)
-        capture("iphone-generation")
-        app.buttons["キャンセルして戻る"].tap()
+        let action = app.buttons["generation.quiz.action"]
+        for _ in 0..<5 where !action.isHittable { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts["generation.quiz.prompt"].exists)
+        XCTAssertFalse(app.staticTexts["generation.quiz.answer"].exists)
+        action.tap()
+        XCTAssertTrue(app.staticTexts["generation.quiz.answer"].exists)
+        XCTAssertEqual(app.staticTexts["generation.quiz.answer"].label, "available")
+        XCTAssertTrue(app.staticTexts["保存した単語から出題"].exists)
+        app.swipeUp()
+        capture("iphone-generation-quiz")
+        action.tap()
+        XCTAssertFalse(app.staticTexts["generation.quiz.answer"].exists)
+        let cancel = app.buttons["キャンセルして戻る"]
+        for _ in 0..<3 where !cancel.isHittable { app.swipeUp() }
+        cancel.tap()
         XCTAssertTrue(app.buttons["part.open.Reading / Section 1"].waitForExistence(timeout: 5))
     }
 

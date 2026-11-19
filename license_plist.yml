@@ -13,3 +13,6 @@ manual:
   - name: Zen Maru Gothic
     file: Resources/Fonts/ZenMaruGothic-LICENSE.txt
     licenseType: OFL-1.1
+  - name: WordNet 3.0
+    file: Resources/Vocabulary/WordNet-LICENSE.txt
+    licenseType: WordNet

@@ -1,0 +1,6582 @@
+[
+  {
+    "expression": "address",
+    "definition": "the place where a person or organization can be found or communicated with",
+    "example": "",
+    "level": 0,
+    "synset": "08491027-noun"
+  },
+  {
+    "expression": "airport",
+    "definition": "an airfield equipped with control tower and hangars as well as accommodations for passengers and cargo",
+    "example": "",
+    "level": 0,
+    "synset": "02692232-noun"
+  },
+  {
+    "expression": "arrival",
+    "definition": "the act of arriving at a certain place",
+    "example": "they awaited her arrival",
+    "level": 0,
+    "synset": "00048374-noun"
+  },
+  {
+    "expression": "bicycle",
+    "definition": "a wheeled vehicle that has two wheels and is moved by foot pedals",
+    "example": "",
+    "level": 0,
+    "synset": "02834778-noun"
+  },
+  {
+    "expression": "certificate",
+    "definition": "a document attesting to the truth of certain stated facts",
+    "example": "",
+    "level": 0,
+    "synset": "06471345-noun"
+  },
+  {
+    "expression": "classroom",
+    "definition": "a room in a school where lessons take place",
+    "example": "",
+    "level": 0,
+    "synset": "03038685-noun"
+  },
+  {
+    "expression": "colleague",
+    "definition": "an associate that one works with",
+    "example": "",
+    "level": 0,
+    "synset": "09936215-noun"
+  },
+  {
+    "expression": "customer",
+    "definition": "someone who pays for goods or services",
+    "example": "",
+    "level": 0,
+    "synset": "09984659-noun"
+  },
+  {
+    "expression": "departure",
+    "definition": "the act of departing",
+    "example": "",
+    "level": 0,
+    "synset": "00042757-noun"
+  },
+  {
+    "expression": "destination",
+    "definition": "the place designated as the end (as of a race or journey)",
+    "example": "he was nearly exhausted as their destination came into view",
+    "level": 0,
+    "synset": "08567877-noun"
+  },
+  {
+    "expression": "discount",
+    "definition": "the act of reducing the selling price of merchandise",
+    "example": "",
+    "level": 0,
+    "synset": "00362103-noun"
+  },
+  {
+    "expression": "electricity",
+    "definition": "a physical phenomenon associated with stationary or moving electrons and protons",
+    "example": "",
+    "level": 0,
+    "synset": "11449907-noun"
+  },
+  {
+    "expression": "emergency",
+    "definition": "a sudden unforeseen crisis (usually involving danger) that requires immediate action",
+    "example": "he never knew what to do in an emergency",
+    "level": 0,
+    "synset": "07417405-noun"
+  },
+  {
+    "expression": "employer",
+    "definition": "a person or firm that employs workers",
+    "example": "",
+    "level": 0,
+    "synset": "10054657-noun"
+  },
+  {
+    "expression": "entrance",
+    "definition": "something that provides access (to get in or get out)",
+    "example": "they waited at the entrance to the garden",
+    "level": 0,
+    "synset": "03290771-noun"
+  },
+  {
+    "expression": "environment",
+    "definition": "the totality of surrounding conditions",
+    "example": "he longed for the comfortable environment of his living room",
+    "level": 0,
+    "synset": "13934596-noun"
+  },
+  {
+    "expression": "exhibition",
+    "definition": "the act of exhibiting",
+    "example": "a remarkable exhibition of musicianship",
+    "level": 0,
+    "synset": "00522145-noun"
+  },
+  {
+    "expression": "experience",
+    "definition": "the accumulation of knowledge or skill that results from direct participation in events or activities",
+    "example": "a man of experience",
+    "level": 0,
+    "synset": "05758059-noun"
+  },
+  {
+    "expression": "facility",
+    "definition": "a building or place that provides a particular service or is used for a particular industry",
+    "example": "the assembly plant is an enormous facility",
+    "level": 0,
+    "synset": "03315023-noun"
+  },
+  {
+    "expression": "factory",
+    "definition": "a plant consisting of one or more buildings with facilities for manufacturing",
+    "example": "",
+    "level": 0,
+    "synset": "03316406-noun"
+  },
+  {
+    "expression": "furniture",
+    "definition": "furnishings that make a room or other area ready for occupancy",
+    "example": "they had too much furniture for the small apartment",
+    "level": 0,
+    "synset": "03405725-noun"
+  },
+  {
+    "expression": "graduate",
+    "definition": "a person who has received a degree from a school (high school or college or university)",
+    "example": "",
+    "level": 0,
+    "synset": "09786338-noun"
+  },
+  {
+    "expression": "hospital",
+    "definition": "a health facility where patients receive treatment",
+    "example": "",
+    "level": 0,
+    "synset": "03540595-noun"
+  },
+  {
+    "expression": "household",
+    "definition": "a social unit living together",
+    "example": "It was a good Christian household",
+    "level": 0,
+    "synset": "08078020-noun"
+  },
+  {
+    "expression": "income",
+    "definition": "the financial gain (earned or unearned) accruing over a given period of time",
+    "example": "",
+    "level": 0,
+    "synset": "13255145-noun"
+  },
+  {
+    "expression": "instruction",
+    "definition": "a message describing how something is to be done",
+    "example": "",
+    "level": 0,
+    "synset": "06786629-noun"
+  },
+  {
+    "expression": "insurance",
+    "definition": "promise of reimbursement in the case of loss; paid to people or companies so concerned about hazards that they have made prepayments to an insurance company",
+    "example": "",
+    "level": 0,
+    "synset": "13344804-noun"
+  },
+  {
+    "expression": "interview",
+    "definition": "the questioning of a person (or a conversation in which information is elicited); often conducted by journalists",
+    "example": "",
+    "level": 0,
+    "synset": "07196075-noun"
+  },
+  {
+    "expression": "journey",
+    "definition": "the act of traveling from one place to another",
+    "example": "",
+    "level": 0,
+    "synset": "00306426-noun"
+  },
+  {
+    "expression": "knowledge",
+    "definition": "the psychological result of perception and learning and reasoning",
+    "example": "",
+    "level": 0,
+    "synset": "00023271-noun"
+  },
+  {
+    "expression": "laboratory",
+    "definition": "a workplace for the conduct of scientific research",
+    "example": "",
+    "level": 0,
+    "synset": "03629986-noun"
+  },
+  {
+    "expression": "leisure",
+    "definition": "time available for ease and relaxation",
+    "example": "his job left him little leisure",
+    "level": 0,
+    "synset": "15137676-noun"
+  },
+  {
+    "expression": "library",
+    "definition": "a depository built to contain books and other materials for reading and study",
+    "example": "",
+    "level": 0,
+    "synset": "03660664-noun"
+  },
+  {
+    "expression": "luggage",
+    "definition": "cases used to carry belongings when traveling",
+    "example": "",
+    "level": 0,
+    "synset": "02774630-noun"
+  },
+  {
+    "expression": "manager",
+    "definition": "someone who controls resources and expenditures",
+    "example": "",
+    "level": 0,
+    "synset": "10014939-noun"
+  },
+  {
+    "expression": "membership",
+    "definition": "the state of being a member",
+    "example": "",
+    "level": 0,
+    "synset": "13931627-noun"
+  },
+  {
+    "expression": "passenger",
+    "definition": "a traveler riding in a vehicle (a boat or bus or car or plane or train etc) who is not operating it",
+    "example": "",
+    "level": 0,
+    "synset": "10403876-noun"
+  },
+  {
+    "expression": "payment",
+    "definition": "a sum of money paid or a claim discharged",
+    "example": "",
+    "level": 0,
+    "synset": "13278375-noun"
+  },
+  {
+    "expression": "population",
+    "definition": "the people who inhabit a territory or state",
+    "example": "the population seemed to be well fed and clothed",
+    "level": 0,
+    "synset": "08179879-noun"
+  },
+  {
+    "expression": "qualification",
+    "definition": "an attribute that must be met or complied with and that fits a person for something",
+    "example": "",
+    "level": 0,
+    "synset": "04717139-noun"
+  },
+  {
+    "expression": "receipt",
+    "definition": "an acknowledgment (usually tangible) that payment has been made",
+    "example": "",
+    "level": 0,
+    "synset": "06520222-noun"
+  },
+  {
+    "expression": "recommendation",
+    "definition": "something (as a course of action) that is recommended as advisable",
+    "example": "",
+    "level": 0,
+    "synset": "06671637-noun"
+  },
+  {
+    "expression": "registration",
+    "definition": "the act of enrolling",
+    "example": "",
+    "level": 0,
+    "synset": "00050037-noun"
+  },
+  {
+    "expression": "reservation",
+    "definition": "the written record or promise of an arrangement by which accommodations are secured in advance",
+    "example": "",
+    "level": 0,
+    "synset": "07177772-noun"
+  },
+  {
+    "expression": "responsibility",
+    "definition": "the social force that binds you to the courses of action demanded by that force",
+    "example": "every right implies a responsibility; every opportunity, an obligation; every possession, a duty",
+    "level": 0,
+    "synset": "01129920-noun"
+  },
+  {
+    "expression": "salary",
+    "definition": "something that remunerates",
+    "example": "",
+    "level": 0,
+    "synset": "13279262-noun"
+  },
+  {
+    "expression": "schedule",
+    "definition": "a temporally organized plan for matters to be attended to",
+    "example": "",
+    "level": 0,
+    "synset": "05910940-noun"
+  },
+  {
+    "expression": "scholarship",
+    "definition": "financial aid provided to a student on the basis of academic merit",
+    "example": "",
+    "level": 0,
+    "synset": "13266170-noun"
+  },
+  {
+    "expression": "service",
+    "definition": "work done by one person or group that benefits another",
+    "example": "",
+    "level": 0,
+    "synset": "00577525-noun"
+  },
+  {
+    "expression": "signature",
+    "definition": "your name written in your own handwriting",
+    "example": "",
+    "level": 0,
+    "synset": "06404582-noun"
+  },
+  {
+    "expression": "station",
+    "definition": "a facility equipped with special equipment and personnel for a particular purpose",
+    "example": "he started looking for a gas station",
+    "level": 0,
+    "synset": "04306080-noun"
+  },
+  {
+    "expression": "subject",
+    "definition": "the subject matter of a conversation or discussion",
+    "example": "he didn't want to discuss that subject",
+    "level": 0,
+    "synset": "06599788-noun"
+  },
+  {
+    "expression": "supermarket",
+    "definition": "a large self-service grocery store selling groceries and dairy products and household goods",
+    "example": "",
+    "level": 0,
+    "synset": "04358707-noun"
+  },
+  {
+    "expression": "survey",
+    "definition": "a detailed critical inspection",
+    "example": "",
+    "level": 0,
+    "synset": "00644503-noun"
+  },
+  {
+    "expression": "tenant",
+    "definition": "someone who pays rent to use land or a building or a car that is owned by someone else",
+    "example": "the landlord can evict a tenant who doesn't pay the rent",
+    "level": 0,
+    "synset": "10700201-noun"
+  },
+  {
+    "expression": "timetable",
+    "definition": "a schedule listing events and the times at which they will take place",
+    "example": "",
+    "level": 0,
+    "synset": "06496499-noun"
+  },
+  {
+    "expression": "tourism",
+    "definition": "the business of providing services to tourists",
+    "example": "Tourism is a major business in Bermuda",
+    "level": 0,
+    "synset": "00298161-noun"
+  },
+  {
+    "expression": "traffic",
+    "definition": "the aggregation of things (pedestrians or vehicles) coming and going in a particular locality during a specified period of time",
+    "example": "",
+    "level": 0,
+    "synset": "08425303-noun"
+  },
+  {
+    "expression": "transport",
+    "definition": "something that serves as a means of transportation",
+    "example": "",
+    "level": 0,
+    "synset": "03100490-noun"
+  },
+  {
+    "expression": "tuition",
+    "definition": "a fee paid for instruction (especially for higher education)",
+    "example": "tuition and room and board were more than $25,000",
+    "level": 0,
+    "synset": "13323988-noun"
+  },
+  {
+    "expression": "vehicle",
+    "definition": "a conveyance that transports people or objects",
+    "example": "",
+    "level": 0,
+    "synset": "04524313-noun"
+  },
+  {
+    "expression": "visitor",
+    "definition": "someone who visits",
+    "example": "",
+    "level": 0,
+    "synset": "10757193-noun"
+  },
+  {
+    "expression": "volunteer",
+    "definition": "a person who performs voluntary work",
+    "example": "",
+    "level": 0,
+    "synset": "10759151-noun"
+  },
+  {
+    "expression": "waste",
+    "definition": "any materials unused and rejected as worthless or unwanted",
+    "example": "they collect the waste once a week",
+    "level": 0,
+    "synset": "14856263-noun"
+  },
+  {
+    "expression": "workplace",
+    "definition": "a place where work is done",
+    "example": "",
+    "level": 0,
+    "synset": "04602044-noun"
+  },
+  {
+    "expression": "agriculture",
+    "definition": "a large-scale farming enterprise",
+    "example": "",
+    "level": 0,
+    "synset": "01104406-noun"
+  },
+  {
+    "expression": "climate",
+    "definition": "the weather in some location averaged over some long period of time",
+    "example": "the dank climate of southern Wales",
+    "level": 0,
+    "synset": "14519366-noun"
+  },
+  {
+    "expression": "coast",
+    "definition": "the shore of a sea or ocean",
+    "example": "",
+    "level": 0,
+    "synset": "09428293-noun"
+  },
+  {
+    "expression": "crop",
+    "definition": "the yield from plants in a single growing season",
+    "example": "",
+    "level": 0,
+    "synset": "13085864-noun"
+  },
+  {
+    "expression": "diet",
+    "definition": "the usual food and drink consumed by an organism (person or animal)",
+    "example": "",
+    "level": 0,
+    "synset": "07560903-noun"
+  },
+  {
+    "expression": "energy",
+    "definition": "(physics) a thermodynamic quantity equivalent to the capacity of a physical system to do work; the units of energy are joules or ergs",
+    "example": "energy can take a wide variety of forms",
+    "level": 0,
+    "synset": "11452218-noun"
+  },
+  {
+    "expression": "flood",
+    "definition": "the rising of a body of water and its overflowing onto normally dry land",
+    "example": "",
+    "level": 0,
+    "synset": "11454591-noun"
+  },
+  {
+    "expression": "forest",
+    "definition": "the trees and other plants in a large densely wooded area",
+    "example": "",
+    "level": 0,
+    "synset": "08438533-noun"
+  },
+  {
+    "expression": "fuel",
+    "definition": "a substance that can be consumed to produce energy",
+    "example": "more fuel is needed during the winter months",
+    "level": 0,
+    "synset": "14875077-noun"
+  },
+  {
+    "expression": "health",
+    "definition": "a healthy state of wellbeing free from disease",
+    "example": "physicians should be held responsible for the health of their patients",
+    "level": 0,
+    "synset": "14447908-noun"
+  },
+  {
+    "expression": "housing",
+    "definition": "structures collectively in which people are housed",
+    "example": "",
+    "level": 0,
+    "synset": "03546340-noun"
+  },
+  {
+    "expression": "pollution",
+    "definition": "undesirable state of the natural environment being contaminated with harmful substances as a consequence of human activities",
+    "example": "",
+    "level": 0,
+    "synset": "14516743-noun"
+  },
+  {
+    "expression": "recycling",
+    "definition": "the act of processing used or abandoned materials for use in creating new products",
+    "example": "",
+    "level": 0,
+    "synset": "00948868-noun"
+  },
+  {
+    "expression": "rainfall",
+    "definition": "water falling in drops from vapor condensed in the atmosphere",
+    "example": "",
+    "level": 0,
+    "synset": "11501381-noun"
+  },
+  {
+    "expression": "soil",
+    "definition": "material in the top layer of the surface of the earth in which plants can grow (especially with reference to its quality or use)",
+    "example": "good agricultural soil",
+    "level": 0,
+    "synset": "09335240-noun"
+  },
+  {
+    "expression": "species",
+    "definition": "(biology) taxonomic group whose members can interbreed",
+    "example": "",
+    "level": 0,
+    "synset": "08110373-noun"
+  },
+  {
+    "expression": "temperature",
+    "definition": "the degree of hotness or coldness of a body or environment (corresponding to its molecular activity)",
+    "example": "",
+    "level": 0,
+    "synset": "05011790-noun"
+  },
+  {
+    "expression": "wildlife",
+    "definition": "all living things (except people) that are undomesticated",
+    "example": "chemicals could kill all the wildlife",
+    "level": 0,
+    "synset": "07993776-noun"
+  },
+  {
+    "expression": "adapt",
+    "definition": "make fit for, or change to suit a new purpose",
+    "example": "Adapt our native cuisine to the available food resources of the new country",
+    "level": 1,
+    "synset": "00299580-verb"
+  },
+  {
+    "expression": "analyse",
+    "definition": "consider in detail and subject to an analysis in order to discover essential features or meaning",
+    "example": "",
+    "level": 1,
+    "synset": "00644583-verb"
+  },
+  {
+    "expression": "anticipate",
+    "definition": "regard something as probable or likely",
+    "example": "",
+    "level": 1,
+    "synset": "00719734-verb"
+  },
+  {
+    "expression": "apply",
+    "definition": "put into service; make work or employ for a particular purpose or for its inherent or natural purpose",
+    "example": "Apply a magnetic field here",
+    "level": 1,
+    "synset": "01158872-verb"
+  },
+  {
+    "expression": "argue",
+    "definition": "present reasons and arguments",
+    "example": "",
+    "level": 1,
+    "synset": "00772189-verb"
+  },
+  {
+    "expression": "clarify",
+    "definition": "make clear and (more) comprehensible",
+    "example": "clarify the mystery surrounding her death",
+    "level": 1,
+    "synset": "00939857-verb"
+  },
+  {
+    "expression": "compare",
+    "definition": "examine and note the similarities or differences of",
+    "example": "",
+    "level": 1,
+    "synset": "00652900-verb"
+  },
+  {
+    "expression": "confirm",
+    "definition": "establish or strengthen as with new evidence or facts",
+    "example": "",
+    "level": 1,
+    "synset": "00665886-verb"
+  },
+  {
+    "expression": "conserve",
+    "definition": "use cautiously and frugally",
+    "example": "conserve your energy for the ascent to the summit",
+    "level": 1,
+    "synset": "02269143-verb"
+  },
+  {
+    "expression": "demonstrate",
+    "definition": "give an exhibition of to an interested audience",
+    "example": "",
+    "level": 1,
+    "synset": "02148788-verb"
+  },
+  {
+    "expression": "distinguish",
+    "definition": "mark as different",
+    "example": "We distinguish several kinds of maple",
+    "level": 1,
+    "synset": "00650353-verb"
+  },
+  {
+    "expression": "emphasise",
+    "definition": "give extra weight to (a communication)",
+    "example": "",
+    "level": 1,
+    "synset": "01014609-verb"
+  },
+  {
+    "expression": "evaluate",
+    "definition": "evaluate or estimate the nature, quality, ability, extent, or significance of",
+    "example": "",
+    "level": 1,
+    "synset": "00681429-verb"
+  },
+  {
+    "expression": "expand",
+    "definition": "extend in one or more directions",
+    "example": "",
+    "level": 1,
+    "synset": "02077148-verb"
+  },
+  {
+    "expression": "identify",
+    "definition": "recognize as being; establish the identity of someone or something",
+    "example": "",
+    "level": 1,
+    "synset": "00618878-verb"
+  },
+  {
+    "expression": "illustrate",
+    "definition": "clarify by giving an example of",
+    "example": "",
+    "level": 1,
+    "synset": "01021128-verb"
+  },
+  {
+    "expression": "implement",
+    "definition": "apply in a manner consistent with its purpose or design",
+    "example": "implement a procedure",
+    "level": 1,
+    "synset": "02408965-verb"
+  },
+  {
+    "expression": "indicate",
+    "definition": "be a signal for or a symptom of",
+    "example": "These symptoms indicate a serious illness",
+    "level": 1,
+    "synset": "00921300-verb"
+  },
+  {
+    "expression": "interpret",
+    "definition": "make sense of; assign a meaning to",
+    "example": "How do you interpret his behavior?",
+    "level": 1,
+    "synset": "00623151-verb"
+  },
+  {
+    "expression": "investigate",
+    "definition": "investigate scientifically",
+    "example": "Let's investigate the syntax of Chinese",
+    "level": 1,
+    "synset": "00789138-verb"
+  },
+  {
+    "expression": "justify",
+    "definition": "show to be reasonable or provide adequate ground for",
+    "example": "",
+    "level": 1,
+    "synset": "00896803-verb"
+  },
+  {
+    "expression": "obtain",
+    "definition": "come into possession of",
+    "example": "How did you obtain the visa?",
+    "level": 1,
+    "synset": "02238085-verb"
+  },
+  {
+    "expression": "participate",
+    "definition": "share in something",
+    "example": "",
+    "level": 1,
+    "synset": "02450256-verb"
+  },
+  {
+    "expression": "predict",
+    "definition": "make a prediction about; tell in advance",
+    "example": "",
+    "level": 1,
+    "synset": "00917772-verb"
+  },
+  {
+    "expression": "promote",
+    "definition": "contribute to the progress or growth of",
+    "example": "",
+    "level": 1,
+    "synset": "02554922-verb"
+  },
+  {
+    "expression": "recommend",
+    "definition": "push for something",
+    "example": "",
+    "level": 1,
+    "synset": "00875141-verb"
+  },
+  {
+    "expression": "reflect",
+    "definition": "manifest or bring back",
+    "example": "",
+    "level": 1,
+    "synset": "02136892-verb"
+  },
+  {
+    "expression": "regulate",
+    "definition": "fix or adjust the time, amount, degree, or rate of",
+    "example": "regulate the temperature",
+    "level": 1,
+    "synset": "00299341-verb"
+  },
+  {
+    "expression": "restore",
+    "definition": "return to its original or usable and functioning condition",
+    "example": "restore the forest to its original pristine condition",
+    "level": 1,
+    "synset": "02552449-verb"
+  },
+  {
+    "expression": "retain",
+    "definition": "secure and keep for possible future use or application",
+    "example": "",
+    "level": 1,
+    "synset": "02283324-verb"
+  },
+  {
+    "expression": "specify",
+    "definition": "specify as a condition or requirement in a contract or agreement; make an express demand or provision in an agreement",
+    "example": "",
+    "level": 1,
+    "synset": "01018928-verb"
+  },
+  {
+    "expression": "transform",
+    "definition": "change or alter in form, appearance, or nature",
+    "example": "",
+    "level": 1,
+    "synset": "00382635-verb"
+  },
+  {
+    "expression": "urban",
+    "definition": "relating to or concerned with a city or densely populated area",
+    "example": "urban sociology",
+    "level": 1,
+    "synset": "02821071-adj"
+  },
+  {
+    "expression": "rural",
+    "definition": "living in or characteristic of farming or country life",
+    "example": "rural people",
+    "level": 1,
+    "synset": "02050452-adj"
+  },
+  {
+    "expression": "accurate",
+    "definition": "conforming exactly or almost exactly to fact or to a standard or performing with total accuracy",
+    "example": "an accurate reproduction",
+    "level": 1,
+    "synset": "00021766-adj"
+  },
+  {
+    "expression": "adequate",
+    "definition": "having the requisite qualities or resources to meet a task",
+    "example": "she had adequate training",
+    "level": 1,
+    "synset": "00051045-adj"
+  },
+  {
+    "expression": "annual",
+    "definition": "occurring or payable every year",
+    "example": "an annual trip to Paris",
+    "level": 1,
+    "synset": "01969150-adj"
+  },
+  {
+    "expression": "apparent",
+    "definition": "clearly revealed to the mind or the senses or judgment",
+    "example": "the effects of the drought are apparent to anyone who sees the parched fields",
+    "level": 1,
+    "synset": "01618376-adj"
+  },
+  {
+    "expression": "appropriate",
+    "definition": "suitable for a particular person or place or condition etc",
+    "example": "a book not appropriate for children",
+    "level": 1,
+    "synset": "00134701-adj"
+  },
+  {
+    "expression": "beneficial",
+    "definition": "promoting or enhancing well-being",
+    "example": "an arms limitation agreement beneficial to all countries",
+    "level": 1,
+    "synset": "00064787-adj"
+  },
+  {
+    "expression": "consistent",
+    "definition": "(sometimes followed by `with') in agreement or consistent or reliable",
+    "example": "testimony consistent with the known facts",
+    "level": 1,
+    "synset": "00576680-adj"
+  },
+  {
+    "expression": "considerable",
+    "definition": "large or relatively large in number or amount or extent or degree",
+    "example": "a considerable quantity",
+    "level": 1,
+    "synset": "00624026-adj"
+  },
+  {
+    "expression": "constant",
+    "definition": "unvarying in nature",
+    "example": "maintained a constant temperature",
+    "level": 1,
+    "synset": "02506029-adj"
+  },
+  {
+    "expression": "conventional",
+    "definition": "following accepted customs and proprieties",
+    "example": "conventional wisdom",
+    "level": 1,
+    "synset": "00605516-adj"
+  },
+  {
+    "expression": "crucial",
+    "definition": "of extreme importance; vital to the resolution of a crisis",
+    "example": "a crucial moment in his career",
+    "level": 1,
+    "synset": "00655779-adj"
+  },
+  {
+    "expression": "diverse",
+    "definition": "many and different",
+    "example": "a person of diverse talents",
+    "level": 1,
+    "synset": "02067719-adj"
+  },
+  {
+    "expression": "domestic",
+    "definition": "of concern to or concerning the internal affairs of a nation",
+    "example": "domestic issues such as tax rate and highway construction",
+    "level": 1,
+    "synset": "01038102-adj"
+  },
+  {
+    "expression": "economic",
+    "definition": "of or relating to an economy, the system of production and management of material wealth",
+    "example": "economic growth",
+    "level": 1,
+    "synset": "02716739-adj"
+  },
+  {
+    "expression": "effective",
+    "definition": "producing or capable of producing an intended result or having a striking effect",
+    "example": "an air-cooled motor was more effective than a witch's broomstick for rapid long-distance transportation",
+    "level": 1,
+    "synset": "00834198-adj"
+  },
+  {
+    "expression": "essential",
+    "definition": "absolutely necessary; vitally necessary",
+    "example": "essential tools and materials",
+    "level": 1,
+    "synset": "01580306-adj"
+  },
+  {
+    "expression": "excessive",
+    "definition": "beyond normal limits",
+    "example": "excessive charges",
+    "level": 1,
+    "synset": "01533974-adj"
+  },
+  {
+    "expression": "external",
+    "definition": "happening or arising or located outside or beyond some limits or especially surface",
+    "example": "the external auditory canal",
+    "level": 1,
+    "synset": "00948103-adj"
+  },
+  {
+    "expression": "financial",
+    "definition": "involving financial matters",
+    "example": "",
+    "level": 1,
+    "synset": "02847894-adj"
+  },
+  {
+    "expression": "gradual",
+    "definition": "proceeding in small stages",
+    "example": "a gradual increase in prices",
+    "level": 1,
+    "synset": "01142804-adj"
+  },
+  {
+    "expression": "independent",
+    "definition": "free from external control and constraint",
+    "example": "an independent mind",
+    "level": 1,
+    "synset": "00727564-adj"
+  },
+  {
+    "expression": "industrial",
+    "definition": "of or relating to or resulting from industry",
+    "example": "industrial output",
+    "level": 1,
+    "synset": "02748635-adj"
+  },
+  {
+    "expression": "initial",
+    "definition": "occurring at the beginning",
+    "example": "took the initial step toward reconciliation",
+    "level": 1,
+    "synset": "01011973-adj"
+  },
+  {
+    "expression": "internal",
+    "definition": "happening or arising or located within some limits or especially surface",
+    "example": "internal organs",
+    "level": 1,
+    "synset": "00948670-adj"
+  },
+  {
+    "expression": "legal",
+    "definition": "established by or founded upon law or official or accepted rules",
+    "example": "",
+    "level": 1,
+    "synset": "01400562-adj"
+  },
+  {
+    "expression": "logical",
+    "definition": "capable of or reflecting the capability for correct and valid reasoning",
+    "example": "a logical mind",
+    "level": 1,
+    "synset": "01430111-adj"
+  },
+  {
+    "expression": "major",
+    "definition": "of greater importance or stature or rank",
+    "example": "a major artist",
+    "level": 1,
+    "synset": "01472628-adj"
+  },
+  {
+    "expression": "minor",
+    "definition": "of lesser importance or stature or rank",
+    "example": "a minor poet",
+    "level": 1,
+    "synset": "01473083-adj"
+  },
+  {
+    "expression": "negative",
+    "definition": "characterized by or displaying negation or denial or opposition or resistance; having no positive features",
+    "example": "a negative outlook on life",
+    "level": 1,
+    "synset": "01818234-adj"
+  },
+  {
+    "expression": "positive",
+    "definition": "characterized by or displaying affirmation or acceptance or certainty etc.",
+    "example": "a positive attitude",
+    "level": 1,
+    "synset": "01817500-adj"
+  },
+  {
+    "expression": "potential",
+    "definition": "existing in possibility",
+    "example": "a potential problem",
+    "level": 1,
+    "synset": "00044353-adj"
+  },
+  {
+    "expression": "practical",
+    "definition": "concerned with actual use or practice",
+    "example": "he is a very practical person",
+    "level": 1,
+    "synset": "01834304-adj"
+  },
+  {
+    "expression": "previous",
+    "definition": "just preceding something else in time or order",
+    "example": "the previous owner",
+    "level": 1,
+    "synset": "00127137-adj"
+  },
+  {
+    "expression": "professional",
+    "definition": "engaged in a profession or engaging in as a profession or means of livelihood",
+    "example": "the professional man or woman possesses distinctive qualifications",
+    "level": 1,
+    "synset": "01868724-adj"
+  },
+  {
+    "expression": "regional",
+    "definition": "characteristic of a region",
+    "example": "regional flora",
+    "level": 1,
+    "synset": "02871858-adj"
+  },
+  {
+    "expression": "renewable",
+    "definition": "that can be renewed or extended",
+    "example": "a renewable lease",
+    "level": 1,
+    "synset": "01962982-adj"
+  },
+  {
+    "expression": "sufficient",
+    "definition": "of a quantity that can fulfill a need or requirement but without being abundant",
+    "example": "sufficient food",
+    "level": 1,
+    "synset": "02335828-adj"
+  },
+  {
+    "expression": "temporary",
+    "definition": "not permanent; not lasting",
+    "example": "temporary housing",
+    "level": 1,
+    "synset": "01755627-adj"
+  },
+  {
+    "expression": "typical",
+    "definition": "exhibiting the qualities or characteristics that identify a group or kind or category",
+    "example": "a typical American girl",
+    "level": 1,
+    "synset": "02468635-adj"
+  },
+  {
+    "expression": "unique",
+    "definition": "radically distinctive and without equal",
+    "example": "Bach was unique in his handling of counterpoint",
+    "level": 1,
+    "synset": "00505853-adj"
+  },
+  {
+    "expression": "valid",
+    "definition": "well grounded in logic or truth or having legal force",
+    "example": "a valid inference",
+    "level": 1,
+    "synset": "02498708-adj"
+  },
+  {
+    "expression": "widespread",
+    "definition": "widely circulated or diffused",
+    "example": "a widespread doctrine",
+    "level": 1,
+    "synset": "01102876-adj"
+  },
+  {
+    "expression": "accountability",
+    "definition": "responsibility to someone or for some activity",
+    "example": "",
+    "level": 2,
+    "synset": "04669828-noun"
+  },
+  {
+    "expression": "adaptation",
+    "definition": "the process of adapting to something (such as environmental conditions)",
+    "example": "",
+    "level": 2,
+    "synset": "13427078-noun"
+  },
+  {
+    "expression": "advocacy",
+    "definition": "active support of an idea or cause etc.; especially the act of pleading or arguing for something",
+    "example": "",
+    "level": 2,
+    "synset": "01214171-noun"
+  },
+  {
+    "expression": "biodiversity",
+    "definition": "the diversity of plant and animal life in a particular habitat (or in the world as a whole)",
+    "example": "a high level of biodiversity is desirable",
+    "level": 2,
+    "synset": "04751652-noun"
+  },
+  {
+    "expression": "capacity",
+    "definition": "capability to perform or produce",
+    "example": "among his gifts is his capacity for true altruism",
+    "level": 2,
+    "synset": "05203397-noun"
+  },
+  {
+    "expression": "collaboration",
+    "definition": "act of working jointly",
+    "example": "they worked either in collaboration or independently",
+    "level": 2,
+    "synset": "01205156-noun"
+  },
+  {
+    "expression": "attendance",
+    "definition": "the act of being present (at a meeting or event etc.)",
+    "example": "",
+    "level": 2,
+    "synset": "01233397-noun"
+  },
+  {
+    "expression": "assessment",
+    "definition": "the classification of someone or something with respect to its worth",
+    "example": "",
+    "level": 2,
+    "synset": "05733583-noun"
+  },
+  {
+    "expression": "negotiation",
+    "definition": "a discussion intended to produce an agreement",
+    "example": "the buyout negotiation lasted several days",
+    "level": 2,
+    "synset": "07148192-noun"
+  },
+  {
+    "expression": "nutrition",
+    "definition": "(physiology) the organic process of nourishing or being nourished; the processes by which an organism assimilates food and uses it for growth and maintenance",
+    "example": "",
+    "level": 2,
+    "synset": "13523661-noun"
+  },
+  {
+    "expression": "apprenticeship",
+    "definition": "the position of apprentice",
+    "example": "",
+    "level": 2,
+    "synset": "00588998-noun"
+  },
+  {
+    "expression": "settlement",
+    "definition": "a body of people who settle far from home but maintain ties with their homeland; inhabitants remain nationals of their home state but are not literally under the home state's system of government",
+    "example": "",
+    "level": 2,
+    "synset": "08374049-noun"
+  },
+  {
+    "expression": "commodity",
+    "definition": "articles of commerce",
+    "example": "",
+    "level": 2,
+    "synset": "03076708-noun"
+  },
+  {
+    "expression": "competition",
+    "definition": "a business relation in which two parties compete to gain customers",
+    "example": "business competition can be fiendish at times",
+    "level": 2,
+    "synset": "13837009-noun"
+  },
+  {
+    "expression": "complexity",
+    "definition": "the quality of being intricate and compounded",
+    "example": "he enjoyed the complexity of modern computers",
+    "level": 2,
+    "synset": "04766275-noun"
+  },
+  {
+    "expression": "conservation",
+    "definition": "the preservation and careful management of the environment and of natural resources",
+    "example": "",
+    "level": 2,
+    "synset": "00819274-noun"
+  },
+  {
+    "expression": "consumption",
+    "definition": "(economics) the utilization of economic goods to satisfy needs or in manufacturing",
+    "example": "the consumption of energy has increased steadily",
+    "level": 2,
+    "synset": "13451804-noun"
+  },
+  {
+    "expression": "credibility",
+    "definition": "the quality of being believable or trustworthy",
+    "example": "",
+    "level": 2,
+    "synset": "04782878-noun"
+  },
+  {
+    "expression": "criterion",
+    "definition": "a basis for comparison; a reference point against which other things can be evaluated",
+    "example": "",
+    "level": 2,
+    "synset": "07260623-noun"
+  },
+  {
+    "expression": "curriculum",
+    "definition": "an integrated course of academic studies",
+    "example": "",
+    "level": 2,
+    "synset": "06676416-noun"
+  },
+  {
+    "expression": "democracy",
+    "definition": "the political orientation of those who favor government by the people or by their elected representatives",
+    "example": "",
+    "level": 2,
+    "synset": "06217103-noun"
+  },
+  {
+    "expression": "density",
+    "definition": "the amount per unit size",
+    "example": "",
+    "level": 2,
+    "synset": "04941453-noun"
+  },
+  {
+    "expression": "deprivation",
+    "definition": "a state of extreme poverty",
+    "example": "",
+    "level": 2,
+    "synset": "14493426-noun"
+  },
+  {
+    "expression": "diversity",
+    "definition": "noticeable heterogeneity",
+    "example": "a diversity of possibilities",
+    "level": 2,
+    "synset": "04751305-noun"
+  },
+  {
+    "expression": "drought",
+    "definition": "a shortage of rainfall",
+    "example": "farmers most affected by the drought hope that there may yet be sufficient rain early in the growing season",
+    "level": 2,
+    "synset": "14537054-noun"
+  },
+  {
+    "expression": "ecosystem",
+    "definition": "a system formed by the interaction of a community of organisms with their physical environment",
+    "example": "",
+    "level": 2,
+    "synset": "08368757-noun"
+  },
+  {
+    "expression": "efficiency",
+    "definition": "the ratio of the output to the input of any system",
+    "example": "",
+    "level": 2,
+    "synset": "13820993-noun"
+  },
+  {
+    "expression": "equality",
+    "definition": "the quality of being the same in quantity or measure or value or status",
+    "example": "",
+    "level": 2,
+    "synset": "04747899-noun"
+  },
+  {
+    "expression": "equity",
+    "definition": "conformity with rules or standards",
+    "example": "",
+    "level": 2,
+    "synset": "04839154-noun"
+  },
+  {
+    "expression": "erosion",
+    "definition": "(geology) the mechanical process of wearing or grinding something down (as by particles washing over it)",
+    "example": "",
+    "level": 2,
+    "synset": "13475538-noun"
+  },
+  {
+    "expression": "ethics",
+    "definition": "motivation based on ideas of right and wrong",
+    "example": "",
+    "level": 2,
+    "synset": "09183693-noun"
+  },
+  {
+    "expression": "expenditure",
+    "definition": "money paid out; an amount spent",
+    "example": "",
+    "level": 2,
+    "synset": "13275288-noun"
+  },
+  {
+    "expression": "expertise",
+    "definition": "skillfulness by virtue of possessing special knowledge",
+    "example": "",
+    "level": 2,
+    "synset": "05640729-noun"
+  },
+  {
+    "expression": "globalization",
+    "definition": "growth to a global or worldwide scale",
+    "example": "the globalization of the communication industry",
+    "level": 2,
+    "synset": "13488110-noun"
+  },
+  {
+    "expression": "habitat",
+    "definition": "the type of environment in which an organism or group normally lives or occurs",
+    "example": "a marine habitat",
+    "level": 2,
+    "synset": "08580583-noun"
+  },
+  {
+    "expression": "hypothesis",
+    "definition": "a proposal intended to explain certain facts or observations",
+    "example": "",
+    "level": 2,
+    "synset": "07162545-noun"
+  },
+  {
+    "expression": "infrastructure",
+    "definition": "the basic structure or features of a system or organization",
+    "example": "",
+    "level": 2,
+    "synset": "03570372-noun"
+  },
+  {
+    "expression": "innovation",
+    "definition": "a creation (a new device or process) resulting from study and experimentation",
+    "example": "",
+    "level": 2,
+    "synset": "03582658-noun"
+  },
+  {
+    "expression": "integration",
+    "definition": "the act of combining into an integral whole",
+    "example": "",
+    "level": 2,
+    "synset": "01237415-noun"
+  },
+  {
+    "expression": "investment",
+    "definition": "the act of investing; laying out money or capital in an enterprise with the expectation of profit",
+    "example": "",
+    "level": 2,
+    "synset": "01099436-noun"
+  },
+  {
+    "expression": "legislation",
+    "definition": "law enacted by a legislative body",
+    "example": "",
+    "level": 2,
+    "synset": "06535222-noun"
+  },
+  {
+    "expression": "literacy",
+    "definition": "the ability to read and write",
+    "example": "",
+    "level": 2,
+    "synset": "05638486-noun"
+  },
+  {
+    "expression": "migration",
+    "definition": "the movement of persons from one country or locality to another",
+    "example": "",
+    "level": 2,
+    "synset": "01123095-noun"
+  },
+  {
+    "expression": "mobility",
+    "definition": "the quality of moving freely",
+    "example": "",
+    "level": 2,
+    "synset": "04773351-noun"
+  },
+  {
+    "expression": "perception",
+    "definition": "the representation of what is perceived; basic component in the formation of a concept",
+    "example": "",
+    "level": 2,
+    "synset": "05930136-noun"
+  },
+  {
+    "expression": "perspective",
+    "definition": "a way of regarding situations or topics etc.",
+    "example": "",
+    "level": 2,
+    "synset": "06208751-noun"
+  },
+  {
+    "expression": "productivity",
+    "definition": "the quality of being productive or having the power to produce",
+    "example": "",
+    "level": 2,
+    "synset": "05147940-noun"
+  },
+  {
+    "expression": "prosperity",
+    "definition": "an economic state of growth with rising profits and full employment",
+    "example": "",
+    "level": 2,
+    "synset": "14489699-noun"
+  },
+  {
+    "expression": "regulation",
+    "definition": "an authoritative rule",
+    "example": "",
+    "level": 2,
+    "synset": "06664051-noun"
+  },
+  {
+    "expression": "scarcity",
+    "definition": "a small and inadequate amount",
+    "example": "",
+    "level": 2,
+    "synset": "05116953-noun"
+  },
+  {
+    "expression": "sustainability",
+    "definition": "the property of being sustainable",
+    "example": "",
+    "level": 2,
+    "synset": "05029594-noun"
+  },
+  {
+    "expression": "unemployment",
+    "definition": "the state of being unemployed or not having a job",
+    "example": "unemployment is a serious social evil",
+    "level": 2,
+    "synset": "13968308-noun"
+  },
+  {
+    "expression": "urbanization",
+    "definition": "the condition of being urbanized",
+    "example": "",
+    "level": 2,
+    "synset": "14580334-noun"
+  },
+  {
+    "expression": "welfare",
+    "definition": "governmental provision of economic assistance to persons in need",
+    "example": "she lives on welfare",
+    "level": 2,
+    "synset": "01086945-noun"
+  },
+  {
+    "expression": "autonomy",
+    "definition": "immunity from arbitrary exercise of authority: political independence",
+    "example": "",
+    "level": 2,
+    "synset": "13992514-noun"
+  },
+  {
+    "expression": "consensus",
+    "definition": "agreement in the judgment or opinion reached by a group as a whole",
+    "example": "the lack of consensus reflected differences in theoretical positions",
+    "level": 2,
+    "synset": "13971901-noun"
+  },
+  {
+    "expression": "controversy",
+    "definition": "a contentious speech act; a dispute where there is strong disagreement",
+    "example": "",
+    "level": 2,
+    "synset": "07183151-noun"
+  },
+  {
+    "expression": "correlation",
+    "definition": "a reciprocal relation between two or more things",
+    "example": "",
+    "level": 2,
+    "synset": "13841651-noun"
+  },
+  {
+    "expression": "deterioration",
+    "definition": "a symptom of reduced quality or strength",
+    "example": "",
+    "level": 2,
+    "synset": "14561618-noun"
+  },
+  {
+    "expression": "discrimination",
+    "definition": "unfair treatment of a person or group on the basis of prejudice",
+    "example": "",
+    "level": 2,
+    "synset": "01153548-noun"
+  },
+  {
+    "expression": "displacement",
+    "definition": "to move something from its natural environment",
+    "example": "",
+    "level": 2,
+    "synset": "00315830-noun"
+  },
+  {
+    "expression": "enterprise",
+    "definition": "a purposeful or industrious undertaking (especially one that requires effort or boldness)",
+    "example": "he had doubts about the whole enterprise",
+    "level": 2,
+    "synset": "00796886-noun"
+  },
+  {
+    "expression": "fluctuation",
+    "definition": "the quality of being unsteady and subject to changes",
+    "example": "",
+    "level": 2,
+    "synset": "04770911-noun"
+  },
+  {
+    "expression": "fragmentation",
+    "definition": "separating something into fine particles",
+    "example": "",
+    "level": 2,
+    "synset": "00388210-noun"
+  },
+  {
+    "expression": "inequality",
+    "definition": "lack of equality",
+    "example": "the growing inequality between rich and poor",
+    "level": 2,
+    "synset": "04752221-noun"
+  },
+  {
+    "expression": "interdependence",
+    "definition": "a reciprocal relation between interdependent entities (objects or individuals or groups)",
+    "example": "",
+    "level": 2,
+    "synset": "13841863-noun"
+  },
+  {
+    "expression": "intervention",
+    "definition": "the act of intervening (as to mediate a dispute, etc.)",
+    "example": "it occurs without human intervention",
+    "level": 2,
+    "synset": "01240210-noun"
+  },
+  {
+    "expression": "marginalization",
+    "definition": "the social process of becoming or being made marginal (especially as a group within the larger society)",
+    "example": "the marginalization of the underclass",
+    "level": 2,
+    "synset": "13510946-noun"
+  },
+  {
+    "expression": "monopoly",
+    "definition": "(economics) a market in which there are many buyers but only one seller",
+    "example": "a monopoly on silver",
+    "level": 2,
+    "synset": "14444326-noun"
+  },
+  {
+    "expression": "paradigm",
+    "definition": "the generally accepted perspective of a particular discipline at a given time",
+    "example": "he framed the problem within the psychoanalytic paradigm",
+    "level": 2,
+    "synset": "06210171-noun"
+  },
+  {
+    "expression": "participation",
+    "definition": "the act of sharing in the activities of a group",
+    "example": "",
+    "level": 2,
+    "synset": "01239064-noun"
+  },
+  {
+    "expression": "prevalence",
+    "definition": "the quality of prevailing generally; being widespread",
+    "example": "he was surprised by the prevalence of optimism about the future",
+    "level": 2,
+    "synset": "04765355-noun"
+  },
+  {
+    "expression": "privatisation",
+    "definition": "changing something from state to private ownership or control",
+    "example": "",
+    "level": 2,
+    "synset": "01152033-noun"
+  },
+  {
+    "expression": "redistribution",
+    "definition": "distributing again",
+    "example": "the revolution resulted in a redistribution of wealth",
+    "level": 2,
+    "synset": "01083350-noun"
+  },
+  {
+    "expression": "redundancy",
+    "definition": "the attribute of being superfluous and unneeded",
+    "example": "the use of industrial robots created redundancy among workers",
+    "level": 2,
+    "synset": "05120310-noun"
+  },
+  {
+    "expression": "rehabilitation",
+    "definition": "the restoration of someone to a useful place in society",
+    "example": "",
+    "level": 2,
+    "synset": "00400645-noun"
+  },
+  {
+    "expression": "sanitation",
+    "definition": "the state of being clean and conducive to health",
+    "example": "",
+    "level": 2,
+    "synset": "14495466-noun"
+  },
+  {
+    "expression": "sovereignty",
+    "definition": "government free from external control",
+    "example": "",
+    "level": 2,
+    "synset": "13992935-noun"
+  },
+  {
+    "expression": "subsidy",
+    "definition": "a grant paid by a government to an enterprise that benefits the public",
+    "example": "a subsidy for research in artificial intelligence",
+    "level": 2,
+    "synset": "13267014-noun"
+  },
+  {
+    "expression": "tolerance",
+    "definition": "willingness to recognize and respect the beliefs or practices of others",
+    "example": "",
+    "level": 2,
+    "synset": "06204406-noun"
+  },
+  {
+    "expression": "vulnerability",
+    "definition": "the state of being vulnerable or exposed",
+    "example": "his vulnerability to litigation",
+    "level": 2,
+    "synset": "14543931-noun"
+  },
+  {
+    "expression": "ability",
+    "definition": "the quality of being able to perform; a quality that permits or facilitates achievement or accomplishment",
+    "example": "",
+    "level": 0,
+    "synset": "05200169-noun"
+  },
+  {
+    "expression": "accident",
+    "definition": "an unfortunate mishap; especially one causing damage or injury",
+    "example": "",
+    "level": 0,
+    "synset": "07301336-noun"
+  },
+  {
+    "expression": "activity",
+    "definition": "any specific behavior",
+    "example": "they avoided all recreational activity",
+    "level": 0,
+    "synset": "00407535-noun"
+  },
+  {
+    "expression": "advantage",
+    "definition": "the quality of having a superior or more favorable position",
+    "example": "the experience gave him the advantage over me",
+    "level": 0,
+    "synset": "05155821-noun"
+  },
+  {
+    "expression": "age",
+    "definition": "how long something has existed",
+    "example": "it was replaced because of its age",
+    "level": 0,
+    "synset": "04924103-noun"
+  },
+  {
+    "expression": "agreement",
+    "definition": "the statement (oral or written) of an exchange of promises",
+    "example": "they had an agreement that they would not interfere in each other's business",
+    "level": 0,
+    "synset": "06770275-noun"
+  },
+  {
+    "expression": "animal",
+    "definition": "a living organism characterized by voluntary movement",
+    "example": "",
+    "level": 0,
+    "synset": "00015388-noun"
+  },
+  {
+    "expression": "answer",
+    "definition": "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation",
+    "example": "I waited several days for his answer",
+    "level": 0,
+    "synset": "06746005-noun"
+  },
+  {
+    "expression": "application",
+    "definition": "the act of bringing something to bear; using it for a particular purpose",
+    "example": "he advocated the application of statistics to the problem",
+    "level": 0,
+    "synset": "00949134-noun"
+  },
+  {
+    "expression": "area",
+    "definition": "a particular geographical region of indefinite boundary (usually serving some special purpose or distinguished by its people or culture or geography)",
+    "example": "it was a mountainous area",
+    "level": 0,
+    "synset": "08497294-noun"
+  },
+  {
+    "expression": "article",
+    "definition": "nonfictional prose forming an independent part of a publication",
+    "example": "",
+    "level": 0,
+    "synset": "06268096-noun"
+  },
+  {
+    "expression": "attention",
+    "definition": "the process whereby a person concentrates on some features of the environment to the (relative) exclusion of others",
+    "example": "",
+    "level": 0,
+    "synset": "05702275-noun"
+  },
+  {
+    "expression": "audience",
+    "definition": "a gathering of spectators or listeners at a (usually public) performance",
+    "example": "the audience applauded",
+    "level": 0,
+    "synset": "08221897-noun"
+  },
+  {
+    "expression": "author",
+    "definition": "writes (books or stories or articles or the like) professionally (for pay)",
+    "example": "",
+    "level": 0,
+    "synset": "10794014-noun"
+  },
+  {
+    "expression": "beach",
+    "definition": "an area of sand sloping down to the water of a sea or lake",
+    "example": "",
+    "level": 0,
+    "synset": "09217230-noun"
+  },
+  {
+    "expression": "bill",
+    "definition": "an itemized statement of money owed for goods shipped or services rendered",
+    "example": "he paid his bill and left",
+    "level": 0,
+    "synset": "06516955-noun"
+  },
+  {
+    "expression": "birth",
+    "definition": "the time when something begins (especially life)",
+    "example": "they divorced after the birth of the child",
+    "level": 0,
+    "synset": "15142167-noun"
+  },
+  {
+    "expression": "book",
+    "definition": "a written work or composition that has been published (printed on pages bound together)",
+    "example": "I am reading a good book on economics",
+    "level": 0,
+    "synset": "06410904-noun"
+  },
+  {
+    "expression": "bridge",
+    "definition": "a structure that allows people or vehicles to cross an obstacle such as a river or canal or railway etc.",
+    "example": "",
+    "level": 0,
+    "synset": "02898711-noun"
+  },
+  {
+    "expression": "building",
+    "definition": "a structure that has a roof and walls and stands more or less permanently in one place",
+    "example": "there was a three-story building on the corner",
+    "level": 0,
+    "synset": "02913152-noun"
+  },
+  {
+    "expression": "business",
+    "definition": "a commercial or industrial enterprise and the people who constitute it",
+    "example": "he bought his brother's business",
+    "level": 0,
+    "synset": "08061042-noun"
+  },
+  {
+    "expression": "cafe",
+    "definition": "a small restaurant where drinks and snacks are sold",
+    "example": "",
+    "level": 0,
+    "synset": "02935658-noun"
+  },
+  {
+    "expression": "camera",
+    "definition": "equipment for taking photographs (usually consisting of a lightproof box with a lens at one end and light-sensitive film at the other)",
+    "example": "",
+    "level": 0,
+    "synset": "02942699-noun"
+  },
+  {
+    "expression": "campaign",
+    "definition": "a race between candidates for elective office",
+    "example": "I managed his campaign for governor",
+    "level": 0,
+    "synset": "07472929-noun"
+  },
+  {
+    "expression": "candidate",
+    "definition": "a politician who is running for public office",
+    "example": "",
+    "level": 0,
+    "synset": "09889691-noun"
+  },
+  {
+    "expression": "cash",
+    "definition": "money in the form of bills or coins",
+    "example": "there is a desperate shortage of hard cash",
+    "level": 0,
+    "synset": "13386614-noun"
+  },
+  {
+    "expression": "cause",
+    "definition": "events that provide the generative force that is the origin of something",
+    "example": "they are trying to determine the cause of the crash",
+    "level": 0,
+    "synset": "07326557-noun"
+  },
+  {
+    "expression": "centre",
+    "definition": "a place where some particular activity is concentrated",
+    "example": "",
+    "level": 0,
+    "synset": "08514034-noun"
+  },
+  {
+    "expression": "century",
+    "definition": "a period of 100 years",
+    "example": "",
+    "level": 0,
+    "synset": "15205532-noun"
+  },
+  {
+    "expression": "choice",
+    "definition": "the person or thing chosen or selected",
+    "example": "",
+    "level": 0,
+    "synset": "05790242-noun"
+  },
+  {
+    "expression": "cinema",
+    "definition": "a medium that disseminates moving pictures",
+    "example": "this story would be good cinema",
+    "level": 0,
+    "synset": "06262567-noun"
+  },
+  {
+    "expression": "city",
+    "definition": "a large and densely populated urban area; may include several independent administrative districts",
+    "example": "Ancient Troy was a great city",
+    "level": 0,
+    "synset": "08524735-noun"
+  },
+  {
+    "expression": "college",
+    "definition": "an institution of higher education created to educate and grant degrees; often a part of a university",
+    "example": "",
+    "level": 0,
+    "synset": "08278324-noun"
+  },
+  {
+    "expression": "colour",
+    "definition": "a visual attribute of things that results from the light they emit or transmit or reflect",
+    "example": "",
+    "level": 0,
+    "synset": "04956594-noun"
+  },
+  {
+    "expression": "condition",
+    "definition": "a state at a particular time",
+    "example": "a condition (or state) of disrepair",
+    "level": 0,
+    "synset": "13920835-noun"
+  },
+  {
+    "expression": "construction",
+    "definition": "the act of constructing something",
+    "example": "during the construction we had to take a detour",
+    "level": 0,
+    "synset": "00911048-noun"
+  },
+  {
+    "expression": "corner",
+    "definition": "a place off to the side of an area",
+    "example": "he tripled to the rightfield corner",
+    "level": 0,
+    "synset": "08544419-noun"
+  },
+  {
+    "expression": "cost",
+    "definition": "the total spent for goods or services including money and time and labor",
+    "example": "",
+    "level": 0,
+    "synset": "13275847-noun"
+  },
+  {
+    "expression": "country",
+    "definition": "a politically organized body of people under a single government",
+    "example": "the country's largest manufacturer",
+    "level": 0,
+    "synset": "08168978-noun"
+  },
+  {
+    "expression": "course",
+    "definition": "education imparted in a series of lessons or meetings",
+    "example": "he took a course in basket weaving",
+    "level": 0,
+    "synset": "00884466-noun"
+  },
+  {
+    "expression": "culture",
+    "definition": "a particular society at a particular time and place",
+    "example": "",
+    "level": 0,
+    "synset": "08287844-noun"
+  },
+  {
+    "expression": "damage",
+    "definition": "the occurrence of a change for the worse",
+    "example": "",
+    "level": 0,
+    "synset": "07420770-noun"
+  },
+  {
+    "expression": "decision",
+    "definition": "the act of making up your mind about something",
+    "example": "the burden of decision was his",
+    "level": 0,
+    "synset": "00162632-noun"
+  },
+  {
+    "expression": "department",
+    "definition": "a specialized division of a large organization",
+    "example": "you'll find it in the hardware department",
+    "level": 0,
+    "synset": "08114861-noun"
+  },
+  {
+    "expression": "design",
+    "definition": "the act of working out the form of something (as by making a sketch or outline or plan)",
+    "example": "he contributed to the design of a new instrument",
+    "level": 0,
+    "synset": "00928077-noun"
+  },
+  {
+    "expression": "detail",
+    "definition": "an isolated fact that is considered separately from the whole",
+    "example": "",
+    "level": 0,
+    "synset": "05817845-noun"
+  },
+  {
+    "expression": "difference",
+    "definition": "the quality of being unlike or dissimilar",
+    "example": "",
+    "level": 0,
+    "synset": "04748836-noun"
+  },
+  {
+    "expression": "difficulty",
+    "definition": "an effort that is inconvenient",
+    "example": "had difficulty walking",
+    "level": 0,
+    "synset": "00623862-noun"
+  },
+  {
+    "expression": "direction",
+    "definition": "a line leading to a place or point",
+    "example": "he looked the other direction",
+    "level": 0,
+    "synset": "08679972-noun"
+  },
+  {
+    "expression": "discussion",
+    "definition": "an extended communication (often interactive) dealing with some particular topic",
+    "example": "the book contains an excellent discussion of modal logic",
+    "level": 0,
+    "synset": "07138085-noun"
+  },
+  {
+    "expression": "distance",
+    "definition": "the property created by the space between two objects or points",
+    "example": "",
+    "level": 0,
+    "synset": "05084201-noun"
+  },
+  {
+    "expression": "district",
+    "definition": "a region marked off for administrative or other purposes",
+    "example": "",
+    "level": 0,
+    "synset": "08552138-noun"
+  },
+  {
+    "expression": "doctor",
+    "definition": "a licensed medical practitioner",
+    "example": "I felt so bad I went to see my doctor",
+    "level": 0,
+    "synset": "10020890-noun"
+  },
+  {
+    "expression": "driver",
+    "definition": "the operator of a motor vehicle",
+    "example": "",
+    "level": 0,
+    "synset": "10034906-noun"
+  },
+  {
+    "expression": "effect",
+    "definition": "a phenomenon that follows and is caused by some previous phenomenon",
+    "example": "the magnetic effect was greater when the rod was lengthwise",
+    "level": 0,
+    "synset": "11410625-noun"
+  },
+  {
+    "expression": "effort",
+    "definition": "earnest and conscientious activity intended to do or accomplish something",
+    "example": "made an effort to cover all the reading material",
+    "level": 0,
+    "synset": "00786195-noun"
+  },
+  {
+    "expression": "employee",
+    "definition": "a worker who is hired to perform a job",
+    "example": "",
+    "level": 0,
+    "synset": "10053808-noun"
+  },
+  {
+    "expression": "engineer",
+    "definition": "a person who uses scientific knowledge to solve practical problems",
+    "example": "",
+    "level": 0,
+    "synset": "09615807-noun"
+  },
+  {
+    "expression": "event",
+    "definition": "something that happens at a given place and time",
+    "example": "",
+    "level": 0,
+    "synset": "00029378-noun"
+  },
+  {
+    "expression": "exam",
+    "definition": "a set of questions or exercises evaluating skill or knowledge",
+    "example": "",
+    "level": 0,
+    "synset": "07197021-noun"
+  },
+  {
+    "expression": "examination",
+    "definition": "the act of examining something closely (as for mistakes)",
+    "example": "",
+    "level": 0,
+    "synset": "00635850-noun"
+  },
+  {
+    "expression": "exercise",
+    "definition": "the activity of exerting your muscles in various ways to keep fit",
+    "example": "the doctor recommended regular exercise",
+    "level": 0,
+    "synset": "00624738-noun"
+  },
+  {
+    "expression": "expert",
+    "definition": "a person with special knowledge or ability who performs skillfully",
+    "example": "",
+    "level": 0,
+    "synset": "09617867-noun"
+  },
+  {
+    "expression": "explanation",
+    "definition": "a statement that makes something comprehensible by describing the relevant structure or operation or circumstances etc.",
+    "example": "the explanation was very simple",
+    "level": 0,
+    "synset": "06738281-noun"
+  },
+  {
+    "expression": "family",
+    "definition": "a social unit living together",
+    "example": "he moved his family to Virginia",
+    "level": 0,
+    "synset": "08078020-noun"
+  },
+  {
+    "expression": "farmer",
+    "definition": "a person who operates a farm",
+    "example": "",
+    "level": 0,
+    "synset": "10078806-noun"
+  },
+  {
+    "expression": "feature",
+    "definition": "a prominent attribute or aspect of something",
+    "example": "",
+    "level": 0,
+    "synset": "05849789-noun"
+  },
+  {
+    "expression": "festival",
+    "definition": "a day or period of time set aside for feasting and celebration",
+    "example": "",
+    "level": 0,
+    "synset": "15162388-noun"
+  },
+  {
+    "expression": "friend",
+    "definition": "a person you know well and regard with affection and trust",
+    "example": "he was my best friend at the university",
+    "level": 0,
+    "synset": "10112591-noun"
+  },
+  {
+    "expression": "friendship",
+    "definition": "the state of being friends (or friendly)",
+    "example": "",
+    "level": 0,
+    "synset": "13931145-noun"
+  },
+  {
+    "expression": "future",
+    "definition": "the time yet to come",
+    "example": "",
+    "level": 0,
+    "synset": "15121625-noun"
+  },
+  {
+    "expression": "garbage",
+    "definition": "food that is discarded (as from a kitchen)",
+    "example": "",
+    "level": 0,
+    "synset": "14857151-noun"
+  },
+  {
+    "expression": "garden",
+    "definition": "a plot of ground where plants are cultivated",
+    "example": "",
+    "level": 0,
+    "synset": "03417345-noun"
+  },
+  {
+    "expression": "gift",
+    "definition": "something acquired without compensation",
+    "example": "",
+    "level": 0,
+    "synset": "13265011-noun"
+  },
+  {
+    "expression": "goal",
+    "definition": "the state of affairs that a plan is intended to achieve and that (when achieved) terminates behavior intended to achieve it",
+    "example": "",
+    "level": 0,
+    "synset": "05980875-noun"
+  },
+  {
+    "expression": "ground",
+    "definition": "the solid part of the earth's surface",
+    "example": "he dropped the logs on the ground",
+    "level": 0,
+    "synset": "09334396-noun"
+  },
+  {
+    "expression": "group",
+    "definition": "any number of entities (members) considered as a unit",
+    "example": "",
+    "level": 0,
+    "synset": "00031264-noun"
+  },
+  {
+    "expression": "guest",
+    "definition": "a visitor to whom hospitality is extended",
+    "example": "",
+    "level": 0,
+    "synset": "10150940-noun"
+  },
+  {
+    "expression": "habit",
+    "definition": "an established custom",
+    "example": "it was their habit to dine at 7 every evening",
+    "level": 0,
+    "synset": "05669034-noun"
+  },
+  {
+    "expression": "history",
+    "definition": "the aggregate of past events",
+    "example": "a critical time in the school's history",
+    "level": 0,
+    "synset": "15121406-noun"
+  },
+  {
+    "expression": "holiday",
+    "definition": "leisure time away from work devoted to rest or pleasure",
+    "example": "we took a short holiday in Puerto Rico",
+    "level": 0,
+    "synset": "15137890-noun"
+  },
+  {
+    "expression": "hotel",
+    "definition": "a building where travelers can pay for lodging and meals and other services",
+    "example": "",
+    "level": 0,
+    "synset": "03542333-noun"
+  },
+  {
+    "expression": "identity",
+    "definition": "the distinct personality of an individual regarded as a persisting entity",
+    "example": "you can lose your identity when you join the army",
+    "level": 0,
+    "synset": "04618070-noun"
+  },
+  {
+    "expression": "image",
+    "definition": "an iconic mental representation",
+    "example": "",
+    "level": 0,
+    "synset": "05928118-noun"
+  },
+  {
+    "expression": "importance",
+    "definition": "the quality of being important and worthy of note",
+    "example": "the importance of a well-balanced diet",
+    "level": 0,
+    "synset": "05168261-noun"
+  },
+  {
+    "expression": "information",
+    "definition": "a message received and understood",
+    "example": "",
+    "level": 0,
+    "synset": "06634376-noun"
+  },
+  {
+    "expression": "internet",
+    "definition": "a computer network consisting of a worldwide network of computer networks that use the TCP/IP network protocols to facilitate data transmission and exchange",
+    "example": "",
+    "level": 0,
+    "synset": "03580615-noun"
+  },
+  {
+    "expression": "island",
+    "definition": "a land mass (smaller than a continent) that is surrounded by water",
+    "example": "",
+    "level": 0,
+    "synset": "09316454-noun"
+  },
+  {
+    "expression": "issue",
+    "definition": "an important question that is in dispute and must be settled",
+    "example": "the issue could be settled by requiring public education for everyone",
+    "level": 0,
+    "synset": "05814650-noun"
+  },
+  {
+    "expression": "job",
+    "definition": "the principal activity in your life that you do to earn money",
+    "example": "",
+    "level": 0,
+    "synset": "00582388-noun"
+  },
+  {
+    "expression": "key",
+    "definition": "metal device shaped in such a way that when it is inserted into the appropriate lock the lock's mechanism can be rotated",
+    "example": "",
+    "level": 0,
+    "synset": "03613294-noun"
+  },
+  {
+    "expression": "language",
+    "definition": "a systematic means of communicating by the use of sounds or conventional symbols",
+    "example": "the language introduced is standard throughout the text",
+    "level": 0,
+    "synset": "06282651-noun"
+  },
+  {
+    "expression": "leader",
+    "definition": "a person who rules or guides or inspires others",
+    "example": "",
+    "level": 0,
+    "synset": "09623038-noun"
+  },
+  {
+    "expression": "lesson",
+    "definition": "a unit of instruction",
+    "example": "",
+    "level": 0,
+    "synset": "00889472-noun"
+  },
+  {
+    "expression": "letter",
+    "definition": "a written message addressed to a person or organization",
+    "example": "mailed an indignant letter to the editor",
+    "level": 0,
+    "synset": "06624161-noun"
+  },
+  {
+    "expression": "limit",
+    "definition": "the greatest possible degree of something",
+    "example": "to the limit of his ability",
+    "level": 0,
+    "synset": "05124057-noun"
+  },
+  {
+    "expression": "location",
+    "definition": "a point or extent in space",
+    "example": "",
+    "level": 0,
+    "synset": "00027167-noun"
+  },
+  {
+    "expression": "machine",
+    "definition": "any mechanical or electrical device that transmits or modifies energy to perform or assist in the performance of human tasks",
+    "example": "",
+    "level": 0,
+    "synset": "03699975-noun"
+  },
+  {
+    "expression": "magazine",
+    "definition": "a periodic publication containing pictures and stories and articles of interest to those who purchase it or subscribe to it",
+    "example": "it takes several years before a magazine starts to break even or make money",
+    "level": 0,
+    "synset": "06595351-noun"
+  },
+  {
+    "expression": "market",
+    "definition": "the world of commercial activity where goods and services are bought and sold",
+    "example": "without competition there would be no market",
+    "level": 0,
+    "synset": "01097292-noun"
+  },
+  {
+    "expression": "meal",
+    "definition": "the food served and eaten at one time",
+    "example": "",
+    "level": 0,
+    "synset": "07573696-noun"
+  },
+  {
+    "expression": "measure",
+    "definition": "any maneuver made as part of progress toward a goal",
+    "example": "",
+    "level": 0,
+    "synset": "00174412-noun"
+  },
+  {
+    "expression": "meeting",
+    "definition": "a formally arranged gathering",
+    "example": "next year the meeting will be in Chicago",
+    "level": 0,
+    "synset": "08307589-noun"
+  },
+  {
+    "expression": "method",
+    "definition": "a way of doing something, especially a systematic way; implies an orderly logical arrangement (usually in steps)",
+    "example": "",
+    "level": 0,
+    "synset": "05660268-noun"
+  },
+  {
+    "expression": "moment",
+    "definition": "a particular point in time",
+    "example": "the moment he arrived the party began",
+    "level": 0,
+    "synset": "15244650-noun"
+  },
+  {
+    "expression": "museum",
+    "definition": "a depository for collecting and displaying objects having scientific or historical or artistic value",
+    "example": "",
+    "level": 0,
+    "synset": "03800563-noun"
+  },
+  {
+    "expression": "music",
+    "definition": "an artistic form of auditory communication incorporating instrumental or vocal tones in a structured and continuous manner",
+    "example": "",
+    "level": 0,
+    "synset": "07020895-noun"
+  },
+  {
+    "expression": "neighbour",
+    "definition": "a person who lives (or is located) near another",
+    "example": "",
+    "level": 0,
+    "synset": "10352299-noun"
+  },
+  {
+    "expression": "newspaper",
+    "definition": "a daily or weekly publication on folded sheets; contains news and articles and advertisements",
+    "example": "he read his newspaper at breakfast",
+    "level": 0,
+    "synset": "06267145-noun"
+  },
+  {
+    "expression": "noise",
+    "definition": "sound of any kind (especially unintelligible or dissonant sound)",
+    "example": "during the firework display that ended the gala the noise reached 98 decibels",
+    "level": 0,
+    "synset": "07387509-noun"
+  },
+  {
+    "expression": "office",
+    "definition": "place of business where professional or clerical duties are performed",
+    "example": "he rented an office in the new building",
+    "level": 0,
+    "synset": "03841666-noun"
+  },
+  {
+    "expression": "opinion",
+    "definition": "a personal belief or judgment that is not founded on proof or certainty",
+    "example": "my opinion differs from yours",
+    "level": 0,
+    "synset": "05945642-noun"
+  },
+  {
+    "expression": "organisation",
+    "definition": "a group of people who work together",
+    "example": "",
+    "level": 0,
+    "synset": "08008335-noun"
+  },
+  {
+    "expression": "page",
+    "definition": "one side of one leaf (of a book or magazine or newspaper or letter etc.) or the written or pictorial matter it contains",
+    "example": "",
+    "level": 0,
+    "synset": "06256697-noun"
+  },
+  {
+    "expression": "parent",
+    "definition": "a father or mother; one who begets or one who gives birth to or nurtures and raises a child; a relative who plays the role of guardian",
+    "example": "",
+    "level": 0,
+    "synset": "10399491-noun"
+  },
+  {
+    "expression": "park",
+    "definition": "a large area of land preserved in its natural state as public property",
+    "example": "there are laws that protect the wildlife in this park",
+    "level": 0,
+    "synset": "08615149-noun"
+  },
+  {
+    "expression": "partner",
+    "definition": "an associate in an activity or endeavor or sphere of common interest",
+    "example": "",
+    "level": 0,
+    "synset": "09935434-noun"
+  },
+  {
+    "expression": "period",
+    "definition": "an amount of time",
+    "example": "a time period of 30 years",
+    "level": 0,
+    "synset": "15113229-noun"
+  },
+  {
+    "expression": "photograph",
+    "definition": "a representation of a person or scene in the form of a print or transparent slide; recorded by a camera on light-sensitive material",
+    "example": "",
+    "level": 0,
+    "synset": "03925226-noun"
+  },
+  {
+    "expression": "picture",
+    "definition": "a visual representation (of an object or scene or person or abstraction) produced on a surface",
+    "example": "",
+    "level": 0,
+    "synset": "03931044-noun"
+  },
+  {
+    "expression": "plan",
+    "definition": "a series of steps to be carried out or goals to be accomplished",
+    "example": "they drew up a six-step plan",
+    "level": 0,
+    "synset": "05898568-noun"
+  },
+  {
+    "expression": "police",
+    "definition": "the force of policemen and officers",
+    "example": "",
+    "level": 0,
+    "synset": "08209687-noun"
+  },
+  {
+    "expression": "position",
+    "definition": "the particular portion of space occupied by something",
+    "example": "",
+    "level": 0,
+    "synset": "08621598-noun"
+  },
+  {
+    "expression": "possibility",
+    "definition": "a future prospect or potential",
+    "example": "",
+    "level": 0,
+    "synset": "05951180-noun"
+  },
+  {
+    "expression": "problem",
+    "definition": "a state of difficulty that needs to be resolved",
+    "example": "",
+    "level": 0,
+    "synset": "14410605-noun"
+  },
+  {
+    "expression": "product",
+    "definition": "commodities offered for sale",
+    "example": "",
+    "level": 0,
+    "synset": "03748886-noun"
+  },
+  {
+    "expression": "programme",
+    "definition": "an announcement of the events that will occur as part of a theatrical or sporting event",
+    "example": "",
+    "level": 0,
+    "synset": "06748466-noun"
+  },
+  {
+    "expression": "project",
+    "definition": "any piece of work that is undertaken or attempted",
+    "example": "",
+    "level": 0,
+    "synset": "00795720-noun"
+  },
+  {
+    "expression": "purpose",
+    "definition": "an anticipated outcome that is intended or that guides your planned actions",
+    "example": "",
+    "level": 0,
+    "synset": "05982152-noun"
+  },
+  {
+    "expression": "quality",
+    "definition": "an essential and distinguishing attribute of something or someone",
+    "example": "the quality of mercy is not strained",
+    "level": 0,
+    "synset": "04723816-noun"
+  },
+  {
+    "expression": "question",
+    "definition": "an instance of questioning",
+    "example": "there was a question about my training",
+    "level": 0,
+    "synset": "07193596-noun"
+  },
+  {
+    "expression": "radio",
+    "definition": "medium for communication",
+    "example": "",
+    "level": 0,
+    "synset": "06277135-noun"
+  },
+  {
+    "expression": "reason",
+    "definition": "a rational motive for a belief or action",
+    "example": "the reason that war was declared",
+    "level": 0,
+    "synset": "09178999-noun"
+  },
+  {
+    "expression": "region",
+    "definition": "the extended spatial location of something",
+    "example": "",
+    "level": 0,
+    "synset": "08630039-noun"
+  },
+  {
+    "expression": "relationship",
+    "definition": "a relation between people; (`relationship' is often used where `relation' would serve, as in `the relationship between inflation and unemployment', but the preferred usage of `relationship' is for human relations or states of relatedness)",
+    "example": "the relationship between mothers and their children",
+    "level": 0,
+    "synset": "13780719-noun"
+  },
+  {
+    "expression": "repair",
+    "definition": "the act of putting something in working order again",
+    "example": "",
+    "level": 0,
+    "synset": "00266806-noun"
+  },
+  {
+    "expression": "report",
+    "definition": "a written document describing the findings of some individual or group",
+    "example": "",
+    "level": 0,
+    "synset": "07218470-noun"
+  },
+  {
+    "expression": "request",
+    "definition": "a formal message requesting something that is submitted to an authority",
+    "example": "",
+    "level": 0,
+    "synset": "06513366-noun"
+  },
+  {
+    "expression": "result",
+    "definition": "a phenomenon that follows and is caused by some previous phenomenon",
+    "example": "",
+    "level": 0,
+    "synset": "11410625-noun"
+  },
+  {
+    "expression": "risk",
+    "definition": "a source of danger; a possibility of incurring loss or misfortune",
+    "example": "",
+    "level": 0,
+    "synset": "14541852-noun"
+  },
+  {
+    "expression": "road",
+    "definition": "an open way (generally public) for travel or transportation",
+    "example": "",
+    "level": 0,
+    "synset": "04096066-noun"
+  },
+  {
+    "expression": "room",
+    "definition": "an area within a building enclosed by walls and floor and ceiling",
+    "example": "",
+    "level": 0,
+    "synset": "04105893-noun"
+  },
+  {
+    "expression": "rule",
+    "definition": "a principle or condition that customarily governs behavior",
+    "example": "it was his rule to take a walk before breakfast",
+    "level": 0,
+    "synset": "05846054-noun"
+  },
+  {
+    "expression": "sale",
+    "definition": "a particular instance of selling",
+    "example": "he has just made his first sale",
+    "level": 0,
+    "synset": "01114824-noun"
+  },
+  {
+    "expression": "school",
+    "definition": "an educational institution",
+    "example": "the school was founded in 1900",
+    "level": 0,
+    "synset": "08276720-noun"
+  },
+  {
+    "expression": "science",
+    "definition": "a particular branch of scientific knowledge",
+    "example": "the science of genetics",
+    "level": 0,
+    "synset": "05999797-noun"
+  },
+  {
+    "expression": "seat",
+    "definition": "a space reserved for sitting (as in a theater or on a train or airplane)",
+    "example": "",
+    "level": 0,
+    "synset": "08647616-noun"
+  },
+  {
+    "expression": "shop",
+    "definition": "a mercantile establishment for the retail sale of goods or services",
+    "example": "he bought it at a shop on Cape Cod",
+    "level": 0,
+    "synset": "04202417-noun"
+  },
+  {
+    "expression": "site",
+    "definition": "the piece of land on which something is located (or is to be located)",
+    "example": "a good site for the school",
+    "level": 0,
+    "synset": "08651247-noun"
+  },
+  {
+    "expression": "society",
+    "definition": "an extended social group having a distinctive cultural and economic organization",
+    "example": "",
+    "level": 0,
+    "synset": "07966140-noun"
+  },
+  {
+    "expression": "sound",
+    "definition": "the particular auditory effect produced by a given cause",
+    "example": "the sound of rain on the roof",
+    "level": 0,
+    "synset": "04981139-noun"
+  },
+  {
+    "expression": "space",
+    "definition": "the unlimited expanse in which everything is located",
+    "example": "they tested his ability to locate objects in space",
+    "level": 0,
+    "synset": "00028651-noun"
+  },
+  {
+    "expression": "sport",
+    "definition": "an active diversion requiring physical exertion and competition",
+    "example": "",
+    "level": 0,
+    "synset": "00523513-noun"
+  },
+  {
+    "expression": "stage",
+    "definition": "any distinct time period in a sequence of events",
+    "example": "we are in a transitional stage in which many former ideas must be revised or rejected",
+    "level": 0,
+    "synset": "15290337-noun"
+  },
+  {
+    "expression": "standard",
+    "definition": "a basis for comparison; a reference point against which other things can be evaluated",
+    "example": "",
+    "level": 0,
+    "synset": "07260623-noun"
+  },
+  {
+    "expression": "step",
+    "definition": "any maneuver made as part of progress toward a goal",
+    "example": "",
+    "level": 0,
+    "synset": "00174412-noun"
+  },
+  {
+    "expression": "story",
+    "definition": "a message that tells the particulars of an act or occurrence or course of events; presented in writing or drama or cinema or as a radio or television program",
+    "example": "",
+    "level": 0,
+    "synset": "07221094-noun"
+  },
+  {
+    "expression": "street",
+    "definition": "a thoroughfare (usually including sidewalks) that is lined with buildings",
+    "example": "he lives on Nassau Street",
+    "level": 0,
+    "synset": "04334599-noun"
+  },
+  {
+    "expression": "structure",
+    "definition": "a thing constructed; a complex entity constructed of many parts",
+    "example": "the structure consisted of a series of arches",
+    "level": 0,
+    "synset": "04341686-noun"
+  },
+  {
+    "expression": "student",
+    "definition": "a learner who is enrolled in an educational institution",
+    "example": "",
+    "level": 0,
+    "synset": "10665698-noun"
+  },
+  {
+    "expression": "success",
+    "definition": "an event that accomplishes its intended purpose",
+    "example": "let's call heads a success and tails a failure",
+    "level": 0,
+    "synset": "07319103-noun"
+  },
+  {
+    "expression": "support",
+    "definition": "the activity of providing for or maintaining by supplying with money or necessities",
+    "example": "his support kept the family together",
+    "level": 0,
+    "synset": "01215902-noun"
+  },
+  {
+    "expression": "swimming",
+    "definition": "the act of swimming",
+    "example": "it was the swimming they enjoyed most",
+    "level": 0,
+    "synset": "00442115-noun"
+  },
+  {
+    "expression": "team",
+    "definition": "a cooperative unit (especially in sports)",
+    "example": "",
+    "level": 0,
+    "synset": "08208560-noun"
+  },
+  {
+    "expression": "technology",
+    "definition": "the practical application of science to commerce or industry",
+    "example": "",
+    "level": 0,
+    "synset": "00949619-noun"
+  },
+  {
+    "expression": "test",
+    "definition": "trying something to find out about it",
+    "example": "",
+    "level": 0,
+    "synset": "05799212-noun"
+  },
+  {
+    "expression": "ticket",
+    "definition": "a commercial document showing that the holder is entitled to something (as to ride on public transportation or to enter a public entertainment)",
+    "example": "",
+    "level": 0,
+    "synset": "06518719-noun"
+  },
+  {
+    "expression": "tool",
+    "definition": "an implement used in the practice of a vocation",
+    "example": "",
+    "level": 0,
+    "synset": "04451818-noun"
+  },
+  {
+    "expression": "topic",
+    "definition": "the subject matter of a conversation or discussion",
+    "example": "it was a very sensitive topic",
+    "level": 0,
+    "synset": "06599788-noun"
+  },
+  {
+    "expression": "total",
+    "definition": "the whole amount",
+    "example": "",
+    "level": 0,
+    "synset": "04353803-noun"
+  },
+  {
+    "expression": "town",
+    "definition": "an urban area with a fixed boundary that is smaller than a city",
+    "example": "they drive through town on their way to work",
+    "level": 0,
+    "synset": "08665504-noun"
+  },
+  {
+    "expression": "trade",
+    "definition": "the commercial exchange (buying and selling on domestic or international markets) of goods and services",
+    "example": "Venice was an important center of trade with the East",
+    "level": 0,
+    "synset": "01091905-noun"
+  },
+  {
+    "expression": "training",
+    "definition": "activity leading to skilled behavior",
+    "example": "",
+    "level": 0,
+    "synset": "00893955-noun"
+  },
+  {
+    "expression": "trip",
+    "definition": "a journey for some purpose (usually including the return)",
+    "example": "he took a trip to the shopping center",
+    "level": 0,
+    "synset": "00308370-noun"
+  },
+  {
+    "expression": "university",
+    "definition": "a large and diverse institution of higher learning created to educate for life and for a profession and to grant degrees",
+    "example": "",
+    "level": 0,
+    "synset": "08286569-noun"
+  },
+  {
+    "expression": "user",
+    "definition": "a person who makes use of a thing; someone who uses or employs something",
+    "example": "",
+    "level": 0,
+    "synset": "10741590-noun"
+  },
+  {
+    "expression": "village",
+    "definition": "a community of people smaller than a town",
+    "example": "",
+    "level": 0,
+    "synset": "08226699-noun"
+  },
+  {
+    "expression": "walk",
+    "definition": "the act of traveling by foot",
+    "example": "",
+    "level": 0,
+    "synset": "00283568-noun"
+  },
+  {
+    "expression": "way",
+    "definition": "how something is done or how it happens",
+    "example": "a lonely way of life",
+    "level": 0,
+    "synset": "04928903-noun"
+  },
+  {
+    "expression": "weather",
+    "definition": "the atmospheric conditions that comprise the state of the atmosphere in terms of temperature and wind and clouds and precipitation",
+    "example": "they were hoping for good weather",
+    "level": 0,
+    "synset": "11524662-noun"
+  },
+  {
+    "expression": "wood",
+    "definition": "the hard fibrous lignified substance under the bark of trees",
+    "example": "",
+    "level": 0,
+    "synset": "15098161-noun"
+  },
+  {
+    "expression": "world",
+    "definition": "everything that exists anywhere",
+    "example": "",
+    "level": 0,
+    "synset": "09466280-noun"
+  },
+  {
+    "expression": "youth",
+    "definition": "a young person (especially a young man or boy)",
+    "example": "",
+    "level": 0,
+    "synset": "10804406-noun"
+  },
+  {
+    "expression": "access",
+    "definition": "the right to enter",
+    "example": "",
+    "level": 0,
+    "synset": "05176188-noun"
+  },
+  {
+    "expression": "advance",
+    "definition": "a movement forward",
+    "example": "",
+    "level": 0,
+    "synset": "07445265-noun"
+  },
+  {
+    "expression": "amount",
+    "definition": "a quantity of money",
+    "example": "the amount he had in cash was insufficient",
+    "level": 0,
+    "synset": "13331198-noun"
+  },
+  {
+    "expression": "argument",
+    "definition": "a fact or assertion offered as evidence that something is true",
+    "example": "it was a strong argument that his hypothesis was true",
+    "level": 0,
+    "synset": "06648724-noun"
+  },
+  {
+    "expression": "arrangement",
+    "definition": "the thing arranged or agreed to",
+    "example": "",
+    "level": 0,
+    "synset": "05795044-noun"
+  },
+  {
+    "expression": "attitude",
+    "definition": "a complex mental state involving beliefs and feelings and values and dispositions to act in certain ways",
+    "example": "he had the attitude that work was fun",
+    "level": 0,
+    "synset": "06193203-noun"
+  },
+  {
+    "expression": "balance",
+    "definition": "a state of equilibrium",
+    "example": "",
+    "level": 0,
+    "synset": "14002279-noun"
+  },
+  {
+    "expression": "beauty",
+    "definition": "the qualities that give pleasure to the senses",
+    "example": "",
+    "level": 0,
+    "synset": "04683814-noun"
+  },
+  {
+    "expression": "border",
+    "definition": "a line that indicates a boundary",
+    "example": "",
+    "level": 0,
+    "synset": "08512736-noun"
+  },
+  {
+    "expression": "character",
+    "definition": "an imaginary person represented in a work of fiction (play or film or story)",
+    "example": "she is the main character in the novel",
+    "level": 0,
+    "synset": "09587565-noun"
+  },
+  {
+    "expression": "confidence",
+    "definition": "freedom from doubt; belief in yourself and your abilities",
+    "example": "after that failure he lost his confidence",
+    "level": 0,
+    "synset": "05697363-noun"
+  },
+  {
+    "expression": "connection",
+    "definition": "a relation between things or events (as in the case of one causing the other or sharing features with it)",
+    "example": "there was a connection between eating that pickle and having that nightmare",
+    "level": 0,
+    "synset": "13791389-noun"
+  },
+  {
+    "expression": "control",
+    "definition": "power to direct or determine",
+    "example": "under control",
+    "level": 0,
+    "synset": "05196375-noun"
+  },
+  {
+    "expression": "demand",
+    "definition": "an urgent or peremptory request",
+    "example": "",
+    "level": 0,
+    "synset": "07191279-noun"
+  },
+  {
+    "expression": "depth",
+    "definition": "the extent downward or backward or inward",
+    "example": "the depth of the water",
+    "level": 0,
+    "synset": "05134547-noun"
+  },
+  {
+    "expression": "description",
+    "definition": "a statement that represents something in words",
+    "example": "",
+    "level": 0,
+    "synset": "06724763-noun"
+  },
+  {
+    "expression": "duty",
+    "definition": "the social force that binds you to the courses of action demanded by that force",
+    "example": "we must instill a sense of duty in our children",
+    "level": 0,
+    "synset": "01129920-noun"
+  },
+  {
+    "expression": "economy",
+    "definition": "the system of production and distribution and consumption",
+    "example": "",
+    "level": 0,
+    "synset": "08366753-noun"
+  },
+  {
+    "expression": "emotion",
+    "definition": "any strong feeling",
+    "example": "",
+    "level": 0,
+    "synset": "07480068-noun"
+  },
+  {
+    "expression": "failure",
+    "definition": "an act that fails",
+    "example": "his failure to pass the test",
+    "level": 0,
+    "synset": "00066636-noun"
+  },
+  {
+    "expression": "fashion",
+    "definition": "the latest and most admired style in clothes and cosmetics and behavior",
+    "example": "",
+    "level": 0,
+    "synset": "05750657-noun"
+  },
+  {
+    "expression": "freedom",
+    "definition": "the condition of being free; the power to act or speak or think without externally imposed restraints",
+    "example": "",
+    "level": 0,
+    "synset": "13991823-noun"
+  },
+  {
+    "expression": "influence",
+    "definition": "a power to affect persons or events especially power based on prestige etc",
+    "example": "used her parents' influence to get the job",
+    "level": 0,
+    "synset": "05194151-noun"
+  },
+  {
+    "expression": "invitation",
+    "definition": "a request (spoken or written) to participate or be present or take part in something",
+    "example": "an invitation to lunch",
+    "level": 0,
+    "synset": "07186148-noun"
+  },
+  {
+    "expression": "length",
+    "definition": "the linear extent in space from one end to the other; the longest dimension of something that is fixed in place",
+    "example": "the length of the table was 5 feet",
+    "level": 0,
+    "synset": "05129201-noun"
+  },
+  {
+    "expression": "loss",
+    "definition": "something that is lost",
+    "example": "the car was a total loss",
+    "level": 0,
+    "synset": "13327676-noun"
+  },
+  {
+    "expression": "network",
+    "definition": "an interconnected system of things or people",
+    "example": "he owned a network of shops",
+    "level": 0,
+    "synset": "08434259-noun"
+  },
+  {
+    "expression": "notice",
+    "definition": "an announcement containing information about an event",
+    "example": "you didn't give me enough notice",
+    "level": 0,
+    "synset": "06747670-noun"
+  },
+  {
+    "expression": "objective",
+    "definition": "the goal intended to be attained (and which is believed to be attainable)",
+    "example": "",
+    "level": 0,
+    "synset": "05981230-noun"
+  },
+  {
+    "expression": "outcome",
+    "definition": "something that results",
+    "example": "",
+    "level": 0,
+    "synset": "07292694-noun"
+  },
+  {
+    "expression": "procedure",
+    "definition": "a particular course of action intended to achieve a result",
+    "example": "the procedure of obtaining a driver's license",
+    "level": 0,
+    "synset": "01023820-noun"
+  },
+  {
+    "expression": "progress",
+    "definition": "gradual improvement or growth or development",
+    "example": "great progress in the arts",
+    "level": 0,
+    "synset": "00249501-noun"
+  },
+  {
+    "expression": "proof",
+    "definition": "any factual evidence that helps to establish the truth of something",
+    "example": "if you have any proof for what you say, now is the time to produce it",
+    "level": 0,
+    "synset": "05824739-noun"
+  },
+  {
+    "expression": "reputation",
+    "definition": "the state of being held in high esteem and honor",
+    "example": "",
+    "level": 0,
+    "synset": "14438125-noun"
+  },
+  {
+    "expression": "review",
+    "definition": "a new appraisal or evaluation",
+    "example": "",
+    "level": 0,
+    "synset": "05747582-noun"
+  },
+  {
+    "expression": "role",
+    "definition": "the actions and activities assigned to or required or expected of a person or group",
+    "example": "play its role",
+    "level": 0,
+    "synset": "00720565-noun"
+  },
+  {
+    "expression": "security",
+    "definition": "the state of being free from danger or injury",
+    "example": "we support the armed services in the name of national security",
+    "level": 0,
+    "synset": "14539268-noun"
+  },
+  {
+    "expression": "source",
+    "definition": "the place where something begins, where it springs into being",
+    "example": "Pittsburgh is the source of the Ohio River",
+    "level": 0,
+    "synset": "08507558-noun"
+  },
+  {
+    "expression": "speed",
+    "definition": "distance travelled per unit time",
+    "example": "",
+    "level": 0,
+    "synset": "15282696-noun"
+  },
+  {
+    "expression": "statement",
+    "definition": "a message that is stated or declared; a communication (oral or written) setting forth particulars or facts etc",
+    "example": "according to his statement he was in London on that day",
+    "level": 0,
+    "synset": "06722453-noun"
+  },
+  {
+    "expression": "strength",
+    "definition": "the property of being physically or mentally strong",
+    "example": "fatigue sapped his strength",
+    "level": 0,
+    "synset": "05029706-noun"
+  },
+  {
+    "expression": "task",
+    "definition": "any piece of work that is undertaken or attempted",
+    "example": "",
+    "level": 0,
+    "synset": "00795720-noun"
+  },
+  {
+    "expression": "technique",
+    "definition": "a practical method or art applied to some particular task",
+    "example": "",
+    "level": 0,
+    "synset": "05665146-noun"
+  },
+  {
+    "expression": "thought",
+    "definition": "the content of cognition; the main thing you are thinking about",
+    "example": "the thought never entered my mind",
+    "level": 0,
+    "synset": "05833840-noun"
+  },
+  {
+    "expression": "variety",
+    "definition": "a collection containing a variety of sorts of things",
+    "example": "he had a variety of disorders",
+    "level": 0,
+    "synset": "08398773-noun"
+  },
+  {
+    "expression": "view",
+    "definition": "a way of regarding situations or topics etc.",
+    "example": "consider what follows from the positivist view",
+    "level": 0,
+    "synset": "06208751-noun"
+  },
+  {
+    "expression": "weight",
+    "definition": "the vertical force exerted by a mass as a result of gravity",
+    "example": "",
+    "level": 0,
+    "synset": "05026843-noun"
+  },
+  {
+    "expression": "accept",
+    "definition": "consider or hold as true",
+    "example": "I cannot accept the dogma of this church",
+    "level": 1,
+    "synset": "00686447-verb"
+  },
+  {
+    "expression": "achieve",
+    "definition": "to gain with effort",
+    "example": "",
+    "level": 1,
+    "synset": "02526085-verb"
+  },
+  {
+    "expression": "act",
+    "definition": "perform an action, or work out or perform (an action)",
+    "example": "think before you act",
+    "level": 1,
+    "synset": "02367363-verb"
+  },
+  {
+    "expression": "adjust",
+    "definition": "alter or regulate so as to achieve accuracy or conform to a standard",
+    "example": "Adjust the clock, please",
+    "level": 1,
+    "synset": "00296178-verb"
+  },
+  {
+    "expression": "adopt",
+    "definition": "choose and follow; as of theories, ideas, policies, strategies or plans",
+    "example": "",
+    "level": 1,
+    "synset": "02346895-verb"
+  },
+  {
+    "expression": "advise",
+    "definition": "give advice to",
+    "example": "",
+    "level": 1,
+    "synset": "00872886-verb"
+  },
+  {
+    "expression": "afford",
+    "definition": "be able to spare or give up",
+    "example": "I can't afford to spend two hours with this person",
+    "level": 1,
+    "synset": "01192628-verb"
+  },
+  {
+    "expression": "aim",
+    "definition": "propose or intend",
+    "example": "I aim to arrive at noon",
+    "level": 1,
+    "synset": "00708980-verb"
+  },
+  {
+    "expression": "appear",
+    "definition": "give a certain impression or have a certain outward aspect",
+    "example": "",
+    "level": 1,
+    "synset": "02133435-verb"
+  },
+  {
+    "expression": "arrive",
+    "definition": "reach a destination; arrive by movement or progress",
+    "example": "",
+    "level": 1,
+    "synset": "02005948-verb"
+  },
+  {
+    "expression": "assist",
+    "definition": "give help or assistance; be of service",
+    "example": "",
+    "level": 1,
+    "synset": "02547586-verb"
+  },
+  {
+    "expression": "attach",
+    "definition": "cause to be attached",
+    "example": "",
+    "level": 1,
+    "synset": "01296462-verb"
+  },
+  {
+    "expression": "attract",
+    "definition": "direct toward itself or oneself by means of some psychological power or physical attributes",
+    "example": "Her good looks attract the stares of many men",
+    "level": 1,
+    "synset": "01505254-verb"
+  },
+  {
+    "expression": "base",
+    "definition": "use as a basis for; found on",
+    "example": "base a claim on some observation",
+    "level": 1,
+    "synset": "00636888-verb"
+  },
+  {
+    "expression": "beat",
+    "definition": "come out better in a competition, race, or conflict",
+    "example": "Agassi beat Becker in the tennis championship",
+    "level": 1,
+    "synset": "01101913-verb"
+  },
+  {
+    "expression": "become",
+    "definition": "enter or assume a certain state or condition",
+    "example": "",
+    "level": 1,
+    "synset": "00149583-verb"
+  },
+  {
+    "expression": "belong",
+    "definition": "be owned by; be in the possession of",
+    "example": "",
+    "level": 1,
+    "synset": "02301680-verb"
+  },
+  {
+    "expression": "blame",
+    "definition": "put or pin the blame on",
+    "example": "",
+    "level": 1,
+    "synset": "00842538-verb"
+  },
+  {
+    "expression": "boil",
+    "definition": "come to the boiling point and change from a liquid to vapor",
+    "example": "",
+    "level": 1,
+    "synset": "00375021-verb"
+  },
+  {
+    "expression": "boost",
+    "definition": "increase",
+    "example": "",
+    "level": 1,
+    "synset": "01975912-verb"
+  },
+  {
+    "expression": "breathe",
+    "definition": "draw air into, and expel out of, the lungs",
+    "example": "I can breathe better when the air is clean",
+    "level": 1,
+    "synset": "00001740-verb"
+  },
+  {
+    "expression": "build",
+    "definition": "make by combining materials and parts",
+    "example": "",
+    "level": 1,
+    "synset": "01654628-verb"
+  },
+  {
+    "expression": "calculate",
+    "definition": "make a mathematical calculation or computation",
+    "example": "",
+    "level": 1,
+    "synset": "00637259-verb"
+  },
+  {
+    "expression": "care",
+    "definition": "feel concern or interest",
+    "example": "I really care about my work",
+    "level": 1,
+    "synset": "01822936-verb"
+  },
+  {
+    "expression": "carry",
+    "definition": "move while supporting, either in a vehicle or in one's hands or on one's body",
+    "example": "You must carry your camping gear",
+    "level": 1,
+    "synset": "01449974-verb"
+  },
+  {
+    "expression": "celebrate",
+    "definition": "behave as expected during of holidays or rites",
+    "example": "celebrate Christmas",
+    "level": 1,
+    "synset": "02578510-verb"
+  },
+  {
+    "expression": "choose",
+    "definition": "pick out, select, or choose from a number of alternatives",
+    "example": "Choose a good husband for your daughter",
+    "level": 1,
+    "synset": "00674607-verb"
+  },
+  {
+    "expression": "clean",
+    "definition": "make clean by removing dirt, filth, or unwanted substances from",
+    "example": "Clean the stove!",
+    "level": 1,
+    "synset": "01532589-verb"
+  },
+  {
+    "expression": "climb",
+    "definition": "go upward with gradual or continuous progress",
+    "example": "Did you ever climb up the hill behind your house?",
+    "level": 1,
+    "synset": "01921964-verb"
+  },
+  {
+    "expression": "close",
+    "definition": "move so that an opening or passage is obstructed; make shut",
+    "example": "Close the door",
+    "level": 1,
+    "synset": "01345109-verb"
+  },
+  {
+    "expression": "combine",
+    "definition": "have or possess in combination",
+    "example": "",
+    "level": 1,
+    "synset": "02631163-verb"
+  },
+  {
+    "expression": "complete",
+    "definition": "come or bring to a finish or an end",
+    "example": "",
+    "level": 1,
+    "synset": "00484166-verb"
+  },
+  {
+    "expression": "conclude",
+    "definition": "decide by reasoning; draw or come to a conclusion",
+    "example": "",
+    "level": 1,
+    "synset": "00634472-verb"
+  },
+  {
+    "expression": "connect",
+    "definition": "connect, fasten, or put together two or more pieces",
+    "example": "Can you connect the two loudspeakers?",
+    "level": 1,
+    "synset": "01354673-verb"
+  },
+  {
+    "expression": "consider",
+    "definition": "deem to be",
+    "example": "I consider her to be shallow",
+    "level": 1,
+    "synset": "00690614-verb"
+  },
+  {
+    "expression": "contain",
+    "definition": "include or contain; have as a component",
+    "example": "",
+    "level": 1,
+    "synset": "02629535-verb"
+  },
+  {
+    "expression": "convert",
+    "definition": "change from one system to another or to a new plan or policy",
+    "example": "",
+    "level": 1,
+    "synset": "00381013-verb"
+  },
+  {
+    "expression": "coordinate",
+    "definition": "bring order and organization to",
+    "example": "",
+    "level": 1,
+    "synset": "00404642-verb"
+  },
+  {
+    "expression": "cope",
+    "definition": "come to terms with",
+    "example": "",
+    "level": 1,
+    "synset": "02587532-verb"
+  },
+  {
+    "expression": "correct",
+    "definition": "make right or correct",
+    "example": "Correct the mistakes",
+    "level": 1,
+    "synset": "00199659-verb"
+  },
+  {
+    "expression": "create",
+    "definition": "make or cause to be or to become",
+    "example": "create a furor",
+    "level": 1,
+    "synset": "01617192-verb"
+  },
+  {
+    "expression": "deal",
+    "definition": "act on verbally or in some form of artistic expression",
+    "example": "",
+    "level": 1,
+    "synset": "01033527-verb"
+  },
+  {
+    "expression": "declare",
+    "definition": "state emphatically and authoritatively",
+    "example": "",
+    "level": 1,
+    "synset": "01010118-verb"
+  },
+  {
+    "expression": "decrease",
+    "definition": "decrease in size, extent, or range",
+    "example": "",
+    "level": 1,
+    "synset": "00151689-verb"
+  },
+  {
+    "expression": "deliver",
+    "definition": "bring to a destination, make a delivery",
+    "example": "",
+    "level": 1,
+    "synset": "01438304-verb"
+  },
+  {
+    "expression": "derive",
+    "definition": "reason by deduction; establish by deduction",
+    "example": "",
+    "level": 1,
+    "synset": "00636574-verb"
+  },
+  {
+    "expression": "detect",
+    "definition": "discover or determine the existence, presence, or fact of",
+    "example": "",
+    "level": 1,
+    "synset": "02154508-verb"
+  },
+  {
+    "expression": "develop",
+    "definition": "make something new, such as a product or a mental or artistic creation",
+    "example": "",
+    "level": 1,
+    "synset": "01738774-verb"
+  },
+  {
+    "expression": "differ",
+    "definition": "be different",
+    "example": "These two tests differ in only one respect",
+    "level": 1,
+    "synset": "02666239-verb"
+  },
+  {
+    "expression": "discover",
+    "definition": "discover or determine the existence, presence, or fact of",
+    "example": "",
+    "level": 1,
+    "synset": "02154508-verb"
+  },
+  {
+    "expression": "divide",
+    "definition": "separate into parts or portions",
+    "example": "divide the cake into three equal parts",
+    "level": 1,
+    "synset": "02467662-verb"
+  },
+  {
+    "expression": "drive",
+    "definition": "operate or control a vehicle",
+    "example": "drive a car or bus",
+    "level": 1,
+    "synset": "01930874-verb"
+  },
+  {
+    "expression": "educate",
+    "definition": "give an education to",
+    "example": "We must educate our youngsters better",
+    "level": 1,
+    "synset": "02387486-verb"
+  },
+  {
+    "expression": "elect",
+    "definition": "select by a vote for an office or membership",
+    "example": "",
+    "level": 1,
+    "synset": "02400760-verb"
+  },
+  {
+    "expression": "emerge",
+    "definition": "come out into view, as from concealment",
+    "example": "",
+    "level": 1,
+    "synset": "00423971-verb"
+  },
+  {
+    "expression": "enable",
+    "definition": "render capable or able for some task",
+    "example": "This skill will enable you to find a job on Wall Street",
+    "level": 1,
+    "synset": "00512877-verb"
+  },
+  {
+    "expression": "engage",
+    "definition": "carry out or participate in an activity; be involved in",
+    "example": "",
+    "level": 1,
+    "synset": "02375131-verb"
+  },
+  {
+    "expression": "enhance",
+    "definition": "increase",
+    "example": "This will enhance your enjoyment",
+    "level": 1,
+    "synset": "00229605-verb"
+  },
+  {
+    "expression": "enter",
+    "definition": "to come or go into",
+    "example": "",
+    "level": 1,
+    "synset": "02016523-verb"
+  },
+  {
+    "expression": "examine",
+    "definition": "consider in detail and subject to an analysis in order to discover essential features or meaning",
+    "example": "",
+    "level": 1,
+    "synset": "00644583-verb"
+  },
+  {
+    "expression": "exchange",
+    "definition": "give to, and receive from, one another",
+    "example": "",
+    "level": 1,
+    "synset": "02257370-verb"
+  },
+  {
+    "expression": "exist",
+    "definition": "have an existence, be extant",
+    "example": "",
+    "level": 1,
+    "synset": "02603699-verb"
+  },
+  {
+    "expression": "expect",
+    "definition": "regard something as probable or likely",
+    "example": "",
+    "level": 1,
+    "synset": "00719734-verb"
+  },
+  {
+    "expression": "explore",
+    "definition": "inquire into",
+    "example": "",
+    "level": 1,
+    "synset": "00648224-verb"
+  },
+  {
+    "expression": "extend",
+    "definition": "extend in scope or range or area",
+    "example": "Extend your backyard",
+    "level": 1,
+    "synset": "00540235-verb"
+  },
+  {
+    "expression": "fall",
+    "definition": "descend in free fall under the influence of gravity",
+    "example": "",
+    "level": 1,
+    "synset": "01972298-verb"
+  },
+  {
+    "expression": "fill",
+    "definition": "make full, also in a metaphorical sense",
+    "example": "fill a container",
+    "level": 1,
+    "synset": "00452512-verb"
+  },
+  {
+    "expression": "find",
+    "definition": "come upon, as if by accident; meet with",
+    "example": "We find this idea in Plato",
+    "level": 1,
+    "synset": "02248465-verb"
+  },
+  {
+    "expression": "fit",
+    "definition": "be agreeable or acceptable to",
+    "example": "",
+    "level": 1,
+    "synset": "02702830-verb"
+  },
+  {
+    "expression": "focus",
+    "definition": "direct one's attention on something",
+    "example": "Please focus on your studies and not on your hobbies",
+    "level": 1,
+    "synset": "00722232-verb"
+  },
+  {
+    "expression": "force",
+    "definition": "to cause to do through pressure or necessity, by physical, moral or intellectual means :",
+    "example": "",
+    "level": 1,
+    "synset": "02504562-verb"
+  },
+  {
+    "expression": "gain",
+    "definition": "obtain",
+    "example": "",
+    "level": 1,
+    "synset": "02292125-verb"
+  },
+  {
+    "expression": "gather",
+    "definition": "assemble or get together",
+    "example": "gather some stones",
+    "level": 1,
+    "synset": "01380638-verb"
+  },
+  {
+    "expression": "grow",
+    "definition": "pass into a condition gradually, take on a specific property or attribute; become",
+    "example": "",
+    "level": 1,
+    "synset": "00125841-verb"
+  },
+  {
+    "expression": "handle",
+    "definition": "be in charge of, act on, or dispose of",
+    "example": "This blender can't handle nuts",
+    "level": 1,
+    "synset": "02436349-verb"
+  },
+  {
+    "expression": "harm",
+    "definition": "cause or do harm to",
+    "example": "These pills won't harm your system",
+    "level": 1,
+    "synset": "00102586-verb"
+  },
+  {
+    "expression": "help",
+    "definition": "give help or assistance; be of service",
+    "example": "Can you help me carry this table?",
+    "level": 1,
+    "synset": "02547586-verb"
+  },
+  {
+    "expression": "hold",
+    "definition": "keep in a certain state, position, or activity; e.g.,",
+    "example": "hold in place",
+    "level": 1,
+    "synset": "02681795-verb"
+  },
+  {
+    "expression": "imagine",
+    "definition": "form a mental image of something that is not present or that is not the case",
+    "example": "",
+    "level": 1,
+    "synset": "01636397-verb"
+  },
+  {
+    "expression": "include",
+    "definition": "have as a part, be made up out of",
+    "example": "",
+    "level": 1,
+    "synset": "02632940-verb"
+  },
+  {
+    "expression": "inform",
+    "definition": "impart knowledge of some fact, state or affairs, or event to",
+    "example": "",
+    "level": 1,
+    "synset": "00831651-verb"
+  },
+  {
+    "expression": "insist",
+    "definition": "be emphatic or resolute and refuse to budge",
+    "example": "I must insist!",
+    "level": 1,
+    "synset": "00818974-verb"
+  },
+  {
+    "expression": "intend",
+    "definition": "have in mind as a purpose",
+    "example": "",
+    "level": 1,
+    "synset": "00708538-verb"
+  },
+  {
+    "expression": "invite",
+    "definition": "request the participation or presence of",
+    "example": "The organizers invite submissions of papers for the conference",
+    "level": 1,
+    "synset": "01063695-verb"
+  },
+  {
+    "expression": "join",
+    "definition": "become part of; become a member of a group or organization",
+    "example": "",
+    "level": 1,
+    "synset": "02434976-verb"
+  },
+  {
+    "expression": "last",
+    "definition": "persist for a specified period of time",
+    "example": "",
+    "level": 1,
+    "synset": "02704928-verb"
+  },
+  {
+    "expression": "lead",
+    "definition": "take somebody somewhere",
+    "example": "We lead him to our chief",
+    "level": 1,
+    "synset": "01999798-verb"
+  },
+  {
+    "expression": "leave",
+    "definition": "go away from a place",
+    "example": "At what time does your train leave?",
+    "level": 1,
+    "synset": "02009433-verb"
+  },
+  {
+    "expression": "lift",
+    "definition": "raise from a lower to a higher position",
+    "example": "Lift a load",
+    "level": 1,
+    "synset": "01974062-verb"
+  },
+  {
+    "expression": "listen",
+    "definition": "hear with intention",
+    "example": "Listen to the sound of this cello",
+    "level": 1,
+    "synset": "02169891-verb"
+  },
+  {
+    "expression": "locate",
+    "definition": "discover the location of; determine the place of; find by searching or examining",
+    "example": "Can you locate your cousins in the Midwest?",
+    "level": 1,
+    "synset": "02286204-verb"
+  },
+  {
+    "expression": "lose",
+    "definition": "fail to keep or to maintain; cease to have, either physically or in an abstract sense",
+    "example": "",
+    "level": 1,
+    "synset": "02287789-verb"
+  },
+  {
+    "expression": "meet",
+    "definition": "come together",
+    "example": "",
+    "level": 1,
+    "synset": "02023107-verb"
+  },
+  {
+    "expression": "miss",
+    "definition": "fail to perceive or to catch with the senses or the mind",
+    "example": "",
+    "level": 1,
+    "synset": "02127853-verb"
+  },
+  {
+    "expression": "negotiate",
+    "definition": "discuss the terms of an arrangement",
+    "example": "",
+    "level": 1,
+    "synset": "00761713-verb"
+  },
+  {
+    "expression": "offer",
+    "definition": "make available or accessible, provide or furnish",
+    "example": "",
+    "level": 1,
+    "synset": "02296726-verb"
+  },
+  {
+    "expression": "operate",
+    "definition": "direct or control; projects, businesses, etc.",
+    "example": "",
+    "level": 1,
+    "synset": "02443849-verb"
+  },
+  {
+    "expression": "overcome",
+    "definition": "win a victory over",
+    "example": "You must overcome all difficulties",
+    "level": 1,
+    "synset": "01108148-verb"
+  },
+  {
+    "expression": "perform",
+    "definition": "carry out or perform an action",
+    "example": "",
+    "level": 1,
+    "synset": "01712704-verb"
+  },
+  {
+    "expression": "persuade",
+    "definition": "win approval or support for",
+    "example": "",
+    "level": 1,
+    "synset": "02586121-verb"
+  },
+  {
+    "expression": "play",
+    "definition": "participate in games or sport",
+    "example": "play cards",
+    "level": 1,
+    "synset": "01072949-verb"
+  },
+  {
+    "expression": "practise",
+    "definition": "engage in a rehearsal (of)",
+    "example": "",
+    "level": 1,
+    "synset": "01723224-verb"
+  },
+  {
+    "expression": "prepare",
+    "definition": "make ready or suitable or equip in advance for a particular purpose or for some use, event, etc",
+    "example": "prepare for war",
+    "level": 1,
+    "synset": "00406243-verb"
+  },
+  {
+    "expression": "preserve",
+    "definition": "keep or maintain in unaltered condition; cause to remain or last",
+    "example": "preserve the peace in the family",
+    "level": 1,
+    "synset": "02679899-verb"
+  },
+  {
+    "expression": "proceed",
+    "definition": "move ahead; travel onward in time or space",
+    "example": "",
+    "level": 1,
+    "synset": "01995549-verb"
+  },
+  {
+    "expression": "produce",
+    "definition": "bring forth or yield",
+    "example": "The tree would not produce fruit",
+    "level": 1,
+    "synset": "01752495-verb"
+  },
+  {
+    "expression": "protect",
+    "definition": "shield from danger, injury, destruction, or damage",
+    "example": "",
+    "level": 1,
+    "synset": "01128193-verb"
+  },
+  {
+    "expression": "publish",
+    "definition": "put into print",
+    "example": "",
+    "level": 1,
+    "synset": "01745722-verb"
+  },
+  {
+    "expression": "pursue",
+    "definition": "carry out or participate in an activity; be involved in",
+    "example": "",
+    "level": 1,
+    "synset": "02375131-verb"
+  },
+  {
+    "expression": "reach",
+    "definition": "reach a destination, either real or abstract",
+    "example": "",
+    "level": 1,
+    "synset": "02020590-verb"
+  },
+  {
+    "expression": "read",
+    "definition": "interpret something that is written or printed",
+    "example": "read the advertisement",
+    "level": 1,
+    "synset": "00625119-verb"
+  },
+  {
+    "expression": "receive",
+    "definition": "get something; come into possession of",
+    "example": "receive payment",
+    "level": 1,
+    "synset": "02210119-verb"
+  },
+  {
+    "expression": "recover",
+    "definition": "get or find back; recover the use of",
+    "example": "",
+    "level": 1,
+    "synset": "02247977-verb"
+  },
+  {
+    "expression": "regard",
+    "definition": "deem to be",
+    "example": "",
+    "level": 1,
+    "synset": "00690614-verb"
+  },
+  {
+    "expression": "reject",
+    "definition": "refuse to accept or acknowledge",
+    "example": "I reject the idea of starting a war",
+    "level": 1,
+    "synset": "00685683-verb"
+  },
+  {
+    "expression": "release",
+    "definition": "release, as from one's grip",
+    "example": "",
+    "level": 1,
+    "synset": "01474550-verb"
+  },
+  {
+    "expression": "remember",
+    "definition": "recall knowledge from memory; have a recollection",
+    "example": "I can't remember saying any such thing",
+    "level": 1,
+    "synset": "00607780-verb"
+  },
+  {
+    "expression": "renew",
+    "definition": "reestablish on a new, usually improved, basis or make new or like new",
+    "example": "",
+    "level": 1,
+    "synset": "01631072-verb"
+  },
+  {
+    "expression": "reply",
+    "definition": "react verbally",
+    "example": "",
+    "level": 1,
+    "synset": "00815686-verb"
+  },
+  {
+    "expression": "represent",
+    "definition": "take the place of or be parallel or equivalent to",
+    "example": "",
+    "level": 1,
+    "synset": "02699497-verb"
+  },
+  {
+    "expression": "resolve",
+    "definition": "bring to an end; settle conclusively",
+    "example": "",
+    "level": 1,
+    "synset": "00698855-verb"
+  },
+  {
+    "expression": "restrict",
+    "definition": "place restrictions on",
+    "example": "",
+    "level": 1,
+    "synset": "00236592-verb"
+  },
+  {
+    "expression": "rise",
+    "definition": "move upward",
+    "example": "",
+    "level": 1,
+    "synset": "01968569-verb"
+  },
+  {
+    "expression": "search",
+    "definition": "try to locate or discover, or try to establish the existence of",
+    "example": "",
+    "level": 1,
+    "synset": "01315613-verb"
+  },
+  {
+    "expression": "seek",
+    "definition": "try to get or reach",
+    "example": "seek a position",
+    "level": 1,
+    "synset": "02240481-verb"
+  },
+  {
+    "expression": "sell",
+    "definition": "exchange or deliver for money or its equivalent",
+    "example": "",
+    "level": 1,
+    "synset": "02242464-verb"
+  },
+  {
+    "expression": "separate",
+    "definition": "act as a barrier between; stand between",
+    "example": "",
+    "level": 1,
+    "synset": "02621853-verb"
+  },
+  {
+    "expression": "set",
+    "definition": "put into a certain place or abstract location",
+    "example": "Set the tray down",
+    "level": 1,
+    "synset": "01494310-verb"
+  },
+  {
+    "expression": "settle",
+    "definition": "settle into a position, usually on a surface or ground",
+    "example": "",
+    "level": 1,
+    "synset": "01988458-verb"
+  },
+  {
+    "expression": "shift",
+    "definition": "make a shift in or exchange of",
+    "example": "",
+    "level": 1,
+    "synset": "00380159-verb"
+  },
+  {
+    "expression": "simplify",
+    "definition": "make simpler or easier or reduce in complexity or extent",
+    "example": "We had to simplify the instructions",
+    "level": 1,
+    "synset": "00400427-verb"
+  },
+  {
+    "expression": "solve",
+    "definition": "find the solution to (a problem or question) or understand the meaning of",
+    "example": "did you solve the problem?",
+    "level": 1,
+    "synset": "00634906-verb"
+  },
+  {
+    "expression": "spend",
+    "definition": "pass time in a specific way",
+    "example": "",
+    "level": 1,
+    "synset": "02708420-verb"
+  },
+  {
+    "expression": "spread",
+    "definition": "distribute or disperse widely",
+    "example": "The invaders spread their language all over the country",
+    "level": 1,
+    "synset": "01378556-verb"
+  },
+  {
+    "expression": "stimulate",
+    "definition": "act as a stimulant",
+    "example": "",
+    "level": 1,
+    "synset": "00503164-verb"
+  },
+  {
+    "expression": "stress",
+    "definition": "to stress, single out as important",
+    "example": "",
+    "level": 1,
+    "synset": "01013367-verb"
+  },
+  {
+    "expression": "struggle",
+    "definition": "make a strenuous or labored effort",
+    "example": "",
+    "level": 1,
+    "synset": "02407338-verb"
+  },
+  {
+    "expression": "succeed",
+    "definition": "attain success or reach a desired goal",
+    "example": "",
+    "level": 1,
+    "synset": "02524171-verb"
+  },
+  {
+    "expression": "suggest",
+    "definition": "make a proposal, declare a plan for something",
+    "example": "",
+    "level": 1,
+    "synset": "00875394-verb"
+  },
+  {
+    "expression": "supply",
+    "definition": "give something useful or necessary to",
+    "example": "",
+    "level": 1,
+    "synset": "02327200-verb"
+  },
+  {
+    "expression": "survive",
+    "definition": "continue to live through hardship or adversity",
+    "example": "These superstitions survive in the backwaters of America",
+    "level": 1,
+    "synset": "02618149-verb"
+  },
+  {
+    "expression": "teach",
+    "definition": "impart skills or knowledge to",
+    "example": "",
+    "level": 1,
+    "synset": "00829107-verb"
+  },
+  {
+    "expression": "think",
+    "definition": "judge or regard; look upon; judge",
+    "example": "I think he is very smart",
+    "level": 1,
+    "synset": "00689344-verb"
+  },
+  {
+    "expression": "throw",
+    "definition": "propel through the air",
+    "example": "throw a frisbee",
+    "level": 1,
+    "synset": "01508368-verb"
+  },
+  {
+    "expression": "train",
+    "definition": "create by training and teaching",
+    "example": "",
+    "level": 1,
+    "synset": "00603298-verb"
+  },
+  {
+    "expression": "travel",
+    "definition": "change location; move, travel, or proceed, also metaphorically",
+    "example": "",
+    "level": 1,
+    "synset": "01835496-verb"
+  },
+  {
+    "expression": "trust",
+    "definition": "have confidence or faith in",
+    "example": "We can trust in God",
+    "level": 1,
+    "synset": "00688377-verb"
+  },
+  {
+    "expression": "try",
+    "definition": "make an effort or attempt",
+    "example": "",
+    "level": 1,
+    "synset": "02530167-verb"
+  },
+  {
+    "expression": "unite",
+    "definition": "act in concert or unite in a common purpose or belief",
+    "example": "",
+    "level": 1,
+    "synset": "02469835-verb"
+  },
+  {
+    "expression": "vary",
+    "definition": "become different in some particular way, without permanently losing one's or its former characteristics or essence",
+    "example": "",
+    "level": 1,
+    "synset": "00123170-verb"
+  },
+  {
+    "expression": "vote",
+    "definition": "express one's preference for a candidate or for a measure or resolution; cast a vote",
+    "example": "",
+    "level": 1,
+    "synset": "02461314-verb"
+  },
+  {
+    "expression": "warn",
+    "definition": "notify of danger, potential harm, or risk",
+    "example": "",
+    "level": 1,
+    "synset": "00870213-verb"
+  },
+  {
+    "expression": "watch",
+    "definition": "look attentively",
+    "example": "watch a basketball game",
+    "level": 1,
+    "synset": "02150510-verb"
+  },
+  {
+    "expression": "win",
+    "definition": "be the winner in a contest or competition; be victorious",
+    "example": "Win the game",
+    "level": 1,
+    "synset": "01100145-verb"
+  },
+  {
+    "expression": "write",
+    "definition": "produce a literary work",
+    "example": "",
+    "level": 1,
+    "synset": "01698271-verb"
+  },
+  {
+    "expression": "additional",
+    "definition": "further or added",
+    "example": "called for additional troops",
+    "level": 1,
+    "synset": "00048858-adj"
+  },
+  {
+    "expression": "alive",
+    "definition": "possessing life",
+    "example": "the happiest person alive",
+    "level": 1,
+    "synset": "00094448-adj"
+  },
+  {
+    "expression": "ambitious",
+    "definition": "having a strong desire for success or achievement",
+    "example": "",
+    "level": 1,
+    "synset": "00104051-adj"
+  },
+  {
+    "expression": "artificial",
+    "definition": "contrived by art rather than nature",
+    "example": "artificial flowers",
+    "level": 1,
+    "synset": "01571363-adj"
+  },
+  {
+    "expression": "aware",
+    "definition": "(sometimes followed by `of') having or showing knowledge or understanding or realization or perception",
+    "example": "was aware of his opponent's hostility",
+    "level": 1,
+    "synset": "00190115-adj"
+  },
+  {
+    "expression": "broad",
+    "definition": "having great (or a certain) extent from one side to the other",
+    "example": "a river two miles broad",
+    "level": 1,
+    "synset": "02560548-adj"
+  },
+  {
+    "expression": "careful",
+    "definition": "exercising caution or showing care or attention",
+    "example": "they were careful when crossing the busy street",
+    "level": 1,
+    "synset": "00309021-adj"
+  },
+  {
+    "expression": "central",
+    "definition": "serving as an essential component",
+    "example": "the central cause of the problem",
+    "level": 1,
+    "synset": "01277097-adj"
+  },
+  {
+    "expression": "civil",
+    "definition": "applying to ordinary citizens as contrasted with the military",
+    "example": "civil authorities",
+    "level": 1,
+    "synset": "01518161-adj"
+  },
+  {
+    "expression": "complex",
+    "definition": "complicated in structure; consisting of interconnected parts",
+    "example": "a complex set of variations based on a simple folk melody",
+    "level": 1,
+    "synset": "02176178-adj"
+  },
+  {
+    "expression": "confident",
+    "definition": "having or marked by confidence or assurance",
+    "example": "a confident speaker",
+    "level": 1,
+    "synset": "00338817-adj"
+  },
+  {
+    "expression": "conscious",
+    "definition": "knowing and perceiving; having awareness of surroundings and sensations and thoughts",
+    "example": "remained conscious during the operation",
+    "level": 1,
+    "synset": "00570590-adj"
+  },
+  {
+    "expression": "contemporary",
+    "definition": "characteristic of the present",
+    "example": "contemporary trends in design",
+    "level": 1,
+    "synset": "01536094-adj"
+  },
+  {
+    "expression": "corporate",
+    "definition": "of or belonging to a corporation",
+    "example": "corporate rates",
+    "level": 1,
+    "synset": "02984781-adj"
+  },
+  {
+    "expression": "critical",
+    "definition": "marked by a tendency to find and call attention to errors and flaws",
+    "example": "a critical attitude",
+    "level": 1,
+    "synset": "00647542-adj"
+  },
+  {
+    "expression": "daily",
+    "definition": "of or belonging to or occurring every day",
+    "example": "daily routine",
+    "level": 1,
+    "synset": "01968165-adj"
+  },
+  {
+    "expression": "dangerous",
+    "definition": "involving or causing danger or risk; liable to hurt or harm",
+    "example": "a dangerous criminal",
+    "level": 1,
+    "synset": "02058794-adj"
+  },
+  {
+    "expression": "dependent",
+    "definition": "relying on or requiring a person or thing for support, supply, or what is needed",
+    "example": "dependent children",
+    "level": 1,
+    "synset": "00725772-adj"
+  },
+  {
+    "expression": "determined",
+    "definition": "characterized by great determination",
+    "example": "a struggle against a determined enemy",
+    "level": 1,
+    "synset": "01990373-adj"
+  },
+  {
+    "expression": "difficult",
+    "definition": "not easy; requiring great physical or mental effort to accomplish or comprehend or endure",
+    "example": "a difficult task",
+    "level": 1,
+    "synset": "00744916-adj"
+  },
+  {
+    "expression": "distant",
+    "definition": "separated in space or coming from or going to a distance",
+    "example": "distant villages",
+    "level": 1,
+    "synset": "00445548-adj"
+  },
+  {
+    "expression": "distinct",
+    "definition": "(often followed by `from') not alike; different in nature or quality",
+    "example": "plants of several distinct types",
+    "level": 1,
+    "synset": "02067063-adj"
+  },
+  {
+    "expression": "educational",
+    "definition": "relating to the process of education",
+    "example": "educational psychology",
+    "level": 1,
+    "synset": "02946221-adj"
+  },
+  {
+    "expression": "electronic",
+    "definition": "of or relating to electronics; concerned with or using devices that operate on principles governing the behavior of electrons",
+    "example": "electronic devices",
+    "level": 1,
+    "synset": "02718497-adj"
+  },
+  {
+    "expression": "equal",
+    "definition": "having the same quantity, value, or measure as another",
+    "example": "on equal terms",
+    "level": 1,
+    "synset": "00889831-adj"
+  },
+  {
+    "expression": "evident",
+    "definition": "clearly revealed to the mind or the senses or judgment",
+    "example": "evident hostility",
+    "level": 1,
+    "synset": "01618376-adj"
+  },
+  {
+    "expression": "exact",
+    "definition": "marked by strict and particular and complete accordance with fact",
+    "example": "an exact mind",
+    "level": 1,
+    "synset": "00914421-adj"
+  },
+  {
+    "expression": "expensive",
+    "definition": "high in price or charging high prices",
+    "example": "expensive clothes",
+    "level": 1,
+    "synset": "00933154-adj"
+  },
+  {
+    "expression": "extensive",
+    "definition": "large in spatial extent or range or scope or quantity",
+    "example": "an extensive Roman settlement in northwest England",
+    "level": 1,
+    "synset": "01386234-adj"
+  },
+  {
+    "expression": "familiar",
+    "definition": "well known or easily recognized",
+    "example": "a familiar figure",
+    "level": 1,
+    "synset": "00965606-adj"
+  },
+  {
+    "expression": "famous",
+    "definition": "widely known and esteemed",
+    "example": "a famous actor",
+    "level": 1,
+    "synset": "01375831-adj"
+  },
+  {
+    "expression": "favourable",
+    "definition": "encouraging or approving or pleasing",
+    "example": "",
+    "level": 1,
+    "synset": "00995775-adj"
+  },
+  {
+    "expression": "foreign",
+    "definition": "of concern to or concerning the affairs of other nations (other than your own)",
+    "example": "foreign trade",
+    "level": 1,
+    "synset": "01037540-adj"
+  },
+  {
+    "expression": "frequent",
+    "definition": "coming at short intervals or habitually",
+    "example": "a frequent guest",
+    "level": 1,
+    "synset": "01066542-adj"
+  },
+  {
+    "expression": "friendly",
+    "definition": "characteristic of or befitting a friend",
+    "example": "friendly advice",
+    "level": 1,
+    "synset": "01074650-adj"
+  },
+  {
+    "expression": "fundamental",
+    "definition": "serving as an essential component",
+    "example": "an example that was fundamental to the argument",
+    "level": 1,
+    "synset": "01277097-adj"
+  },
+  {
+    "expression": "healthy",
+    "definition": "having or indicating good health in body or mind; free from infirmity or disease",
+    "example": "a rosy healthy baby",
+    "level": 1,
+    "synset": "01170243-adj"
+  },
+  {
+    "expression": "historical",
+    "definition": "of or relating to the study of history",
+    "example": "historical scholars",
+    "level": 1,
+    "synset": "02920121-adj"
+  },
+  {
+    "expression": "ideal",
+    "definition": "conforming to an ultimate standard of perfection or excellence; embodying an ideal",
+    "example": "",
+    "level": 1,
+    "synset": "01751201-adj"
+  },
+  {
+    "expression": "important",
+    "definition": "of great significance or value",
+    "example": "important people",
+    "level": 1,
+    "synset": "01275562-adj"
+  },
+  {
+    "expression": "impossible",
+    "definition": "not capable of occurring or being accomplished or dealt with",
+    "example": "an impossible dream",
+    "level": 1,
+    "synset": "01823092-adj"
+  },
+  {
+    "expression": "improved",
+    "definition": "made more desirable or valuable or profitable; especially made ready for use or marketing",
+    "example": "new houses are springing up on an improved tract of land near the river",
+    "level": 1,
+    "synset": "01288396-adj"
+  },
+  {
+    "expression": "informal",
+    "definition": "not formal",
+    "example": "conservative people unaccustomed to informal dress",
+    "level": 1,
+    "synset": "01044240-adj"
+  },
+  {
+    "expression": "international",
+    "definition": "concerning or belonging to all or at least two or more nations",
+    "example": "international affairs",
+    "level": 1,
+    "synset": "01568375-adj"
+  },
+  {
+    "expression": "leading",
+    "definition": "greatest in importance or degree or significance or achievement",
+    "example": "the country's leading poet",
+    "level": 1,
+    "synset": "02339341-adj"
+  },
+  {
+    "expression": "likely",
+    "definition": "has a good chance of being the case or of coming about",
+    "example": "these services are likely to be available to us all before long",
+    "level": 1,
+    "synset": "01411451-adj"
+  },
+  {
+    "expression": "local",
+    "definition": "relating to or applicable to or concerned with the administration of a city or town or district rather than a larger area",
+    "example": "local taxes",
+    "level": 1,
+    "synset": "01106405-adj"
+  },
+  {
+    "expression": "mental",
+    "definition": "involving the mind or an intellectual process",
+    "example": "mental images of happy times",
+    "level": 1,
+    "synset": "01779986-adj"
+  },
+  {
+    "expression": "modern",
+    "definition": "belonging to the modern era; since the Middle Ages",
+    "example": "modern art",
+    "level": 1,
+    "synset": "01535709-adj"
+  },
+  {
+    "expression": "national",
+    "definition": "of or relating to or belonging to a nation or country",
+    "example": "national hero",
+    "level": 1,
+    "synset": "02988060-adj"
+  },
+  {
+    "expression": "necessary",
+    "definition": "absolutely essential",
+    "example": "",
+    "level": 1,
+    "synset": "01580050-adj"
+  },
+  {
+    "expression": "official",
+    "definition": "having official authority or sanction",
+    "example": "official permission",
+    "level": 1,
+    "synset": "01632537-adj"
+  },
+  {
+    "expression": "original",
+    "definition": "preceding all others in time or being as first made or performed",
+    "example": "the original inhabitants of the Americas",
+    "level": 1,
+    "synset": "01012503-adj"
+  },
+  {
+    "expression": "particular",
+    "definition": "unique or specific to a person or thing or category",
+    "example": "the particular demands of the job",
+    "level": 1,
+    "synset": "01104026-adj"
+  },
+  {
+    "expression": "personal",
+    "definition": "concerning or affecting a particular person or his or her private life and personality",
+    "example": "a personal favor",
+    "level": 1,
+    "synset": "01767329-adj"
+  },
+  {
+    "expression": "pleasant",
+    "definition": "affording pleasure; being in harmony with your taste or likings",
+    "example": "we had a pleasant evening together",
+    "level": 1,
+    "synset": "01800349-adj"
+  },
+  {
+    "expression": "popular",
+    "definition": "regarded with great favor, approval, or affection especially by the general public",
+    "example": "a popular tourist attraction",
+    "level": 1,
+    "synset": "01815838-adj"
+  },
+  {
+    "expression": "powerful",
+    "definition": "having great power or force or potency or effect",
+    "example": "the most powerful government in western Europe",
+    "level": 1,
+    "synset": "01825671-adj"
+  },
+  {
+    "expression": "primary",
+    "definition": "of first rank or importance or value; direct and immediate rather than secondary",
+    "example": "primary goals",
+    "level": 1,
+    "synset": "01852174-adj"
+  },
+  {
+    "expression": "private",
+    "definition": "confined to particular persons or groups or providing privacy",
+    "example": "a private place",
+    "level": 1,
+    "synset": "01858094-adj"
+  },
+  {
+    "expression": "public",
+    "definition": "not private; open to or concerning the people as a whole",
+    "example": "the public good",
+    "level": 1,
+    "synset": "01861205-adj"
+  },
+  {
+    "expression": "ready",
+    "definition": "completely prepared or in condition for immediate action or use or progress",
+    "example": "get ready",
+    "level": 1,
+    "synset": "01930512-adj"
+  },
+  {
+    "expression": "recent",
+    "definition": "new",
+    "example": "recent graduates",
+    "level": 1,
+    "synset": "01642477-adj"
+  },
+  {
+    "expression": "remarkable",
+    "definition": "unusual or striking",
+    "example": "a remarkable sight",
+    "level": 1,
+    "synset": "01678417-adj"
+  },
+  {
+    "expression": "remote",
+    "definition": "located far away spatially",
+    "example": "remote stars",
+    "level": 1,
+    "synset": "00442917-adj"
+  },
+  {
+    "expression": "rich",
+    "definition": "possessing material wealth",
+    "example": "her father is extremely rich",
+    "level": 1,
+    "synset": "02021905-adj"
+  },
+  {
+    "expression": "scientific",
+    "definition": "of or relating to the practice of science",
+    "example": "scientific journals",
+    "level": 1,
+    "synset": "02793273-adj"
+  },
+  {
+    "expression": "serious",
+    "definition": "concerned with work or important matters rather than play or trivialities",
+    "example": "a serious student of history",
+    "level": 1,
+    "synset": "02118379-adj"
+  },
+  {
+    "expression": "severe",
+    "definition": "intensely or extremely bad or unpleasant in degree or quality",
+    "example": "severe pain",
+    "level": 1,
+    "synset": "01513050-adj"
+  },
+  {
+    "expression": "simple",
+    "definition": "having few parts; not complex or complicated or involved",
+    "example": "a simple problem",
+    "level": 1,
+    "synset": "02174896-adj"
+  },
+  {
+    "expression": "slow",
+    "definition": "not moving quickly; taking a comparatively long time",
+    "example": "a slow walker",
+    "level": 1,
+    "synset": "00980527-adj"
+  },
+  {
+    "expression": "solid",
+    "definition": "of definite shape and volume; firm; neither liquid nor gaseous",
+    "example": "ice is water in the solid state",
+    "level": 1,
+    "synset": "02260035-adj"
+  },
+  {
+    "expression": "stable",
+    "definition": "resistant to change of position or condition",
+    "example": "a stable ladder",
+    "level": 1,
+    "synset": "02290998-adj"
+  },
+  {
+    "expression": "statistical",
+    "definition": "of or relating to statistics",
+    "example": "statistical population",
+    "level": 1,
+    "synset": "02911627-adj"
+  },
+  {
+    "expression": "suitable",
+    "definition": "meant or adapted for an occasion or use",
+    "example": "a tractor suitable (or fit) for heavy duty",
+    "level": 1,
+    "synset": "01020885-adj"
+  },
+  {
+    "expression": "traditional",
+    "definition": "consisting of or derived from tradition",
+    "example": "traditional history",
+    "level": 1,
+    "synset": "00611047-adj"
+  },
+  {
+    "expression": "underlying",
+    "definition": "in the nature of something though not readily apparent",
+    "example": "an underlying meaning",
+    "level": 1,
+    "synset": "00941940-adj"
+  },
+  {
+    "expression": "universal",
+    "definition": "of worldwide scope or applicability",
+    "example": "universal experience",
+    "level": 1,
+    "synset": "00527188-adj"
+  },
+  {
+    "expression": "useful",
+    "definition": "being of use or service",
+    "example": "the girl felt motherly and useful",
+    "level": 1,
+    "synset": "02495922-adj"
+  },
+  {
+    "expression": "various",
+    "definition": "of many different kinds purposefully arranged but lacking any uniformity",
+    "example": "his disguises are many and various",
+    "level": 1,
+    "synset": "02065665-adj"
+  },
+  {
+    "expression": "vital",
+    "definition": "urgently needed; absolutely necessary",
+    "example": "vital for a healthy society",
+    "level": 1,
+    "synset": "00903894-adj"
+  },
+  {
+    "expression": "western",
+    "definition": "relating to or characteristic of the western parts of the world or the West as opposed to the eastern or oriental parts",
+    "example": "the Western world",
+    "level": 1,
+    "synset": "00825089-adj"
+  },
+  {
+    "expression": "abundance",
+    "definition": "the property of a more than adequate quantity or supply",
+    "example": "an age of abundance",
+    "level": 2,
+    "synset": "05115040-noun"
+  },
+  {
+    "expression": "acceptance",
+    "definition": "the mental attitude that something is believable and should be accepted as true",
+    "example": "acceptance of Newtonian mechanics was unquestioned for 200 years",
+    "level": 2,
+    "synset": "06193727-noun"
+  },
+  {
+    "expression": "accessibility",
+    "definition": "the quality of being at hand when needed",
+    "example": "",
+    "level": 2,
+    "synset": "04718999-noun"
+  },
+  {
+    "expression": "accumulation",
+    "definition": "an increase by natural growth or addition",
+    "example": "",
+    "level": 2,
+    "synset": "13424865-noun"
+  },
+  {
+    "expression": "accuracy",
+    "definition": "the quality of being near to the true value",
+    "example": "he was beginning to doubt the accuracy of his compass",
+    "level": 2,
+    "synset": "04802907-noun"
+  },
+  {
+    "expression": "administration",
+    "definition": "a method of tending to or managing the affairs of a some group of people (especially the group's business affairs)",
+    "example": "",
+    "level": 2,
+    "synset": "01135952-noun"
+  },
+  {
+    "expression": "admission",
+    "definition": "the act of admitting someone to enter",
+    "example": "the surgery was performed on his second admission to the clinic",
+    "level": 2,
+    "synset": "01248191-noun"
+  },
+  {
+    "expression": "adoption",
+    "definition": "the act of accepting with approval; favorable reception",
+    "example": "its adoption by society",
+    "level": 2,
+    "synset": "00180413-noun"
+  },
+  {
+    "expression": "adversity",
+    "definition": "a state of misfortune or affliction",
+    "example": "debt-ridden farmers struggling with adversity",
+    "level": 2,
+    "synset": "14475661-noun"
+  },
+  {
+    "expression": "aesthetic",
+    "definition": "relating to or dealing with the subject of aesthetics",
+    "example": "aesthetic values",
+    "level": 2,
+    "synset": "02991287-adj"
+  },
+  {
+    "expression": "agenda",
+    "definition": "a temporally organized plan for matters to be attended to",
+    "example": "",
+    "level": 2,
+    "synset": "05910940-noun"
+  },
+  {
+    "expression": "alliance",
+    "definition": "the state of being allied or confederated",
+    "example": "",
+    "level": 2,
+    "synset": "14418822-noun"
+  },
+  {
+    "expression": "allocation",
+    "definition": "a share set aside for a specific purpose",
+    "example": "",
+    "level": 2,
+    "synset": "13289467-noun"
+  },
+  {
+    "expression": "analogy",
+    "definition": "an inference that if things agree in some respects they probably agree in others",
+    "example": "",
+    "level": 2,
+    "synset": "05780339-noun"
+  },
+  {
+    "expression": "analysis",
+    "definition": "an investigation of the component parts of a whole and their relations in making up the whole",
+    "example": "",
+    "level": 2,
+    "synset": "00634276-noun"
+  },
+  {
+    "expression": "anthropology",
+    "definition": "the social science that studies the origins and social relationships of human beings",
+    "example": "",
+    "level": 2,
+    "synset": "06143546-noun"
+  },
+  {
+    "expression": "anxiety",
+    "definition": "a vague unpleasant emotion that is experienced in anticipation of some (usually ill-defined) misfortune",
+    "example": "",
+    "level": 2,
+    "synset": "07523905-noun"
+  },
+  {
+    "expression": "architecture",
+    "definition": "the discipline dealing with the principles of design and construction and ornamentation of fine buildings",
+    "example": "architecture and eloquence are mixed arts whose end is sometimes beauty and sometimes use",
+    "level": 2,
+    "synset": "06123363-noun"
+  },
+  {
+    "expression": "aspiration",
+    "definition": "a will to succeed",
+    "example": "",
+    "level": 2,
+    "synset": "04836491-noun"
+  },
+  {
+    "expression": "assertion",
+    "definition": "a declaration that is made emphatically (as if no supporting evidence were necessary)",
+    "example": "",
+    "level": 2,
+    "synset": "06729499-noun"
+  },
+  {
+    "expression": "association",
+    "definition": "a formal organization of people or groups of people",
+    "example": "he joined the Modern Language Association",
+    "level": 2,
+    "synset": "08049401-noun"
+  },
+  {
+    "expression": "assumption",
+    "definition": "a statement that is assumed to be true and from which a conclusion can be drawn",
+    "example": "on the assumption that he has been injured we can infer that he will not to play",
+    "level": 2,
+    "synset": "06753800-noun"
+  },
+  {
+    "expression": "attainment",
+    "definition": "the act of achieving an aim",
+    "example": "the attainment of independence",
+    "level": 2,
+    "synset": "00062806-noun"
+  },
+  {
+    "expression": "attraction",
+    "definition": "the force by which one object attracts another",
+    "example": "",
+    "level": 2,
+    "synset": "11426530-noun"
+  },
+  {
+    "expression": "authority",
+    "definition": "the power or right to give orders or make decisions",
+    "example": "he has the authority to issue warrants",
+    "level": 2,
+    "synset": "05196582-noun"
+  },
+  {
+    "expression": "awareness",
+    "definition": "having knowledge of",
+    "example": "he had no awareness of his mistakes",
+    "level": 2,
+    "synset": "05675905-noun"
+  },
+  {
+    "expression": "barrier",
+    "definition": "a structure or object that impedes free movement",
+    "example": "",
+    "level": 2,
+    "synset": "02796623-noun"
+  },
+  {
+    "expression": "biology",
+    "definition": "the science that studies living organisms",
+    "example": "",
+    "level": 2,
+    "synset": "06037666-noun"
+  },
+  {
+    "expression": "boundary",
+    "definition": "the line or plane indicating the limit or extent of something",
+    "example": "",
+    "level": 2,
+    "synset": "08512259-noun"
+  },
+  {
+    "expression": "capability",
+    "definition": "the quality of being capable -- physically or intellectually or legally",
+    "example": "he worked to the limits of his capability",
+    "level": 2,
+    "synset": "05202497-noun"
+  },
+  {
+    "expression": "capitalism",
+    "definition": "an economic system based on private ownership of capital",
+    "example": "",
+    "level": 2,
+    "synset": "08364143-noun"
+  },
+  {
+    "expression": "casualty",
+    "definition": "someone injured or killed in an accident",
+    "example": "",
+    "level": 2,
+    "synset": "09899671-noun"
+  },
+  {
+    "expression": "citizenship",
+    "definition": "the status of a citizen with rights and duties",
+    "example": "",
+    "level": 2,
+    "synset": "13953467-noun"
+  },
+  {
+    "expression": "civilization",
+    "definition": "a society in an advanced state of social development (e.g., with complex legal and political and religious organizations)",
+    "example": "the people slowly progressed from barbarism to civilization",
+    "level": 2,
+    "synset": "08111783-noun"
+  },
+  {
+    "expression": "coalition",
+    "definition": "an organization of people (or countries) involved in a pact or treaty",
+    "example": "",
+    "level": 2,
+    "synset": "08293982-noun"
+  },
+  {
+    "expression": "cognition",
+    "definition": "the psychological result of perception and learning and reasoning",
+    "example": "",
+    "level": 2,
+    "synset": "00023271-noun"
+  },
+  {
+    "expression": "coherence",
+    "definition": "logical and orderly and consistent relation of parts",
+    "example": "",
+    "level": 2,
+    "synset": "04821277-noun"
+  },
+  {
+    "expression": "commitment",
+    "definition": "the trait of sincere and steadfast fixity of purpose",
+    "example": "a man of energy and commitment",
+    "level": 2,
+    "synset": "04646990-noun"
+  },
+  {
+    "expression": "communication",
+    "definition": "the activity of communicating; the activity of conveying information",
+    "example": "they could not act without official communication from Moscow",
+    "level": 2,
+    "synset": "06252138-noun"
+  },
+  {
+    "expression": "competence",
+    "definition": "the quality of being adequately or well qualified physically and intellectually",
+    "example": "",
+    "level": 2,
+    "synset": "05153520-noun"
+  },
+  {
+    "expression": "component",
+    "definition": "an abstract part of something",
+    "example": "jealousy was a component of his character",
+    "level": 2,
+    "synset": "05868954-noun"
+  },
+  {
+    "expression": "comprehension",
+    "definition": "an ability to understand the meaning or importance of something (or the knowledge acquired as a result)",
+    "example": "how you can do that is beyond my comprehension",
+    "level": 2,
+    "synset": "05805902-noun"
+  },
+  {
+    "expression": "compromise",
+    "definition": "a middle way between two extremes",
+    "example": "",
+    "level": 2,
+    "synset": "01205564-noun"
+  },
+  {
+    "expression": "concentration",
+    "definition": "complete attention; intense mental effort",
+    "example": "",
+    "level": 2,
+    "synset": "05704266-noun"
+  },
+  {
+    "expression": "conclusion",
+    "definition": "a position or opinion or judgment reached after consideration",
+    "example": "his conclusion took the evidence into account",
+    "level": 2,
+    "synset": "05838176-noun"
+  },
+  {
+    "expression": "configuration",
+    "definition": "an arrangement of parts or elements",
+    "example": "the outcome depends on the configuration of influences at the time",
+    "level": 2,
+    "synset": "05731779-noun"
+  },
+  {
+    "expression": "conformity",
+    "definition": "correspondence in form or appearance",
+    "example": "",
+    "level": 2,
+    "synset": "04713692-noun"
+  },
+  {
+    "expression": "consciousness",
+    "definition": "an alert cognitive state in which you are aware of yourself and your situation",
+    "example": "he lost consciousness",
+    "level": 2,
+    "synset": "05675130-noun"
+  },
+  {
+    "expression": "consent",
+    "definition": "permission to do something",
+    "example": "he indicated his consent",
+    "level": 2,
+    "synset": "06689667-noun"
+  },
+  {
+    "expression": "constitution",
+    "definition": "law determining the fundamental political principles of a government",
+    "example": "",
+    "level": 2,
+    "synset": "06533648-noun"
+  },
+  {
+    "expression": "consultation",
+    "definition": "a conference (usually with someone important)",
+    "example": "he had a consultation with the judge",
+    "level": 2,
+    "synset": "07143624-noun"
+  },
+  {
+    "expression": "content",
+    "definition": "everything that is included in a collection and that is held or included in something",
+    "example": "the two groups were similar in content",
+    "level": 2,
+    "synset": "07955057-noun"
+  },
+  {
+    "expression": "context",
+    "definition": "discourse that surrounds a language unit and helps to determine its interpretation",
+    "example": "",
+    "level": 2,
+    "synset": "06284898-noun"
+  },
+  {
+    "expression": "contradiction",
+    "definition": "opposition between two conflicting forces or ideas",
+    "example": "",
+    "level": 2,
+    "synset": "13857676-noun"
+  },
+  {
+    "expression": "convention",
+    "definition": "a large formal assembly",
+    "example": "political convention",
+    "level": 2,
+    "synset": "08309086-noun"
+  },
+  {
+    "expression": "cooperation",
+    "definition": "joint operation or action",
+    "example": "their cooperation with us was essential for the success of our mission",
+    "level": 2,
+    "synset": "01202904-noun"
+  },
+  {
+    "expression": "corporation",
+    "definition": "a business firm whose articles of incorporation have been approved in some state",
+    "example": "",
+    "level": 2,
+    "synset": "08059412-noun"
+  },
+  {
+    "expression": "counterpart",
+    "definition": "a person or thing having the same function or characteristics as another",
+    "example": "",
+    "level": 2,
+    "synset": "05695806-noun"
+  },
+  {
+    "expression": "criticism",
+    "definition": "disapproval expressed by pointing out faults or shortcomings",
+    "example": "the senator received severe criticism from his opponent",
+    "level": 2,
+    "synset": "06710546-noun"
+  },
+  {
+    "expression": "cultivation",
+    "definition": "the act of raising or growing plants (especially on a large scale)",
+    "example": "",
+    "level": 2,
+    "synset": "00916023-noun"
+  },
+  {
+    "expression": "curiosity",
+    "definition": "a state in which you want to learn more about something",
+    "example": "",
+    "level": 2,
+    "synset": "05682570-noun"
+  },
+  {
+    "expression": "decentralization",
+    "definition": "the social process in which population and industry moves from urban centers to outlying districts",
+    "example": "",
+    "level": 2,
+    "synset": "13457181-noun"
+  },
+  {
+    "expression": "deduction",
+    "definition": "reasoning from the general to the particular (or from cause to effect)",
+    "example": "",
+    "level": 2,
+    "synset": "05774129-noun"
+  },
+  {
+    "expression": "delegation",
+    "definition": "authorizing subordinates to make certain decisions",
+    "example": "",
+    "level": 2,
+    "synset": "01140839-noun"
+  },
+  {
+    "expression": "deliberation",
+    "definition": "(usually plural) discussion of all sides of a question",
+    "example": "",
+    "level": 2,
+    "synset": "07142365-noun"
+  },
+  {
+    "expression": "depression",
+    "definition": "a mental state characterized by a pessimistic sense of inadequacy and a despondent lack of activity",
+    "example": "",
+    "level": 2,
+    "synset": "14404160-noun"
+  },
+  {
+    "expression": "derivative",
+    "definition": "resulting from or employing derivation",
+    "example": "a derivative process",
+    "level": 2,
+    "synset": "00698586-adj"
+  },
+  {
+    "expression": "diagnosis",
+    "definition": "identifying the nature or cause of some phenomenon",
+    "example": "",
+    "level": 2,
+    "synset": "00152727-noun"
+  },
+  {
+    "expression": "dimension",
+    "definition": "the magnitude of something in a particular direction (especially length or width or height)",
+    "example": "",
+    "level": 2,
+    "synset": "05093581-noun"
+  },
+  {
+    "expression": "discipline",
+    "definition": "a branch of knowledge",
+    "example": "in what discipline is his doctorate?",
+    "level": 2,
+    "synset": "05996646-noun"
+  },
+  {
+    "expression": "discovery",
+    "definition": "the act of discovering something",
+    "example": "",
+    "level": 2,
+    "synset": "00043195-noun"
+  },
+  {
+    "expression": "disruption",
+    "definition": "an act of delaying or interrupting the continuity",
+    "example": "",
+    "level": 2,
+    "synset": "00383952-noun"
+  },
+  {
+    "expression": "distribution",
+    "definition": "the act of distributing or spreading or apportioning",
+    "example": "",
+    "level": 2,
+    "synset": "01083077-noun"
+  },
+  {
+    "expression": "dominance",
+    "definition": "the state that exists when one person or group has power over another",
+    "example": "her apparent dominance of her husband was really her attempt to make him pay attention to her",
+    "level": 2,
+    "synset": "14441825-noun"
+  },
+  {
+    "expression": "duration",
+    "definition": "the period of time during which something continues",
+    "example": "",
+    "level": 2,
+    "synset": "15133621-noun"
+  },
+  {
+    "expression": "ecology",
+    "definition": "the environment as it relates to living organisms",
+    "example": "it changed the ecology of the island",
+    "level": 2,
+    "synset": "14513062-noun"
+  },
+  {
+    "expression": "economics",
+    "definition": "the branch of social science that deals with the production and distribution and consumption of goods and services and their management",
+    "example": "",
+    "level": 2,
+    "synset": "06149484-noun"
+  },
+  {
+    "expression": "eligibility",
+    "definition": "the quality or state of being eligible",
+    "example": "eligibility of a candidate for office",
+    "level": 2,
+    "synset": "04717552-noun"
+  },
+  {
+    "expression": "emergence",
+    "definition": "the gradual beginning or coming forth",
+    "example": "figurines presage the emergence of sculpture in Greece",
+    "level": 2,
+    "synset": "07324673-noun"
+  },
+  {
+    "expression": "emphasis",
+    "definition": "special importance or significance",
+    "example": "the red light gave the central figure increased emphasis",
+    "level": 2,
+    "synset": "14434866-noun"
+  },
+  {
+    "expression": "enforcement",
+    "definition": "the act of enforcing; ensuring observance of or obedience to",
+    "example": "",
+    "level": 2,
+    "synset": "01127019-noun"
+  },
+  {
+    "expression": "enhancement",
+    "definition": "an improvement that makes something more agreeable",
+    "example": "",
+    "level": 2,
+    "synset": "00265992-noun"
+  },
+  {
+    "expression": "entitlement",
+    "definition": "right granted by law or contract (especially a right to benefits)",
+    "example": "",
+    "level": 2,
+    "synset": "05181754-noun"
+  },
+  {
+    "expression": "equivalence",
+    "definition": "a state of being essentially equal or equivalent; equally balanced",
+    "example": "",
+    "level": 2,
+    "synset": "13946760-noun"
+  },
+  {
+    "expression": "evaluation",
+    "definition": "act of ascertaining or fixing the value or worth of",
+    "example": "",
+    "level": 2,
+    "synset": "00874806-noun"
+  },
+  {
+    "expression": "excellence",
+    "definition": "the quality of excelling; possessing good qualities in high degree",
+    "example": "",
+    "level": 2,
+    "synset": "04728786-noun"
+  },
+  {
+    "expression": "exclusion",
+    "definition": "the state of being excluded",
+    "example": "",
+    "level": 2,
+    "synset": "13935227-noun"
+  },
+  {
+    "expression": "expectation",
+    "definition": "belief about (or mental picture of) the future",
+    "example": "",
+    "level": 2,
+    "synset": "05944958-noun"
+  },
+  {
+    "expression": "experiment",
+    "definition": "the act of conducting a controlled test or investigation",
+    "example": "",
+    "level": 2,
+    "synset": "00639556-noun"
+  },
+  {
+    "expression": "exploration",
+    "definition": "to travel for the purpose of discovery",
+    "example": "",
+    "level": 2,
+    "synset": "00310063-noun"
+  },
+  {
+    "expression": "export",
+    "definition": "commodities (goods or services) sold to a foreign country",
+    "example": "",
+    "level": 2,
+    "synset": "03306207-noun"
+  },
+  {
+    "expression": "extension",
+    "definition": "a mutually agreed delay in the date set for the completion of a job or payment of a debt",
+    "example": "they applied for an extension of the loan",
+    "level": 2,
+    "synset": "15272382-noun"
+  },
+  {
+    "expression": "extraction",
+    "definition": "the process of obtaining something from a mixture or compound by chemical or physical or mechanical means",
+    "example": "",
+    "level": 2,
+    "synset": "13478525-noun"
+  },
+  {
+    "expression": "factor",
+    "definition": "anything that contributes causally to a result",
+    "example": "",
+    "level": 2,
+    "synset": "07327805-noun"
+  },
+  {
+    "expression": "feedback",
+    "definition": "response to an inquiry or experiment",
+    "example": "",
+    "level": 2,
+    "synset": "06746471-noun"
+  },
+  {
+    "expression": "fertility",
+    "definition": "the ratio of live births in an area to the population of that area; expressed per 1000 population per year",
+    "example": "",
+    "level": 2,
+    "synset": "15276427-noun"
+  },
+  {
+    "expression": "finance",
+    "definition": "the commercial activity of providing funds and capital",
+    "example": "",
+    "level": 2,
+    "synset": "01098698-noun"
+  },
+  {
+    "expression": "forecast",
+    "definition": "a prediction about how something (as the weather) will develop",
+    "example": "",
+    "level": 2,
+    "synset": "06749881-noun"
+  },
+  {
+    "expression": "formation",
+    "definition": "an arrangement of people or things acting as a unit",
+    "example": "a defensive formation",
+    "level": 2,
+    "synset": "08426461-noun"
+  },
+  {
+    "expression": "frequency",
+    "definition": "the number of occurrences within a given time period",
+    "example": "the frequency of modulation was 40 cycles per second",
+    "level": 2,
+    "synset": "15278281-noun"
+  },
+  {
+    "expression": "friction",
+    "definition": "a state of conflict between persons",
+    "example": "",
+    "level": 2,
+    "synset": "13981137-noun"
+  },
+  {
+    "expression": "funding",
+    "definition": "financial resources provided to make some project possible",
+    "example": "",
+    "level": 2,
+    "synset": "13365698-noun"
+  },
+  {
+    "expression": "demography",
+    "definition": "the branch of sociology that studies the characteristics of human populations",
+    "example": "",
+    "level": 2,
+    "synset": "06152125-noun"
+  },
+  {
+    "expression": "geography",
+    "definition": "study of the earth's surface; includes people's responses to topography and climate and soil and vegetation",
+    "example": "",
+    "level": 2,
+    "synset": "06122178-noun"
+  },
+  {
+    "expression": "hierarchy",
+    "definition": "a series of ordered groupings of people or things within a system",
+    "example": "put honesty first in her hierarchy of values",
+    "level": 2,
+    "synset": "08377806-noun"
+  },
+  {
+    "expression": "humanity",
+    "definition": "the quality of being humane",
+    "example": "",
+    "level": 2,
+    "synset": "04829182-noun"
+  },
+  {
+    "expression": "ideology",
+    "definition": "an orientation that characterizes the thinking of a group or nation",
+    "example": "",
+    "level": 2,
+    "synset": "06212839-noun"
+  },
+  {
+    "expression": "illumination",
+    "definition": "an interpretation that removes obstacles to understanding",
+    "example": "",
+    "level": 2,
+    "synset": "07171206-noun"
+  },
+  {
+    "expression": "immigration",
+    "definition": "migration into a place (especially migration to a country of which you are not a native in order to settle there)",
+    "example": "",
+    "level": 2,
+    "synset": "00056311-noun"
+  },
+  {
+    "expression": "indication",
+    "definition": "something that serves to indicate or suggest",
+    "example": "an indication of foul play",
+    "level": 2,
+    "synset": "06797169-noun"
+  },
+  {
+    "expression": "individuality",
+    "definition": "the quality of being individual",
+    "example": "so absorbed by the movement that she lost all sense of individuality",
+    "level": 2,
+    "synset": "04763293-noun"
+  },
+  {
+    "expression": "ingredient",
+    "definition": "a component of a mixture or compound",
+    "example": "",
+    "level": 2,
+    "synset": "03570709-noun"
+  },
+  {
+    "expression": "initiative",
+    "definition": "readiness to embark on bold new ventures",
+    "example": "",
+    "level": 2,
+    "synset": "04836074-noun"
+  },
+  {
+    "expression": "institution",
+    "definition": "an organization founded and united for a specific purpose",
+    "example": "",
+    "level": 2,
+    "synset": "08053576-noun"
+  },
+  {
+    "expression": "interaction",
+    "definition": "a mutual or reciprocal action; interacting",
+    "example": "",
+    "level": 2,
+    "synset": "00039021-noun"
+  },
+  {
+    "expression": "interpretation",
+    "definition": "a mental representation of the meaning or significance of something",
+    "example": "",
+    "level": 2,
+    "synset": "05928513-noun"
+  },
+  {
+    "expression": "isolation",
+    "definition": "a state of separation between persons or groups",
+    "example": "",
+    "level": 2,
+    "synset": "14414715-noun"
+  },
+  {
+    "expression": "justification",
+    "definition": "something (such as a fact or circumstance) that shows an action to be reasonable or necessary",
+    "example": "he considered misrule a justification for revolution",
+    "level": 2,
+    "synset": "05823054-noun"
+  },
+  {
+    "expression": "liberalisation",
+    "definition": "the act of making less strict",
+    "example": "",
+    "level": 2,
+    "synset": "00355691-noun"
+  },
+  {
+    "expression": "limitation",
+    "definition": "a principle that limits the extent of something",
+    "example": "",
+    "level": 2,
+    "synset": "05846355-noun"
+  },
+  {
+    "expression": "linguistics",
+    "definition": "the scientific study of language",
+    "example": "",
+    "level": 2,
+    "synset": "06172789-noun"
+  },
+  {
+    "expression": "magnitude",
+    "definition": "the property of relative size or extent (whether large or small)",
+    "example": "they tried to predict the magnitude of the explosion",
+    "level": 2,
+    "synset": "05090441-noun"
+  },
+  {
+    "expression": "maintenance",
+    "definition": "activity involved in maintaining something in good working order",
+    "example": "",
+    "level": 2,
+    "synset": "00267522-noun"
+  },
+  {
+    "expression": "manufacture",
+    "definition": "the organized action of making of goods and services for sale",
+    "example": "",
+    "level": 2,
+    "synset": "00923444-noun"
+  },
+  {
+    "expression": "mathematics",
+    "definition": "a science (or group of related sciences) dealing with the logic of quantity and shape and arrangement",
+    "example": "",
+    "level": 2,
+    "synset": "06000644-noun"
+  },
+  {
+    "expression": "mechanism",
+    "definition": "the technical aspects of doing something",
+    "example": "a mechanism of social control",
+    "level": 2,
+    "synset": "00098385-noun"
+  },
+  {
+    "expression": "medium",
+    "definition": "a means or instrumentality for storing or communicating information",
+    "example": "",
+    "level": 2,
+    "synset": "06254669-noun"
+  },
+  {
+    "expression": "methodology",
+    "definition": "the system of methods followed in a particular discipline",
+    "example": "",
+    "level": 2,
+    "synset": "05661400-noun"
+  },
+  {
+    "expression": "modernisation",
+    "definition": "making modern in appearance or behavior",
+    "example": "",
+    "level": 2,
+    "synset": "00264913-noun"
+  },
+  {
+    "expression": "modification",
+    "definition": "the act of making something different (as e.g. the size of a garment)",
+    "example": "",
+    "level": 2,
+    "synset": "00199707-noun"
+  },
+  {
+    "expression": "necessity",
+    "definition": "the condition of being essential or indispensable",
+    "example": "",
+    "level": 2,
+    "synset": "14450691-noun"
+  },
+  {
+    "expression": "neuroscience",
+    "definition": "the scientific study of the nervous system",
+    "example": "",
+    "level": 2,
+    "synset": "06081833-noun"
+  },
+  {
+    "expression": "norm",
+    "definition": "a standard or model or pattern regarded as typical",
+    "example": "the current middle-class norm of two children per family",
+    "level": 2,
+    "synset": "13854488-noun"
+  },
+  {
+    "expression": "observation",
+    "definition": "the act of making and recording a measurement",
+    "example": "",
+    "level": 2,
+    "synset": "01002956-noun"
+  },
+  {
+    "expression": "obstacle",
+    "definition": "something immaterial that stands in the way and must be circumvented or surmounted",
+    "example": "lack of imagination is an obstacle to one's advancement",
+    "level": 2,
+    "synset": "05690269-noun"
+  },
+  {
+    "expression": "occurrence",
+    "definition": "an event that happens",
+    "example": "",
+    "level": 2,
+    "synset": "07283608-noun"
+  },
+  {
+    "expression": "operation",
+    "definition": "a process or series of acts especially of a practical or mechanical nature involved in a particular form of work",
+    "example": "",
+    "level": 2,
+    "synset": "00577068-noun"
+  },
+  {
+    "expression": "orientation",
+    "definition": "the act of orienting",
+    "example": "",
+    "level": 2,
+    "synset": "01052372-noun"
+  },
+  {
+    "expression": "origin",
+    "definition": "the place where something begins, where it springs into being",
+    "example": "Jupiter was the origin of the radiation",
+    "level": 2,
+    "synset": "08507558-noun"
+  },
+  {
+    "expression": "ownership",
+    "definition": "the relation of an owner to the thing possessed; possession with the right to transfer possession to others",
+    "example": "",
+    "level": 2,
+    "synset": "13240514-noun"
+  },
+  {
+    "expression": "partnership",
+    "definition": "the members of a business venture created by contract",
+    "example": "",
+    "level": 2,
+    "synset": "08060694-noun"
+  },
+  {
+    "expression": "patent",
+    "definition": "a document granting an inventor sole rights to an invention",
+    "example": "",
+    "level": 2,
+    "synset": "06501141-noun"
+  },
+  {
+    "expression": "persistence",
+    "definition": "the property of a continuous and connected period of time",
+    "example": "",
+    "level": 2,
+    "synset": "05054130-noun"
+  },
+  {
+    "expression": "philosophy",
+    "definition": "the rational investigation of questions about existence and knowledge and ethics",
+    "example": "",
+    "level": 2,
+    "synset": "06158346-noun"
+  },
+  {
+    "expression": "planning",
+    "definition": "an act of formulating a program for a definite course of action",
+    "example": "the planning was more fun than the trip itself",
+    "level": 2,
+    "synset": "01144133-noun"
+  },
+  {
+    "expression": "pragmatism",
+    "definition": "(philosophy) the doctrine that practical consequences are the criteria of knowledge and meaning and value",
+    "example": "",
+    "level": 2,
+    "synset": "05974798-noun"
+  },
+  {
+    "expression": "precaution",
+    "definition": "a precautionary measure warding off impending danger or damage or injury etc.",
+    "example": "he put an ice pack on the injury as a precaution",
+    "level": 2,
+    "synset": "00822970-noun"
+  },
+  {
+    "expression": "precision",
+    "definition": "the quality of being reproducible in amount or performance",
+    "example": "note the meticulous precision of his measurements",
+    "level": 2,
+    "synset": "04803880-noun"
+  },
+  {
+    "expression": "preference",
+    "definition": "a strong liking",
+    "example": "my own preference is for good literature",
+    "level": 2,
+    "synset": "07498210-noun"
+  },
+  {
+    "expression": "prestige",
+    "definition": "a high standing achieved through success or influence or wealth etc.",
+    "example": "he wanted to achieve power and prestige",
+    "level": 2,
+    "synset": "14435809-noun"
+  },
+  {
+    "expression": "prevention",
+    "definition": "the act of preventing",
+    "example": "money was allocated to study the cause and prevention of influenza",
+    "level": 2,
+    "synset": "01077350-noun"
+  },
+  {
+    "expression": "probability",
+    "definition": "a measure of how likely it is that some event will occur; a number expressing the ratio of favorable cases to the whole number of cases possible",
+    "example": "the probability that an unbiased coin will fall with the head up is 0.5",
+    "level": 2,
+    "synset": "05091770-noun"
+  },
+  {
+    "expression": "profession",
+    "definition": "an occupation requiring special education (especially in the liberal arts or sciences)",
+    "example": "",
+    "level": 2,
+    "synset": "00609953-noun"
+  },
+  {
+    "expression": "profitability",
+    "definition": "the quality of affording gain or benefit or profit",
+    "example": "",
+    "level": 2,
+    "synset": "05157866-noun"
+  },
+  {
+    "expression": "prominence",
+    "definition": "the state of being prominent: widely known or eminent",
+    "example": "",
+    "level": 2,
+    "synset": "14433587-noun"
+  },
+  {
+    "expression": "promotion",
+    "definition": "a message issued in behalf of some product or cause or idea or person or institution",
+    "example": "",
+    "level": 2,
+    "synset": "07247071-noun"
+  },
+  {
+    "expression": "provision",
+    "definition": "the activity of supplying or providing something",
+    "example": "",
+    "level": 2,
+    "synset": "01057200-noun"
+  },
+  {
+    "expression": "publication",
+    "definition": "a copy of a printed work offered for distribution",
+    "example": "",
+    "level": 2,
+    "synset": "06589574-noun"
+  },
+  {
+    "expression": "pursuit",
+    "definition": "the act of pursuing in an effort to overtake or capture",
+    "example": "the culprit started to run and the cop took off in pursuit",
+    "level": 2,
+    "synset": "00319939-noun"
+  },
+  {
+    "expression": "recognition",
+    "definition": "the state or quality of being recognized or acknowledged",
+    "example": "the partners were delighted with the recognition of their work",
+    "level": 2,
+    "synset": "14411981-noun"
+  },
+  {
+    "expression": "recovery",
+    "definition": "return to an original state",
+    "example": "the recovery of the forest after the fire was surprisingly rapid",
+    "level": 2,
+    "synset": "07419792-noun"
+  },
+  {
+    "expression": "reduction",
+    "definition": "the act of decreasing or reducing something",
+    "example": "",
+    "level": 2,
+    "synset": "00351638-noun"
+  },
+  {
+    "expression": "reform",
+    "definition": "a change for the better as a result of correcting abuses",
+    "example": "justice was for sale before the reform of the law courts",
+    "level": 2,
+    "synset": "00260622-noun"
+  },
+  {
+    "expression": "refugee",
+    "definition": "an exile who flees for safety",
+    "example": "",
+    "level": 2,
+    "synset": "10516016-noun"
+  },
+  {
+    "expression": "relevance",
+    "definition": "the relation of something to the matter at hand",
+    "example": "",
+    "level": 2,
+    "synset": "13794417-noun"
+  },
+  {
+    "expression": "renewal",
+    "definition": "the act of renewing",
+    "example": "",
+    "level": 2,
+    "synset": "01248852-noun"
+  },
+  {
+    "expression": "reproduction",
+    "definition": "the process of generating offspring",
+    "example": "",
+    "level": 2,
+    "synset": "13550318-noun"
+  },
+  {
+    "expression": "requirement",
+    "definition": "required activity",
+    "example": "",
+    "level": 2,
+    "synset": "05892651-noun"
+  },
+  {
+    "expression": "resolution",
+    "definition": "a formal expression by a meeting; agreed to by a vote",
+    "example": "",
+    "level": 2,
+    "synset": "06511874-noun"
+  },
+  {
+    "expression": "retention",
+    "definition": "the act of retaining something",
+    "example": "",
+    "level": 2,
+    "synset": "00810598-noun"
+  },
+  {
+    "expression": "revenue",
+    "definition": "the entire amount of income before any deductions are made",
+    "example": "",
+    "level": 2,
+    "synset": "13256691-noun"
+  },
+  {
+    "expression": "revolution",
+    "definition": "a drastic and far-reaching change in ways of thinking and behaving",
+    "example": "the industrial revolution was also a cultural revolution",
+    "level": 2,
+    "synset": "07424109-noun"
+  },
+  {
+    "expression": "rhetoric",
+    "definition": "using language effectively to please or persuade",
+    "example": "",
+    "level": 2,
+    "synset": "07072698-noun"
+  },
+  {
+    "expression": "selection",
+    "definition": "the act of choosing or selecting",
+    "example": "",
+    "level": 2,
+    "synset": "00161243-noun"
+  },
+  {
+    "expression": "sensitivity",
+    "definition": "the ability to respond to affective changes in your interpersonal environment",
+    "example": "",
+    "level": 2,
+    "synset": "04842993-noun"
+  },
+  {
+    "expression": "sequence",
+    "definition": "serial arrangement in which things follow in logical order or a recurrent pattern",
+    "example": "the sequence of names was alphabetical",
+    "level": 2,
+    "synset": "08459252-noun"
+  },
+  {
+    "expression": "similarity",
+    "definition": "the quality of being similar",
+    "example": "",
+    "level": 2,
+    "synset": "04743605-noun"
+  },
+  {
+    "expression": "significance",
+    "definition": "the quality of being significant",
+    "example": "do not underestimate the significance of nuclear power",
+    "level": 2,
+    "synset": "05169813-noun"
+  },
+  {
+    "expression": "solidarity",
+    "definition": "a union of interests or purposes or sympathies among members of a group",
+    "example": "",
+    "level": 2,
+    "synset": "04765038-noun"
+  },
+  {
+    "expression": "spectrum",
+    "definition": "a broad range of related objects or values or qualities or ideas or activities",
+    "example": "",
+    "level": 2,
+    "synset": "05128219-noun"
+  },
+  {
+    "expression": "stability",
+    "definition": "the quality or attribute of being firm and steadfast",
+    "example": "",
+    "level": 2,
+    "synset": "04778401-noun"
+  },
+  {
+    "expression": "stimulation",
+    "definition": "the act of arousing an organism to action",
+    "example": "",
+    "level": 2,
+    "synset": "01261974-noun"
+  },
+  {
+    "expression": "stock",
+    "definition": "the merchandise that a shop has on hand",
+    "example": "",
+    "level": 2,
+    "synset": "04321534-noun"
+  },
+  {
+    "expression": "sufficiency",
+    "definition": "sufficient resources to provide comfort and meet obligations",
+    "example": "her father questioned the young suitor's sufficiency",
+    "level": 2,
+    "synset": "14492953-noun"
+  },
+  {
+    "expression": "supervision",
+    "definition": "management by overseeing the performance or operation of a person or group",
+    "example": "",
+    "level": 2,
+    "synset": "01135529-noun"
+  },
+  {
+    "expression": "synthesis",
+    "definition": "the combination of ideas into a complex whole",
+    "example": "",
+    "level": 2,
+    "synset": "05783940-noun"
+  },
+  {
+    "expression": "taxation",
+    "definition": "charge against a citizen's person or property or activity for the support of government",
+    "example": "",
+    "level": 2,
+    "synset": "13308999-noun"
+  },
+  {
+    "expression": "tendency",
+    "definition": "an attitude of mind especially one that favors one alternative over others",
+    "example": "a tendency to be too strict",
+    "level": 2,
+    "synset": "06196584-noun"
+  },
+  {
+    "expression": "threshold",
+    "definition": "the starting point for a new state or experience",
+    "example": "on the threshold of manhood",
+    "level": 2,
+    "synset": "15268993-noun"
+  },
+  {
+    "expression": "transaction",
+    "definition": "the act of transacting within or between groups (as carrying on commercial activities)",
+    "example": "",
+    "level": 2,
+    "synset": "01106808-noun"
+  },
+  {
+    "expression": "uncertainty",
+    "definition": "being unsettled or in doubt or dependent on chance",
+    "example": "the uncertainty of the outcome",
+    "level": 2,
+    "synset": "04756887-noun"
+  },
+  {
+    "expression": "understanding",
+    "definition": "the cognitive condition of someone who understands",
+    "example": "he has virtually no understanding of social cause and effect",
+    "level": 2,
+    "synset": "05805475-noun"
+  },
+  {
+    "expression": "unity",
+    "definition": "an undivided or unbroken completeness or totality with nothing wanting",
+    "example": "he took measures to insure the territorial unity of Croatia",
+    "level": 2,
+    "synset": "14460565-noun"
+  },
+  {
+    "expression": "variation",
+    "definition": "an instance of change; the rate or magnitude of change",
+    "example": "",
+    "level": 2,
+    "synset": "07337390-noun"
+  },
+  {
+    "expression": "vegetation",
+    "definition": "all the plant life in a particular region or period",
+    "example": "Pleistocene vegetation",
+    "level": 2,
+    "synset": "08436759-noun"
+  },
+  {
+    "expression": "virtue",
+    "definition": "the quality of doing what is right and avoiding what is wrong",
+    "example": "",
+    "level": 2,
+    "synset": "04847298-noun"
+  },
+  {
+    "expression": "vision",
+    "definition": "a vivid mental image",
+    "example": "he had a vision of his own death",
+    "level": 2,
+    "synset": "05768252-noun"
+  },
+  {
+    "expression": "wage",
+    "definition": "something that remunerates",
+    "example": "",
+    "level": 2,
+    "synset": "13279262-noun"
+  },
+  {
+    "expression": "wealth",
+    "definition": "the state of being rich and affluent; having a plentiful supply of material goods and money",
+    "example": "great wealth is not a sign of great intelligence",
+    "level": 2,
+    "synset": "14491271-noun"
+  },
+  {
+    "expression": "willingness",
+    "definition": "cheerful compliance",
+    "example": "he expressed his willingness to help",
+    "level": 2,
+    "synset": "04644512-noun"
+  },
+  {
+    "expression": "adequacy",
+    "definition": "the quality of being able to meet a need satisfactorily:",
+    "example": "he questioned the adequacy of the usual sentimental interpretation of the Golden Rule",
+    "level": 2,
+    "synset": "04792357-noun"
+  },
+  {
+    "expression": "adherence",
+    "definition": "faithful support for a cause or political party or religion",
+    "example": "adherence to a fat-free diet",
+    "level": 2,
+    "synset": "01212882-noun"
+  },
+  {
+    "expression": "anonymity",
+    "definition": "the state of being anonymous",
+    "example": "",
+    "level": 2,
+    "synset": "14436285-noun"
+  },
+  {
+    "expression": "anticipation",
+    "definition": "an expectation",
+    "example": "",
+    "level": 2,
+    "synset": "07511080-noun"
+  },
+  {
+    "expression": "applicability",
+    "definition": "relevance by virtue of being applicable to the matter at hand",
+    "example": "",
+    "level": 2,
+    "synset": "13795180-noun"
+  },
+  {
+    "expression": "authenticity",
+    "definition": "undisputed credibility",
+    "example": "",
+    "level": 2,
+    "synset": "04783247-noun"
+  },
+  {
+    "expression": "benchmark",
+    "definition": "a standard by which something can be measured or judged",
+    "example": "his painting sets the benchmark of quality",
+    "level": 2,
+    "synset": "07261143-noun"
+  },
+  {
+    "expression": "clarity",
+    "definition": "free from obscurity and easy to understand; the comprehensibility of clear expression",
+    "example": "",
+    "level": 2,
+    "synset": "04820258-noun"
+  },
+  {
+    "expression": "compatibility",
+    "definition": "a feeling of sympathetic understanding",
+    "example": "",
+    "level": 2,
+    "synset": "07554758-noun"
+  },
+  {
+    "expression": "convergence",
+    "definition": "the occurrence of two or more things coming together",
+    "example": "",
+    "level": 2,
+    "synset": "07414740-noun"
+  },
+  {
+    "expression": "conviction",
+    "definition": "an unshakable belief in something without need for proof or evidence",
+    "example": "",
+    "level": 2,
+    "synset": "05942888-noun"
+  },
+  {
+    "expression": "deficiency",
+    "definition": "the state of needing something that is absent or unavailable",
+    "example": "water is the critical deficiency in desert regions",
+    "level": 2,
+    "synset": "14449405-noun"
+  },
+  {
+    "expression": "durability",
+    "definition": "permanence by virtue of the power to resist stress or force",
+    "example": "they advertised the durability of their products",
+    "level": 2,
+    "synset": "05053688-noun"
+  },
+  {
+    "expression": "efficacy",
+    "definition": "capacity or power to produce a desired effect",
+    "example": "concern about the safety and efficacy of the vaccine",
+    "level": 2,
+    "synset": "05199869-noun"
+  },
+  {
+    "expression": "equilibrium",
+    "definition": "a stable situation in which forces cancel one another",
+    "example": "",
+    "level": 2,
+    "synset": "13934900-noun"
+  },
+  {
+    "expression": "fidelity",
+    "definition": "the quality of being faithful",
+    "example": "",
+    "level": 2,
+    "synset": "04876985-noun"
+  },
+  {
+    "expression": "impartiality",
+    "definition": "an inclination to weigh both views or opinions equally",
+    "example": "",
+    "level": 2,
+    "synset": "06202686-noun"
+  },
+  {
+    "expression": "legitimacy",
+    "definition": "lawfulness by virtue of being authorized or in accordance with law",
+    "example": "",
+    "level": 2,
+    "synset": "04810035-noun"
+  },
+  {
+    "expression": "mediation",
+    "definition": "a negotiation to resolve differences that is conducted by some impartial party",
+    "example": "",
+    "level": 2,
+    "synset": "07150644-noun"
+  },
+  {
+    "expression": "objectivity",
+    "definition": "judgment based on observable phenomena and uninfluenced by emotions or personal prejudices",
+    "example": "",
+    "level": 2,
+    "synset": "04892344-noun"
+  },
+  {
+    "expression": "omission",
+    "definition": "a mistake resulting from neglect",
+    "example": "",
+    "level": 2,
+    "synset": "00074624-noun"
+  },
+  {
+    "expression": "perseverance",
+    "definition": "persistent determination",
+    "example": "",
+    "level": 2,
+    "synset": "04864515-noun"
+  },
+  {
+    "expression": "plausibility",
+    "definition": "apparent validity",
+    "example": "",
+    "level": 2,
+    "synset": "04783724-noun"
+  },
+  {
+    "expression": "predictability",
+    "definition": "the quality of being predictable",
+    "example": "",
+    "level": 2,
+    "synset": "04756025-noun"
+  },
+  {
+    "expression": "reliability",
+    "definition": "the quality of being dependable or reliable",
+    "example": "",
+    "level": 2,
+    "synset": "04670022-noun"
+  },
+  {
+    "expression": "responsiveness",
+    "definition": "responsive to stimulation",
+    "example": "",
+    "level": 2,
+    "synset": "05653575-noun"
+  },
+  {
+    "expression": "restraint",
+    "definition": "the act of controlling by restraining someone or something",
+    "example": "the unlawful restraint of trade",
+    "level": 2,
+    "synset": "01145359-noun"
+  },
+  {
+    "expression": "rigour",
+    "definition": "the quality of being valid and rigorous",
+    "example": "",
+    "level": 2,
+    "synset": "04783567-noun"
+  },
+  {
+    "expression": "scrutiny",
+    "definition": "the act of examining something closely (as for mistakes)",
+    "example": "",
+    "level": 2,
+    "synset": "00635850-noun"
+  },
+  {
+    "expression": "spontaneity",
+    "definition": "the quality of being spontaneous and coming from natural feelings without constraint",
+    "example": "the spontaneity of his laughter",
+    "level": 2,
+    "synset": "04786763-noun"
+  },
+  {
+    "expression": "uniformity",
+    "definition": "a condition in which everything is regular and unvarying",
+    "example": "",
+    "level": 2,
+    "synset": "04769049-noun"
+  },
+  {
+    "expression": "versatility",
+    "definition": "having a wide variety of skills",
+    "example": "",
+    "level": 2,
+    "synset": "05641834-noun"
+  },
+  {
+    "expression": "viability",
+    "definition": "(of living things) capable of normal growth and development",
+    "example": "",
+    "level": 2,
+    "synset": "05056234-noun"
+  }
+]

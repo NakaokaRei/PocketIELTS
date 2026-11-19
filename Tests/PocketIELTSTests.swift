@@ -34,10 +34,36 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(units.count, 12)
         XCTAssertEqual(units.filter { $0.skill == "Reading" }.flatMap(\.questions).count, 40)
         XCTAssertEqual(units.filter { $0.skill == "Listening" }.flatMap(\.questions).count, 40)
-        XCTAssertEqual(StarterWord.all.count, 60)
-        XCTAssertEqual(Set(StarterWord.all.map(\.id)).count, 60)
-        for level in 0..<3 { XCTAssertEqual(StarterWord.all.filter { $0.level == level }.count, 20) }
-        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.definition.isEmpty && !$0.example.isEmpty })
+        XCTAssertEqual(StarterWord.all.count, 1000)
+        XCTAssertEqual(Set(StarterWord.all.map(\.id)).count, 1000)
+        for level in 0..<3 { XCTAssertGreaterThanOrEqual(StarterWord.all.filter { $0.level == level }.count, 90) }
+        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.definition.isEmpty })
+    }
+
+    func testWaitingQuizPrioritizesSavedWordsAndMasksWholeExpressions() throws {
+        let saved = SavedExpression(expression: "available", source: "Reading", sourceText: "Available rooms are available today, but unavailable tomorrow.")
+        let card = try XCTUnwrap(WaitingWordQuiz.saved(saved))
+        XCTAssertEqual(card.prompt, "［ … ］ rooms are ［ … ］ today, but unavailable tomorrow.")
+        XCTAssertEqual(card.answer, "available")
+        XCTAssertTrue(card.isPersonal)
+        let deck = WaitingWordQuiz.deck(saved: [saved])
+        XCTAssertEqual(deck.count, 1)
+        XCTAssertEqual(deck.first?.answer, "available")
+        XCTAssertFalse(WaitingWordQuiz.deck(saved: []).isEmpty)
+        XCTAssertTrue(WaitingWordQuiz.deck(saved: []).allSatisfy { !$0.isPersonal && $0.prompt.range(of: $0.answer, options: .caseInsensitive) == nil })
+    }
+
+    func testWaitingQuizHandlesMissingContextAndSpecialCharacters() throws {
+        let card = try XCTUnwrap(WaitingWordQuiz.saved(SavedExpression(expression: "resilient", source: "manual", sourceText: "")))
+        XCTAssertNotEqual(card.prompt, card.answer)
+        XCTAssertTrue(card.prompt.contains("_"))
+        XCTAssertNil(WaitingWordQuiz.saved(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
+        let phrase = try XCTUnwrap(WaitingWordQuiz.saved(SavedExpression(expression: "C++", source: "manual", sourceText: "The course teaches C++ to new students.")))
+        XCTAssertFalse(phrase.prompt.contains("C++"))
+        XCTAssertEqual(phrase.answer, "C++")
+        XCTAssertEqual(StarterWord.imported.count, 940)
+        XCTAssertTrue(StarterWord.imported.first { $0.expression == "address" }!.definition.contains("place"))
+        XCTAssertTrue(try OSSNotice.load().contains { $0.title.contains("WordNet") })
     }
 
     func testSpeakingReceivedAudioActuallyRendersAndInterruptionClearsIt() throws {

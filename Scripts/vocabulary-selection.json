@@ -1,0 +1,4702 @@
+[
+  {
+    "expression": "address",
+    "level": 0,
+    "synset": "08491027-noun"
+  },
+  {
+    "expression": "airport",
+    "level": 0,
+    "synset": "02692232-noun"
+  },
+  {
+    "expression": "arrival",
+    "level": 0,
+    "synset": "00048374-noun"
+  },
+  {
+    "expression": "bicycle",
+    "level": 0,
+    "synset": "02834778-noun"
+  },
+  {
+    "expression": "certificate",
+    "level": 0,
+    "synset": "06471345-noun"
+  },
+  {
+    "expression": "classroom",
+    "level": 0,
+    "synset": "03038685-noun"
+  },
+  {
+    "expression": "colleague",
+    "level": 0,
+    "synset": "09936215-noun"
+  },
+  {
+    "expression": "customer",
+    "level": 0,
+    "synset": "09984659-noun"
+  },
+  {
+    "expression": "departure",
+    "level": 0,
+    "synset": "00042757-noun"
+  },
+  {
+    "expression": "destination",
+    "level": 0,
+    "synset": "08567877-noun"
+  },
+  {
+    "expression": "discount",
+    "level": 0,
+    "synset": "00362103-noun"
+  },
+  {
+    "expression": "electricity",
+    "level": 0,
+    "synset": "11449907-noun"
+  },
+  {
+    "expression": "emergency",
+    "level": 0,
+    "synset": "07417405-noun"
+  },
+  {
+    "expression": "employer",
+    "level": 0,
+    "synset": "10054657-noun"
+  },
+  {
+    "expression": "entrance",
+    "level": 0,
+    "synset": "03290771-noun"
+  },
+  {
+    "expression": "environment",
+    "level": 0,
+    "synset": "13934596-noun"
+  },
+  {
+    "expression": "exhibition",
+    "level": 0,
+    "synset": "00522145-noun"
+  },
+  {
+    "expression": "experience",
+    "level": 0,
+    "synset": "05758059-noun"
+  },
+  {
+    "expression": "facility",
+    "level": 0,
+    "synset": "03315023-noun"
+  },
+  {
+    "expression": "factory",
+    "level": 0,
+    "synset": "03316406-noun"
+  },
+  {
+    "expression": "furniture",
+    "level": 0,
+    "synset": "03405725-noun"
+  },
+  {
+    "expression": "graduate",
+    "level": 0,
+    "synset": "09786338-noun"
+  },
+  {
+    "expression": "hospital",
+    "level": 0,
+    "synset": "03540595-noun"
+  },
+  {
+    "expression": "household",
+    "level": 0,
+    "synset": "08078020-noun"
+  },
+  {
+    "expression": "income",
+    "level": 0,
+    "synset": "13255145-noun"
+  },
+  {
+    "expression": "instruction",
+    "level": 0,
+    "synset": "06786629-noun"
+  },
+  {
+    "expression": "insurance",
+    "level": 0,
+    "synset": "13344804-noun"
+  },
+  {
+    "expression": "interview",
+    "level": 0,
+    "synset": "07196075-noun"
+  },
+  {
+    "expression": "journey",
+    "level": 0,
+    "synset": "00306426-noun"
+  },
+  {
+    "expression": "knowledge",
+    "level": 0,
+    "synset": "00023271-noun"
+  },
+  {
+    "expression": "laboratory",
+    "level": 0,
+    "synset": "03629986-noun"
+  },
+  {
+    "expression": "leisure",
+    "level": 0,
+    "synset": "15137676-noun"
+  },
+  {
+    "expression": "library",
+    "level": 0,
+    "synset": "03660664-noun"
+  },
+  {
+    "expression": "luggage",
+    "level": 0,
+    "synset": "02774630-noun"
+  },
+  {
+    "expression": "manager",
+    "level": 0,
+    "synset": "10014939-noun"
+  },
+  {
+    "expression": "membership",
+    "level": 0,
+    "synset": "13931627-noun"
+  },
+  {
+    "expression": "passenger",
+    "level": 0,
+    "synset": "10403876-noun"
+  },
+  {
+    "expression": "payment",
+    "level": 0,
+    "synset": "13278375-noun"
+  },
+  {
+    "expression": "population",
+    "level": 0,
+    "synset": "08179879-noun"
+  },
+  {
+    "expression": "qualification",
+    "level": 0,
+    "synset": "04717139-noun"
+  },
+  {
+    "expression": "receipt",
+    "level": 0,
+    "synset": "06520222-noun"
+  },
+  {
+    "expression": "recommendation",
+    "level": 0,
+    "synset": "06671637-noun"
+  },
+  {
+    "expression": "registration",
+    "level": 0,
+    "synset": "00050037-noun"
+  },
+  {
+    "expression": "reservation",
+    "level": 0,
+    "synset": "07177772-noun"
+  },
+  {
+    "expression": "responsibility",
+    "level": 0,
+    "synset": "01129920-noun"
+  },
+  {
+    "expression": "salary",
+    "level": 0,
+    "synset": "13279262-noun"
+  },
+  {
+    "expression": "schedule",
+    "level": 0,
+    "synset": "05910940-noun"
+  },
+  {
+    "expression": "scholarship",
+    "level": 0,
+    "synset": "13266170-noun"
+  },
+  {
+    "expression": "service",
+    "level": 0,
+    "synset": "00577525-noun"
+  },
+  {
+    "expression": "signature",
+    "level": 0,
+    "synset": "06404582-noun"
+  },
+  {
+    "expression": "station",
+    "level": 0,
+    "synset": "04306080-noun"
+  },
+  {
+    "expression": "subject",
+    "level": 0,
+    "synset": "06599788-noun"
+  },
+  {
+    "expression": "supermarket",
+    "level": 0,
+    "synset": "04358707-noun"
+  },
+  {
+    "expression": "survey",
+    "level": 0,
+    "synset": "00644503-noun"
+  },
+  {
+    "expression": "tenant",
+    "level": 0,
+    "synset": "10700201-noun"
+  },
+  {
+    "expression": "timetable",
+    "level": 0,
+    "synset": "06496499-noun"
+  },
+  {
+    "expression": "tourism",
+    "level": 0,
+    "synset": "00298161-noun"
+  },
+  {
+    "expression": "traffic",
+    "level": 0,
+    "synset": "08425303-noun"
+  },
+  {
+    "expression": "transport",
+    "level": 0,
+    "synset": "03100490-noun"
+  },
+  {
+    "expression": "tuition",
+    "level": 0,
+    "synset": "13323988-noun"
+  },
+  {
+    "expression": "vehicle",
+    "level": 0,
+    "synset": "04524313-noun"
+  },
+  {
+    "expression": "visitor",
+    "level": 0,
+    "synset": "10757193-noun"
+  },
+  {
+    "expression": "volunteer",
+    "level": 0,
+    "synset": "10759151-noun"
+  },
+  {
+    "expression": "waste",
+    "level": 0,
+    "synset": "14856263-noun"
+  },
+  {
+    "expression": "workplace",
+    "level": 0,
+    "synset": "04602044-noun"
+  },
+  {
+    "expression": "agriculture",
+    "level": 0,
+    "synset": "01104406-noun"
+  },
+  {
+    "expression": "climate",
+    "level": 0,
+    "synset": "14519366-noun"
+  },
+  {
+    "expression": "coast",
+    "level": 0,
+    "synset": "09428293-noun"
+  },
+  {
+    "expression": "crop",
+    "level": 0,
+    "synset": "13085864-noun"
+  },
+  {
+    "expression": "diet",
+    "level": 0,
+    "synset": "07560903-noun"
+  },
+  {
+    "expression": "energy",
+    "level": 0,
+    "synset": "11452218-noun"
+  },
+  {
+    "expression": "flood",
+    "level": 0,
+    "synset": "11454591-noun"
+  },
+  {
+    "expression": "forest",
+    "level": 0,
+    "synset": "08438533-noun"
+  },
+  {
+    "expression": "fuel",
+    "level": 0,
+    "synset": "14875077-noun"
+  },
+  {
+    "expression": "health",
+    "level": 0,
+    "synset": "14447908-noun"
+  },
+  {
+    "expression": "housing",
+    "level": 0,
+    "synset": "03546340-noun"
+  },
+  {
+    "expression": "pollution",
+    "level": 0,
+    "synset": "14516743-noun"
+  },
+  {
+    "expression": "recycling",
+    "level": 0,
+    "synset": "00948868-noun"
+  },
+  {
+    "expression": "rainfall",
+    "level": 0,
+    "synset": "11501381-noun"
+  },
+  {
+    "expression": "soil",
+    "level": 0,
+    "synset": "09335240-noun"
+  },
+  {
+    "expression": "species",
+    "level": 0,
+    "synset": "08110373-noun"
+  },
+  {
+    "expression": "temperature",
+    "level": 0,
+    "synset": "05011790-noun"
+  },
+  {
+    "expression": "wildlife",
+    "level": 0,
+    "synset": "07993776-noun"
+  },
+  {
+    "expression": "adapt",
+    "level": 1,
+    "synset": "00299580-verb"
+  },
+  {
+    "expression": "analyse",
+    "level": 1,
+    "synset": "00644583-verb"
+  },
+  {
+    "expression": "anticipate",
+    "level": 1,
+    "synset": "00719734-verb"
+  },
+  {
+    "expression": "apply",
+    "level": 1,
+    "synset": "01158872-verb"
+  },
+  {
+    "expression": "argue",
+    "level": 1,
+    "synset": "00772189-verb"
+  },
+  {
+    "expression": "clarify",
+    "level": 1,
+    "synset": "00939857-verb"
+  },
+  {
+    "expression": "compare",
+    "level": 1,
+    "synset": "00652900-verb"
+  },
+  {
+    "expression": "confirm",
+    "level": 1,
+    "synset": "00665886-verb"
+  },
+  {
+    "expression": "conserve",
+    "level": 1,
+    "synset": "02269143-verb"
+  },
+  {
+    "expression": "demonstrate",
+    "level": 1,
+    "synset": "02148788-verb"
+  },
+  {
+    "expression": "distinguish",
+    "level": 1,
+    "synset": "00650353-verb"
+  },
+  {
+    "expression": "emphasise",
+    "level": 1,
+    "synset": "01014609-verb"
+  },
+  {
+    "expression": "evaluate",
+    "level": 1,
+    "synset": "00681429-verb"
+  },
+  {
+    "expression": "expand",
+    "level": 1,
+    "synset": "02077148-verb"
+  },
+  {
+    "expression": "identify",
+    "level": 1,
+    "synset": "00618878-verb"
+  },
+  {
+    "expression": "illustrate",
+    "level": 1,
+    "synset": "01021128-verb"
+  },
+  {
+    "expression": "implement",
+    "level": 1,
+    "synset": "02408965-verb"
+  },
+  {
+    "expression": "indicate",
+    "level": 1,
+    "synset": "00921300-verb"
+  },
+  {
+    "expression": "interpret",
+    "level": 1,
+    "synset": "00623151-verb"
+  },
+  {
+    "expression": "investigate",
+    "level": 1,
+    "synset": "00789138-verb"
+  },
+  {
+    "expression": "justify",
+    "level": 1,
+    "synset": "00896803-verb"
+  },
+  {
+    "expression": "obtain",
+    "level": 1,
+    "synset": "02238085-verb"
+  },
+  {
+    "expression": "participate",
+    "level": 1,
+    "synset": "02450256-verb"
+  },
+  {
+    "expression": "predict",
+    "level": 1,
+    "synset": "00917772-verb"
+  },
+  {
+    "expression": "promote",
+    "level": 1,
+    "synset": "02554922-verb"
+  },
+  {
+    "expression": "recommend",
+    "level": 1,
+    "synset": "00875141-verb"
+  },
+  {
+    "expression": "reflect",
+    "level": 1,
+    "synset": "02136892-verb"
+  },
+  {
+    "expression": "regulate",
+    "level": 1,
+    "synset": "00299341-verb"
+  },
+  {
+    "expression": "restore",
+    "level": 1,
+    "synset": "02552449-verb"
+  },
+  {
+    "expression": "retain",
+    "level": 1,
+    "synset": "02283324-verb"
+  },
+  {
+    "expression": "specify",
+    "level": 1,
+    "synset": "01018928-verb"
+  },
+  {
+    "expression": "transform",
+    "level": 1,
+    "synset": "00382635-verb"
+  },
+  {
+    "expression": "urban",
+    "level": 1,
+    "synset": "02821071-adj"
+  },
+  {
+    "expression": "rural",
+    "level": 1,
+    "synset": "02050452-adj"
+  },
+  {
+    "expression": "accurate",
+    "level": 1,
+    "synset": "00021766-adj"
+  },
+  {
+    "expression": "adequate",
+    "level": 1,
+    "synset": "00051045-adj"
+  },
+  {
+    "expression": "annual",
+    "level": 1,
+    "synset": "01969150-adj"
+  },
+  {
+    "expression": "apparent",
+    "level": 1,
+    "synset": "01618376-adj"
+  },
+  {
+    "expression": "appropriate",
+    "level": 1,
+    "synset": "00134701-adj"
+  },
+  {
+    "expression": "beneficial",
+    "level": 1,
+    "synset": "00064787-adj"
+  },
+  {
+    "expression": "consistent",
+    "level": 1,
+    "synset": "00576680-adj"
+  },
+  {
+    "expression": "considerable",
+    "level": 1,
+    "synset": "00624026-adj"
+  },
+  {
+    "expression": "constant",
+    "level": 1,
+    "synset": "02506029-adj"
+  },
+  {
+    "expression": "conventional",
+    "level": 1,
+    "synset": "00605516-adj"
+  },
+  {
+    "expression": "crucial",
+    "level": 1,
+    "synset": "00655779-adj"
+  },
+  {
+    "expression": "diverse",
+    "level": 1,
+    "synset": "02067719-adj"
+  },
+  {
+    "expression": "domestic",
+    "level": 1,
+    "synset": "01038102-adj"
+  },
+  {
+    "expression": "economic",
+    "level": 1,
+    "synset": "02716739-adj"
+  },
+  {
+    "expression": "effective",
+    "level": 1,
+    "synset": "00834198-adj"
+  },
+  {
+    "expression": "essential",
+    "level": 1,
+    "synset": "01580306-adj"
+  },
+  {
+    "expression": "excessive",
+    "level": 1,
+    "synset": "01533974-adj"
+  },
+  {
+    "expression": "external",
+    "level": 1,
+    "synset": "00948103-adj"
+  },
+  {
+    "expression": "financial",
+    "level": 1,
+    "synset": "02847894-adj"
+  },
+  {
+    "expression": "gradual",
+    "level": 1,
+    "synset": "01142804-adj"
+  },
+  {
+    "expression": "independent",
+    "level": 1,
+    "synset": "00727564-adj"
+  },
+  {
+    "expression": "industrial",
+    "level": 1,
+    "synset": "02748635-adj"
+  },
+  {
+    "expression": "initial",
+    "level": 1,
+    "synset": "01011973-adj"
+  },
+  {
+    "expression": "internal",
+    "level": 1,
+    "synset": "00948670-adj"
+  },
+  {
+    "expression": "legal",
+    "level": 1,
+    "synset": "01400562-adj"
+  },
+  {
+    "expression": "logical",
+    "level": 1,
+    "synset": "01430111-adj"
+  },
+  {
+    "expression": "major",
+    "level": 1,
+    "synset": "01472628-adj"
+  },
+  {
+    "expression": "minor",
+    "level": 1,
+    "synset": "01473083-adj"
+  },
+  {
+    "expression": "negative",
+    "level": 1,
+    "synset": "01818234-adj"
+  },
+  {
+    "expression": "positive",
+    "level": 1,
+    "synset": "01817500-adj"
+  },
+  {
+    "expression": "potential",
+    "level": 1,
+    "synset": "00044353-adj"
+  },
+  {
+    "expression": "practical",
+    "level": 1,
+    "synset": "01834304-adj"
+  },
+  {
+    "expression": "previous",
+    "level": 1,
+    "synset": "00127137-adj"
+  },
+  {
+    "expression": "professional",
+    "level": 1,
+    "synset": "01868724-adj"
+  },
+  {
+    "expression": "regional",
+    "level": 1,
+    "synset": "02871858-adj"
+  },
+  {
+    "expression": "renewable",
+    "level": 1,
+    "synset": "01962982-adj"
+  },
+  {
+    "expression": "sufficient",
+    "level": 1,
+    "synset": "02335828-adj"
+  },
+  {
+    "expression": "temporary",
+    "level": 1,
+    "synset": "01755627-adj"
+  },
+  {
+    "expression": "typical",
+    "level": 1,
+    "synset": "02468635-adj"
+  },
+  {
+    "expression": "unique",
+    "level": 1,
+    "synset": "00505853-adj"
+  },
+  {
+    "expression": "valid",
+    "level": 1,
+    "synset": "02498708-adj"
+  },
+  {
+    "expression": "widespread",
+    "level": 1,
+    "synset": "01102876-adj"
+  },
+  {
+    "expression": "accountability",
+    "level": 2,
+    "synset": "04669828-noun"
+  },
+  {
+    "expression": "adaptation",
+    "level": 2,
+    "synset": "13427078-noun"
+  },
+  {
+    "expression": "advocacy",
+    "level": 2,
+    "synset": "01214171-noun"
+  },
+  {
+    "expression": "biodiversity",
+    "level": 2,
+    "synset": "04751652-noun"
+  },
+  {
+    "expression": "capacity",
+    "level": 2,
+    "synset": "05203397-noun"
+  },
+  {
+    "expression": "collaboration",
+    "level": 2,
+    "synset": "01205156-noun"
+  },
+  {
+    "expression": "attendance",
+    "level": 2,
+    "synset": "01233397-noun"
+  },
+  {
+    "expression": "assessment",
+    "level": 2,
+    "synset": "05733583-noun"
+  },
+  {
+    "expression": "negotiation",
+    "level": 2,
+    "synset": "07148192-noun"
+  },
+  {
+    "expression": "nutrition",
+    "level": 2,
+    "synset": "13523661-noun"
+  },
+  {
+    "expression": "apprenticeship",
+    "level": 2,
+    "synset": "00588998-noun"
+  },
+  {
+    "expression": "settlement",
+    "level": 2,
+    "synset": "08374049-noun"
+  },
+  {
+    "expression": "commodity",
+    "level": 2,
+    "synset": "03076708-noun"
+  },
+  {
+    "expression": "competition",
+    "level": 2,
+    "synset": "13837009-noun"
+  },
+  {
+    "expression": "complexity",
+    "level": 2,
+    "synset": "04766275-noun"
+  },
+  {
+    "expression": "conservation",
+    "level": 2,
+    "synset": "00819274-noun"
+  },
+  {
+    "expression": "consumption",
+    "level": 2,
+    "synset": "13451804-noun"
+  },
+  {
+    "expression": "credibility",
+    "level": 2,
+    "synset": "04782878-noun"
+  },
+  {
+    "expression": "criterion",
+    "level": 2,
+    "synset": "07260623-noun"
+  },
+  {
+    "expression": "curriculum",
+    "level": 2,
+    "synset": "06676416-noun"
+  },
+  {
+    "expression": "democracy",
+    "level": 2,
+    "synset": "06217103-noun"
+  },
+  {
+    "expression": "density",
+    "level": 2,
+    "synset": "04941453-noun"
+  },
+  {
+    "expression": "deprivation",
+    "level": 2,
+    "synset": "14493426-noun"
+  },
+  {
+    "expression": "diversity",
+    "level": 2,
+    "synset": "04751305-noun"
+  },
+  {
+    "expression": "drought",
+    "level": 2,
+    "synset": "14537054-noun"
+  },
+  {
+    "expression": "ecosystem",
+    "level": 2,
+    "synset": "08368757-noun"
+  },
+  {
+    "expression": "efficiency",
+    "level": 2,
+    "synset": "13820993-noun"
+  },
+  {
+    "expression": "equality",
+    "level": 2,
+    "synset": "04747899-noun"
+  },
+  {
+    "expression": "equity",
+    "level": 2,
+    "synset": "04839154-noun"
+  },
+  {
+    "expression": "erosion",
+    "level": 2,
+    "synset": "13475538-noun"
+  },
+  {
+    "expression": "ethics",
+    "level": 2,
+    "synset": "09183693-noun"
+  },
+  {
+    "expression": "expenditure",
+    "level": 2,
+    "synset": "13275288-noun"
+  },
+  {
+    "expression": "expertise",
+    "level": 2,
+    "synset": "05640729-noun"
+  },
+  {
+    "expression": "globalization",
+    "level": 2,
+    "synset": "13488110-noun"
+  },
+  {
+    "expression": "habitat",
+    "level": 2,
+    "synset": "08580583-noun"
+  },
+  {
+    "expression": "hypothesis",
+    "level": 2,
+    "synset": "07162545-noun"
+  },
+  {
+    "expression": "infrastructure",
+    "level": 2,
+    "synset": "03570372-noun"
+  },
+  {
+    "expression": "innovation",
+    "level": 2,
+    "synset": "03582658-noun"
+  },
+  {
+    "expression": "integration",
+    "level": 2,
+    "synset": "01237415-noun"
+  },
+  {
+    "expression": "investment",
+    "level": 2,
+    "synset": "01099436-noun"
+  },
+  {
+    "expression": "legislation",
+    "level": 2,
+    "synset": "06535222-noun"
+  },
+  {
+    "expression": "literacy",
+    "level": 2,
+    "synset": "05638486-noun"
+  },
+  {
+    "expression": "migration",
+    "level": 2,
+    "synset": "01123095-noun"
+  },
+  {
+    "expression": "mobility",
+    "level": 2,
+    "synset": "04773351-noun"
+  },
+  {
+    "expression": "perception",
+    "level": 2,
+    "synset": "05930136-noun"
+  },
+  {
+    "expression": "perspective",
+    "level": 2,
+    "synset": "06208751-noun"
+  },
+  {
+    "expression": "productivity",
+    "level": 2,
+    "synset": "05147940-noun"
+  },
+  {
+    "expression": "prosperity",
+    "level": 2,
+    "synset": "14489699-noun"
+  },
+  {
+    "expression": "regulation",
+    "level": 2,
+    "synset": "06664051-noun"
+  },
+  {
+    "expression": "scarcity",
+    "level": 2,
+    "synset": "05116953-noun"
+  },
+  {
+    "expression": "sustainability",
+    "level": 2,
+    "synset": "05029594-noun"
+  },
+  {
+    "expression": "unemployment",
+    "level": 2,
+    "synset": "13968308-noun"
+  },
+  {
+    "expression": "urbanization",
+    "level": 2,
+    "synset": "14580334-noun"
+  },
+  {
+    "expression": "welfare",
+    "level": 2,
+    "synset": "01086945-noun"
+  },
+  {
+    "expression": "autonomy",
+    "level": 2,
+    "synset": "13992514-noun"
+  },
+  {
+    "expression": "consensus",
+    "level": 2,
+    "synset": "13971901-noun"
+  },
+  {
+    "expression": "controversy",
+    "level": 2,
+    "synset": "07183151-noun"
+  },
+  {
+    "expression": "correlation",
+    "level": 2,
+    "synset": "13841651-noun"
+  },
+  {
+    "expression": "deterioration",
+    "level": 2,
+    "synset": "14561618-noun"
+  },
+  {
+    "expression": "discrimination",
+    "level": 2,
+    "synset": "01153548-noun"
+  },
+  {
+    "expression": "displacement",
+    "level": 2,
+    "synset": "00315830-noun"
+  },
+  {
+    "expression": "enterprise",
+    "level": 2,
+    "synset": "00796886-noun"
+  },
+  {
+    "expression": "fluctuation",
+    "level": 2,
+    "synset": "04770911-noun"
+  },
+  {
+    "expression": "fragmentation",
+    "level": 2,
+    "synset": "00388210-noun"
+  },
+  {
+    "expression": "inequality",
+    "level": 2,
+    "synset": "04752221-noun"
+  },
+  {
+    "expression": "interdependence",
+    "level": 2,
+    "synset": "13841863-noun"
+  },
+  {
+    "expression": "intervention",
+    "level": 2,
+    "synset": "01240210-noun"
+  },
+  {
+    "expression": "marginalization",
+    "level": 2,
+    "synset": "13510946-noun"
+  },
+  {
+    "expression": "monopoly",
+    "level": 2,
+    "synset": "14444326-noun"
+  },
+  {
+    "expression": "paradigm",
+    "level": 2,
+    "synset": "06210171-noun"
+  },
+  {
+    "expression": "participation",
+    "level": 2,
+    "synset": "01239064-noun"
+  },
+  {
+    "expression": "prevalence",
+    "level": 2,
+    "synset": "04765355-noun"
+  },
+  {
+    "expression": "privatisation",
+    "level": 2,
+    "synset": "01152033-noun"
+  },
+  {
+    "expression": "redistribution",
+    "level": 2,
+    "synset": "01083350-noun"
+  },
+  {
+    "expression": "redundancy",
+    "level": 2,
+    "synset": "05120310-noun"
+  },
+  {
+    "expression": "rehabilitation",
+    "level": 2,
+    "synset": "00400645-noun"
+  },
+  {
+    "expression": "sanitation",
+    "level": 2,
+    "synset": "14495466-noun"
+  },
+  {
+    "expression": "sovereignty",
+    "level": 2,
+    "synset": "13992935-noun"
+  },
+  {
+    "expression": "subsidy",
+    "level": 2,
+    "synset": "13267014-noun"
+  },
+  {
+    "expression": "tolerance",
+    "level": 2,
+    "synset": "06204406-noun"
+  },
+  {
+    "expression": "vulnerability",
+    "level": 2,
+    "synset": "14543931-noun"
+  },
+  {
+    "expression": "ability",
+    "level": 0,
+    "synset": "05200169-noun"
+  },
+  {
+    "expression": "accident",
+    "level": 0,
+    "synset": "07301336-noun"
+  },
+  {
+    "expression": "activity",
+    "level": 0,
+    "synset": "00407535-noun"
+  },
+  {
+    "expression": "advantage",
+    "level": 0,
+    "synset": "05155821-noun"
+  },
+  {
+    "expression": "age",
+    "level": 0,
+    "synset": "04924103-noun"
+  },
+  {
+    "expression": "agreement",
+    "level": 0,
+    "synset": "06770275-noun"
+  },
+  {
+    "expression": "animal",
+    "level": 0,
+    "synset": "00015388-noun"
+  },
+  {
+    "expression": "answer",
+    "level": 0,
+    "synset": "06746005-noun"
+  },
+  {
+    "expression": "application",
+    "level": 0,
+    "synset": "00949134-noun"
+  },
+  {
+    "expression": "area",
+    "level": 0,
+    "synset": "08497294-noun"
+  },
+  {
+    "expression": "article",
+    "level": 0,
+    "synset": "06268096-noun"
+  },
+  {
+    "expression": "attention",
+    "level": 0,
+    "synset": "05702275-noun"
+  },
+  {
+    "expression": "audience",
+    "level": 0,
+    "synset": "08221897-noun"
+  },
+  {
+    "expression": "author",
+    "level": 0,
+    "synset": "10794014-noun"
+  },
+  {
+    "expression": "beach",
+    "level": 0,
+    "synset": "09217230-noun"
+  },
+  {
+    "expression": "bill",
+    "level": 0,
+    "synset": "06516955-noun"
+  },
+  {
+    "expression": "birth",
+    "level": 0,
+    "synset": "15142167-noun"
+  },
+  {
+    "expression": "book",
+    "level": 0,
+    "synset": "06410904-noun"
+  },
+  {
+    "expression": "bridge",
+    "level": 0,
+    "synset": "02898711-noun"
+  },
+  {
+    "expression": "building",
+    "level": 0,
+    "synset": "02913152-noun"
+  },
+  {
+    "expression": "business",
+    "level": 0,
+    "synset": "08061042-noun"
+  },
+  {
+    "expression": "cafe",
+    "level": 0,
+    "synset": "02935658-noun"
+  },
+  {
+    "expression": "camera",
+    "level": 0,
+    "synset": "02942699-noun"
+  },
+  {
+    "expression": "campaign",
+    "level": 0,
+    "synset": "07472929-noun"
+  },
+  {
+    "expression": "candidate",
+    "level": 0,
+    "synset": "09889691-noun"
+  },
+  {
+    "expression": "cash",
+    "level": 0,
+    "synset": "13386614-noun"
+  },
+  {
+    "expression": "cause",
+    "level": 0,
+    "synset": "07326557-noun"
+  },
+  {
+    "expression": "centre",
+    "level": 0,
+    "synset": "08514034-noun"
+  },
+  {
+    "expression": "century",
+    "level": 0,
+    "synset": "15205532-noun"
+  },
+  {
+    "expression": "choice",
+    "level": 0,
+    "synset": "05790242-noun"
+  },
+  {
+    "expression": "cinema",
+    "level": 0,
+    "synset": "06262567-noun"
+  },
+  {
+    "expression": "city",
+    "level": 0,
+    "synset": "08524735-noun"
+  },
+  {
+    "expression": "college",
+    "level": 0,
+    "synset": "08278324-noun"
+  },
+  {
+    "expression": "colour",
+    "level": 0,
+    "synset": "04956594-noun"
+  },
+  {
+    "expression": "condition",
+    "level": 0,
+    "synset": "13920835-noun"
+  },
+  {
+    "expression": "construction",
+    "level": 0,
+    "synset": "00911048-noun"
+  },
+  {
+    "expression": "corner",
+    "level": 0,
+    "synset": "08544419-noun"
+  },
+  {
+    "expression": "cost",
+    "level": 0,
+    "synset": "13275847-noun"
+  },
+  {
+    "expression": "country",
+    "level": 0,
+    "synset": "08168978-noun"
+  },
+  {
+    "expression": "course",
+    "level": 0,
+    "synset": "00884466-noun"
+  },
+  {
+    "expression": "culture",
+    "level": 0,
+    "synset": "08287844-noun"
+  },
+  {
+    "expression": "damage",
+    "level": 0,
+    "synset": "07420770-noun"
+  },
+  {
+    "expression": "decision",
+    "level": 0,
+    "synset": "00162632-noun"
+  },
+  {
+    "expression": "department",
+    "level": 0,
+    "synset": "08114861-noun"
+  },
+  {
+    "expression": "design",
+    "level": 0,
+    "synset": "00928077-noun"
+  },
+  {
+    "expression": "detail",
+    "level": 0,
+    "synset": "05817845-noun"
+  },
+  {
+    "expression": "difference",
+    "level": 0,
+    "synset": "04748836-noun"
+  },
+  {
+    "expression": "difficulty",
+    "level": 0,
+    "synset": "00623862-noun"
+  },
+  {
+    "expression": "direction",
+    "level": 0,
+    "synset": "08679972-noun"
+  },
+  {
+    "expression": "discussion",
+    "level": 0,
+    "synset": "07138085-noun"
+  },
+  {
+    "expression": "distance",
+    "level": 0,
+    "synset": "05084201-noun"
+  },
+  {
+    "expression": "district",
+    "level": 0,
+    "synset": "08552138-noun"
+  },
+  {
+    "expression": "doctor",
+    "level": 0,
+    "synset": "10020890-noun"
+  },
+  {
+    "expression": "driver",
+    "level": 0,
+    "synset": "10034906-noun"
+  },
+  {
+    "expression": "effect",
+    "level": 0,
+    "synset": "11410625-noun"
+  },
+  {
+    "expression": "effort",
+    "level": 0,
+    "synset": "00786195-noun"
+  },
+  {
+    "expression": "employee",
+    "level": 0,
+    "synset": "10053808-noun"
+  },
+  {
+    "expression": "engineer",
+    "level": 0,
+    "synset": "09615807-noun"
+  },
+  {
+    "expression": "event",
+    "level": 0,
+    "synset": "00029378-noun"
+  },
+  {
+    "expression": "exam",
+    "level": 0,
+    "synset": "07197021-noun"
+  },
+  {
+    "expression": "examination",
+    "level": 0,
+    "synset": "00635850-noun"
+  },
+  {
+    "expression": "exercise",
+    "level": 0,
+    "synset": "00624738-noun"
+  },
+  {
+    "expression": "expert",
+    "level": 0,
+    "synset": "09617867-noun"
+  },
+  {
+    "expression": "explanation",
+    "level": 0,
+    "synset": "06738281-noun"
+  },
+  {
+    "expression": "family",
+    "level": 0,
+    "synset": "08078020-noun"
+  },
+  {
+    "expression": "farmer",
+    "level": 0,
+    "synset": "10078806-noun"
+  },
+  {
+    "expression": "feature",
+    "level": 0,
+    "synset": "05849789-noun"
+  },
+  {
+    "expression": "festival",
+    "level": 0,
+    "synset": "15162388-noun"
+  },
+  {
+    "expression": "friend",
+    "level": 0,
+    "synset": "10112591-noun"
+  },
+  {
+    "expression": "friendship",
+    "level": 0,
+    "synset": "13931145-noun"
+  },
+  {
+    "expression": "future",
+    "level": 0,
+    "synset": "15121625-noun"
+  },
+  {
+    "expression": "garbage",
+    "level": 0,
+    "synset": "14857151-noun"
+  },
+  {
+    "expression": "garden",
+    "level": 0,
+    "synset": "03417345-noun"
+  },
+  {
+    "expression": "gift",
+    "level": 0,
+    "synset": "13265011-noun"
+  },
+  {
+    "expression": "goal",
+    "level": 0,
+    "synset": "05980875-noun"
+  },
+  {
+    "expression": "ground",
+    "level": 0,
+    "synset": "09334396-noun"
+  },
+  {
+    "expression": "group",
+    "level": 0,
+    "synset": "00031264-noun"
+  },
+  {
+    "expression": "guest",
+    "level": 0,
+    "synset": "10150940-noun"
+  },
+  {
+    "expression": "habit",
+    "level": 0,
+    "synset": "05669034-noun"
+  },
+  {
+    "expression": "history",
+    "level": 0,
+    "synset": "15121406-noun"
+  },
+  {
+    "expression": "holiday",
+    "level": 0,
+    "synset": "15137890-noun"
+  },
+  {
+    "expression": "hotel",
+    "level": 0,
+    "synset": "03542333-noun"
+  },
+  {
+    "expression": "identity",
+    "level": 0,
+    "synset": "04618070-noun"
+  },
+  {
+    "expression": "image",
+    "level": 0,
+    "synset": "05928118-noun"
+  },
+  {
+    "expression": "importance",
+    "level": 0,
+    "synset": "05168261-noun"
+  },
+  {
+    "expression": "information",
+    "level": 0,
+    "synset": "06634376-noun"
+  },
+  {
+    "expression": "internet",
+    "level": 0,
+    "synset": "03580615-noun"
+  },
+  {
+    "expression": "island",
+    "level": 0,
+    "synset": "09316454-noun"
+  },
+  {
+    "expression": "issue",
+    "level": 0,
+    "synset": "05814650-noun"
+  },
+  {
+    "expression": "job",
+    "level": 0,
+    "synset": "00582388-noun"
+  },
+  {
+    "expression": "key",
+    "level": 0,
+    "synset": "03613294-noun"
+  },
+  {
+    "expression": "language",
+    "level": 0,
+    "synset": "06282651-noun"
+  },
+  {
+    "expression": "leader",
+    "level": 0,
+    "synset": "09623038-noun"
+  },
+  {
+    "expression": "lesson",
+    "level": 0,
+    "synset": "00889472-noun"
+  },
+  {
+    "expression": "letter",
+    "level": 0,
+    "synset": "06624161-noun"
+  },
+  {
+    "expression": "limit",
+    "level": 0,
+    "synset": "05124057-noun"
+  },
+  {
+    "expression": "location",
+    "level": 0,
+    "synset": "00027167-noun"
+  },
+  {
+    "expression": "machine",
+    "level": 0,
+    "synset": "03699975-noun"
+  },
+  {
+    "expression": "magazine",
+    "level": 0,
+    "synset": "06595351-noun"
+  },
+  {
+    "expression": "market",
+    "level": 0,
+    "synset": "01097292-noun"
+  },
+  {
+    "expression": "meal",
+    "level": 0,
+    "synset": "07573696-noun"
+  },
+  {
+    "expression": "measure",
+    "level": 0,
+    "synset": "00174412-noun"
+  },
+  {
+    "expression": "meeting",
+    "level": 0,
+    "synset": "08307589-noun"
+  },
+  {
+    "expression": "method",
+    "level": 0,
+    "synset": "05660268-noun"
+  },
+  {
+    "expression": "moment",
+    "level": 0,
+    "synset": "15244650-noun"
+  },
+  {
+    "expression": "museum",
+    "level": 0,
+    "synset": "03800563-noun"
+  },
+  {
+    "expression": "music",
+    "level": 0,
+    "synset": "07020895-noun"
+  },
+  {
+    "expression": "neighbour",
+    "level": 0,
+    "synset": "10352299-noun"
+  },
+  {
+    "expression": "newspaper",
+    "level": 0,
+    "synset": "06267145-noun"
+  },
+  {
+    "expression": "noise",
+    "level": 0,
+    "synset": "07387509-noun"
+  },
+  {
+    "expression": "office",
+    "level": 0,
+    "synset": "03841666-noun"
+  },
+  {
+    "expression": "opinion",
+    "level": 0,
+    "synset": "05945642-noun"
+  },
+  {
+    "expression": "organisation",
+    "level": 0,
+    "synset": "08008335-noun"
+  },
+  {
+    "expression": "page",
+    "level": 0,
+    "synset": "06256697-noun"
+  },
+  {
+    "expression": "parent",
+    "level": 0,
+    "synset": "10399491-noun"
+  },
+  {
+    "expression": "park",
+    "level": 0,
+    "synset": "08615149-noun"
+  },
+  {
+    "expression": "partner",
+    "level": 0,
+    "synset": "09935434-noun"
+  },
+  {
+    "expression": "period",
+    "level": 0,
+    "synset": "15113229-noun"
+  },
+  {
+    "expression": "photograph",
+    "level": 0,
+    "synset": "03925226-noun"
+  },
+  {
+    "expression": "picture",
+    "level": 0,
+    "synset": "03931044-noun"
+  },
+  {
+    "expression": "plan",
+    "level": 0,
+    "synset": "05898568-noun"
+  },
+  {
+    "expression": "police",
+    "level": 0,
+    "synset": "08209687-noun"
+  },
+  {
+    "expression": "position",
+    "level": 0,
+    "synset": "08621598-noun"
+  },
+  {
+    "expression": "possibility",
+    "level": 0,
+    "synset": "05951180-noun"
+  },
+  {
+    "expression": "problem",
+    "level": 0,
+    "synset": "14410605-noun"
+  },
+  {
+    "expression": "product",
+    "level": 0,
+    "synset": "03748886-noun"
+  },
+  {
+    "expression": "programme",
+    "level": 0,
+    "synset": "06748466-noun"
+  },
+  {
+    "expression": "project",
+    "level": 0,
+    "synset": "00795720-noun"
+  },
+  {
+    "expression": "purpose",
+    "level": 0,
+    "synset": "05982152-noun"
+  },
+  {
+    "expression": "quality",
+    "level": 0,
+    "synset": "04723816-noun"
+  },
+  {
+    "expression": "question",
+    "level": 0,
+    "synset": "07193596-noun"
+  },
+  {
+    "expression": "radio",
+    "level": 0,
+    "synset": "06277135-noun"
+  },
+  {
+    "expression": "reason",
+    "level": 0,
+    "synset": "09178999-noun"
+  },
+  {
+    "expression": "region",
+    "level": 0,
+    "synset": "08630039-noun"
+  },
+  {
+    "expression": "relationship",
+    "level": 0,
+    "synset": "13780719-noun"
+  },
+  {
+    "expression": "repair",
+    "level": 0,
+    "synset": "00266806-noun"
+  },
+  {
+    "expression": "report",
+    "level": 0,
+    "synset": "07218470-noun"
+  },
+  {
+    "expression": "request",
+    "level": 0,
+    "synset": "06513366-noun"
+  },
+  {
+    "expression": "result",
+    "level": 0,
+    "synset": "11410625-noun"
+  },
+  {
+    "expression": "risk",
+    "level": 0,
+    "synset": "14541852-noun"
+  },
+  {
+    "expression": "road",
+    "level": 0,
+    "synset": "04096066-noun"
+  },
+  {
+    "expression": "room",
+    "level": 0,
+    "synset": "04105893-noun"
+  },
+  {
+    "expression": "rule",
+    "level": 0,
+    "synset": "05846054-noun"
+  },
+  {
+    "expression": "sale",
+    "level": 0,
+    "synset": "01114824-noun"
+  },
+  {
+    "expression": "school",
+    "level": 0,
+    "synset": "08276720-noun"
+  },
+  {
+    "expression": "science",
+    "level": 0,
+    "synset": "05999797-noun"
+  },
+  {
+    "expression": "seat",
+    "level": 0,
+    "synset": "08647616-noun"
+  },
+  {
+    "expression": "shop",
+    "level": 0,
+    "synset": "04202417-noun"
+  },
+  {
+    "expression": "site",
+    "level": 0,
+    "synset": "08651247-noun"
+  },
+  {
+    "expression": "society",
+    "level": 0,
+    "synset": "07966140-noun"
+  },
+  {
+    "expression": "sound",
+    "level": 0,
+    "synset": "04981139-noun"
+  },
+  {
+    "expression": "space",
+    "level": 0,
+    "synset": "00028651-noun"
+  },
+  {
+    "expression": "sport",
+    "level": 0,
+    "synset": "00523513-noun"
+  },
+  {
+    "expression": "stage",
+    "level": 0,
+    "synset": "15290337-noun"
+  },
+  {
+    "expression": "standard",
+    "level": 0,
+    "synset": "07260623-noun"
+  },
+  {
+    "expression": "step",
+    "level": 0,
+    "synset": "00174412-noun"
+  },
+  {
+    "expression": "story",
+    "level": 0,
+    "synset": "07221094-noun"
+  },
+  {
+    "expression": "street",
+    "level": 0,
+    "synset": "04334599-noun"
+  },
+  {
+    "expression": "structure",
+    "level": 0,
+    "synset": "04341686-noun"
+  },
+  {
+    "expression": "student",
+    "level": 0,
+    "synset": "10665698-noun"
+  },
+  {
+    "expression": "success",
+    "level": 0,
+    "synset": "07319103-noun"
+  },
+  {
+    "expression": "support",
+    "level": 0,
+    "synset": "01215902-noun"
+  },
+  {
+    "expression": "swimming",
+    "level": 0,
+    "synset": "00442115-noun"
+  },
+  {
+    "expression": "team",
+    "level": 0,
+    "synset": "08208560-noun"
+  },
+  {
+    "expression": "technology",
+    "level": 0,
+    "synset": "00949619-noun"
+  },
+  {
+    "expression": "test",
+    "level": 0,
+    "synset": "05799212-noun"
+  },
+  {
+    "expression": "ticket",
+    "level": 0,
+    "synset": "06518719-noun"
+  },
+  {
+    "expression": "tool",
+    "level": 0,
+    "synset": "04451818-noun"
+  },
+  {
+    "expression": "topic",
+    "level": 0,
+    "synset": "06599788-noun"
+  },
+  {
+    "expression": "total",
+    "level": 0,
+    "synset": "04353803-noun"
+  },
+  {
+    "expression": "town",
+    "level": 0,
+    "synset": "08665504-noun"
+  },
+  {
+    "expression": "trade",
+    "level": 0,
+    "synset": "01091905-noun"
+  },
+  {
+    "expression": "training",
+    "level": 0,
+    "synset": "00893955-noun"
+  },
+  {
+    "expression": "trip",
+    "level": 0,
+    "synset": "00308370-noun"
+  },
+  {
+    "expression": "university",
+    "level": 0,
+    "synset": "08286569-noun"
+  },
+  {
+    "expression": "user",
+    "level": 0,
+    "synset": "10741590-noun"
+  },
+  {
+    "expression": "village",
+    "level": 0,
+    "synset": "08226699-noun"
+  },
+  {
+    "expression": "walk",
+    "level": 0,
+    "synset": "00283568-noun"
+  },
+  {
+    "expression": "way",
+    "level": 0,
+    "synset": "04928903-noun"
+  },
+  {
+    "expression": "weather",
+    "level": 0,
+    "synset": "11524662-noun"
+  },
+  {
+    "expression": "wood",
+    "level": 0,
+    "synset": "15098161-noun"
+  },
+  {
+    "expression": "world",
+    "level": 0,
+    "synset": "09466280-noun"
+  },
+  {
+    "expression": "youth",
+    "level": 0,
+    "synset": "10804406-noun"
+  },
+  {
+    "expression": "access",
+    "level": 0,
+    "synset": "05176188-noun"
+  },
+  {
+    "expression": "advance",
+    "level": 0,
+    "synset": "07445265-noun"
+  },
+  {
+    "expression": "amount",
+    "level": 0,
+    "synset": "13331198-noun"
+  },
+  {
+    "expression": "argument",
+    "level": 0,
+    "synset": "06648724-noun"
+  },
+  {
+    "expression": "arrangement",
+    "level": 0,
+    "synset": "05795044-noun"
+  },
+  {
+    "expression": "attitude",
+    "level": 0,
+    "synset": "06193203-noun"
+  },
+  {
+    "expression": "balance",
+    "level": 0,
+    "synset": "14002279-noun"
+  },
+  {
+    "expression": "beauty",
+    "level": 0,
+    "synset": "04683814-noun"
+  },
+  {
+    "expression": "border",
+    "level": 0,
+    "synset": "08512736-noun"
+  },
+  {
+    "expression": "character",
+    "level": 0,
+    "synset": "09587565-noun"
+  },
+  {
+    "expression": "confidence",
+    "level": 0,
+    "synset": "05697363-noun"
+  },
+  {
+    "expression": "connection",
+    "level": 0,
+    "synset": "13791389-noun"
+  },
+  {
+    "expression": "control",
+    "level": 0,
+    "synset": "05196375-noun"
+  },
+  {
+    "expression": "demand",
+    "level": 0,
+    "synset": "07191279-noun"
+  },
+  {
+    "expression": "depth",
+    "level": 0,
+    "synset": "05134547-noun"
+  },
+  {
+    "expression": "description",
+    "level": 0,
+    "synset": "06724763-noun"
+  },
+  {
+    "expression": "duty",
+    "level": 0,
+    "synset": "01129920-noun"
+  },
+  {
+    "expression": "economy",
+    "level": 0,
+    "synset": "08366753-noun"
+  },
+  {
+    "expression": "emotion",
+    "level": 0,
+    "synset": "07480068-noun"
+  },
+  {
+    "expression": "failure",
+    "level": 0,
+    "synset": "00066636-noun"
+  },
+  {
+    "expression": "fashion",
+    "level": 0,
+    "synset": "05750657-noun"
+  },
+  {
+    "expression": "freedom",
+    "level": 0,
+    "synset": "13991823-noun"
+  },
+  {
+    "expression": "influence",
+    "level": 0,
+    "synset": "05194151-noun"
+  },
+  {
+    "expression": "invitation",
+    "level": 0,
+    "synset": "07186148-noun"
+  },
+  {
+    "expression": "length",
+    "level": 0,
+    "synset": "05129201-noun"
+  },
+  {
+    "expression": "loss",
+    "level": 0,
+    "synset": "13327676-noun"
+  },
+  {
+    "expression": "network",
+    "level": 0,
+    "synset": "08434259-noun"
+  },
+  {
+    "expression": "notice",
+    "level": 0,
+    "synset": "06747670-noun"
+  },
+  {
+    "expression": "objective",
+    "level": 0,
+    "synset": "05981230-noun"
+  },
+  {
+    "expression": "outcome",
+    "level": 0,
+    "synset": "07292694-noun"
+  },
+  {
+    "expression": "procedure",
+    "level": 0,
+    "synset": "01023820-noun"
+  },
+  {
+    "expression": "progress",
+    "level": 0,
+    "synset": "00249501-noun"
+  },
+  {
+    "expression": "proof",
+    "level": 0,
+    "synset": "05824739-noun"
+  },
+  {
+    "expression": "reputation",
+    "level": 0,
+    "synset": "14438125-noun"
+  },
+  {
+    "expression": "review",
+    "level": 0,
+    "synset": "05747582-noun"
+  },
+  {
+    "expression": "role",
+    "level": 0,
+    "synset": "00720565-noun"
+  },
+  {
+    "expression": "security",
+    "level": 0,
+    "synset": "14539268-noun"
+  },
+  {
+    "expression": "source",
+    "level": 0,
+    "synset": "08507558-noun"
+  },
+  {
+    "expression": "speed",
+    "level": 0,
+    "synset": "15282696-noun"
+  },
+  {
+    "expression": "statement",
+    "level": 0,
+    "synset": "06722453-noun"
+  },
+  {
+    "expression": "strength",
+    "level": 0,
+    "synset": "05029706-noun"
+  },
+  {
+    "expression": "task",
+    "level": 0,
+    "synset": "00795720-noun"
+  },
+  {
+    "expression": "technique",
+    "level": 0,
+    "synset": "05665146-noun"
+  },
+  {
+    "expression": "thought",
+    "level": 0,
+    "synset": "05833840-noun"
+  },
+  {
+    "expression": "variety",
+    "level": 0,
+    "synset": "08398773-noun"
+  },
+  {
+    "expression": "view",
+    "level": 0,
+    "synset": "06208751-noun"
+  },
+  {
+    "expression": "weight",
+    "level": 0,
+    "synset": "05026843-noun"
+  },
+  {
+    "expression": "accept",
+    "level": 1,
+    "synset": "00686447-verb"
+  },
+  {
+    "expression": "achieve",
+    "level": 1,
+    "synset": "02526085-verb"
+  },
+  {
+    "expression": "act",
+    "level": 1,
+    "synset": "02367363-verb"
+  },
+  {
+    "expression": "adjust",
+    "level": 1,
+    "synset": "00296178-verb"
+  },
+  {
+    "expression": "adopt",
+    "level": 1,
+    "synset": "02346895-verb"
+  },
+  {
+    "expression": "advise",
+    "level": 1,
+    "synset": "00872886-verb"
+  },
+  {
+    "expression": "afford",
+    "level": 1,
+    "synset": "01192628-verb"
+  },
+  {
+    "expression": "aim",
+    "level": 1,
+    "synset": "00708980-verb"
+  },
+  {
+    "expression": "appear",
+    "level": 1,
+    "synset": "02133435-verb"
+  },
+  {
+    "expression": "arrive",
+    "level": 1,
+    "synset": "02005948-verb"
+  },
+  {
+    "expression": "assist",
+    "level": 1,
+    "synset": "02547586-verb"
+  },
+  {
+    "expression": "attach",
+    "level": 1,
+    "synset": "01296462-verb"
+  },
+  {
+    "expression": "attract",
+    "level": 1,
+    "synset": "01505254-verb"
+  },
+  {
+    "expression": "base",
+    "level": 1,
+    "synset": "00636888-verb"
+  },
+  {
+    "expression": "beat",
+    "level": 1,
+    "synset": "01101913-verb"
+  },
+  {
+    "expression": "become",
+    "level": 1,
+    "synset": "00149583-verb"
+  },
+  {
+    "expression": "belong",
+    "level": 1,
+    "synset": "02301680-verb"
+  },
+  {
+    "expression": "blame",
+    "level": 1,
+    "synset": "00842538-verb"
+  },
+  {
+    "expression": "boil",
+    "level": 1,
+    "synset": "00375021-verb"
+  },
+  {
+    "expression": "boost",
+    "level": 1,
+    "synset": "01975912-verb"
+  },
+  {
+    "expression": "breathe",
+    "level": 1,
+    "synset": "00001740-verb"
+  },
+  {
+    "expression": "build",
+    "level": 1,
+    "synset": "01654628-verb"
+  },
+  {
+    "expression": "calculate",
+    "level": 1,
+    "synset": "00637259-verb"
+  },
+  {
+    "expression": "care",
+    "level": 1,
+    "synset": "01822936-verb"
+  },
+  {
+    "expression": "carry",
+    "level": 1,
+    "synset": "01449974-verb"
+  },
+  {
+    "expression": "celebrate",
+    "level": 1,
+    "synset": "02578510-verb"
+  },
+  {
+    "expression": "choose",
+    "level": 1,
+    "synset": "00674607-verb"
+  },
+  {
+    "expression": "clean",
+    "level": 1,
+    "synset": "01532589-verb"
+  },
+  {
+    "expression": "climb",
+    "level": 1,
+    "synset": "01921964-verb"
+  },
+  {
+    "expression": "close",
+    "level": 1,
+    "synset": "01345109-verb"
+  },
+  {
+    "expression": "combine",
+    "level": 1,
+    "synset": "02631163-verb"
+  },
+  {
+    "expression": "complete",
+    "level": 1,
+    "synset": "00484166-verb"
+  },
+  {
+    "expression": "conclude",
+    "level": 1,
+    "synset": "00634472-verb"
+  },
+  {
+    "expression": "connect",
+    "level": 1,
+    "synset": "01354673-verb"
+  },
+  {
+    "expression": "consider",
+    "level": 1,
+    "synset": "00690614-verb"
+  },
+  {
+    "expression": "contain",
+    "level": 1,
+    "synset": "02629535-verb"
+  },
+  {
+    "expression": "convert",
+    "level": 1,
+    "synset": "00381013-verb"
+  },
+  {
+    "expression": "coordinate",
+    "level": 1,
+    "synset": "00404642-verb"
+  },
+  {
+    "expression": "cope",
+    "level": 1,
+    "synset": "02587532-verb"
+  },
+  {
+    "expression": "correct",
+    "level": 1,
+    "synset": "00199659-verb"
+  },
+  {
+    "expression": "create",
+    "level": 1,
+    "synset": "01617192-verb"
+  },
+  {
+    "expression": "deal",
+    "level": 1,
+    "synset": "01033527-verb"
+  },
+  {
+    "expression": "declare",
+    "level": 1,
+    "synset": "01010118-verb"
+  },
+  {
+    "expression": "decrease",
+    "level": 1,
+    "synset": "00151689-verb"
+  },
+  {
+    "expression": "deliver",
+    "level": 1,
+    "synset": "01438304-verb"
+  },
+  {
+    "expression": "derive",
+    "level": 1,
+    "synset": "00636574-verb"
+  },
+  {
+    "expression": "detect",
+    "level": 1,
+    "synset": "02154508-verb"
+  },
+  {
+    "expression": "develop",
+    "level": 1,
+    "synset": "01738774-verb"
+  },
+  {
+    "expression": "differ",
+    "level": 1,
+    "synset": "02666239-verb"
+  },
+  {
+    "expression": "discover",
+    "level": 1,
+    "synset": "02154508-verb"
+  },
+  {
+    "expression": "divide",
+    "level": 1,
+    "synset": "02467662-verb"
+  },
+  {
+    "expression": "drive",
+    "level": 1,
+    "synset": "01930874-verb"
+  },
+  {
+    "expression": "educate",
+    "level": 1,
+    "synset": "02387486-verb"
+  },
+  {
+    "expression": "elect",
+    "level": 1,
+    "synset": "02400760-verb"
+  },
+  {
+    "expression": "emerge",
+    "level": 1,
+    "synset": "00423971-verb"
+  },
+  {
+    "expression": "enable",
+    "level": 1,
+    "synset": "00512877-verb"
+  },
+  {
+    "expression": "engage",
+    "level": 1,
+    "synset": "02375131-verb"
+  },
+  {
+    "expression": "enhance",
+    "level": 1,
+    "synset": "00229605-verb"
+  },
+  {
+    "expression": "enter",
+    "level": 1,
+    "synset": "02016523-verb"
+  },
+  {
+    "expression": "examine",
+    "level": 1,
+    "synset": "00644583-verb"
+  },
+  {
+    "expression": "exchange",
+    "level": 1,
+    "synset": "02257370-verb"
+  },
+  {
+    "expression": "exist",
+    "level": 1,
+    "synset": "02603699-verb"
+  },
+  {
+    "expression": "expect",
+    "level": 1,
+    "synset": "00719734-verb"
+  },
+  {
+    "expression": "explore",
+    "level": 1,
+    "synset": "00648224-verb"
+  },
+  {
+    "expression": "extend",
+    "level": 1,
+    "synset": "00540235-verb"
+  },
+  {
+    "expression": "fall",
+    "level": 1,
+    "synset": "01972298-verb"
+  },
+  {
+    "expression": "fill",
+    "level": 1,
+    "synset": "00452512-verb"
+  },
+  {
+    "expression": "find",
+    "level": 1,
+    "synset": "02248465-verb"
+  },
+  {
+    "expression": "fit",
+    "level": 1,
+    "synset": "02702830-verb"
+  },
+  {
+    "expression": "focus",
+    "level": 1,
+    "synset": "00722232-verb"
+  },
+  {
+    "expression": "force",
+    "level": 1,
+    "synset": "02504562-verb"
+  },
+  {
+    "expression": "gain",
+    "level": 1,
+    "synset": "02292125-verb"
+  },
+  {
+    "expression": "gather",
+    "level": 1,
+    "synset": "01380638-verb"
+  },
+  {
+    "expression": "grow",
+    "level": 1,
+    "synset": "00125841-verb"
+  },
+  {
+    "expression": "handle",
+    "level": 1,
+    "synset": "02436349-verb"
+  },
+  {
+    "expression": "harm",
+    "level": 1,
+    "synset": "00102586-verb"
+  },
+  {
+    "expression": "help",
+    "level": 1,
+    "synset": "02547586-verb"
+  },
+  {
+    "expression": "hold",
+    "level": 1,
+    "synset": "02681795-verb"
+  },
+  {
+    "expression": "imagine",
+    "level": 1,
+    "synset": "01636397-verb"
+  },
+  {
+    "expression": "include",
+    "level": 1,
+    "synset": "02632940-verb"
+  },
+  {
+    "expression": "inform",
+    "level": 1,
+    "synset": "00831651-verb"
+  },
+  {
+    "expression": "insist",
+    "level": 1,
+    "synset": "00818974-verb"
+  },
+  {
+    "expression": "intend",
+    "level": 1,
+    "synset": "00708538-verb"
+  },
+  {
+    "expression": "invite",
+    "level": 1,
+    "synset": "01063695-verb"
+  },
+  {
+    "expression": "join",
+    "level": 1,
+    "synset": "02434976-verb"
+  },
+  {
+    "expression": "last",
+    "level": 1,
+    "synset": "02704928-verb"
+  },
+  {
+    "expression": "lead",
+    "level": 1,
+    "synset": "01999798-verb"
+  },
+  {
+    "expression": "leave",
+    "level": 1,
+    "synset": "02009433-verb"
+  },
+  {
+    "expression": "lift",
+    "level": 1,
+    "synset": "01974062-verb"
+  },
+  {
+    "expression": "listen",
+    "level": 1,
+    "synset": "02169891-verb"
+  },
+  {
+    "expression": "locate",
+    "level": 1,
+    "synset": "02286204-verb"
+  },
+  {
+    "expression": "lose",
+    "level": 1,
+    "synset": "02287789-verb"
+  },
+  {
+    "expression": "meet",
+    "level": 1,
+    "synset": "02023107-verb"
+  },
+  {
+    "expression": "miss",
+    "level": 1,
+    "synset": "02127853-verb"
+  },
+  {
+    "expression": "negotiate",
+    "level": 1,
+    "synset": "00761713-verb"
+  },
+  {
+    "expression": "offer",
+    "level": 1,
+    "synset": "02296726-verb"
+  },
+  {
+    "expression": "operate",
+    "level": 1,
+    "synset": "02443849-verb"
+  },
+  {
+    "expression": "overcome",
+    "level": 1,
+    "synset": "01108148-verb"
+  },
+  {
+    "expression": "perform",
+    "level": 1,
+    "synset": "01712704-verb"
+  },
+  {
+    "expression": "persuade",
+    "level": 1,
+    "synset": "02586121-verb"
+  },
+  {
+    "expression": "play",
+    "level": 1,
+    "synset": "01072949-verb"
+  },
+  {
+    "expression": "practise",
+    "level": 1,
+    "synset": "01723224-verb"
+  },
+  {
+    "expression": "prepare",
+    "level": 1,
+    "synset": "00406243-verb"
+  },
+  {
+    "expression": "preserve",
+    "level": 1,
+    "synset": "02679899-verb"
+  },
+  {
+    "expression": "proceed",
+    "level": 1,
+    "synset": "01995549-verb"
+  },
+  {
+    "expression": "produce",
+    "level": 1,
+    "synset": "01752495-verb"
+  },
+  {
+    "expression": "protect",
+    "level": 1,
+    "synset": "01128193-verb"
+  },
+  {
+    "expression": "publish",
+    "level": 1,
+    "synset": "01745722-verb"
+  },
+  {
+    "expression": "pursue",
+    "level": 1,
+    "synset": "02375131-verb"
+  },
+  {
+    "expression": "reach",
+    "level": 1,
+    "synset": "02020590-verb"
+  },
+  {
+    "expression": "read",
+    "level": 1,
+    "synset": "00625119-verb"
+  },
+  {
+    "expression": "receive",
+    "level": 1,
+    "synset": "02210119-verb"
+  },
+  {
+    "expression": "recover",
+    "level": 1,
+    "synset": "02247977-verb"
+  },
+  {
+    "expression": "regard",
+    "level": 1,
+    "synset": "00690614-verb"
+  },
+  {
+    "expression": "reject",
+    "level": 1,
+    "synset": "00685683-verb"
+  },
+  {
+    "expression": "release",
+    "level": 1,
+    "synset": "01474550-verb"
+  },
+  {
+    "expression": "remember",
+    "level": 1,
+    "synset": "00607780-verb"
+  },
+  {
+    "expression": "renew",
+    "level": 1,
+    "synset": "01631072-verb"
+  },
+  {
+    "expression": "reply",
+    "level": 1,
+    "synset": "00815686-verb"
+  },
+  {
+    "expression": "represent",
+    "level": 1,
+    "synset": "02699497-verb"
+  },
+  {
+    "expression": "resolve",
+    "level": 1,
+    "synset": "00698855-verb"
+  },
+  {
+    "expression": "restrict",
+    "level": 1,
+    "synset": "00236592-verb"
+  },
+  {
+    "expression": "rise",
+    "level": 1,
+    "synset": "01968569-verb"
+  },
+  {
+    "expression": "search",
+    "level": 1,
+    "synset": "01315613-verb"
+  },
+  {
+    "expression": "seek",
+    "level": 1,
+    "synset": "02240481-verb"
+  },
+  {
+    "expression": "sell",
+    "level": 1,
+    "synset": "02242464-verb"
+  },
+  {
+    "expression": "separate",
+    "level": 1,
+    "synset": "02621853-verb"
+  },
+  {
+    "expression": "set",
+    "level": 1,
+    "synset": "01494310-verb"
+  },
+  {
+    "expression": "settle",
+    "level": 1,
+    "synset": "01988458-verb"
+  },
+  {
+    "expression": "shift",
+    "level": 1,
+    "synset": "00380159-verb"
+  },
+  {
+    "expression": "simplify",
+    "level": 1,
+    "synset": "00400427-verb"
+  },
+  {
+    "expression": "solve",
+    "level": 1,
+    "synset": "00634906-verb"
+  },
+  {
+    "expression": "spend",
+    "level": 1,
+    "synset": "02708420-verb"
+  },
+  {
+    "expression": "spread",
+    "level": 1,
+    "synset": "01378556-verb"
+  },
+  {
+    "expression": "stimulate",
+    "level": 1,
+    "synset": "00503164-verb"
+  },
+  {
+    "expression": "stress",
+    "level": 1,
+    "synset": "01013367-verb"
+  },
+  {
+    "expression": "struggle",
+    "level": 1,
+    "synset": "02407338-verb"
+  },
+  {
+    "expression": "succeed",
+    "level": 1,
+    "synset": "02524171-verb"
+  },
+  {
+    "expression": "suggest",
+    "level": 1,
+    "synset": "00875394-verb"
+  },
+  {
+    "expression": "supply",
+    "level": 1,
+    "synset": "02327200-verb"
+  },
+  {
+    "expression": "survive",
+    "level": 1,
+    "synset": "02618149-verb"
+  },
+  {
+    "expression": "teach",
+    "level": 1,
+    "synset": "00829107-verb"
+  },
+  {
+    "expression": "think",
+    "level": 1,
+    "synset": "00689344-verb"
+  },
+  {
+    "expression": "throw",
+    "level": 1,
+    "synset": "01508368-verb"
+  },
+  {
+    "expression": "train",
+    "level": 1,
+    "synset": "00603298-verb"
+  },
+  {
+    "expression": "travel",
+    "level": 1,
+    "synset": "01835496-verb"
+  },
+  {
+    "expression": "trust",
+    "level": 1,
+    "synset": "00688377-verb"
+  },
+  {
+    "expression": "try",
+    "level": 1,
+    "synset": "02530167-verb"
+  },
+  {
+    "expression": "unite",
+    "level": 1,
+    "synset": "02469835-verb"
+  },
+  {
+    "expression": "vary",
+    "level": 1,
+    "synset": "00123170-verb"
+  },
+  {
+    "expression": "vote",
+    "level": 1,
+    "synset": "02461314-verb"
+  },
+  {
+    "expression": "warn",
+    "level": 1,
+    "synset": "00870213-verb"
+  },
+  {
+    "expression": "watch",
+    "level": 1,
+    "synset": "02150510-verb"
+  },
+  {
+    "expression": "win",
+    "level": 1,
+    "synset": "01100145-verb"
+  },
+  {
+    "expression": "write",
+    "level": 1,
+    "synset": "01698271-verb"
+  },
+  {
+    "expression": "additional",
+    "level": 1,
+    "synset": "00048858-adj"
+  },
+  {
+    "expression": "alive",
+    "level": 1,
+    "synset": "00094448-adj"
+  },
+  {
+    "expression": "ambitious",
+    "level": 1,
+    "synset": "00104051-adj"
+  },
+  {
+    "expression": "artificial",
+    "level": 1,
+    "synset": "01571363-adj"
+  },
+  {
+    "expression": "aware",
+    "level": 1,
+    "synset": "00190115-adj"
+  },
+  {
+    "expression": "broad",
+    "level": 1,
+    "synset": "02560548-adj"
+  },
+  {
+    "expression": "careful",
+    "level": 1,
+    "synset": "00309021-adj"
+  },
+  {
+    "expression": "central",
+    "level": 1,
+    "synset": "01277097-adj"
+  },
+  {
+    "expression": "civil",
+    "level": 1,
+    "synset": "01518161-adj"
+  },
+  {
+    "expression": "complex",
+    "level": 1,
+    "synset": "02176178-adj"
+  },
+  {
+    "expression": "confident",
+    "level": 1,
+    "synset": "00338817-adj"
+  },
+  {
+    "expression": "conscious",
+    "level": 1,
+    "synset": "00570590-adj"
+  },
+  {
+    "expression": "contemporary",
+    "level": 1,
+    "synset": "01536094-adj"
+  },
+  {
+    "expression": "corporate",
+    "level": 1,
+    "synset": "02984781-adj"
+  },
+  {
+    "expression": "critical",
+    "level": 1,
+    "synset": "00647542-adj"
+  },
+  {
+    "expression": "daily",
+    "level": 1,
+    "synset": "01968165-adj"
+  },
+  {
+    "expression": "dangerous",
+    "level": 1,
+    "synset": "02058794-adj"
+  },
+  {
+    "expression": "dependent",
+    "level": 1,
+    "synset": "00725772-adj"
+  },
+  {
+    "expression": "determined",
+    "level": 1,
+    "synset": "01990373-adj"
+  },
+  {
+    "expression": "difficult",
+    "level": 1,
+    "synset": "00744916-adj"
+  },
+  {
+    "expression": "distant",
+    "level": 1,
+    "synset": "00445548-adj"
+  },
+  {
+    "expression": "distinct",
+    "level": 1,
+    "synset": "02067063-adj"
+  },
+  {
+    "expression": "educational",
+    "level": 1,
+    "synset": "02946221-adj"
+  },
+  {
+    "expression": "electronic",
+    "level": 1,
+    "synset": "02718497-adj"
+  },
+  {
+    "expression": "equal",
+    "level": 1,
+    "synset": "00889831-adj"
+  },
+  {
+    "expression": "evident",
+    "level": 1,
+    "synset": "01618376-adj"
+  },
+  {
+    "expression": "exact",
+    "level": 1,
+    "synset": "00914421-adj"
+  },
+  {
+    "expression": "expensive",
+    "level": 1,
+    "synset": "00933154-adj"
+  },
+  {
+    "expression": "extensive",
+    "level": 1,
+    "synset": "01386234-adj"
+  },
+  {
+    "expression": "familiar",
+    "level": 1,
+    "synset": "00965606-adj"
+  },
+  {
+    "expression": "famous",
+    "level": 1,
+    "synset": "01375831-adj"
+  },
+  {
+    "expression": "favourable",
+    "level": 1,
+    "synset": "00995775-adj"
+  },
+  {
+    "expression": "foreign",
+    "level": 1,
+    "synset": "01037540-adj"
+  },
+  {
+    "expression": "frequent",
+    "level": 1,
+    "synset": "01066542-adj"
+  },
+  {
+    "expression": "friendly",
+    "level": 1,
+    "synset": "01074650-adj"
+  },
+  {
+    "expression": "fundamental",
+    "level": 1,
+    "synset": "01277097-adj"
+  },
+  {
+    "expression": "healthy",
+    "level": 1,
+    "synset": "01170243-adj"
+  },
+  {
+    "expression": "historical",
+    "level": 1,
+    "synset": "02920121-adj"
+  },
+  {
+    "expression": "ideal",
+    "level": 1,
+    "synset": "01751201-adj"
+  },
+  {
+    "expression": "important",
+    "level": 1,
+    "synset": "01275562-adj"
+  },
+  {
+    "expression": "impossible",
+    "level": 1,
+    "synset": "01823092-adj"
+  },
+  {
+    "expression": "improved",
+    "level": 1,
+    "synset": "01288396-adj"
+  },
+  {
+    "expression": "informal",
+    "level": 1,
+    "synset": "01044240-adj"
+  },
+  {
+    "expression": "international",
+    "level": 1,
+    "synset": "01568375-adj"
+  },
+  {
+    "expression": "leading",
+    "level": 1,
+    "synset": "02339341-adj"
+  },
+  {
+    "expression": "likely",
+    "level": 1,
+    "synset": "01411451-adj"
+  },
+  {
+    "expression": "local",
+    "level": 1,
+    "synset": "01106405-adj"
+  },
+  {
+    "expression": "mental",
+    "level": 1,
+    "synset": "01779986-adj"
+  },
+  {
+    "expression": "modern",
+    "level": 1,
+    "synset": "01535709-adj"
+  },
+  {
+    "expression": "national",
+    "level": 1,
+    "synset": "02988060-adj"
+  },
+  {
+    "expression": "necessary",
+    "level": 1,
+    "synset": "01580050-adj"
+  },
+  {
+    "expression": "official",
+    "level": 1,
+    "synset": "01632537-adj"
+  },
+  {
+    "expression": "original",
+    "level": 1,
+    "synset": "01012503-adj"
+  },
+  {
+    "expression": "particular",
+    "level": 1,
+    "synset": "01104026-adj"
+  },
+  {
+    "expression": "personal",
+    "level": 1,
+    "synset": "01767329-adj"
+  },
+  {
+    "expression": "pleasant",
+    "level": 1,
+    "synset": "01800349-adj"
+  },
+  {
+    "expression": "popular",
+    "level": 1,
+    "synset": "01815838-adj"
+  },
+  {
+    "expression": "powerful",
+    "level": 1,
+    "synset": "01825671-adj"
+  },
+  {
+    "expression": "primary",
+    "level": 1,
+    "synset": "01852174-adj"
+  },
+  {
+    "expression": "private",
+    "level": 1,
+    "synset": "01858094-adj"
+  },
+  {
+    "expression": "public",
+    "level": 1,
+    "synset": "01861205-adj"
+  },
+  {
+    "expression": "ready",
+    "level": 1,
+    "synset": "01930512-adj"
+  },
+  {
+    "expression": "recent",
+    "level": 1,
+    "synset": "01642477-adj"
+  },
+  {
+    "expression": "remarkable",
+    "level": 1,
+    "synset": "01678417-adj"
+  },
+  {
+    "expression": "remote",
+    "level": 1,
+    "synset": "00442917-adj"
+  },
+  {
+    "expression": "rich",
+    "level": 1,
+    "synset": "02021905-adj"
+  },
+  {
+    "expression": "scientific",
+    "level": 1,
+    "synset": "02793273-adj"
+  },
+  {
+    "expression": "serious",
+    "level": 1,
+    "synset": "02118379-adj"
+  },
+  {
+    "expression": "severe",
+    "level": 1,
+    "synset": "01513050-adj"
+  },
+  {
+    "expression": "simple",
+    "level": 1,
+    "synset": "02174896-adj"
+  },
+  {
+    "expression": "slow",
+    "level": 1,
+    "synset": "00980527-adj"
+  },
+  {
+    "expression": "solid",
+    "level": 1,
+    "synset": "02260035-adj"
+  },
+  {
+    "expression": "stable",
+    "level": 1,
+    "synset": "02290998-adj"
+  },
+  {
+    "expression": "statistical",
+    "level": 1,
+    "synset": "02911627-adj"
+  },
+  {
+    "expression": "suitable",
+    "level": 1,
+    "synset": "01020885-adj"
+  },
+  {
+    "expression": "traditional",
+    "level": 1,
+    "synset": "00611047-adj"
+  },
+  {
+    "expression": "underlying",
+    "level": 1,
+    "synset": "00941940-adj"
+  },
+  {
+    "expression": "universal",
+    "level": 1,
+    "synset": "00527188-adj"
+  },
+  {
+    "expression": "useful",
+    "level": 1,
+    "synset": "02495922-adj"
+  },
+  {
+    "expression": "various",
+    "level": 1,
+    "synset": "02065665-adj"
+  },
+  {
+    "expression": "vital",
+    "level": 1,
+    "synset": "00903894-adj"
+  },
+  {
+    "expression": "western",
+    "level": 1,
+    "synset": "00825089-adj"
+  },
+  {
+    "expression": "abundance",
+    "level": 2,
+    "synset": "05115040-noun"
+  },
+  {
+    "expression": "acceptance",
+    "level": 2,
+    "synset": "06193727-noun"
+  },
+  {
+    "expression": "accessibility",
+    "level": 2,
+    "synset": "04718999-noun"
+  },
+  {
+    "expression": "accumulation",
+    "level": 2,
+    "synset": "13424865-noun"
+  },
+  {
+    "expression": "accuracy",
+    "level": 2,
+    "synset": "04802907-noun"
+  },
+  {
+    "expression": "administration",
+    "level": 2,
+    "synset": "01135952-noun"
+  },
+  {
+    "expression": "admission",
+    "level": 2,
+    "synset": "01248191-noun"
+  },
+  {
+    "expression": "adoption",
+    "level": 2,
+    "synset": "00180413-noun"
+  },
+  {
+    "expression": "adversity",
+    "level": 2,
+    "synset": "14475661-noun"
+  },
+  {
+    "expression": "aesthetic",
+    "level": 2,
+    "synset": "02991287-adj"
+  },
+  {
+    "expression": "agenda",
+    "level": 2,
+    "synset": "05910940-noun"
+  },
+  {
+    "expression": "alliance",
+    "level": 2,
+    "synset": "14418822-noun"
+  },
+  {
+    "expression": "allocation",
+    "level": 2,
+    "synset": "13289467-noun"
+  },
+  {
+    "expression": "analogy",
+    "level": 2,
+    "synset": "05780339-noun"
+  },
+  {
+    "expression": "analysis",
+    "level": 2,
+    "synset": "00634276-noun"
+  },
+  {
+    "expression": "anthropology",
+    "level": 2,
+    "synset": "06143546-noun"
+  },
+  {
+    "expression": "anxiety",
+    "level": 2,
+    "synset": "07523905-noun"
+  },
+  {
+    "expression": "architecture",
+    "level": 2,
+    "synset": "06123363-noun"
+  },
+  {
+    "expression": "aspiration",
+    "level": 2,
+    "synset": "04836491-noun"
+  },
+  {
+    "expression": "assertion",
+    "level": 2,
+    "synset": "06729499-noun"
+  },
+  {
+    "expression": "association",
+    "level": 2,
+    "synset": "08049401-noun"
+  },
+  {
+    "expression": "assumption",
+    "level": 2,
+    "synset": "06753800-noun"
+  },
+  {
+    "expression": "attainment",
+    "level": 2,
+    "synset": "00062806-noun"
+  },
+  {
+    "expression": "attraction",
+    "level": 2,
+    "synset": "11426530-noun"
+  },
+  {
+    "expression": "authority",
+    "level": 2,
+    "synset": "05196582-noun"
+  },
+  {
+    "expression": "awareness",
+    "level": 2,
+    "synset": "05675905-noun"
+  },
+  {
+    "expression": "barrier",
+    "level": 2,
+    "synset": "02796623-noun"
+  },
+  {
+    "expression": "biology",
+    "level": 2,
+    "synset": "06037666-noun"
+  },
+  {
+    "expression": "boundary",
+    "level": 2,
+    "synset": "08512259-noun"
+  },
+  {
+    "expression": "capability",
+    "level": 2,
+    "synset": "05202497-noun"
+  },
+  {
+    "expression": "capitalism",
+    "level": 2,
+    "synset": "08364143-noun"
+  },
+  {
+    "expression": "casualty",
+    "level": 2,
+    "synset": "09899671-noun"
+  },
+  {
+    "expression": "citizenship",
+    "level": 2,
+    "synset": "13953467-noun"
+  },
+  {
+    "expression": "civilization",
+    "level": 2,
+    "synset": "08111783-noun"
+  },
+  {
+    "expression": "coalition",
+    "level": 2,
+    "synset": "08293982-noun"
+  },
+  {
+    "expression": "cognition",
+    "level": 2,
+    "synset": "00023271-noun"
+  },
+  {
+    "expression": "coherence",
+    "level": 2,
+    "synset": "04821277-noun"
+  },
+  {
+    "expression": "commitment",
+    "level": 2,
+    "synset": "04646990-noun"
+  },
+  {
+    "expression": "communication",
+    "level": 2,
+    "synset": "06252138-noun"
+  },
+  {
+    "expression": "competence",
+    "level": 2,
+    "synset": "05153520-noun"
+  },
+  {
+    "expression": "component",
+    "level": 2,
+    "synset": "05868954-noun"
+  },
+  {
+    "expression": "comprehension",
+    "level": 2,
+    "synset": "05805902-noun"
+  },
+  {
+    "expression": "compromise",
+    "level": 2,
+    "synset": "01205564-noun"
+  },
+  {
+    "expression": "concentration",
+    "level": 2,
+    "synset": "05704266-noun"
+  },
+  {
+    "expression": "conclusion",
+    "level": 2,
+    "synset": "05838176-noun"
+  },
+  {
+    "expression": "configuration",
+    "level": 2,
+    "synset": "05731779-noun"
+  },
+  {
+    "expression": "conformity",
+    "level": 2,
+    "synset": "04713692-noun"
+  },
+  {
+    "expression": "consciousness",
+    "level": 2,
+    "synset": "05675130-noun"
+  },
+  {
+    "expression": "consent",
+    "level": 2,
+    "synset": "06689667-noun"
+  },
+  {
+    "expression": "constitution",
+    "level": 2,
+    "synset": "06533648-noun"
+  },
+  {
+    "expression": "consultation",
+    "level": 2,
+    "synset": "07143624-noun"
+  },
+  {
+    "expression": "content",
+    "level": 2,
+    "synset": "07955057-noun"
+  },
+  {
+    "expression": "context",
+    "level": 2,
+    "synset": "06284898-noun"
+  },
+  {
+    "expression": "contradiction",
+    "level": 2,
+    "synset": "13857676-noun"
+  },
+  {
+    "expression": "convention",
+    "level": 2,
+    "synset": "08309086-noun"
+  },
+  {
+    "expression": "cooperation",
+    "level": 2,
+    "synset": "01202904-noun"
+  },
+  {
+    "expression": "corporation",
+    "level": 2,
+    "synset": "08059412-noun"
+  },
+  {
+    "expression": "counterpart",
+    "level": 2,
+    "synset": "05695806-noun"
+  },
+  {
+    "expression": "criticism",
+    "level": 2,
+    "synset": "06710546-noun"
+  },
+  {
+    "expression": "cultivation",
+    "level": 2,
+    "synset": "00916023-noun"
+  },
+  {
+    "expression": "curiosity",
+    "level": 2,
+    "synset": "05682570-noun"
+  },
+  {
+    "expression": "decentralization",
+    "level": 2,
+    "synset": "13457181-noun"
+  },
+  {
+    "expression": "deduction",
+    "level": 2,
+    "synset": "05774129-noun"
+  },
+  {
+    "expression": "delegation",
+    "level": 2,
+    "synset": "01140839-noun"
+  },
+  {
+    "expression": "deliberation",
+    "level": 2,
+    "synset": "07142365-noun"
+  },
+  {
+    "expression": "depression",
+    "level": 2,
+    "synset": "14404160-noun"
+  },
+  {
+    "expression": "derivative",
+    "level": 2,
+    "synset": "00698586-adj"
+  },
+  {
+    "expression": "diagnosis",
+    "level": 2,
+    "synset": "00152727-noun"
+  },
+  {
+    "expression": "dimension",
+    "level": 2,
+    "synset": "05093581-noun"
+  },
+  {
+    "expression": "discipline",
+    "level": 2,
+    "synset": "05996646-noun"
+  },
+  {
+    "expression": "discovery",
+    "level": 2,
+    "synset": "00043195-noun"
+  },
+  {
+    "expression": "disruption",
+    "level": 2,
+    "synset": "00383952-noun"
+  },
+  {
+    "expression": "distribution",
+    "level": 2,
+    "synset": "01083077-noun"
+  },
+  {
+    "expression": "dominance",
+    "level": 2,
+    "synset": "14441825-noun"
+  },
+  {
+    "expression": "duration",
+    "level": 2,
+    "synset": "15133621-noun"
+  },
+  {
+    "expression": "ecology",
+    "level": 2,
+    "synset": "14513062-noun"
+  },
+  {
+    "expression": "economics",
+    "level": 2,
+    "synset": "06149484-noun"
+  },
+  {
+    "expression": "eligibility",
+    "level": 2,
+    "synset": "04717552-noun"
+  },
+  {
+    "expression": "emergence",
+    "level": 2,
+    "synset": "07324673-noun"
+  },
+  {
+    "expression": "emphasis",
+    "level": 2,
+    "synset": "14434866-noun"
+  },
+  {
+    "expression": "enforcement",
+    "level": 2,
+    "synset": "01127019-noun"
+  },
+  {
+    "expression": "enhancement",
+    "level": 2,
+    "synset": "00265992-noun"
+  },
+  {
+    "expression": "entitlement",
+    "level": 2,
+    "synset": "05181754-noun"
+  },
+  {
+    "expression": "equivalence",
+    "level": 2,
+    "synset": "13946760-noun"
+  },
+  {
+    "expression": "evaluation",
+    "level": 2,
+    "synset": "00874806-noun"
+  },
+  {
+    "expression": "excellence",
+    "level": 2,
+    "synset": "04728786-noun"
+  },
+  {
+    "expression": "exclusion",
+    "level": 2,
+    "synset": "13935227-noun"
+  },
+  {
+    "expression": "expectation",
+    "level": 2,
+    "synset": "05944958-noun"
+  },
+  {
+    "expression": "experiment",
+    "level": 2,
+    "synset": "00639556-noun"
+  },
+  {
+    "expression": "exploration",
+    "level": 2,
+    "synset": "00310063-noun"
+  },
+  {
+    "expression": "export",
+    "level": 2,
+    "synset": "03306207-noun"
+  },
+  {
+    "expression": "extension",
+    "level": 2,
+    "synset": "15272382-noun"
+  },
+  {
+    "expression": "extraction",
+    "level": 2,
+    "synset": "13478525-noun"
+  },
+  {
+    "expression": "factor",
+    "level": 2,
+    "synset": "07327805-noun"
+  },
+  {
+    "expression": "feedback",
+    "level": 2,
+    "synset": "06746471-noun"
+  },
+  {
+    "expression": "fertility",
+    "level": 2,
+    "synset": "15276427-noun"
+  },
+  {
+    "expression": "finance",
+    "level": 2,
+    "synset": "01098698-noun"
+  },
+  {
+    "expression": "forecast",
+    "level": 2,
+    "synset": "06749881-noun"
+  },
+  {
+    "expression": "formation",
+    "level": 2,
+    "synset": "08426461-noun"
+  },
+  {
+    "expression": "frequency",
+    "level": 2,
+    "synset": "15278281-noun"
+  },
+  {
+    "expression": "friction",
+    "level": 2,
+    "synset": "13981137-noun"
+  },
+  {
+    "expression": "funding",
+    "level": 2,
+    "synset": "13365698-noun"
+  },
+  {
+    "expression": "demography",
+    "level": 2,
+    "synset": "06152125-noun"
+  },
+  {
+    "expression": "geography",
+    "level": 2,
+    "synset": "06122178-noun"
+  },
+  {
+    "expression": "hierarchy",
+    "level": 2,
+    "synset": "08377806-noun"
+  },
+  {
+    "expression": "humanity",
+    "level": 2,
+    "synset": "04829182-noun"
+  },
+  {
+    "expression": "ideology",
+    "level": 2,
+    "synset": "06212839-noun"
+  },
+  {
+    "expression": "illumination",
+    "level": 2,
+    "synset": "07171206-noun"
+  },
+  {
+    "expression": "immigration",
+    "level": 2,
+    "synset": "00056311-noun"
+  },
+  {
+    "expression": "indication",
+    "level": 2,
+    "synset": "06797169-noun"
+  },
+  {
+    "expression": "individuality",
+    "level": 2,
+    "synset": "04763293-noun"
+  },
+  {
+    "expression": "ingredient",
+    "level": 2,
+    "synset": "03570709-noun"
+  },
+  {
+    "expression": "initiative",
+    "level": 2,
+    "synset": "04836074-noun"
+  },
+  {
+    "expression": "institution",
+    "level": 2,
+    "synset": "08053576-noun"
+  },
+  {
+    "expression": "interaction",
+    "level": 2,
+    "synset": "00039021-noun"
+  },
+  {
+    "expression": "interpretation",
+    "level": 2,
+    "synset": "05928513-noun"
+  },
+  {
+    "expression": "isolation",
+    "level": 2,
+    "synset": "14414715-noun"
+  },
+  {
+    "expression": "justification",
+    "level": 2,
+    "synset": "05823054-noun"
+  },
+  {
+    "expression": "liberalisation",
+    "level": 2,
+    "synset": "00355691-noun"
+  },
+  {
+    "expression": "limitation",
+    "level": 2,
+    "synset": "05846355-noun"
+  },
+  {
+    "expression": "linguistics",
+    "level": 2,
+    "synset": "06172789-noun"
+  },
+  {
+    "expression": "magnitude",
+    "level": 2,
+    "synset": "05090441-noun"
+  },
+  {
+    "expression": "maintenance",
+    "level": 2,
+    "synset": "00267522-noun"
+  },
+  {
+    "expression": "manufacture",
+    "level": 2,
+    "synset": "00923444-noun"
+  },
+  {
+    "expression": "mathematics",
+    "level": 2,
+    "synset": "06000644-noun"
+  },
+  {
+    "expression": "mechanism",
+    "level": 2,
+    "synset": "00098385-noun"
+  },
+  {
+    "expression": "medium",
+    "level": 2,
+    "synset": "06254669-noun"
+  },
+  {
+    "expression": "methodology",
+    "level": 2,
+    "synset": "05661400-noun"
+  },
+  {
+    "expression": "modernisation",
+    "level": 2,
+    "synset": "00264913-noun"
+  },
+  {
+    "expression": "modification",
+    "level": 2,
+    "synset": "00199707-noun"
+  },
+  {
+    "expression": "necessity",
+    "level": 2,
+    "synset": "14450691-noun"
+  },
+  {
+    "expression": "neuroscience",
+    "level": 2,
+    "synset": "06081833-noun"
+  },
+  {
+    "expression": "norm",
+    "level": 2,
+    "synset": "13854488-noun"
+  },
+  {
+    "expression": "observation",
+    "level": 2,
+    "synset": "01002956-noun"
+  },
+  {
+    "expression": "obstacle",
+    "level": 2,
+    "synset": "05690269-noun"
+  },
+  {
+    "expression": "occurrence",
+    "level": 2,
+    "synset": "07283608-noun"
+  },
+  {
+    "expression": "operation",
+    "level": 2,
+    "synset": "00577068-noun"
+  },
+  {
+    "expression": "orientation",
+    "level": 2,
+    "synset": "01052372-noun"
+  },
+  {
+    "expression": "origin",
+    "level": 2,
+    "synset": "08507558-noun"
+  },
+  {
+    "expression": "ownership",
+    "level": 2,
+    "synset": "13240514-noun"
+  },
+  {
+    "expression": "partnership",
+    "level": 2,
+    "synset": "08060694-noun"
+  },
+  {
+    "expression": "patent",
+    "level": 2,
+    "synset": "06501141-noun"
+  },
+  {
+    "expression": "persistence",
+    "level": 2,
+    "synset": "05054130-noun"
+  },
+  {
+    "expression": "philosophy",
+    "level": 2,
+    "synset": "06158346-noun"
+  },
+  {
+    "expression": "planning",
+    "level": 2,
+    "synset": "01144133-noun"
+  },
+  {
+    "expression": "pragmatism",
+    "level": 2,
+    "synset": "05974798-noun"
+  },
+  {
+    "expression": "precaution",
+    "level": 2,
+    "synset": "00822970-noun"
+  },
+  {
+    "expression": "precision",
+    "level": 2,
+    "synset": "04803880-noun"
+  },
+  {
+    "expression": "preference",
+    "level": 2,
+    "synset": "07498210-noun"
+  },
+  {
+    "expression": "prestige",
+    "level": 2,
+    "synset": "14435809-noun"
+  },
+  {
+    "expression": "prevention",
+    "level": 2,
+    "synset": "01077350-noun"
+  },
+  {
+    "expression": "probability",
+    "level": 2,
+    "synset": "05091770-noun"
+  },
+  {
+    "expression": "profession",
+    "level": 2,
+    "synset": "00609953-noun"
+  },
+  {
+    "expression": "profitability",
+    "level": 2,
+    "synset": "05157866-noun"
+  },
+  {
+    "expression": "prominence",
+    "level": 2,
+    "synset": "14433587-noun"
+  },
+  {
+    "expression": "promotion",
+    "level": 2,
+    "synset": "07247071-noun"
+  },
+  {
+    "expression": "provision",
+    "level": 2,
+    "synset": "01057200-noun"
+  },
+  {
+    "expression": "publication",
+    "level": 2,
+    "synset": "06589574-noun"
+  },
+  {
+    "expression": "pursuit",
+    "level": 2,
+    "synset": "00319939-noun"
+  },
+  {
+    "expression": "recognition",
+    "level": 2,
+    "synset": "14411981-noun"
+  },
+  {
+    "expression": "recovery",
+    "level": 2,
+    "synset": "07419792-noun"
+  },
+  {
+    "expression": "reduction",
+    "level": 2,
+    "synset": "00351638-noun"
+  },
+  {
+    "expression": "reform",
+    "level": 2,
+    "synset": "00260622-noun"
+  },
+  {
+    "expression": "refugee",
+    "level": 2,
+    "synset": "10516016-noun"
+  },
+  {
+    "expression": "relevance",
+    "level": 2,
+    "synset": "13794417-noun"
+  },
+  {
+    "expression": "renewal",
+    "level": 2,
+    "synset": "01248852-noun"
+  },
+  {
+    "expression": "reproduction",
+    "level": 2,
+    "synset": "13550318-noun"
+  },
+  {
+    "expression": "requirement",
+    "level": 2,
+    "synset": "05892651-noun"
+  },
+  {
+    "expression": "resolution",
+    "level": 2,
+    "synset": "06511874-noun"
+  },
+  {
+    "expression": "retention",
+    "level": 2,
+    "synset": "00810598-noun"
+  },
+  {
+    "expression": "revenue",
+    "level": 2,
+    "synset": "13256691-noun"
+  },
+  {
+    "expression": "revolution",
+    "level": 2,
+    "synset": "07424109-noun"
+  },
+  {
+    "expression": "rhetoric",
+    "level": 2,
+    "synset": "07072698-noun"
+  },
+  {
+    "expression": "selection",
+    "level": 2,
+    "synset": "00161243-noun"
+  },
+  {
+    "expression": "sensitivity",
+    "level": 2,
+    "synset": "04842993-noun"
+  },
+  {
+    "expression": "sequence",
+    "level": 2,
+    "synset": "08459252-noun"
+  },
+  {
+    "expression": "similarity",
+    "level": 2,
+    "synset": "04743605-noun"
+  },
+  {
+    "expression": "significance",
+    "level": 2,
+    "synset": "05169813-noun"
+  },
+  {
+    "expression": "solidarity",
+    "level": 2,
+    "synset": "04765038-noun"
+  },
+  {
+    "expression": "spectrum",
+    "level": 2,
+    "synset": "05128219-noun"
+  },
+  {
+    "expression": "stability",
+    "level": 2,
+    "synset": "04778401-noun"
+  },
+  {
+    "expression": "stimulation",
+    "level": 2,
+    "synset": "01261974-noun"
+  },
+  {
+    "expression": "stock",
+    "level": 2,
+    "synset": "04321534-noun"
+  },
+  {
+    "expression": "sufficiency",
+    "level": 2,
+    "synset": "14492953-noun"
+  },
+  {
+    "expression": "supervision",
+    "level": 2,
+    "synset": "01135529-noun"
+  },
+  {
+    "expression": "synthesis",
+    "level": 2,
+    "synset": "05783940-noun"
+  },
+  {
+    "expression": "taxation",
+    "level": 2,
+    "synset": "13308999-noun"
+  },
+  {
+    "expression": "tendency",
+    "level": 2,
+    "synset": "06196584-noun"
+  },
+  {
+    "expression": "threshold",
+    "level": 2,
+    "synset": "15268993-noun"
+  },
+  {
+    "expression": "transaction",
+    "level": 2,
+    "synset": "01106808-noun"
+  },
+  {
+    "expression": "uncertainty",
+    "level": 2,
+    "synset": "04756887-noun"
+  },
+  {
+    "expression": "understanding",
+    "level": 2,
+    "synset": "05805475-noun"
+  },
+  {
+    "expression": "unity",
+    "level": 2,
+    "synset": "14460565-noun"
+  },
+  {
+    "expression": "variation",
+    "level": 2,
+    "synset": "07337390-noun"
+  },
+  {
+    "expression": "vegetation",
+    "level": 2,
+    "synset": "08436759-noun"
+  },
+  {
+    "expression": "virtue",
+    "level": 2,
+    "synset": "04847298-noun"
+  },
+  {
+    "expression": "vision",
+    "level": 2,
+    "synset": "05768252-noun"
+  },
+  {
+    "expression": "wage",
+    "level": 2,
+    "synset": "13279262-noun"
+  },
+  {
+    "expression": "wealth",
+    "level": 2,
+    "synset": "14491271-noun"
+  },
+  {
+    "expression": "willingness",
+    "level": 2,
+    "synset": "04644512-noun"
+  },
+  {
+    "expression": "adequacy",
+    "level": 2,
+    "synset": "04792357-noun"
+  },
+  {
+    "expression": "adherence",
+    "level": 2,
+    "synset": "01212882-noun"
+  },
+  {
+    "expression": "anonymity",
+    "level": 2,
+    "synset": "14436285-noun"
+  },
+  {
+    "expression": "anticipation",
+    "level": 2,
+    "synset": "07511080-noun"
+  },
+  {
+    "expression": "applicability",
+    "level": 2,
+    "synset": "13795180-noun"
+  },
+  {
+    "expression": "authenticity",
+    "level": 2,
+    "synset": "04783247-noun"
+  },
+  {
+    "expression": "benchmark",
+    "level": 2,
+    "synset": "07261143-noun"
+  },
+  {
+    "expression": "clarity",
+    "level": 2,
+    "synset": "04820258-noun"
+  },
+  {
+    "expression": "compatibility",
+    "level": 2,
+    "synset": "07554758-noun"
+  },
+  {
+    "expression": "convergence",
+    "level": 2,
+    "synset": "07414740-noun"
+  },
+  {
+    "expression": "conviction",
+    "level": 2,
+    "synset": "05942888-noun"
+  },
+  {
+    "expression": "deficiency",
+    "level": 2,
+    "synset": "14449405-noun"
+  },
+  {
+    "expression": "durability",
+    "level": 2,
+    "synset": "05053688-noun"
+  },
+  {
+    "expression": "efficacy",
+    "level": 2,
+    "synset": "05199869-noun"
+  },
+  {
+    "expression": "equilibrium",
+    "level": 2,
+    "synset": "13934900-noun"
+  },
+  {
+    "expression": "fidelity",
+    "level": 2,
+    "synset": "04876985-noun"
+  },
+  {
+    "expression": "impartiality",
+    "level": 2,
+    "synset": "06202686-noun"
+  },
+  {
+    "expression": "legitimacy",
+    "level": 2,
+    "synset": "04810035-noun"
+  },
+  {
+    "expression": "mediation",
+    "level": 2,
+    "synset": "07150644-noun"
+  },
+  {
+    "expression": "objectivity",
+    "level": 2,
+    "synset": "04892344-noun"
+  },
+  {
+    "expression": "omission",
+    "level": 2,
+    "synset": "00074624-noun"
+  },
+  {
+    "expression": "perseverance",
+    "level": 2,
+    "synset": "04864515-noun"
+  },
+  {
+    "expression": "plausibility",
+    "level": 2,
+    "synset": "04783724-noun"
+  },
+  {
+    "expression": "predictability",
+    "level": 2,
+    "synset": "04756025-noun"
+  },
+  {
+    "expression": "reliability",
+    "level": 2,
+    "synset": "04670022-noun"
+  },
+  {
+    "expression": "responsiveness",
+    "level": 2,
+    "synset": "05653575-noun"
+  },
+  {
+    "expression": "restraint",
+    "level": 2,
+    "synset": "01145359-noun"
+  },
+  {
+    "expression": "rigour",
+    "level": 2,
+    "synset": "04783567-noun"
+  },
+  {
+    "expression": "scrutiny",
+    "level": 2,
+    "synset": "00635850-noun"
+  },
+  {
+    "expression": "spontaneity",
+    "level": 2,
+    "synset": "04786763-noun"
+  },
+  {
+    "expression": "uniformity",
+    "level": 2,
+    "synset": "04769049-noun"
+  },
+  {
+    "expression": "versatility",
+    "level": 2,
+    "synset": "05641834-noun"
+  },
+  {
+    "expression": "viability",
+    "level": 2,
+    "synset": "05056234-noun"
+  }
+]

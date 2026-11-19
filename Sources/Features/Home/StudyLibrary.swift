@@ -1,8 +1,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-/// Original study material. The levels are learning guides, not official IELTS lists.
-struct StarterWord: Identifiable {
+/// Original study material plus a curated, licensed WordNet subset. Levels are learning guides.
+struct StarterWord: Identifiable, Decodable {
     let expression: String
     let definition: String
     let example: String
@@ -10,12 +10,20 @@ struct StarterWord: Identifiable {
     var id: String { expression }
     var context: String { expression + "\n" + definition + "\n" + example }
     static let levels = ["Foundation · 4–5", "Developing · 5.5–6.5", "Advanced · 7+"]
-    static let all: [Self] = groups.enumerated().flatMap { level, group in
+    private static let original: [Self] = groups.enumerated().flatMap { level, group in
         group.split(separator: "\n").map { line in
             let fields = line.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
             return Self(expression: fields[0], definition: fields[1], example: fields[2], level: level)
         }
     }
+    static let imported: [Self] = {
+        guard let url = Bundle.main.url(forResource: "WordNet", withExtension: "json", subdirectory: "Vocabulary"),
+              let data = try? Data(contentsOf: url),
+              let words = try? JSONDecoder().decode([Self].self, from: data) else { return [] }
+        return words
+    }()
+    static let all = original + imported
+
     private static let groups = [
     """
     accommodation|A place where you live or stay.|The college offers affordable accommodation near the campus.
@@ -90,9 +98,10 @@ struct VocabularyLibraryScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var level = 0
     @State private var selected: StarterWord?
+    @State private var search = ""
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            LazyVStack(alignment: .leading, spacing: 20) {
                 Label(String(localized: "Available offline"), systemImage: "checkmark.circle.fill")
                     .font(StudyTypography.subheadline).foregroundStyle(StudyColors.accent)
                 Text(String(localized: "Study levels are a guide, not official IELTS word lists."))
@@ -106,11 +115,11 @@ struct VocabularyLibraryScreen: View {
                         }.padding(16).background(level == index ? StudyColors.reading : StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                     }.buttonStyle(.plain).accessibilityIdentifier("library.level.\(index)")
                 }
-                ForEach(StarterWord.all.filter { $0.level == level }) { word in
+                ForEach(StarterWord.all.filter { $0.level == level && (search.isEmpty || $0.expression.localizedCaseInsensitiveContains(search) || $0.definition.localizedCaseInsensitiveContains(search)) }) { word in
                     VStack(alignment: .leading, spacing: 12) {
                         Text(word.expression).font(StudyTypography.heading).textSelection(.enabled)
                         Text(word.definition).font(StudyTypography.body).textSelection(.enabled)
-                        Text(word.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText).textSelection(.enabled)
+                        if !word.example.isEmpty { Text(word.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { selected = word }
                             .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("library.ask.\(word.id)")
                     }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
@@ -118,6 +127,7 @@ struct VocabularyLibraryScreen: View {
                 }
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationTitle(String(localized: "IELTS word library")).navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $search)
             .sheet(item: $selected, onDismiss: { store.send(.closeQuestion) }) { word in
                 TutorScreen(store: store, context: word.context, selectedText: word.expression, vocabularyMode: true)
             }
@@ -197,5 +207,83 @@ struct OfflineLibraryScreen: View {
                 }
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationTitle(String(localized: "Offline practice")).navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Offline recall prompts: saved context takes priority; no generated definitions or API calls.
+struct WaitingWordQuiz: Identifiable {
+    let id: String
+    let prompt: String
+    let answer: String
+    let detail: String
+    let isPersonal: Bool
+
+    static func saved(_ word: SavedExpression) -> Self? {
+        let answer = word.expression.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !answer.isEmpty else { return nil }
+        let context = word.contextExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
+        let pattern = "(?<![\\p{L}\\p{N}])" + NSRegularExpression.escapedPattern(for: answer) + "(?![\\p{L}\\p{N}])"
+        let expression = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        let range = NSRange(context.startIndex..., in: context)
+        if !context.isEmpty, expression?.firstMatch(in: context, range: range) != nil {
+            let prompt = expression!.stringByReplacingMatches(in: context, range: range, withTemplate: "［ … ］")
+            if prompt.replacingOccurrences(of: "［ … ］", with: "").trimmingCharacters(in: .whitespacesAndNewlines).count > 8 {
+                return Self(id: word.id.uuidString, prompt: prompt, answer: answer, detail: context, isPersonal: true)
+            }
+        }
+        if let definition = StarterWord.all.first(where: { $0.expression.caseInsensitiveCompare(answer) == .orderedSame && $0.definition.range(of: answer, options: .caseInsensitive) == nil })?.definition {
+            return Self(id: word.id.uuidString, prompt: definition, answer: answer, detail: context, isPersonal: true)
+        }
+        // Words saved without context still get a spelling recall card.
+        let letters = Array(answer)
+        let masked = letters.enumerated().map { index, letter in
+            letter.isLetter && (index % 2 == 1 || letters.count == 1) ? "_" : String(letter)
+        }.joined(separator: " ")
+        return Self(id: word.id.uuidString, prompt: masked, answer: answer, detail: context, isPersonal: true)
+    }
+
+    static func deck(saved words: [SavedExpression]) -> [Self] {
+        let personal = words.compactMap(saved)
+        if !personal.isEmpty { return personal.shuffled() }
+        return StarterWord.all.filter { $0.definition.range(of: $0.expression, options: .caseInsensitive) == nil }.shuffled().prefix(20).map {
+            Self(id: $0.id, prompt: $0.definition, answer: $0.expression, detail: $0.example, isPersonal: false)
+        }
+    }
+}
+
+struct WaitingWordQuizView: View {
+    let words: [SavedExpression]
+    @State private var cards: [WaitingWordQuiz] = []
+    @State private var index = 0
+    @State private var revealed = false
+    var body: some View {
+        if let card = cards.isEmpty ? nil : cards[index % cards.count] {
+            VStack(alignment: .leading, spacing: 12) {
+                Label(String(localized: "A little vocabulary practice"), systemImage: "rectangle.on.rectangle")
+                    .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
+                Text(String(localized: card.isPersonal ? "From your saved words" : "From the word library"))
+                    .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                Text(String(localized: "Which word fits?" )).font(StudyTypography.subheadline)
+                Text(card.prompt).font(StudyTypography.body).fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("generation.quiz.prompt")
+                if revealed {
+                    Text(card.answer).font(StudyTypography.heading).foregroundStyle(StudyColors.accent)
+                        .accessibilityIdentifier("generation.quiz.answer")
+                    if !card.detail.isEmpty { Text(card.detail).font(StudyTypography.caption) }
+                }
+                Button {
+                    if revealed { index = (index + 1) % cards.count; revealed = false }
+                    else { revealed = true }
+                } label: {
+                    Label(String(localized: revealed ? "Next word" : "Reveal answer"), systemImage: revealed ? "arrow.right" : "eye")
+                }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.quiz.action")
+                Text(String(localized: "Your practice opens automatically when ready."))
+                    .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                .transaction { $0.animation = nil; $0.disablesAnimations = true }
+        } else {
+            Color.clear.frame(height: 0).onAppear { cards = WaitingWordQuiz.deck(saved: words) }
+        }
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A02100000000000000000001 = {isa = PBXBuildFile; fileRef = A02100000000000000000002; };
  A02000000000000000000001 = {isa = PBXBuildFile; fileRef = A02000000000000000000002; };
  A01900000000000000000001 /* SpeakingConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01900000000000000000002; };
  A01100000000000000000001 /* ListeningAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000002; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A02100000000000000000002 = {isa = PBXFileReference; lastKnownFileType = folder; path = Vocabulary; sourceTree = "<group>"; };
  A02000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyLibrary.swift; sourceTree = "<group>"; };
  A01900000000000000000002 /* SpeakingConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingConversation.swift; sourceTree = "<group>"; };
  A01100000000000000000002 /* ListeningAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningAudio.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				10889015A060ED025DDF6579 /* GeneralTraining.json */,
+				A02100000000000000000002 /* Vocabulary */,
 				B7A002000000000000000004 /* InfoPlist.xcstrings */,
 				B7A002000000000000000002 /* Localizable.xcstrings */,
 				B7A001000000000000000002 /* Assets.xcassets */,
@@ -418,6 +421,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4731DBD8262741070CE03B1 /* GeneralTraining.json in Resources */,
+				A02100000000000000000001 /* Vocabulary in Resources */,
 				B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */,
 				B7A002000000000000000001 /* Localizable.xcstrings in Resources */,
 				B7A001000000000000000001 /* Assets.xcassets in Resources */,

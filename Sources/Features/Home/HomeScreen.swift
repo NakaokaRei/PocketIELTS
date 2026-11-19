@@ -264,7 +264,7 @@ struct VocabularyScreen: View {
                 NavigationLink { VocabularyLibraryScreen(store: store) } label: {
                     VStack(alignment: .leading, spacing: 8) {
                         Label(String(localized: "IELTS word library"), systemImage: "books.vertical.fill").font(StudyTypography.heading)
-                        Text(String(localized: "60 words · 3 levels · Offline")).font(StudyTypography.subheadline)
+                        Text(String(format: String(localized: "%@ words · 3 levels · Offline"), String(StarterWord.all.count))).font(StudyTypography.subheadline)
                     }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                         .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
                 }.buttonStyle(.plain).accessibilityIdentifier("vocabulary.library")

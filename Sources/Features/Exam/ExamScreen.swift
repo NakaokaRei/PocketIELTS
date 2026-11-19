@@ -679,6 +679,7 @@ struct GeneratedExamScreen: View {
                             } else {
                                 GenerationLoadingView(completed: generated.count, total: templates.count,
                                                       started: generationStarted, completionStarted: completionStarted, completionFrom: completionFrom)
+                                WaitingWordQuizView(words: store.vocabulary)
                             }
                             Button(String(localized: "キャンセルして戻る"), systemImage: "xmark.circle") { dismiss() }
                                 .buttonStyle(StudySecondaryButtonStyle())
@@ -765,7 +766,7 @@ private struct GenerationLoadingView: View {
             let elapsed = max(0, timeline.date.timeIntervalSince(started))
             let estimate = completionStarted.map { GenerationProgress.finish(from: completionFrom, elapsed: timeline.date.timeIntervalSince($0)) } ?? GenerationProgress.estimate(completed: completed, total: total, elapsed: elapsed)
             VStack(spacing: 24) {
-                LoadingBookMascot()
+                LoadingBookMascot().scaleEffect(0.5).frame(height: 110)
                 VStack(spacing: 10) {
                     Text(completionStarted == nil ? String(localized: "あなただけの問題を準備中") : String(localized: "問題の準備ができました")).font(StudyTypography.ui(24, relativeTo: .title2, bold: true)).multilineTextAlignment(.center)
                     Text(String(localized: "小さな一歩が、大きな自信に。")).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
