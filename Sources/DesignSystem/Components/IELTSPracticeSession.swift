@@ -5,6 +5,9 @@ import SwiftUI
 struct IELTSPracticeSession<Content: View>: View {
     let title: String
     let finish: () -> Void
+    var saveBeforeFinish: (() -> Void)? = nil
+    var savingDescription: String = ""
+    @State private var confirmSave = false
     @ViewBuilder let content: () -> Content
     @Environment(\.dismiss) private var dismiss
 
@@ -16,12 +19,18 @@ struct IELTSPracticeSession<Content: View>: View {
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(String(localized: "終了")) {
-                            finish()
-                            dismiss()
+                            if saveBeforeFinish != nil { confirmSave = true }
+                            else { finish(); dismiss() }
                         }
                     }
                 }
         }
+        .interactiveDismissDisabled(saveBeforeFinish != nil)
+        .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmSave) {
+            Button(String(localized: "保存して終了")) { saveBeforeFinish?(); finish(); dismiss() }
+            Button(String(localized: "保存せずに終了"), role: .destructive) { finish(); dismiss() }
+            Button(String(localized: "続ける"), role: .cancel) {}
+        } message: { Text(String(localized: "あとで復習できるように問題を保存しますか？") + "\n\n" + savingDescription) }
     }
 }
 

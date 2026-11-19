@@ -5,7 +5,15 @@ struct StudyClient: DependencyKey {
     var generate: @Sendable (Int) async throws -> ReadingSet
     var explain: @Sendable (String, String) async throws -> String
 
-    static var explanationLanguage: String { Bundle.main.preferredLocalizations.first == "ja" ? "Japanese" : "English" }
+    static var explanationLanguage: String { explanationLanguage(for: Bundle.main.preferredLocalizations.first ?? "en") }
+
+    static func explanationLanguage(for localization: String) -> String {
+        let names = ["ja": "Japanese", "en": "English", "zh-Hans": "Simplified Chinese",
+                     "zh-Hant": "Traditional Chinese", "ko": "Korean", "es": "Spanish",
+                     "pt-BR": "Brazilian Portuguese", "vi": "Vietnamese", "id": "Indonesian",
+                     "th": "Thai", "hi": "Hindi", "ar": "Arabic"]
+        return names[localization] ?? "English"
+    }
 
     static let liveValue = Self(generate: { section in
         let briefs = ["Three complete everyday notices or advertisements, 580–720 words total and 13 questions.",

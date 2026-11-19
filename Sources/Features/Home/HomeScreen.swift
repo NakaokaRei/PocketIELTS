@@ -10,10 +10,10 @@ struct HomeScreen: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private let skills: [(name: String, detail: String, symbol: String, tint: Color)] = [
-        ("Reading", "3 sections", "book.fill", StudyColors.reading),
-        ("Listening", "4 parts", "headphones", StudyColors.listening),
-        ("Writing", "2 tasks", "pencil", StudyColors.writing),
-        ("Speaking", "3 parts", "mic.fill", StudyColors.speaking)
+        ("Reading", String(localized: "3 sections"), "book.fill", StudyColors.reading),
+        ("Listening", String(localized: "4 parts"), "headphones", StudyColors.listening),
+        ("Writing", String(localized: "2 tasks"), "pencil", StudyColors.writing),
+        ("Speaking", String(localized: "3 parts"), "mic.fill", StudyColors.speaking)
     ]
 
     var body: some View {
@@ -253,8 +253,8 @@ struct VocabularyScreen: View {
     @State private var context = ""
     @State private var selectedText: String?
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 16) {
+        List {
+            Section {
                 Text(String(localized: "保存した表現")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                 if store.vocabulary.isEmpty {
                     ContentUnavailableView(String(localized: "単語帳は空です"), systemImage: "book", description: Text(String(localized: "本文や解説を長押しして表現を追加できます。")))
@@ -266,7 +266,7 @@ struct VocabularyScreen: View {
                             Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
                             Spacer()
                             Button(String(localized: "単語を削除"), systemImage: "trash") { deleting = entry }
-                                .labelStyle(.iconOnly).frame(width: 44, height: 44).foregroundStyle(StudyColors.error)
+                                .labelStyle(.iconOnly).frame(width: 44, height: 44).foregroundStyle(StudyColors.error).buttonStyle(.plain)
                                 .accessibilityIdentifier("vocabulary.delete")
                         }
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
@@ -280,10 +280,16 @@ struct VocabularyScreen: View {
                         }
                     }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) { deleting = entry } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
+                        }
                 }
 
-            }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
-        }.background(Color(uiColor: .systemGroupedBackground))
+            }.listRowSeparator(.hidden).listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
+        }.listStyle(.plain).scrollContentBackground(.hidden)
+            .frame(maxWidth: 800).frame(maxWidth: .infinity)
+            .background(Color(uiColor: .systemGroupedBackground))
         .alert(String(localized: "この単語を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { entry in
             Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id)); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
@@ -403,8 +409,8 @@ struct SavedPapersScreen: View {
     private var papers: [ExamUnit] { store.papers.filter { $0.skill == selectedSkill } }
     private var groups: [String] { Array(Set(papers.map(SavedPaperGrouping.part))).sorted { $0.localizedStandardCompare($1) == .orderedAscending } }
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+        List {
+            Section {
                 Text(String(localized: "技能とパートを選んで、保存した問題を復習できます。"))
                     .font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -426,7 +432,7 @@ struct SavedPapersScreen: View {
                     ContentUnavailableView(String(localized: "保存した問題はありません"), systemImage: "bookmark", description: Text(String(localized: "解説画面の「この問題を保存」から追加できます。")))
                 }
                 ForEach(groups, id: \.self) { group in
-                    VStack(alignment: .leading, spacing: 12) {
+                    Section {
                         HStack {
                             Text(group).font(StudyTypography.heading)
                             Spacer()
@@ -440,7 +446,7 @@ struct SavedPapersScreen: View {
                                             Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)
                                             Label(String(localized: "もう一度練習する"), systemImage: "play.fill").font(StudyTypography.button)
                                         }
-                                        Spacer(minLength: 0); Image(systemName: "chevron.right")
+                                        Spacer(minLength: 0)
                                     }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                                 }.buttonStyle(.plain)
                                 Button(String(localized: "保存した問題を削除"), systemImage: "trash") { deleting = paper }
@@ -450,11 +456,17 @@ struct SavedPapersScreen: View {
                                     .accessibilityIdentifier("saved.delete")
                             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                                 .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button(role: .destructive) { deleting = paper } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
+                                }
                         }
                     }
                 }
-            }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
-        }.navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)
+            }.listRowSeparator(.hidden).listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+        }.listStyle(.plain).scrollContentBackground(.hidden)
+            .frame(maxWidth: 800).frame(maxWidth: .infinity)
+            .navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)
         .alert(String(localized: "保存した問題を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { paper in
             Button(String(localized: "削除"), role: .destructive) { store.send(.deletePaper(paper.id)); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }

@@ -68,7 +68,7 @@ struct MockIntroScreen: View {
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $started) {
-                IELTSPracticeSession(title: String(localized: "模擬テスト"), finish: {}) {
+                NavigationStack {
                     if generate { GeneratedExamScreen(templates: ordered, store: store, isMock: true) }
                     else { ExamScreen(units: ordered, store: store, isMock: true) }
                 }
@@ -83,6 +83,7 @@ struct ExamScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.studyNavigation) private var navigation
     @State private var confirmEnd = false
+    @State private var completing = false
     @FocusState private var answerFocused: Bool
     @State private var position = 0
     @State private var attemptID = UUID()
@@ -108,6 +109,10 @@ struct ExamScreen: View {
     @State private var audio = SpeakingRecorder()
     private var unit: ExamUnit { units[position] }
     private var showingReview: Bool { reviewed.contains(unit.id) && !isMock }
+    private var unsavedUnits: [ExamUnit] {
+        let candidates = isMock ? units : units.isEmpty ? [] : [unit]
+        return candidates.filter { candidate in !store.papers.contains { $0.id == candidate.id } }
+    }
 
     var body: some View {
         Group {
@@ -131,9 +136,18 @@ struct ExamScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(!finished)
+        .interactiveDismissDisabled(!finished)
         .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
         .toolbar {
+            if !finished && !units.isEmpty && !answerFocused {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(String(localized: "終了"), systemImage: "chevron.backward") {
+                        completing = false; confirmEnd = true
+                    }.labelStyle(.iconOnly).accessibilityIdentifier("practice.back")
+                }
+            }
             if answerFocused {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(String(localized: "入力を完了")) {
@@ -142,12 +156,24 @@ struct ExamScreen: View {
                     }.accessibilityIdentifier("practice.dismissKeyboard")
                 }
             }
-            if !isMock && !finished { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
+            if !finished && !units.isEmpty { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { completing = false; confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
         }
         .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd) {
-            Button(String(localized: "練習を終了"), role: .destructive) { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription(); finished = true; ended = Date() }
+            if !unsavedUnits.isEmpty {
+                Button(String(localized: "保存して終了")) {
+                    unsavedUnits.forEach { store.send(.savePaper($0)) }
+                    endPractice()
+                }
+                Button(String(localized: "保存せずに終了"), role: .destructive) { endPractice() }
+            } else {
+                Button(String(localized: "練習を終了")) { endPractice() }
+            }
             Button(String(localized: "続ける"), role: .cancel) {}
-        } message: { Text(String(localized: "採点済みの結果と保存した表現は残ります。")) }
+        } message: {
+            Text(unsavedUnits.isEmpty ? String(localized: "採点済みの結果と保存した表現は残ります。") :
+                 String(localized: "あとで復習できるように問題を保存しますか？") + "\n\n" +
+                 unsavedUnits.map { $0.id }.joined(separator: "\n"))
+        }
         .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
         .onChange(of: audio.transcript) { _, text in
             if unit.skill == "Speaking", !text.isEmpty { answers[unit.id + "-0"] = text }
@@ -425,6 +451,13 @@ struct ExamScreen: View {
             questionAnswers: part.questions.isEmpty ? nil : part.questions.indices.map { answers[part.id + "-\($0)", default: ""] })))
         recorded.insert(part.id)
     }
+    private func endPractice() {
+        speaker.stopSpeaking(at: .immediate)
+        audio.stop(); audio.cancelTranscription()
+        if completing { units.forEach(saveResult) }
+        ended = Date(); finished = true
+    }
+
     private func advance() {
         speaker.stopSpeaking(at: .immediate); audio.stop()
         // Preserve each speaking recording before moving to a new part.
@@ -434,8 +467,8 @@ struct ExamScreen: View {
         }
         if position + 1 < units.count { position += 1; audio.clear() }
         else {
-            units.forEach(saveResult)
-            ended = Date(); finished = true
+            completing = true
+            if unsavedUnits.isEmpty { endPractice() } else { confirmEnd = true }
         }
     }
     private func binding(_ index: Int) -> Binding<String> {

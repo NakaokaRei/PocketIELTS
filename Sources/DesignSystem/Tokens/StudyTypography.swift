@@ -12,6 +12,7 @@ enum StudyTypography {
 
     static func japaneseTitle(_ size: CGFloat, relativeTo style: Font.TextStyle = .title) -> Font {
         _ = registerFonts
+        guard Bundle.main.preferredLocalizations.first == "ja" else { return ui(size, relativeTo: style, bold: true) }
         return .custom("ZenMaruGothic-Black", size: size, relativeTo: style)
     }
 
@@ -26,7 +27,24 @@ enum StudyTypography {
         if Bundle.main.preferredLocalizations.first == "ja" {
             return .custom(bold ? "ZenMaruGothic-Bold" : "ZenMaruGothic-Regular", size: size, relativeTo: style)
         }
-        return .custom("Nunito-Regular", size: size, relativeTo: style).weight(bold ? .bold : .regular)
+        if ["en", "es", "pt-BR", "vi", "id"].contains(Bundle.main.preferredLocalizations.first ?? "en") {
+            return .custom("Nunito-Regular", size: size, relativeTo: style).weight(bold ? .bold : .regular)
+        }
+        // Native fallback provides correct shaping and glyphs for CJK, Arabic, Thai and Devanagari.
+        let scaled = UIFontMetrics(forTextStyle: uiTextStyle(style)).scaledValue(for: size)
+        return .system(size: scaled, weight: bold ? .bold : .regular)
+    }
+
+    private static func uiTextStyle(_ style: Font.TextStyle) -> UIFont.TextStyle {
+        switch style {
+        case .title: .title1
+        case .title2: .title2
+        case .headline: .headline
+        case .subheadline: .subheadline
+        case .footnote: .footnote
+        case .caption: .caption1
+        default: .body
+        }
     }
     static var title: Font { ui(28, relativeTo: .title, bold: true) }
     static var heading: Font { ui(22, relativeTo: .title2, bold: true) }

@@ -31,7 +31,7 @@ struct SettingsScreen: View {
                         ForEach(store.account.profiles) { profile in
                             Button(profile.displayName) { store.send(.signIn(profile)) }
                         }
-                        Button("Sign in with ChatGPT") { store.send(.signIn(nil)) }
+                        Button(String(localized: "Sign in with ChatGPT")) { store.send(.signIn(nil)) }.accessibilityIdentifier("settings.signIn")
                     }
                     if store.connecting { ProgressView(String(localized: "接続中…")) }
                 } header: { Text(String(localized: "ChatGPT アカウント")) }

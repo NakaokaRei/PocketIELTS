@@ -331,6 +331,23 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(decoded.response, "TRUE")
     }
 
+    func testAdditionalLocalizationsAreBundledAndSelectExplanationLanguage() throws {
+        let expected = ["zh-Hans": "设置", "zh-Hant": "設定", "ko": "설정", "es": "Ajustes",
+                        "pt-BR": "Ajustes", "vi": "Cài đặt", "id": "Pengaturan", "th": "การตั้งค่า",
+                        "hi": "सेटिंग", "ar": "الإعدادات"]
+        for (language, settings) in expected {
+            let bundle = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: language, ofType: "lproj"))))
+            XCTAssertEqual(bundle.localizedString(forKey: "設定", value: nil, table: nil), settings, language)
+            XCTAssertNotEqual(StudyClient.explanationLanguage(for: language), "English", language)
+            let permission = bundle.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist")
+            XCTAssertTrue(permission.contains("OpenAI"), language)
+            let format = bundle.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
+            let rendered = String(format: format, "1", "3")
+            XCTAssertTrue(rendered.contains("1") && rendered.contains("3"), language)
+        }
+        XCTAssertEqual(StudyClient.explanationLanguage(for: "unknown"), "English")
+    }
+
     func testEnglishAndJapaneseCatalogsAreBundled() throws {
         let english = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "en", ofType: "lproj"))))
         let japanese = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "ja", ofType: "lproj"))))

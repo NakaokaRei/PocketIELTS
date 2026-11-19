@@ -72,11 +72,14 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue((app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.value as? String ?? "").contains("使い方"))
         app.buttons["完了"].tap()
         capture("iphone-vocabulary-actions")
-        app.buttons["vocabulary.delete"].firstMatch.tap()
+        app.cells.containing(.button, identifier: "vocabulary.delete").firstMatch.swipeLeft()
+        capture("iphone-vocabulary-swipe")
+        app.buttons["削除"].firstMatch.tap()
         XCTAssertTrue(app.alerts["この単語を削除しますか？"].waitForExistence(timeout: 5))
         app.alerts.buttons["キャンセル"].tap()
         XCTAssertTrue(app.buttons["vocabulary.askAI"].exists)
         app.buttons["vocabulary.delete"].firstMatch.tap()
+        XCTAssertTrue(app.alerts["この単語を削除しますか？"].waitForExistence(timeout: 5))
         app.alerts.buttons["削除"].tap()
         XCTAssertTrue(app.staticTexts["単語帳は空です"].waitForExistence(timeout: 5))
         app.terminate(); app.launch()
@@ -213,7 +216,7 @@ final class PocketIELTSUITests: XCTestCase {
         endAlert.buttons["続ける"].tap()
         XCTAssertTrue(app.buttons["practice.finish"].exists)
         app.buttons["practice.finish"].tap()
-        endAlert.buttons["練習を終了"].tap()
+        endAlert.buttons["保存せずに終了"].tap()
         XCTAssertFalse(app.buttons["practice.finish"].exists)
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-completion" : "iphone-completion")
         XCTAssertTrue(app.buttons["ホームに戻る"].waitForExistence(timeout: 5))
@@ -232,6 +235,8 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["答えと解説"].isHittable)
         for _ in 0..<20 where !review.isHittable { app.swipeUp(velocity: .fast) }
         review.tap()
+        XCTAssertTrue(app.alerts.buttons["保存せずに終了"].waitForExistence(timeout: 5))
+        app.alerts.buttons["保存せずに終了"].tap()
         XCTAssertTrue(app.staticTexts["練習を終了しました"].waitForExistence(timeout: 5))
         let history = app.buttons["学習記録を見る"]
         for _ in 0..<8 where !history.isHittable { app.swipeUp() }
@@ -261,7 +266,9 @@ final class PocketIELTSUITests: XCTestCase {
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-saved-questions" : "iphone-saved-questions")
         let delete = app.buttons["saved.delete"].firstMatch
         for _ in 0..<8 where !delete.isHittable { app.swipeUp() }
-        delete.tap()
+        app.cells.containing(.button, identifier: "saved.delete").firstMatch.swipeLeft()
+        capture("iphone-saved-swipe")
+        app.buttons["削除"].firstMatch.tap()
         let confirmation = app.alerts["保存した問題を削除しますか？"]
         XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
         confirmation.buttons["キャンセル"].tap()
@@ -278,6 +285,52 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()
         app.buttons["この問題をもう一度練習"].tap()
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
+    }
+
+    func testSaveOnExitAndAlreadySavedDoesNotPromptAgain() {
+        openReading()
+        app.buttons["practice.finish"].tap()
+        XCTAssertTrue(app.alerts.buttons["保存して終了"].waitForExistence(timeout: 5))
+        capture("iphone-save-on-exit")
+        app.alerts.buttons["保存して終了"].tap()
+        app.buttons["ホームに戻る"].tap()
+        let savedPapers = app.buttons["home.savedPapers"]
+        for _ in 0..<8 where !savedPapers.isHittable { app.swipeUp() }
+        savedPapers.tap()
+        let saved = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
+        XCTAssertTrue(saved.waitForExistence(timeout: 5)); saved.tap()
+        app.buttons["practice.finish"].tap()
+        XCTAssertTrue(app.alerts.buttons["練習を終了"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.alerts.buttons["保存して終了"].exists)
+    }
+
+    func testMockExitOffersSavingAllParts() {
+        let mock = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "4技能をまとめて腕試し")).firstMatch
+        for _ in 0..<8 where !mock.isHittable { app.swipeUp() }
+        mock.tap()
+        let start = app.buttons["模試を始める"]
+        for _ in 0..<8 where !start.isHittable { app.swipeUp() }
+        start.tap()
+        XCTAssertTrue(app.buttons["practice.finish"].waitForExistence(timeout: 5))
+        app.buttons["practice.finish"].tap()
+        XCTAssertTrue(app.alerts.buttons["保存して終了"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "Listening / Part 1")).firstMatch.exists)
+        capture("iphone-mock-save-on-exit")
+        app.alerts.buttons["続ける"].tap()
+        XCTAssertTrue(app.buttons["practice.finish"].exists)
+    }
+
+    func testAdditionalLanguageLayouts() {
+        for (language, title) in [("ar", "الإعدادات"), ("zh-Hans", "设置"), ("hi", "सेटिंग"), ("th", "การตั้งค่า"), ("es", "Ajustes")] {
+            app.terminate()
+            app.launchArguments = ["-AppleLanguages", "(\(language))", "-AppleLocale", language, "--ui-testing", "--ui-reset"]
+            app.launch()
+            XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
+            capture("iphone-home-\(language)")
+            app.buttons["home.settings"].tap()
+            XCTAssertTrue(app.navigationBars[title].waitForExistence(timeout: 5))
+            capture("iphone-settings-\(language)")
+        }
     }
 
     func testSpeakingModelSelectionPersistsAndConversationOpens() {
@@ -307,7 +360,7 @@ final class PocketIELTSUITests: XCTestCase {
 
     func testSettingsSeparatesChatGPTAndAudioAPI() {
         app.buttons["home.settings"].tap()
-        XCTAssertTrue(app.buttons["Sign in with ChatGPT"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["settings.signIn"].waitForExistence(timeout: 5))
         let key = app.secureTextFields["settings.speechKey"]
         for _ in 0..<8 where !key.isHittable { app.swipeUp() }
         XCTAssertTrue(key.exists)

@@ -8,8 +8,18 @@ struct PracticeScreen: View {
     @State private var selectedText: String?
     @State private var saved = false
 
+    private var unsavedPaper: ExamUnit? {
+        guard let set = store.session, !store.loading else { return nil }
+        let paper = ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
+            skill: "Reading", title: set.title, directions: "", passages: set.passages,
+            questions: set.questions, audio: nil, oral: [])
+        return store.papers.contains { $0.id == paper.id } ? nil : paper
+    }
+
     var body: some View {
-        IELTSPracticeSession(title: "Reading / Section \(store.section)", finish: { store.send(.finish) }) {
+        IELTSPracticeSession(title: "Reading / Section \(store.section)", finish: { store.send(.finish) },
+            saveBeforeFinish: unsavedPaper.map { paper in { store.send(.savePaper(paper)) } },
+            savingDescription: unsavedPaper?.title ?? "") {
             ScrollView {
                 VStack(alignment: .leading, spacing: StudySpacing.section) {
                     if store.loading { ProgressView(String(localized: "本文と設問を生成中…")) }
