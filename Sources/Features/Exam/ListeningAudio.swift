@@ -192,7 +192,14 @@ enum SpeechAudio {
         generationID = UUID(); operation?.cancel(); operation = nil; generating = false
         player?.stop(); player?.currentTime = 0
     }
-    func seek(_ time: Double) { player?.currentTime = time }
+    func seek(_ time: Double) {
+        guard let player else { return }
+        player.currentTime = min(player.duration, max(0, time))
+    }
+    func rewindTenSeconds() {
+        guard let player else { return }
+        seek(player.currentTime - 10)
+    }
 }
 
 struct ListeningAudioView: View {
@@ -222,11 +229,24 @@ struct ListeningAudioView: View {
                         .accessibilityLabel(String(localized: "再生位置"))
                     HStack { Text(time(player.currentTime)); Spacer(); Text(time(player.duration)) }.font(StudyTypography.footnote).monospacedDigit()
                 }
-                Button(playing ? String(localized: "一時停止") : playback.player == nil ? String(localized: "音声を生成して再生") : String(localized: "音声を再生"), systemImage: playing ? "pause.fill" : "play.fill") {
-                    if playing { playback.pause() } else { playback.play(script: script) }
-                }.buttonStyle(StudyPrimaryButtonStyle()).disabled(playback.generating).accessibilityIdentifier("listening.play")
-                if playback.player != nil || playback.generating {
-                    Button(playback.generating ? String(localized: "生成をキャンセル") : String(localized: "停止"), systemImage: "stop.fill") { playback.stop() }
+                HStack(spacing: 12) {
+                    if playback.player != nil {
+                        Button { playback.rewindTenSeconds() } label: {
+                            Label(String(localized: "Rewind 10 seconds"), systemImage: "gobackward.10")
+                                .labelStyle(.iconOnly)
+                                .font(.system(size: 24, weight: .semibold))
+                                .foregroundStyle(StudyColors.accent)
+                                .frame(width: 52, height: 52)
+                                .background(StudyColors.accent.opacity(0.08), in: Circle())
+                                .contentShape(Circle())
+                        }.buttonStyle(.plain).accessibilityIdentifier("listening.rewind")
+                    }
+                    Button(playing ? String(localized: "一時停止") : playback.player == nil ? String(localized: "音声を生成して再生") : String(localized: "音声を再生"), systemImage: playing ? "pause.fill" : "play.fill") {
+                        if playing { playback.pause() } else { playback.play(script: script) }
+                    }.buttonStyle(StudyPrimaryButtonStyle()).disabled(playback.generating).accessibilityIdentifier("listening.play")
+                }
+                if playback.generating {
+                    Button(String(localized: "生成をキャンセル"), systemImage: "xmark.circle") { playback.stop() }
                         .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("listening.stop")
                 }
                 if let error = playback.error { Text(error).font(StudyTypography.subheadline).foregroundStyle(StudyColors.error) }

@@ -745,3 +745,26 @@ extension PocketIELTSTests {
         XCTAssertNil(GenerationTransferProgress.report, "Progress must not leak into unrelated tutor requests")
     }
 }
+
+
+extension PocketIELTSTests {
+    func testListeningRewindClampsAtStartAndPreservesPause() async throws {
+        let player = ListeningPlayer()
+        player.rewindTenSeconds() // Safe before audio exists.
+        player.play(script: "Fixture") { _, _ in
+            SpeechAudio.wave(Data(repeating: 0, count: 48000 * 20))
+        }
+        player.pause()
+        try await Task.sleep(for: .milliseconds(850))
+        XCTAssertNotNil(player.player)
+        player.seek(15)
+        player.rewindTenSeconds()
+        XCTAssertEqual(try XCTUnwrap(player.player).currentTime, 5, accuracy: 0.05)
+        XCTAssertFalse(player.player?.isPlaying ?? true)
+        player.rewindTenSeconds()
+        XCTAssertEqual(player.player?.currentTime, 0)
+        player.rewindTenSeconds()
+        XCTAssertEqual(player.player?.currentTime, 0)
+        player.stop()
+    }
+}

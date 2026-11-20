@@ -311,9 +311,7 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["practice.back"].tap()
         endAlert.buttons["保存せずに終了"].tap()
         XCTAssertFalse(app.buttons["practice.back"].exists)
-        capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-completion" : "iphone-completion")
-        XCTAssertTrue(app.buttons["ホームに戻る"].waitForExistence(timeout: 5))
-        app.buttons["ホームに戻る"].tap()
+        XCTAssertFalse(app.staticTexts["練習を終了しました"].exists)
         XCTAssertTrue(app.buttons["home.skill.Reading"].waitForExistence(timeout: 5))
     }
     func testResultOpensHistoryAndPreservesAllAnswers() {
@@ -330,10 +328,9 @@ final class PocketIELTSUITests: XCTestCase {
         review.tap()
         XCTAssertTrue(app.alerts.buttons["保存せずに終了"].waitForExistence(timeout: 5))
         app.alerts.buttons["保存せずに終了"].tap()
-        XCTAssertTrue(app.staticTexts["練習を終了しました"].waitForExistence(timeout: 5))
-        let history = app.buttons["学習記録を見る"]
-        for _ in 0..<8 where !history.isHittable { app.swipeUp() }
-        history.tap()
+        XCTAssertTrue(app.buttons["home.skill.Reading"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["練習を終了しました"].exists)
+        navigate("学習記録", tag: 1)
         let record = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-history-detail" : "iphone-history-detail")
@@ -386,13 +383,8 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.alerts.buttons["保存して終了"].waitForExistence(timeout: 5))
         capture("iphone-save-on-exit")
         app.alerts.buttons["保存して終了"].tap()
-        XCTAssertTrue(app.buttons["もう一度練習する"].waitForExistence(timeout: 5))
-        app.buttons["もう一度練習する"].tap()
-        XCTAssertTrue(app.buttons["practice.back"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["practice.saveToolbar"].exists)
-        app.buttons["practice.back"].tap()
-        app.alerts.buttons["保存して終了"].tap()
-        app.buttons["ホームに戻る"].tap()
+        XCTAssertTrue(app.buttons["home.skill.Reading"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["練習を終了しました"].exists)
         let savedPapers = app.buttons["home.savedPapers"]
         for _ in 0..<8 where !savedPapers.isHittable { app.swipeUp() }
         savedPapers.tap()
@@ -419,8 +411,6 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["practice.back"].exists)
         app.buttons["practice.back"].tap()
         app.alerts.buttons["保存して終了"].tap()
-        XCTAssertTrue(app.buttons["ホームに戻る"].waitForExistence(timeout: 5))
-        app.buttons["ホームに戻る"].tap()
         XCTAssertTrue(app.buttons["home.skill.Reading"].waitForExistence(timeout: 5))
     }
 

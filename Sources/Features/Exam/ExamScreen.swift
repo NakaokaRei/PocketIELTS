@@ -315,7 +315,7 @@ struct ExamScreen: View {
                         saveResult(unit)
                     } else { advance() }
                 } label: {
-                    Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "結果を見る")) : String(localized: "解答・振り返りを確認"),
+                    Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
                           systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
                         .frame(maxWidth: .infinity, minHeight: 28)
                 }
@@ -471,7 +471,12 @@ struct ExamScreen: View {
         speaker.stopSpeaking(at: .immediate)
         audio.stop(); audio.cancelTranscription()
         if completing { units.forEach(saveResult) }
-        ended = Date(); finished = true
+        ended = Date()
+        if isMock && completing {
+            finished = true
+        } else {
+            navigation.home()
+        }
     }
 
     private func advance() {

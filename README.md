@@ -36,7 +36,7 @@ In each part card, **Practice bundled questions** opens the included exercise. *
 
 ## Clear questions and useful next steps
 
-Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review and completion open at the top without a button morphing animation. Ending practice uses a centered confirmation alert with **Save and finish**, **Finish without saving** and **Continue**. Already-saved exercises skip the save question. Mock tests list the unsaved parts being saved. Cancelling keeps the current answers.
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review opens at the top without a button morphing animation. Ending practice uses a centered confirmation alert with **Save and finish**, **Finish without saving** and **Continue**. Save and finish remains available for already-saved exercises. Mock tests list the unsaved parts being saved. Cancelling keeps the current answers.
 
 New Reading and Listening attempts preserve every answer, including unanswered positions. History shows a score card and an expandable question-by-question review. Older records keep their existing saved data; missing historical answers cannot be reconstructed.
 
@@ -49,7 +49,6 @@ The tutor offers six editable question starters: meaning, grammar, paraphrases a
 </p>
 
 <p align="center">
-  <img src="Documentation/Screenshots/iphone-completion.png" width="250" alt="Practice completion card with clear progress, home and retry actions" />
   <img src="Documentation/Screenshots/iphone-history-detail.png" width="250" alt="History score card with expandable answers and save and retry actions" />
   <img src="Documentation/Screenshots/iphone-exit-alert.png" width="250" alt="End-practice alert offering save, finish without saving and continue" />
 </p>
@@ -216,7 +215,7 @@ The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and 
 
 ### Leaving a practice session
 
-The upper-left back button opens the exit confirmation; the upper-right bookmark saves the current paper. **Save and finish** remains available even if the paper is already saved (saving is idempotent). Finishing pushes the completion screen using native navigation. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
+The upper-left back button opens the exit confirmation; the upper-right bookmark saves the current paper. **Save and finish** remains available even if the paper is already saved (saving is idempotent). Finishing practice returns directly Home using native navigation; completed mock exams retain their score summary. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
 
 
 Background generation uses Apple's `BGContinuedProcessingTask` on supported iOS/iPadOS 26+ devices. Start generation while the app is open; the system can then continue the job after you switch apps or lock the screen. Its system-managed Live Activity shows completed sections/audio segments, received KB for the current section, and a percentage. Streaming response events and audio bytes advance progress before a section finishes. The interim percentage is explicitly approximate (≈), using Content-Length when available and a bounded byte-based estimate otherwise; it reaches 100% only after validation. It does not advance on a timer. Progress can still pause while waiting for the server to send data. The OS controls the Live Activity's appearance and cancellation UI; no widget extension or push-notification server is required.
@@ -226,3 +225,7 @@ If the device cannot grant continued processing (including older OS versions, Si
 Validation of system Live Activities requires a physical supported device: start question/audio generation, switch apps or lock the device, check completed counts, return to the app, and cancel once from the system UI. Automated tests use injected work without API credentials to check expiration, owner cancellation, progress and audio-generation lifetime. No paid API request is made by those tests.
 
 Background expiration diagnostics record elapsed time, completed count, received byte count and app state in the Generation log category. They do not record credentials, prompts or response content. The OS uses the same expiration callback for resource limits and cancellation from its UI, so the app cannot reliably distinguish those causes.
+
+The listening player pairs Play/Pause with a compact **Rewind 10 seconds** control. Rewind stops at the beginning and keeps the current playing/paused state. The separate playback Stop button is removed; Cancel remains available while audio is being generated. Leaving the question still stops audio.
+
+Ending practice returns directly to Home after the save-or-exit confirmation, without an intermediate completion screen. Graded history and saved papers remain available. Completed mock exams retain their score summary.
