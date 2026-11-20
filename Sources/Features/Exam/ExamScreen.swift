@@ -715,15 +715,19 @@ struct GeneratedExamScreen: View {
             #endif
             guard !templates.isEmpty else { error = String(localized: "教材がありません。"); return }
             do {
-                for template in templates.dropFirst(generated.count) {
-                    generationStarted = Date()
-                    let unit = try await StudyClient.generateUnit(like: template)
-                    try Task.checkCancellation()
-                    if generated.count + 1 == templates.count {
-                        completionFrom = GenerationProgress.estimate(completed: generated.count, total: templates.count, elapsed: Date().timeIntervalSince(generationStarted))
-                        completionStarted = Date()
+                try await BackgroundGeneration.run(title: String(localized: "あなただけの問題を準備中"), total: templates.count) { progress in
+                    progress.update(completed: generated.count, total: templates.count)
+                    for template in templates.dropFirst(generated.count) {
+                        generationStarted = Date()
+                        let unit = try await StudyClient.generateUnit(like: template)
+                        try Task.checkCancellation()
+                        if generated.count + 1 == templates.count {
+                            completionFrom = GenerationProgress.estimate(completed: generated.count, total: templates.count, elapsed: Date().timeIntervalSince(generationStarted))
+                            completionStarted = Date()
+                        }
+                        generated.append(unit)
+                        progress.update(completed: generated.count, total: templates.count)
                     }
-                    generated.append(unit)
                 }
                 try await Task.sleep(for: .milliseconds(1300))
                 try Task.checkCancellation()

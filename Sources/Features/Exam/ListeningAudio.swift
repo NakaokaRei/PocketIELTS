@@ -136,6 +136,7 @@ enum SpeechAudio {
     private(set) var error: String?
     private var operation: Task<Void, Never>?
     private var generationID = UUID()
+    private var autoPlayWhenReady = false
 
     func play(script: String, generate: @escaping (String, @escaping @MainActor (Int, Int) -> Void) async throws -> Data = SpeechAudio.generate) {
         if let player {
@@ -149,12 +150,16 @@ enum SpeechAudio {
         }
         guard !generating else { return }
         error = nil; generating = true; completed = 0; total = SpeechAudio.segments(script).count
+        autoPlayWhenReady = UIApplication.shared.applicationState == .active
         let id = UUID(); generationID = id
         operation = Task { [weak self] in
             do {
-                let data = try await generate(script) { [weak self] completed, total in
-                    guard let self, self.generationID == id else { return }
-                    self.completed = completed; self.total = total
+                let data = try await BackgroundGeneration.run(title: String(localized: "音声を生成中"), total: SpeechAudio.segments(script).count) { progress in
+                    try await generate(script) { [weak self] completed, total in
+                        progress.update(completed: completed, total: total)
+                        guard let self, self.generationID == id else { return }
+                        self.completed = completed; self.total = total
+                    }
                 }
                 try Task.checkCancellation()
                 guard let self, self.generationID == id else { return }
@@ -164,7 +169,7 @@ enum SpeechAudio {
                 guard self.generationID == id else { return }
                 self.player = try AVAudioPlayer(data: data)
                 self.generating = false
-                self.play(script: script)
+                if self.autoPlayWhenReady, UIApplication.shared.applicationState == .active { self.play(script: script) }
             } catch {
                 guard let self, self.generationID == id else { return }
                 self.generating = false
@@ -172,8 +177,9 @@ enum SpeechAudio {
             }
         }
     }
-    func pause() { player?.pause() }
+    func pause() { autoPlayWhenReady = false; player?.pause() }
     func stop() {
+        autoPlayWhenReady = false
         generationID = UUID(); operation?.cancel(); operation = nil; generating = false
         player?.stop(); player?.currentTime = 0
     }
@@ -220,10 +226,10 @@ struct ListeningAudioView: View {
             }.padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
         }
         .onDisappear { playback.stop() }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in playback.stop() }
-        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { _ in playback.stop() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in playback.pause() }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { _ in playback.pause() }
         .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)) { notification in
-            if notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt == AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue { playback.stop() }
+            if notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt == AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue { playback.pause() }
         }
     }
     private func time(_ value: Double) -> String { String(format: "%d:%02d", Int(value) / 60, Int(value) % 60) }

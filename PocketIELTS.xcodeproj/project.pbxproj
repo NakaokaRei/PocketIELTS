@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+ B62000000000000000000001 = {isa = PBXBuildFile; fileRef = B62000000000000000000002; };
 		A02100000000000000000001 = {isa = PBXBuildFile; fileRef = A02100000000000000000002; };
  A02000000000000000000001 = {isa = PBXBuildFile; fileRef = A02000000000000000000002; };
  A01900000000000000000001 /* SpeakingConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01900000000000000000002; };
@@ -55,6 +56,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+ B62000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/App/BackgroundGeneration.swift; sourceTree = SOURCE_ROOT; };
 		A02100000000000000000002 = {isa = PBXFileReference; lastKnownFileType = folder; path = Vocabulary; sourceTree = "<group>"; };
  A02000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyLibrary.swift; sourceTree = "<group>"; };
  A01900000000000000000002 /* SpeakingConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingConversation.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				30817FB0AAC3267F77957C7B /* Features */,
 				F7478398766F253FC542AECA /* Models */,
                 C10000000000000000000002,
+                B62000000000000000000002,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 			files = (
 				FA4BB5B120D0779929E6698D /* IELTSNavigation.swift in Sources */,
 				336A4F40E6891B8632DE67F6 /* PocketIELTSApp.swift in Sources */,
+                B62000000000000000000001,
                 C10000000000000000000001,
 				C0EFB27F3AF89E39998AD858 /* StudyFeature.swift in Sources */,
 				ED7D3A657663466E13B90523 /* KeyStore.swift in Sources */,
@@ -617,6 +621,7 @@
                 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
+                INFOPLIST_FILE = Resources/AppInfo.plist;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe your recorded English responses to review your practice.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -710,6 +715,7 @@
                 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pocket IELTS";
+                INFOPLIST_FILE = Resources/AppInfo.plist;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe your recorded English responses to review your practice.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -192,10 +192,6 @@ struct WaitingVocabularyView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Label(String(localized: "Vocabulary while you wait"), systemImage: "book")
                         .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
-                    // Place the action before variable-length content, so the card can
-                    // fit its text without moving the action as words change.
-                    Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
-                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
                     Text(String(localized: card.personal ? "From your saved words" : "From the word library"))
                         .accessibilityIdentifier(card.personal ? "generation.source.personal" : "generation.source.bundled")
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
@@ -211,6 +207,8 @@ struct WaitingVocabularyView: View {
                         }
                     }.frame(maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
+                    Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
+                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
                     Text(String(localized: "Your practice opens automatically when ready."))
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 }.padding(20).frame(maxWidth: .infinity, alignment: .leading)

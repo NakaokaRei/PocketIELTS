@@ -651,3 +651,74 @@ extension PocketIELTSTests {
         XCTAssertTrue(try right.snapshot().deletedPapers.isEmpty)
     }
 }
+
+
+extension PocketIELTSTests {
+    func testBackgroundGenerationClampsProgressAndFinishes() async throws {
+        var observed: BackgroundGeneration?
+        let result = try await BackgroundGeneration.run(title: "Fixture", total: 3, useSystemScheduler: false) { job in
+            observed = job
+            job.update(completed: 2, total: 3)
+            job.update(completed: 1, total: 3)
+            XCTAssertEqual(job.completed, 2)
+            job.update(completed: 9, total: 3)
+            XCTAssertEqual(job.completed, 3)
+            return 42
+        }
+        XCTAssertEqual(result, 42)
+        XCTAssertTrue(try XCTUnwrap(observed).finished)
+    }
+
+    func testBackgroundExpirationCancelsWorkAndRejectsLateResult() async throws {
+        var observed: BackgroundGeneration?
+        do {
+            _ = try await BackgroundGeneration.run(title: "Fixture", total: 3, useSystemScheduler: false) { job in
+                observed = job
+                job.update(completed: 1, total: 3)
+                job.interrupt()
+                // A transport that ignores cancellation cannot mark the job complete.
+                return 42
+            }
+            XCTFail("Interrupted work must not succeed")
+        } catch {
+            XCTAssertFalse(error is CancellationError, "System cancellation needs an actionable retry message")
+        }
+        XCTAssertTrue(try XCTUnwrap(observed).finished)
+        XCTAssertEqual(observed?.completed, 1)
+    }
+
+    func testBackgroundGenerationPropagatesOwnerCancellation() async throws {
+        let started = expectation(description: "Started")
+        let cancelled = expectation(description: "Cancelled")
+        let task = Task {
+            try await BackgroundGeneration.run(title: "Fixture", total: 1, useSystemScheduler: false) { _ in
+                started.fulfill()
+                do { try await Task.sleep(for: .seconds(60)) }
+                catch { cancelled.fulfill(); throw error }
+            }
+        }
+        await fulfillment(of: [started], timeout: 2)
+        task.cancel()
+        do { try await task.value; XCTFail("Expected cancellation") } catch { XCTAssertTrue(error is CancellationError) }
+        await fulfillment(of: [cancelled], timeout: 2)
+    }
+
+    func testPausingListeningDoesNotCancelAudioGeneration() async throws {
+        let player = ListeningPlayer()
+        let started = expectation(description: "Audio started")
+        player.play(script: "Fixture") { _, progress in
+            await progress(0, 1)
+            started.fulfill()
+            try await Task.sleep(for: .milliseconds(100))
+            return SpeechAudio.wave(Data(repeating: 0, count: 48000))
+        }
+        await fulfillment(of: [started], timeout: 2)
+        player.pause() // Called when the app resigns active.
+        XCTAssertTrue(player.generating)
+        try await Task.sleep(for: .milliseconds(850))
+        XCTAssertNotNil(player.player)
+        XCTAssertFalse(player.player?.isPlaying ?? true, "Returning to the app must not autoplay background-generated audio")
+        player.stop() // Explicit stop / leaving the question still cancels.
+        XCTAssertFalse(player.generating)
+    }
+}

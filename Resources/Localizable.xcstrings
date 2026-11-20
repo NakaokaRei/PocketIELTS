@@ -29034,6 +29034,83 @@
           }
         }
       }
+    },
+    "Generation was interrupted. Return to the app and retry; completed sections are kept.": {
+      "extractionState": "manual",
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A geração foi interrompida ou cancelada pela interface do sistema. As partes concluídas foram mantidas. Tente novamente no app."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成が中断されたか、システム画面でキャンセルされました。完了した区間は残っています。アプリで再試行してください。"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقف الإنشاء أو أُلغي من شاشة النظام. يتم الاحتفاظ بالأجزاء المكتملة. أعد المحاولة في التطبيق."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quá trình tạo đã bị gián đoạn hoặc bị hủy trên màn hình hệ thống. Các phần đã hoàn tất được giữ lại. Hãy thử lại trong ứng dụng."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जनरेशन रुक गया या सिस्टम स्क्रीन से रद्द किया गया। पूरे हो चुके भाग सुरक्षित हैं। ऐप में फिर से प्रयास करें।"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การสร้างหยุดลงหรือถูกยกเลิกผ่านหน้าจอระบบ ส่วนที่เสร็จแล้วจะถูกเก็บไว้ โปรดลองอีกครั้งในแอป"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "생성이 중단되었거나 시스템 화면에서 취소되었습니다. 완료된 구간은 유지됩니다. 앱에서 다시 시도하세요."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generation stopped or was cancelled by the system. Retry in the app; completed sections are kept."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成已中断或已在系统界面中取消。已完成的部分会保留，请在应用中重试。"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La generación se interrumpió o se canceló desde el sistema. Se conservan las partes completadas. Inténtalo de nuevo en la app."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成已中斷或已在系統畫面中取消。已完成的部分會保留，請在 App 中重試。"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pembuatan terhenti atau dibatalkan melalui layar sistem. Bagian yang selesai tetap tersimpan. Coba lagi di aplikasi."
+          }
+        }
+      }
     }
   },
   "version": "1.1"
