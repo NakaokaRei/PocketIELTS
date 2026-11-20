@@ -13,20 +13,6 @@ struct StarterWord: Identifiable, Decodable {
     var context: String { expression + "\n" + definition + "\n" + example }
     static let levels = ["Foundation · 4–5", "Developing · 5.5–6.5", "Advanced · 7+"]
     static let topics = ["housing", "work", "training", "shopping", "travel", "health", "community", "money", "correspondence", "society"]
-    static func topicName(_ topic: String) -> String {
-        switch topic {
-        case "housing": String(localized: "Housing")
-        case "work": String(localized: "Work")
-        case "training": String(localized: "Study and training")
-        case "shopping": String(localized: "Shopping and services")
-        case "travel": String(localized: "Travel")
-        case "health": String(localized: "Health")
-        case "community": String(localized: "Community")
-        case "money": String(localized: "Money")
-        case "correspondence": String(localized: "Letters and requests")
-        default: String(localized: "Society and environment")
-        }
-    }
     static let all: [Self] = {
         guard let url = Bundle.main.url(forResource: "GeneralTrainingWords", withExtension: "json", subdirectory: "Vocabulary"),
               let data = try? Data(contentsOf: url),
@@ -40,10 +26,9 @@ struct VocabularyLibraryScreen: View {
     @State private var level = 0
     @State private var selected: StarterWord?
     @State private var search = ""
-    @State private var topic = ""
     @StateObject private var pronunciation = WordPronouncer()
     private var filtered: [StarterWord] {
-        StarterWord.all.filter { $0.level == level && (topic.isEmpty || $0.topic == topic) &&
+        StarterWord.all.filter { $0.level == level &&
             (search.isEmpty || $0.expression.localizedCaseInsensitiveContains(search) || $0.definition.localizedCaseInsensitiveContains(search)) }
     }
     var body: some View {
@@ -53,13 +38,6 @@ struct VocabularyLibraryScreen: View {
                     .font(StudyTypography.subheadline).foregroundStyle(StudyColors.accent)
                 Text(String(localized: "Study levels are a guide, not official IELTS word lists."))
                     .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                Picker(String(localized: "Topic"), selection: $topic) {
-                    Text(String(localized: "All topics")).tag("")
-                    ForEach(StarterWord.topics, id: \.self) { Text(StarterWord.topicName($0)).tag($0) }
-                }.font(StudyTypography.subheadline)
-                StudyLink { FlashcardScreen(cards: filtered.map(VocabularyCard.init), store: store) } label: {
-                    Label(String(localized: "Flashcards"), systemImage: "rectangle.on.rectangle")
-                }.buttonStyle(StudyPrimaryButtonStyle()).disabled(filtered.isEmpty).accessibilityIdentifier("library.flashcards")
                 ForEach(StarterWord.levels.indices, id: \.self) { index in
                     Button { level = index } label: {
                         HStack {
@@ -72,7 +50,6 @@ struct VocabularyLibraryScreen: View {
                 if filtered.isEmpty { ContentUnavailableView.search(text: search) }
                 ForEach(filtered) { word in
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(StarterWord.topicName(word.topic)).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
                         Text(word.expression).font(StudyTypography.heading).textSelection(.enabled)
                         WordPronunciationButton(word: word.expression, pronunciation: pronunciation)
                         Text(word.definition).font(StudyTypography.body).textSelection(.enabled)
@@ -87,7 +64,6 @@ struct VocabularyLibraryScreen: View {
             .searchable(text: $search)
             .onDisappear { pronunciation.stop() }
             .onChange(of: level) { _, _ in pronunciation.stop() }
-            .onChange(of: topic) { _, _ in pronunciation.stop() }
             .sheet(item: $selected, onDismiss: { store.send(.closeQuestion) }) { word in
                 TutorScreen(store: store, context: word.context, selectedText: word.expression, vocabularyMode: true)
             }
@@ -192,90 +168,6 @@ struct VocabularyCard: Identifiable, Equatable {
     static func waitingDeck(_ saved: [SavedExpression]) -> [Self] {
         let personal = saved.compactMap(Self.init).filter { !$0.meaning.isEmpty }
         return (personal.isEmpty ? StarterWord.all.map(Self.init) : personal).shuffled()
-    }
-}
-
-struct FlashcardSession {
-    private(set) var cards: [VocabularyCard]
-    private(set) var index = 0
-    private(set) var revealed = false
-    private(set) var remembered = 0
-    private(set) var review: [VocabularyCard] = []
-    var current: VocabularyCard? { cards.indices.contains(index) ? cards[index] : nil }
-    init(cards: [VocabularyCard], limit: Int = 20) {
-        var ids = Set<String>()
-        self.cards = Array(cards.filter { ids.insert($0.id).inserted }.shuffled().prefix(max(0, limit)))
-    }
-    mutating func reveal() { if current != nil { revealed = true } }
-    mutating func answer(remembered knew: Bool) {
-        guard revealed, let card = current else { return }
-        if knew { remembered += 1 } else { review.append(card) }
-        index += 1; revealed = false
-    }
-}
-
-struct FlashcardScreen: View {
-    let cards: [VocabularyCard]
-    let store: StoreOf<StudyFeature>
-    @State private var session: FlashcardSession
-    @State private var tutor: VocabularyCard?
-    @StateObject private var pronunciation = WordPronouncer()
-    init(cards: [VocabularyCard], store: StoreOf<StudyFeature>) {
-        self.cards = cards; self.store = store
-        _session = State(initialValue: FlashcardSession(cards: cards))
-    }
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                if let card = session.current {
-                    HStack {
-                        Text("\(session.index + 1) / \(session.cards.count)").font(StudyTypography.headline).monospacedDigit()
-                        Spacer()
-                        Label(String(localized: "Shuffled practice"), systemImage: "shuffle").font(StudyTypography.caption)
-                    }
-                    ProgressView(value: Double(session.index), total: Double(session.cards.count))
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text(card.word).font(StudyTypography.title).accessibilityIdentifier("flashcard.word")
-                        WordPronunciationButton(word: card.word, pronunciation: pronunciation)
-                        if session.revealed {
-                            Text(card.meaning.isEmpty ? String(localized: "Meaning unavailable. Ask AI to explain this word.") : card.meaning)
-                                .font(StudyTypography.body).accessibilityIdentifier("flashcard.meaning")
-                            if !card.example.isEmpty { Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText) }
-                            Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { pronunciation.stop(); tutor = card }
-                                .buttonStyle(StudySecondaryButtonStyle())
-                        } else {
-                            Button(String(localized: "Show meaning"), systemImage: "eye") { session.reveal() }
-                                .buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("flashcard.reveal")
-                        }
-                    }.padding(24).frame(maxWidth: .infinity, minHeight: 260, alignment: .leading)
-                        .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
-                    if session.revealed {
-                        Button(String(localized: "Remembered"), systemImage: "checkmark") { pronunciation.stop(); session.answer(remembered: true) }
-                            .buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("flashcard.remembered")
-                        Button(String(localized: "Review again"), systemImage: "arrow.counterclockwise") { pronunciation.stop(); session.answer(remembered: false) }
-                            .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("flashcard.again")
-                    }
-                    Text(String(localized: "Self-assessment only. This does not change your IELTS estimate."))
-                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                } else if session.cards.isEmpty {
-                    ContentUnavailableView(String(localized: "No words to practise"), systemImage: "rectangle.on.rectangle")
-                } else {
-                    Label(String(localized: "Practice complete"), systemImage: "checkmark.seal.fill").font(StudyTypography.title)
-                    Text(String(format: String(localized: "Remembered: %@ / %@"), String(session.remembered), String(session.cards.count)))
-                        .font(StudyTypography.heading).accessibilityIdentifier("flashcard.result")
-                    if !session.review.isEmpty {
-                        Button(String(localized: "Review again"), systemImage: "arrow.counterclockwise") { session = FlashcardSession(cards: session.review) }
-                            .buttonStyle(StudyPrimaryButtonStyle())
-                    }
-                    Button(String(localized: "Shuffle and restart"), systemImage: "shuffle") { session = FlashcardSession(cards: cards) }
-                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("flashcard.restart")
-                }
-            }.padding(24).frame(maxWidth: 650).frame(maxWidth: .infinity)
-        }.navigationTitle(String(localized: "Flashcards")).navigationBarTitleDisplayMode(.inline)
-            .onDisappear { pronunciation.stop() }
-            .sheet(item: $tutor, onDismiss: { store.send(.closeQuestion) }) { card in
-                TutorScreen(store: store, context: card.context, selectedText: card.word, vocabularyMode: true)
-            }
     }
 }
 

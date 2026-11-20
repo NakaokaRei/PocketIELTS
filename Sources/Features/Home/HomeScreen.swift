@@ -5,8 +5,21 @@ struct HomeScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var settings = false
     @State private var practice = false
-    @State private var units: [ExamUnit] = []
-    @State private var loadError: String?
+    private let units: [ExamUnit]
+    private let loadError: String?
+
+    init(store: StoreOf<StudyFeature>) {
+        self.store = store
+        // Bundled content must exist before value-based navigation captures a destination.
+        // Loading in onAppear can permanently capture an empty section list.
+        do {
+            units = try ExamUnit.load()
+            loadError = nil
+        } catch {
+            units = []
+            loadError = error.localizedDescription
+        }
+    }
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private let skills: [(name: String, detail: String, symbol: String, tint: Color)] = [
@@ -62,7 +75,6 @@ struct HomeScreen: View {
         .onAppear {
             store.send(.settings(.opened))
             store.send(.settings(.refreshAccount))
-            do { units = try ExamUnit.load() } catch { loadError = error.localizedDescription }
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         .fullScreenCover(isPresented: $practice, onDismiss: { store.send(.finish) }) { PracticeScreen(store: store) }
@@ -166,6 +178,7 @@ struct HomeScreen: View {
                     Label(String(localized: "保存した問題から練習"), systemImage: "bookmark.fill")
                 }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("part.savedPapers")
                 Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(StudyTypography.headline)
+                if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
                 ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
                     VStack(alignment: .leading, spacing: 16) {
                         StudyLink { ExamScreen(units: [part], store: store) } label: {
@@ -265,13 +278,10 @@ struct VocabularyScreen: View {
                 StudyLink { VocabularyLibraryScreen(store: store) } label: {
                     VStack(alignment: .leading, spacing: 8) {
                         Label(String(localized: "IELTS word library"), systemImage: "books.vertical.fill").font(StudyTypography.heading)
-                        Text(String(format: String(localized: "%@ words and phrases · 10 topics · Offline"), String(StarterWord.all.count))).font(StudyTypography.subheadline)
+                        Text(String(format: String(localized: "%@ words · 3 levels · Offline"), String(StarterWord.all.count))).font(StudyTypography.subheadline)
                     }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                         .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
                 }.buttonStyle(.plain).accessibilityIdentifier("vocabulary.library")
-                StudyLink { FlashcardScreen(cards: store.vocabulary.compactMap(VocabularyCard.init), store: store) } label: {
-                    Label(String(localized: "Flashcards"), systemImage: "rectangle.on.rectangle")
-                }.buttonStyle(StudyPrimaryButtonStyle()).disabled(store.vocabulary.isEmpty).accessibilityIdentifier("vocabulary.flashcards")
                 Text(String(localized: "My vocabulary")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                 if store.vocabulary.isEmpty {
                     ContentUnavailableView(String(localized: "単語帳は空です"), systemImage: "book", description: Text(String(localized: "本文や解説を長押しして表現を追加できます。")))

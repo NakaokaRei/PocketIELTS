@@ -197,11 +197,11 @@ For **My Mac (Designed for iPad)**, ChatGPT sign-in now uses `ASWebAuthenticatio
 
 After updating, start a new sign-in from Settings; an old localhost error tab belongs to an expired attempt and cannot complete a new sign-in. The callback is checked against the original OAuth state, and the listener is cleaned up after completion or cancellation. A local integration test verifies the callback without an OpenAI request. Live account authentication still requires verification on the Mac with the user's account.
 
-### General Training vocabulary and flashcards
+### General Training vocabulary
 
-The collection contains 100 entries in each of ten topics: 400 Foundation (Band 4–5 guide), 400 Developing (5.5–6.5 guide) and 200 Advanced (7+ guide) entries overall. The familiar score-based groups are retained alongside the new topic filter. These are editorial learning guides, not official IELTS band assignments, CEFR classifications or an official word list. Content was rewritten for everyday life, employment, services and correspondence, following the contexts described in the official [General Training Reading format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-reading/) and [Writing format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-writing). Every definition and example in this collection is original; the previous WordNet subset is no longer bundled.
+The collection contains 100 entries in each of ten topics: 400 Foundation (Band 4–5 guide), 400 Developing (5.5–6.5 guide) and 200 Advanced (7+ guide) entries overall. The score-based groups are retained; the library uses level selection and search without a topic filter. These are editorial learning guides, not official IELTS band assignments, CEFR classifications or an official word list. Content was rewritten for everyday life, employment, services and correspondence, following the contexts described in the official [General Training Reading format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-reading/) and [Writing format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-writing). Every definition and example in this collection is original; the previous WordNet subset is no longer bundled.
 
-Filter by topic and level, then search words or definitions. **Flashcards** shuffles up to 20 entries from the filtered collection or your personal vocabulary without repeating a card within the round. Reveal the meaning, mark **Remembered** or **Review again**, and review missed cards or shuffle a new round. This self-assessment does not change your IELTS estimate. Personal words without a stored or matching library meaning show an explicit message and offer the AI tutor.
+Choose a score-based level, then search words or definitions. Flashcard entry points have been removed from both vocabulary screens to keep the flow simple. Saved words and the General Training library remain separate.
 
 **Hear pronunciation** uses an installed English system voice, preferring British English. It does not call a paid API. Playback stops when changing cards, leaving the screen or moving the app to the background. Offline playback depends on an English voice being installed on the device.
 
@@ -210,8 +210,6 @@ During exercise generation, a card immediately displays a **word, meaning and ex
 The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and validate all 1,000 entries with `python3 Scripts/build-vocabulary.py`. CI checks that this reproduces the bundled JSON.
 
 <p align="center">
-  <img src="Documentation/Screenshots/iphone-flashcard-front.png" width="250" alt="A random vocabulary flashcard before revealing its meaning" />
-  <img src="Documentation/Screenshots/iphone-flashcard-back.png" width="250" alt="Revealed meaning, contextual example and pronunciation action" />
   <img src="Documentation/Screenshots/iphone-generation-vocabulary.png" width="250" alt="Word and meaning shown together while an exercise is generated" />
 </p>
 

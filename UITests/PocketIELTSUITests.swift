@@ -63,7 +63,10 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["vocabulary.saveManual"].tap()
         XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
         capture("iphone-my-vocabulary")
+        XCTAssertFalse(app.buttons["vocabulary.flashcards"].exists)
         app.buttons["vocabulary.library"].tap()
+        XCTAssertFalse(app.buttons["library.flashcards"].exists)
+        XCTAssertFalse(app.buttons["すべての分野"].exists)
         XCTAssertTrue(app.staticTexts["accommodation"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts["resilient"].exists)
         capture("iphone-word-library")
@@ -78,20 +81,16 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
     }
 
-    func testFlashcardsRevealReviewAndRestart() {
-        navigate("単語帳", tag: 2)
-        app.buttons["vocabulary.library"].tap()
-        app.buttons["library.flashcards"].tap()
-        XCTAssertTrue(app.staticTexts["flashcard.word"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.staticTexts["flashcard.meaning"].exists)
-        capture("iphone-flashcard-front")
-        app.buttons["flashcard.reveal"].tap()
-        XCTAssertTrue(app.staticTexts["flashcard.meaning"].exists)
-        capture("iphone-flashcard-back")
-        let first = app.staticTexts["flashcard.word"].label
-        app.buttons["flashcard.again"].tap()
-        XCTAssertNotEqual(app.staticTexts["flashcard.word"].label, first)
-        XCTAssertFalse(app.staticTexts["flashcard.meaning"].exists)
+    func testSectionsAvailableOnFirstNavigation() {
+        app.terminate()
+        app.launch()
+        app.buttons["home.skill.Reading"].tap()
+        for section in 1...3 {
+            XCTAssertTrue(app.buttons["part.open.Reading / Section \(section)"].waitForExistence(timeout: 12))
+        }
+        capture("iphone-reading-sections")
+        app.buttons["part.open.Reading / Section 1"].tap()
+        XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
     }
 
     func testOfflineLibraryOpensBundledReading() {

@@ -56,27 +56,6 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertNil(VocabularyCard(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
     }
 
-    func testFlashcardsRequireRevealAndTrackReviewWithoutRepeats() throws {
-        let cards = StarterWord.all.prefix(30).map(VocabularyCard.init)
-        var session = FlashcardSession(cards: cards + cards)
-        XCTAssertEqual(session.cards.count, 20)
-        XCTAssertEqual(Set(session.cards.map(\.id)).count, 20)
-        session.answer(remembered: true)
-        XCTAssertEqual(session.index, 0)
-        for index in 0..<20 {
-            XCTAssertNotNil(session.current)
-            session.reveal()
-            session.answer(remembered: index.isMultiple(of: 2))
-            XCTAssertFalse(session.revealed)
-        }
-        XCTAssertNil(session.current)
-        XCTAssertEqual(session.remembered, 10)
-        XCTAssertEqual(session.review.count, 10)
-        session.answer(remembered: true)
-        XCTAssertEqual(session.remembered, 10)
-        XCTAssertNil(FlashcardSession(cards: []).current)
-    }
-
     func testPronunciationUsesEnglishAndStopsCleanly() {
         let utterance = WordPronouncer.utterance(for: "accommodation")
         XCTAssertEqual(utterance.speechString, "accommodation")

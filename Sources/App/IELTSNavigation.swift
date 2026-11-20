@@ -15,7 +15,7 @@ extension EnvironmentValues {
 }
 
 /// A stable destination identity lets every study link participate in the stack's path.
-/// Content is captured when the link is followed; it is not persisted across launches.
+/// Destination content is captured in the navigation value. Load bundled data before creating links.
 struct StudyRoute: Hashable {
     let id: UUID
     let destination: AnyView
