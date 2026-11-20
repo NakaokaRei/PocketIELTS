@@ -185,7 +185,143 @@
       }
     ],
     "audio": "Guide: Good morning, and welcome to the first day of the Eastbank Repair Festival. I'm going to talk you through the site before you go off with your maps. If you've been to the winter market here, forget the route you normally take. We haven't changed the entrance, but most of the activities are in different places. The small blue mark on your map is where we are standing now, in the courtyard.\nGuide: To begin with, anyone bringing a broken item should go to the desk beside the fountain. There are two desks in the courtyard. The one under the clock is for people who have volunteered to help, so there's no point showing the staff there your lamp or your radio. At the fountain you'll receive a ticket with a time on it. That time is for an assessment, not a promise that a repair will be finished by then.\nGuide: The old system of giving people a place in a queue as soon as they arrived didn't work very well. People had to stand for hours, and nobody dared leave to look at the demonstrations. This year the tickets let you explore until ten minutes before your appointment. If the time clashes with something else you want to see, return to the desk. Passing a ticket to somebody with a different item can cause problems, since electrical work and furniture repairs need different equipment.\nGuide: Let's look first at what you can do while you wait. In the weaving room a craft worker will show you how to mend a hole in a jumper. She used to ask people to bring something of their own to work on. That meant beginners worried about spoiling a favourite piece of clothing. This time she has brought practice material for everyone. You'll be working with wool, not the thin cotton you may have used for sewing on buttons. You'll be able to take your practice piece away.\nGuide: Next door you'll see some beautiful wooden chairs. Please resist the temptation to sit on them. The point of the display is not to sell restored furniture. One chair has been left exactly as it arrived, another has been taken apart, and a third has been put back together. Together they show the stages of a single repair. The carpenter has left the price tags from the charity shop on two of them, which can give the wrong impression.\nGuide: There are two events for children. The morning session involves small tools, so an adult must stay with each child. At the afternoon storytelling session an adult is welcome but does not have to stay. Both activities are free, but only the morning one has to be booked. Go to the tent beside the stage for a booking card. The people in the tent by the gate can tell you where things are, but they don't have the cards.\nGuide: Now for a few practical details. Hot drinks are available in the café, and you may bring your own lunch. Please eat it on the terrace. We originally intended to use the lawn for picnics, but the ground is too wet. There's a tap for drinking water just beyond the terrace, on the wall of the workshop. The tap in the paint room is for washing brushes only.\nGuide: If you borrow tools, please give the attendant your ticket to hold, not your identity card. You'll get it back when you return the tools. Large items that aren't ready for collection this evening can be left in the store until Monday. We cannot keep them until the next festival. Finally, before you leave, tell us which activity you would most like us to repeat. Put your suggestion on the board by the exit; the box beside it is for donations. That's everything. I hope you find something worth taking home, even if it's only an idea.",
-    "oral": []
+    "oral": [],
+    "visuals": [
+      {
+        "title": "Eastbank Repair Festival — site plan",
+        "description": "Site plan. Across the top are the weaving room, chair display and workshop. The courtyard contains a clock and fountain, each beside a desk. The café and terrace are on the right. At the bottom are the stage with a tent, the entrance, and another tent. A marked point in the courtyard shows where the guide and visitors are standing.",
+        "elements": [
+          {
+            "kind": "box",
+            "x": 4,
+            "y": 4,
+            "width": 28,
+            "height": 18,
+            "label": "Weaving room"
+          },
+          {
+            "kind": "box",
+            "x": 35,
+            "y": 4,
+            "width": 28,
+            "height": 18,
+            "label": "Chair display"
+          },
+          {
+            "kind": "box",
+            "x": 68,
+            "y": 4,
+            "width": 28,
+            "height": 18,
+            "label": "Workshop"
+          },
+          {
+            "kind": "label",
+            "x": 35,
+            "y": 26,
+            "width": 30,
+            "height": 10,
+            "label": "Courtyard"
+          },
+          {
+            "kind": "circle",
+            "x": 8,
+            "y": 42,
+            "width": 15,
+            "height": 18,
+            "label": "Clock"
+          },
+          {
+            "kind": "box",
+            "x": 8,
+            "y": 65,
+            "width": 17,
+            "height": 10,
+            "label": "Desk"
+          },
+          {
+            "kind": "circle",
+            "x": 40,
+            "y": 42,
+            "width": 18,
+            "height": 18,
+            "label": "Fountain"
+          },
+          {
+            "kind": "box",
+            "x": 44,
+            "y": 65,
+            "width": 17,
+            "height": 10,
+            "label": "Desk"
+          },
+          {
+            "kind": "box",
+            "x": 74,
+            "y": 38,
+            "width": 22,
+            "height": 12,
+            "label": "Café"
+          },
+          {
+            "kind": "box",
+            "x": 74,
+            "y": 54,
+            "width": 22,
+            "height": 12,
+            "label": "Terrace"
+          },
+          {
+            "kind": "box",
+            "x": 4,
+            "y": 84,
+            "width": 19,
+            "height": 12,
+            "label": "Stage"
+          },
+          {
+            "kind": "box",
+            "x": 26,
+            "y": 84,
+            "width": 14,
+            "height": 12,
+            "label": "Tent"
+          },
+          {
+            "kind": "label",
+            "x": 45,
+            "y": 84,
+            "width": 19,
+            "height": 12,
+            "label": "Entrance"
+          },
+          {
+            "kind": "box",
+            "x": 67,
+            "y": 84,
+            "width": 14,
+            "height": 12,
+            "label": "Tent"
+          },
+          {
+            "kind": "circle",
+            "x": 31,
+            "y": 63,
+            "width": 6,
+            "height": 7,
+            "label": ""
+          },
+          {
+            "kind": "label",
+            "x": 25,
+            "y": 72,
+            "width": 19,
+            "height": 12,
+            "label": "You are here"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "Listening / Part 3",

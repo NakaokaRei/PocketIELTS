@@ -29,6 +29,7 @@ enum SpeakingProtocol {
         Part: \(unit.id)
         Topic: \(unit.title)
         Material: \(([unit.directions] + unit.passages + unit.oral).joined(separator: "\n"))
+        \(QuestionVisual.context(unit.visuals))
         """
         return ["type": "session.update", "session": [
             "type": "realtime", "model": model.rawValue, "output_modalities": ["audio"],

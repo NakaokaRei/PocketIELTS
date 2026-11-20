@@ -361,6 +361,7 @@ struct ResultDetailScreen: View {
                 if let answers = current.questionAnswers, let paper = current.paper {
                     DisclosureGroup(String(localized: "あなたの回答")) {
                         VStack(alignment: .leading, spacing: 16) {
+                            ForEach(Array((paper.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                             ForEach(paper.questions.indices, id: \.self) { index in
                                 let question = paper.questions[index]
                                 let answer = index < answers.count ? answers[index] : ""

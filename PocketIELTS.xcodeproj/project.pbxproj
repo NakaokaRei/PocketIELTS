@@ -11,6 +11,7 @@
 		A02100000000000000000001 = {isa = PBXBuildFile; fileRef = A02100000000000000000002; };
  A02000000000000000000001 = {isa = PBXBuildFile; fileRef = A02000000000000000000002; };
  A01900000000000000000001 /* SpeakingConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01900000000000000000002; };
+ A02900000000000000000001 /* QuestionVisual.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02900000000000000000002; };
  A01100000000000000000001 /* ListeningAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01100000000000000000002; };
 		B7A002000000000000000003 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000004 /* InfoPlist.xcstrings */; };
 		B7A002000000000000000001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B7A002000000000000000002 /* Localizable.xcstrings */; };
@@ -60,6 +61,7 @@
 		A02100000000000000000002 = {isa = PBXFileReference; lastKnownFileType = folder; path = Vocabulary; sourceTree = "<group>"; };
  A02000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyLibrary.swift; sourceTree = "<group>"; };
  A01900000000000000000002 /* SpeakingConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingConversation.swift; sourceTree = "<group>"; };
+ A02900000000000000000002 /* QuestionVisual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionVisual.swift; sourceTree = "<group>"; };
  A01100000000000000000002 /* ListeningAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningAudio.swift; sourceTree = "<group>"; };
 		B7A002000000000000000004 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		B7A002000000000000000002 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				74290FBE07E403D3FA46FB1A /* ExamScreen.swift */,
+ A02900000000000000000002 /* QuestionVisual.swift */,
  A01100000000000000000002 /* ListeningAudio.swift */,
  A01900000000000000000002 /* SpeakingConversation.swift */,
 			);
@@ -495,6 +498,7 @@
 				999E5C8551D01A8092F8A161 /* ChatGPTInference.swift in Sources */,
 				434451488BD08B41D695C93E /* SignInBrowser.swift in Sources */,
 				4402C5C9A38604E1220F81F0 /* ExamScreen.swift in Sources */,
+ A02900000000000000000001 /* QuestionVisual.swift in Sources */,
  A01100000000000000000001 /* ListeningAudio.swift in Sources */,
  A01900000000000000000001 /* SpeakingConversation.swift in Sources */,
 			);

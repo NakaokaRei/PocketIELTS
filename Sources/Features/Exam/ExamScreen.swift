@@ -9,6 +9,7 @@ struct ExamUnit: Codable, Equatable, Identifiable, Sendable {
     let questions: [ReadingSet.Question]
     let audio: String?
     let oral: [String]
+    var visuals: [QuestionVisual]? = nil
     var firstQuestionNumber: Int {
         if skill == "Reading" { return id.contains("Section 3") ? 27 : id.contains("Section 2") ? 14 : 1 }
         if skill == "Listening", let part = (1...4).first(where: { id.contains("Part \($0)") }) { return (part - 1) * 10 + 1 }
@@ -221,6 +222,9 @@ struct ExamScreen: View {
         VStack(alignment: .leading, spacing: 20) {
             Text(unit.id).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
             Text(showingReview ? String(localized: "答えと解説") : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
+            ForEach(Array((unit.visuals ?? []).enumerated()), id: \.offset) { _, visual in
+                QuestionVisualView(visual: visual)
+            }
             if showingReview {
                 reviewContent(unit)
             } else {
@@ -450,7 +454,7 @@ struct ExamScreen: View {
     }
     private func openTutor(_ value: String, selection: String? = nil) { context = value; selectedText = selection; tutor = true }
     private func material(_ part: ExamUnit) -> String {
-        ([part.id, part.title, part.directions] + part.passages + part.questions.map { $0.prompt + "\n" + $0.explanation } + part.oral + [part.audio ?? ""]).joined(separator: "\n")
+        ([part.id, part.title, part.directions] + part.passages + part.questions.map { $0.prompt + "\n" + $0.explanation } + part.oral + [part.audio ?? ""]).joined(separator: "\n") + QuestionVisual.context(part.visuals)
     }
     private func saveResult(_ part: ExamUnit) {
         guard !recorded.contains(part.id) else { return }

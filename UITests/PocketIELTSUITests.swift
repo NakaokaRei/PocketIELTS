@@ -171,6 +171,20 @@ final class PocketIELTSUITests: XCTestCase {
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-tutor" : "iphone-tutor")
     }
 
+    func testListeningFigureCanExpandAndReturn() {
+        app.buttons["home.skill.Listening"].tap()
+        app.buttons["part.open.Listening / Part 2"].tap()
+        let expand = app.buttons["question.visual.expand"]
+        for _ in 0..<8 where !expand.isHittable { app.swipeUp() }
+        XCTAssertTrue(expand.isHittable)
+        capture("iphone-listening-figure")
+        expand.tap()
+        XCTAssertTrue(app.buttons["完了"].waitForExistence(timeout: 5))
+        capture("iphone-listening-figure-expanded")
+        app.buttons["完了"].tap()
+        XCTAssertTrue(expand.waitForExistence(timeout: 5))
+    }
+
     func testReadableChoicesAndAnswerSelection() {
         app.buttons["home.skill.Listening"].tap()
         app.buttons["part.open.Listening / Part 2"].tap()

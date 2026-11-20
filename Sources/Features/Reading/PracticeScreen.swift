@@ -12,7 +12,7 @@ struct PracticeScreen: View {
         guard let set = store.session, !store.loading else { return nil }
         let paper = ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
             skill: "Reading", title: set.title, directions: "", passages: set.passages,
-            questions: set.questions, audio: nil, oral: [])
+            questions: set.questions, audio: nil, oral: [], visuals: set.visuals)
         return store.papers.contains { $0.id == paper.id } ? nil : paper
     }
 
@@ -30,6 +30,7 @@ struct PracticeScreen: View {
                     if let set = store.session, !store.loading {
                         Text(set.title).font(StudyTypography.title)
                         ForEach(set.passages.indices, id: \.self) { i in selectable(set.passages[i], id: "passage-\(i)") }
+                        ForEach(Array((set.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         Divider()
                         ForEach(set.questions.indices, id: \.self) { i in
                             let item = set.questions[i]
@@ -56,11 +57,11 @@ struct PracticeScreen: View {
                         Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
                             store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
                                 skill: "Reading", title: set.title, directions: "", passages: set.passages,
-                                questions: set.questions, audio: nil, oral: [])))
+                                questions: set.questions, audio: nil, oral: [], visuals: set.visuals)))
                             saved = true
                         }
                         .buttonStyle(StudySecondaryButtonStyle())
-                        Button(String(localized: "この問題をAIに質問"), systemImage: "bubble.left.and.bubble.right") { openTutor(set.passages.joined(separator: "\n") + "\n" + set.questions.map(\.prompt).joined(separator: "\n")) }
+                        Button(String(localized: "この問題をAIに質問"), systemImage: "bubble.left.and.bubble.right") { openTutor(QuestionVisual.context(set.visuals) + set.passages.joined(separator: "\n") + "\n" + set.questions.map(\.prompt).joined(separator: "\n")) }
                             .buttonStyle(StudySecondaryButtonStyle())
                     }
                 }.padding(.horizontal, StudySpacing.screenInset)
@@ -78,14 +79,14 @@ struct PracticeScreen: View {
         SelectableStudyText(text: text, sourceID: id) { entry in
             let paper = store.session.map {
                 ExamUnit(id: "Reading / Section \(store.section) · " + $0.title, skill: "Reading", title: $0.title,
-                         directions: "", passages: $0.passages, questions: $0.questions, audio: nil, oral: [])
+                         directions: "", passages: $0.passages, questions: $0.questions, audio: nil, oral: [], visuals: $0.visuals)
             }
             store.send(.saveExpression(SavedExpression(expression: entry.expression,
                 source: "Reading / Section \(store.section)", sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
         } onAsk: { entry in openTutor(entry.sourceText + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) } onSavePaper: {
             if let set = store.session {
                 store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
-                    skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [])))
+                    skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [], visuals: set.visuals)))
             }
         }
     }

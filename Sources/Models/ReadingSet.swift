@@ -5,6 +5,7 @@ struct ReadingSet: Codable, Equatable, Sendable {
     var title: String
     var passages: [String]
     var questions: [Question]
+    var visuals: [QuestionVisual]? = nil
 
     struct Question: Codable, Equatable, Sendable {
         var instruction: String

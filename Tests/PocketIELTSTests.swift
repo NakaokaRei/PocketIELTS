@@ -785,3 +785,28 @@ extension PocketIELTSTests {
         player.stop()
     }
 }
+
+
+extension PocketIELTSTests {
+    func testQuestionVisualsPersistAndOldPapersStillDecode() throws {
+        let papers = try ExamUnit.load()
+        let paper = try XCTUnwrap(papers.first { $0.id == "Listening / Part 2" })
+        XCTAssertEqual(paper.visuals?.count, 1)
+        try QuestionVisual.validate(paper.visuals)
+        XCTAssertEqual(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)), paper)
+        XCTAssertTrue(QuestionVisual.context(paper.visuals).contains("Fountain"))
+        XCTAssertNil(papers.first { $0.id == "Listening / Part 1" }?.visuals)
+    }
+
+    func testQuestionVisualRejectsInvalidGeometryAndMissingFigure() throws {
+        let paper = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Listening / Part 2" })
+        var figure = try XCTUnwrap(paper.visuals?.first)
+        figure.elements[0].width = 200
+        XCTAssertThrowsError(try QuestionVisual.validate([figure]))
+        figure.elements[0].width = .infinity
+        XCTAssertThrowsError(try QuestionVisual.validate([figure]))
+        XCTAssertThrowsError(try QuestionVisual.validate(nil, instructions: ["Label the map below."]))
+        XCTAssertThrowsError(try QuestionVisual.validate([], instructions: ["Study the chart above."]))
+        XCTAssertNoThrow(try QuestionVisual.validate(nil, instructions: ["What does the speaker plan to do?"]))
+    }
+}
