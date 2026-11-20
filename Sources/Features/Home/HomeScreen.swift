@@ -291,9 +291,9 @@ struct VocabularyScreen: View {
                         Text(entry.sourceID == "manual" ? String(localized: "My vocabulary") : entry.source).font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                         HStack(alignment: .top) {
                             Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
-                            Spacer()
+                            WordPronunciationButton(word: entry.expression, pronunciation: pronunciation)
+                            Spacer(minLength: 0)
                         }
-                        WordPronunciationButton(word: entry.expression, pronunciation: pronunciation)
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
                             pronunciation.stop()

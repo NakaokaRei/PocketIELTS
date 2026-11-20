@@ -251,7 +251,11 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["generation.word"].exists)
         XCTAssertEqual(app.staticTexts["generation.word"].label, "available")
         XCTAssertFalse(app.staticTexts["generation.meaning"].label.isEmpty)
-        XCTAssertTrue(app.buttons["vocabulary.pronounce.available"].exists)
+        let pronounce = app.buttons["vocabulary.pronounce.available"]
+        XCTAssertTrue(pronounce.exists)
+        XCTAssertEqual(pronounce.frame.width, 44, accuracy: 1)
+        XCTAssertEqual(pronounce.frame.height, 44, accuracy: 1)
+        XCTAssertEqual(pronounce.frame.minY, app.staticTexts["generation.word"].frame.minY, accuracy: 1)
         capture("iphone-generation-vocabulary")
         let nextButtonFrame = action.frame
         action.tap()

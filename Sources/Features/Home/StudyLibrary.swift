@@ -50,8 +50,10 @@ struct VocabularyLibraryScreen: View {
                 if filtered.isEmpty { ContentUnavailableView.search(text: search) }
                 ForEach(filtered) { word in
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(word.expression).font(StudyTypography.heading).textSelection(.enabled)
-                        WordPronunciationButton(word: word.expression, pronunciation: pronunciation)
+                        HStack(alignment: .top, spacing: 8) {
+                            Text(word.expression).font(StudyTypography.heading).textSelection(.enabled)
+                            WordPronunciationButton(word: word.expression, pronunciation: pronunciation)
+                        }
                         Text(word.definition).font(StudyTypography.body).textSelection(.enabled)
                         if !word.example.isEmpty { Text(word.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { pronunciation.stop(); selected = word }
@@ -198,14 +200,16 @@ struct WaitingVocabularyView: View {
                     // cannot move the next-word hit target under the user's finger.
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
+                            HStack(alignment: .top, spacing: 8) {
+                                Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
+                                WordPronunciationButton(word: card.word, pronunciation: pronunciation)
+                            }
                             Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
                                 .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
                             Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }.frame(height: textAreaHeight)
                         .id(card.id)
-                    WordPronunciationButton(word: card.word, pronunciation: pronunciation)
                     Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
                         .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
                     Text(String(localized: "Your practice opens automatically when ready."))
@@ -270,15 +274,26 @@ struct WordPronunciationButton: View {
     let word: String
     @ObservedObject var pronunciation: WordPronouncer
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showingError = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Button {
-                pronunciation.toggle(word)
-            } label: {
-                Label(String(localized: pronunciation.activeWord == word ? "Stop pronunciation" : "Hear pronunciation"),
-                      systemImage: pronunciation.activeWord == word ? "stop.fill" : "speaker.wave.2.fill")
-            }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.pronounce.\(word)")
-            if let error = pronunciation.error { Text(error).font(StudyTypography.caption).foregroundStyle(StudyColors.error) }
-        }.onChange(of: scenePhase) { _, phase in if phase != .active { pronunciation.stop() } }
+        Button {
+            pronunciation.toggle(word)
+            showingError = pronunciation.error != nil
+        } label: {
+            Label(String(localized: pronunciation.activeWord == word ? "Stop pronunciation" : "Hear pronunciation"),
+                  systemImage: pronunciation.activeWord == word ? "stop.fill" : "speaker.wave.2.fill")
+                .labelStyle(.iconOnly)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(StudyColors.accent)
+                .frame(width: 44, height: 44)
+                .background(StudyColors.accent.opacity(0.08), in: Circle())
+                .contentShape(Circle())
+        }.buttonStyle(.plain)
+            .fixedSize()
+            .accessibilityIdentifier("vocabulary.pronounce.\(word)")
+            .onChange(of: scenePhase) { _, phase in if phase != .active { pronunciation.stop() } }
+            .alert(String(localized: "Hear pronunciation"), isPresented: $showingError) {
+                Button(String(localized: "閉じる"), role: .cancel) {}
+            } message: { Text(pronunciation.error ?? "") }
     }
 }
