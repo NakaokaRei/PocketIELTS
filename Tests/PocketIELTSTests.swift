@@ -47,13 +47,36 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertTrue(StarterWord.all.allSatisfy { !$0.example.isEmpty && $0.example.localizedCaseInsensitiveContains($0.expression) })
         let saved = SavedExpression(expression: "accommodation", source: "Reading", sourceText: "Find accommodation near work.")
         let deck = VocabularyCard.waitingDeck([saved])
-        XCTAssertEqual(deck.count, 1)
+        XCTAssertEqual(deck.count, 1000)
         XCTAssertEqual(deck.first?.word, "accommodation")
         XCTAssertFalse(try XCTUnwrap(deck.first).meaning.isEmpty)
         XCTAssertTrue(try XCTUnwrap(deck.first).personal)
         let unknown = SavedExpression(expression: "xyz unknown", source: "manual", sourceText: "")
-        XCTAssertTrue(VocabularyCard.waitingDeck([unknown]).allSatisfy { !$0.meaning.isEmpty && !$0.personal })
+        let withUnknown = VocabularyCard.waitingDeck([unknown])
+        XCTAssertEqual(withUnknown.first?.word, "xyz unknown")
+        XCTAssertTrue(try XCTUnwrap(withUnknown.first).personal)
+        XCTAssertTrue(try XCTUnwrap(withUnknown.first).meaning.isEmpty)
+        XCTAssertEqual(withUnknown.count, 1001)
+        XCTAssertTrue(withUnknown.dropFirst().allSatisfy { !$0.meaning.isEmpty && !$0.personal })
+        XCTAssertTrue(deck.dropFirst().allSatisfy { !$0.personal && $0.word.lowercased() != "accommodation" })
+        XCTAssertTrue(VocabularyCard.waitingDeck([]).allSatisfy { !$0.personal })
         XCTAssertNil(VocabularyCard(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
+    }
+
+    func testWaitingDeckShowsAllPersonalWordsBeforeUniqueBundledWords() {
+        let saved = ["available", "ventilation", "AVAILABLE", "my own phrase", "  "].map {
+            SavedExpression(expression: $0, source: "manual", sourceText: "")
+        }
+        // Assert ordering and membership independently of each random shuffle.
+        for _ in 0..<10 {
+            let deck = VocabularyCard.waitingDeck(saved)
+            XCTAssertEqual(Set(deck.prefix(3).map { $0.word.lowercased() }), ["available", "ventilation", "my own phrase"])
+            XCTAssertTrue(deck.prefix(3).allSatisfy(\.personal))
+            XCTAssertTrue(deck.dropFirst(3).allSatisfy { !$0.personal })
+            XCTAssertEqual(Set(deck.map { $0.word.lowercased() }).count, deck.count)
+            XCTAssertEqual(deck.count, 1001)
+            for pair in zip(deck, deck.dropFirst()) { XCTAssertNotEqual(pair.0.word.lowercased(), pair.1.word.lowercased()) }
+        }
     }
 
     func testPronunciationUsesEnglishAndStopsCleanly() {

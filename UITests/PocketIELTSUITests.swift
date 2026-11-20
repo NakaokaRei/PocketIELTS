@@ -254,7 +254,14 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["vocabulary.pronounce.available"].exists)
         capture("iphone-generation-vocabulary")
         action.tap()
+        let bundledWord = app.staticTexts["generation.word"].label
+        XCTAssertNotEqual(bundledWord, "available")
+        XCTAssertTrue(app.staticTexts["generation.source.bundled"].exists)
         XCTAssertTrue(app.staticTexts["generation.meaning"].exists)
+        action.tap()
+        XCTAssertNotEqual(app.staticTexts["generation.word"].label, bundledWord)
+        XCTAssertNotEqual(app.staticTexts["generation.word"].label, "available")
+        capture("iphone-generation-bundled-word")
         let cancel = app.buttons["キャンセルして戻る"]
         for _ in 0..<3 where !cancel.isHittable { app.swipeUp() }
         cancel.tap()

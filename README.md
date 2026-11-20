@@ -205,12 +205,13 @@ Choose a score-based level, then search words or definitions. Flashcard entry po
 
 **Hear pronunciation** uses an installed English system voice, preferring British English. It does not call a paid API. Playback stops when changing cards, leaving the screen or moving the app to the background. Offline playback depends on an English voice being installed on the device.
 
-During exercise generation, a card immediately displays a **word, meaning and example**. It prioritizes saved words with known meanings and otherwise uses the General Training library. **Next word** and pronunciation are optional; there is no quiz or additional API request. The exercise still opens after the loading indicator reaches 100%.
+During exercise generation, a card immediately displays a **word, meaning and example**. Your saved words appear first in random order, followed by shuffled General Training words. Expressions are deduplicated across both collections, so even one saved word advances to a different word. Saved expressions without a definition are included with a clear “No saved meaning” label. **Next word** and pronunciation are optional; there is no quiz or additional API request. The exercise still opens after the loading indicator reaches 100%.
 
 The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and validate all 1,000 entries with `python3 Scripts/build-vocabulary.py`. CI checks that this reproduces the bundled JSON.
 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-generation-vocabulary.png" width="250" alt="Word and meaning shown together while an exercise is generated" />
+  <img src="Documentation/Screenshots/iphone-generation-bundled-word.png" width="250" alt="Bundled vocabulary appears after all personal words have been shown" />
 </p>
 
 ### Leaving a practice session

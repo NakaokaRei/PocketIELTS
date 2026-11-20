@@ -166,8 +166,12 @@ struct VocabularyCard: Identifiable, Equatable {
         example = entry.contextExcerpt.isEmpty ? match?.example ?? "" : entry.contextExcerpt
     }
     static func waitingDeck(_ saved: [SavedExpression]) -> [Self] {
-        let personal = saved.compactMap(Self.init).filter { !$0.meaning.isEmpty }
-        return (personal.isEmpty ? StarterWord.all.map(Self.init) : personal).shuffled()
+        // Keep every saved expression, including ones without a definition. A one-word
+        // personal deck must continue into the bundled collection rather than loop forever.
+        var seen = Set<String>()
+        let personal = saved.compactMap(Self.init).filter { seen.insert($0.word.lowercased()).inserted }
+        let bundled = StarterWord.all.map(Self.init).filter { seen.insert($0.word.lowercased()).inserted }
+        return personal.shuffled() + bundled.shuffled()
     }
 }
 
@@ -187,9 +191,11 @@ struct WaitingVocabularyView: View {
                     Label(String(localized: "Vocabulary while you wait"), systemImage: "book")
                         .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
                     Text(String(localized: card.personal ? "From your saved words" : "From the word library"))
+                        .accessibilityIdentifier(card.personal ? "generation.source.personal" : "generation.source.bundled")
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
-                    Text(card.meaning).font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
+                    Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
+                        .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
                     Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
                     WordPronunciationButton(word: card.word, pronunciation: pronunciation)
                     Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
