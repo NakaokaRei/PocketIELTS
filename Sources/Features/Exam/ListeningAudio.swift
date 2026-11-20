@@ -113,7 +113,16 @@ enum SpeechAudio {
                 pcm.append(cached)
             } else {
                 guard let key = try KeyStore.read(account: SpeechCredentials.account), !key.isEmpty else { throw StudyError.message(String(localized: "設定で音声生成用のAPIキーを登録してください。")) }
-                let (data, response) = try await URLSession.shared.data(for: request(text: part.text, key: key, voice: part.voice))
+                let (stream, response) = try await URLSession.shared.bytes(for: request(text: part.text, key: key, voice: part.voice))
+                var data = Data()
+                let expected = response.expectedContentLength > 0 ? Int(response.expectedContentLength) : nil
+                for try await byte in stream {
+                    data.append(byte)
+                    if data.count.isMultiple(of: 8192) {
+                        try Task.checkCancellation()
+                        await GenerationTransferProgress.received(data.count, expected: expected, estimate: 480000)
+                    }
+                }
                 try Task.checkCancellation()
                 try validate(response, data: data)
                 try data.write(to: url, options: .atomic)

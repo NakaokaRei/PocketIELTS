@@ -722,3 +722,26 @@ extension PocketIELTSTests {
         XCTAssertFalse(player.generating)
     }
 }
+
+
+extension PocketIELTSTests {
+    func testTransferProgressAdvancesBeforeASectionCompletes() async throws {
+        try await BackgroundGeneration.run(title: "Fixture", total: 2, useSystemScheduler: false) { job in
+            XCTAssertEqual(job.fraction, 0)
+            await GenerationTransferProgress.received(8192)
+            XCTAssertGreaterThan(job.fraction, 0)
+            XCTAssertEqual(job.completed, 0)
+            let first = job.fraction
+            await GenerationTransferProgress.received(100) // Smaller/stale reports never move backwards.
+            XCTAssertEqual(job.fraction, first)
+            await GenerationTransferProgress.received(1_000_000, expected: 1_000_000)
+            XCTAssertLessThan(job.fraction, 0.5, "Receiving is not validation")
+            job.update(completed: 1, total: 2)
+            XCTAssertEqual(job.fraction, 0.5)
+            await GenerationTransferProgress.received(8192)
+            XCTAssertGreaterThan(job.fraction, 0.5)
+            XCTAssertLessThan(job.fraction, 1)
+        }
+        XCTAssertNil(GenerationTransferProgress.report, "Progress must not leak into unrelated tutor requests")
+    }
+}

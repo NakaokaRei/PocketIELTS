@@ -31,13 +31,22 @@ enum ChatGPTInference {
         let (stream, status) = try await URLSession.shared.bytes(for: request)
         try check(status)
         var text = ""
+        var receivedBytes = 0
+        var reportedBytes = 0
         for try await line in stream.lines where line.hasPrefix("data:") {
             try Task.checkCancellation()
             let payload = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
             if payload == "[DONE]" { break }
+            receivedBytes += payload.utf8.count
+            if receivedBytes - reportedBytes >= 256 {
+                await GenerationTransferProgress.received(receivedBytes)
+                reportedBytes = receivedBytes
+            }
             let event = try JSONDecoder().decode(Event.self, from: Data(payload.utf8))
             switch event.type {
-            case "response.output_text.delta": text += event.delta ?? ""
+            case "response.output_text.delta":
+                let delta = event.delta ?? ""
+                text += delta
             case "response.completed" where !text.isEmpty: return text
             case "response.failed", "error": throw StudyError.message(String(localized: "応答を生成できませんでした。ChatGPTの利用枠と接続状態を確認してください。"))
             case "response.incomplete": throw StudyError.message(String(localized: "応答が途中で終了しました。"))

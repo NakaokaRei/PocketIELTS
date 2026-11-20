@@ -1,5 +1,18 @@
 import BackgroundTasks
 import UIKit
+import OSLog
+
+/// Transport callbacks inherit the current generation job, without changing API credentials.
+enum GenerationTransferProgress {
+    @TaskLocal static var report: (@Sendable (Double, Int) async -> Void)?
+
+    static func received(_ bytes: Int, expected: Int? = nil, estimate: Double = 16000) async {
+        guard let report else { return }
+        let fraction = expected.map { Double(bytes) / Double(max(1, $0)) }
+            ?? (1 - exp(-Double(max(0, bytes)) / estimate))
+        await report(min(0.9, max(0, fraction) * 0.9), bytes)
+    }
+}
 
 /// Owns a user-initiated job and its system lifetime. All lifetime and UI progress
 /// mutations run on MainActor; URLSession still performs networking asynchronously.
@@ -8,6 +21,10 @@ final class BackgroundGeneration {
     private let identifier = "app.pocketielts.study.generation." + UUID().uuidString
     private let title: String
     private var total: Int
+    private var partial = 0.0
+    private var receivedBytes = 0
+    private(set) var fraction = 0.0
+    private let started = Date()
     private(set) var completed = 0
     private(set) var finished = false
     private var systemInterrupted = false
@@ -35,7 +52,9 @@ final class BackgroundGeneration {
                     job.worker = Task {
                         do {
                             try Task.checkCancellation()
-                            let value = try await operation(job)
+                            let value = try await GenerationTransferProgress.$report.withValue({ fraction, bytes in
+                                await job.receiving(fraction: fraction, bytes: bytes)
+                            }) { try await operation(job) }
                             try Task.checkCancellation()
                             job.update(completed: job.total, total: job.total)
                             job.finish(success: true)
@@ -113,16 +132,33 @@ final class BackgroundGeneration {
         startWork = nil
     }
 
-    private var progressLabel: String { "\(completed * 100 / total)% · \(completed)/\(total)" }
+    private var progressLabel: String {
+        let prefix = completed == total ? "" : "≈"
+        return "\(prefix)\(Int(fraction * 100))% · \(completed)/\(total) · \(receivedBytes / 1024) KB"
+    }
+
+    func receiving(fraction: Double, bytes: Int) {
+        guard !finished else { return }
+        partial = max(partial, min(0.9, max(0, fraction)))
+        receivedBytes = max(receivedBytes, bytes)
+        publishProgress()
+    }
 
     func update(completed: Int, total: Int) {
         guard !finished else { return }
         self.total = max(1, total)
-        self.completed = min(self.total, max(self.completed, completed))
+        let next = min(self.total, max(self.completed, completed))
+        if next > self.completed { partial = 0; receivedBytes = 0 }
+        self.completed = next
+        publishProgress()
+    }
+
+    private func publishProgress() {
+        fraction = max(fraction, min(1, (Double(completed) + partial) / Double(total)))
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 26.0, *), let task = systemTask as? BGContinuedProcessingTask {
-            task.progress.totalUnitCount = Int64(self.total)
-            task.progress.completedUnitCount = Int64(self.completed)
+            task.progress.totalUnitCount = 100000
+            task.progress.completedUnitCount = Int64(fraction * 100000)
             task.updateTitle(title, subtitle: progressLabel)
         }
         #endif
@@ -131,6 +167,7 @@ final class BackgroundGeneration {
     /// Shared by expiration and the system Live Activity's cancel action.
     func interrupt() {
         guard !finished else { return }
+        Logger(subsystem: "app.pocketielts.study", category: "Generation").warning("System expiration/cancellation after \(Date().timeIntervalSince(self.started))s; completed=\(self.completed), receivedBytes=\(self.receivedBytes), appState=\(UIApplication.shared.applicationState.rawValue)")
         systemInterrupted = true
         cancel()
         // Release the system assertion immediately, even if a dependency ignores cancellation.
