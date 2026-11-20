@@ -232,12 +232,15 @@ Ending practice returns directly to Home after the save-or-exit confirmation, wi
 
 The app and system Live Activity now consume the same per-job progress value, including the completion animation. Both use a time-based estimate between validated sections; received byte counts are diagnostic only and cannot push the percentage ahead. System UI refresh timing is controlled by iOS.
 
-Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. An expand button opens a larger, scrollable version; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. This supports schematic figures, not photographic image generation.
+Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. An expand button opens a larger, scrollable version; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. Reading Section 2 includes a workplace floor plan with three diagram-label questions (14–16), available offline.
+
+Optionally enable **Settings → Question images → Generate question images with OpenAI** to render new exercise figures using the [OpenAI Images API](https://developers.openai.com/api/docs/guides/image-generation) (`gpt-image-1.5`). This uses the audio API key and incurs separate API charges; it is off by default. Images are cached and saved with the paper. You can switch back to the original precise diagram; failed image requests retain that diagram instead. Generated image labels can be imperfect, so the original remains available. Automated tests use synthetic images and never make paid requests.
 
 Audio generation does not request app-controlled completion haptics. The system-owned background-task Live Activity may provide its own completion feedback; the current public BackgroundTasks API does not expose a per-task haptic switch.
 
 <p>
   <img src="Documentation/Screenshots/iphone-listening-figure.png" width="250" alt="Listening question with an offline site plan" />
+  <img src="Documentation/Screenshots/iphone-reading-figure.png" width="250" alt="Reading workplace plan with numbered blanks" />
   <img src="Documentation/Screenshots/iphone-listening-figure-expanded.png" width="250" alt="Expanded, scrollable vector plan" />
 </p>
 

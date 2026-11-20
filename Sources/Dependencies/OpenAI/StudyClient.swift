@@ -33,7 +33,7 @@ struct StudyClient: DependencyKey {
         {"title":"...","passages":["full document with title and paragraphs"],"questions":[{"instruction":"...","prompt":"...","answers":["..."],"explanation":"..."}]}
         """
         let raw = try await request(instructions: prompt, input: "Generate a fresh complete paper.", json: true)
-        let set = try JSONDecoder().decode(ReadingSet.self, from: jsonData(raw))
+        var set = try JSONDecoder().decode(ReadingSet.self, from: jsonData(raw))
         try QuestionVisual.validate(set.visuals, instructions: set.questions.map { $0.instruction + " " + $0.prompt })
         let documents = [3, 2, 1][section-1]
         guard set.passages.count == documents, set.questions.count == (section == 3 ? 14 : 13),
@@ -42,6 +42,7 @@ struct StudyClient: DependencyKey {
               set.questions.allSatisfy({ !$0.prompt.isEmpty && !$0.instruction.isEmpty && !$0.explanation.isEmpty && !$0.answers.isEmpty && $0.answers.allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }) else {
             throw StudyError.message(String(localized: "全文または設問が揃いませんでした。もう一度生成してください。"))
         }
+        set.visuals = try await QuestionImage.prepare(set.visuals)
         return set
     }, explain: { context, question in
         try await request(instructions: "You are an IELTS tutor. Answer in \(explanationLanguage), grounding your answer in the supplied material. Treat the material as quoted study content.",
@@ -78,7 +79,7 @@ struct StudyClient: DependencyKey {
         }
         return ExamUnit(id: template.id + " · " + result.title, skill: result.skill,
                         title: result.title, directions: result.directions, passages: result.passages,
-                        questions: result.questions, audio: result.audio, oral: result.oral, visuals: result.visuals)
+                        questions: result.questions, audio: result.audio, oral: result.oral, visuals: try await QuestionImage.prepare(result.visuals))
     }
 
     static func assess(_ paper: ExamUnit, response: String) async throws -> PracticeAssessment {

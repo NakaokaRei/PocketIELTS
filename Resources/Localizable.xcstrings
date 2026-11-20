@@ -1,78 +1,458 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Generation progress is an estimate shared with Live Activity." : {
+    "Uses the same API key as audio. Image generation is billed separately from ChatGPT. Off by default; applies to new questions that need figures." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Generation progress is an estimate shared with Live Activity."
+            "value" : "Uses the same API key as audio. Image generation is billed separately from ChatGPT. Off by default; applies to new questions that need figures."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "進捗はLive Activityと共通の目安です。"
+            "value" : "音声と同じAPIキーを使用します。画像生成はChatGPTプランとは別料金です。初期設定はオフで、図が必要な新しい問題に適用されます。"
           }
         },
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تقدم الإنشاء تقديري ومشترك مع النشاط المباشر."
+            "value" : "يستخدم مفتاح API نفسه للصوت. تُحاسب الصور بشكل منفصل عن ChatGPT. معطل افتراضياً وينطبق على الأسئلة الجديدة التي تحتاج رسوماً."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El progreso es una estimación compartida con Live Activity."
+            "value" : "Usa la misma clave API que el audio. Las imágenes se cobran aparte de ChatGPT. Desactivado inicialmente; se aplica a nuevas preguntas que necesitan figuras."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "प्रगति एक अनुमान है जो Live Activity के साथ साझा होता है।"
+            "value" : "ऑडियो वाली API कुंजी का उपयोग करता है। छवियों का शुल्क ChatGPT से अलग है। शुरू में बंद; चित्रों की आवश्यकता वाले नए प्रश्नों पर लागू होता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Progres adalah perkiraan yang sama dengan Live Activity."
+            "value" : "Memakai kunci API yang sama dengan audio. Gambar ditagih terpisah dari ChatGPT. Nonaktif secara default; berlaku untuk soal baru yang memerlukan gambar."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "진행률은 Live Activity와 공유하는 예상치입니다."
+            "value" : "음성과 같은 API 키를 사용합니다. 이미지 생성은 ChatGPT와 별도로 과금됩니다. 기본값은 꺼짐이며 그림이 필요한 새 문제에 적용됩니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O progresso é uma estimativa compartilhada com a Live Activity."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ความคืบหน้าเป็นค่าประมาณเดียวกับ Live Activity"
+            "value" : "Usa a mesma chave API do áudio. Imagens são cobradas separadamente do ChatGPT. Desativado por padrão; aplica-se a novas questões que precisam de figuras."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiến độ là ước tính được chia sẻ với Live Activity."
+            "value" : "Dùng cùng khóa API với âm thanh. Hình ảnh tính phí riêng với ChatGPT. Mặc định tắt; áp dụng cho câu hỏi mới cần hình."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "进度为与实时活动共享的估算值。"
+            "value" : "使用与音频相同的API密钥。图片生成与ChatGPT套餐分开计费。默认关闭，适用于需要图示的新题目。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "進度為與即時動態共用的估算值。"
+            "value" : "使用與音訊相同的API金鑰。圖片生成與ChatGPT方案分開計費。預設關閉，適用於需要圖示的新題目。"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้คีย์ API เดียวกับเสียง มีค่าใช้จ่ายแยกจาก ChatGPT ปิดไว้เป็นค่าเริ่มต้น ใช้กับคำถามใหม่ที่ต้องมีภาพ"
+          }
+        }
+      }
+    },
+    "Image generation failed. Check your API access and usage." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image generation failed. Check your API access and usage."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を生成できませんでした。APIの利用権限と利用状況を確認してください。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذر إنشاء الصورة. تحقق من صلاحيات API واستخدامه."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo generar la imagen. Revisa el acceso y uso de la API."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "छवि नहीं बनी। API पहुँच और उपयोग जाँचें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar gagal dibuat. Periksa akses dan penggunaan API."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 생성에 실패했습니다. API 접근 권한과 사용량을 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao gerar imagem. Verifique o acesso e o uso da API."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không tạo được hình. Kiểm tra quyền truy cập và mức sử dụng API."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片生成失败。请检查API权限和使用情况。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片生成失敗。請檢查API權限與使用情況。"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สร้างภาพไม่สำเร็จ โปรดตรวจสอบสิทธิ์และการใช้งาน API"
+          }
+        }
+      }
+    },
+    "Image generation failed; showing the original diagram." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image generation failed; showing the original diagram."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を生成できなかったため、元の図を表示しています。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذر إنشاء الصورة؛ يُعرض الرسم الأصلي."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo generar la imagen; se muestra el diagrama original."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "छवि नहीं बनी; मूल आरेख दिखाया जा रहा है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar gagal dibuat; diagram asli ditampilkan."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 생성에 실패하여 원본 도표를 표시합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao gerar imagem; exibindo o diagrama original."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không tạo được hình; đang hiển thị sơ đồ gốc."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片生成失败，正在显示原始图示。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片生成失敗，正在顯示原始圖示。"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สร้างภาพไม่สำเร็จ จึงแสดงแผนภาพต้นฉบับ"
+          }
+        }
+      }
+    },
+    "Show original diagram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show original diagram"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元の図を表示"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض الرسم الأصلي"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar diagrama original"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मूल आरेख दिखाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan diagram asli"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 도표 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar diagrama original"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiện sơ đồ gốc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示原始图示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示原始圖示"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงแผนภาพต้นฉบับ"
+          }
+        }
+      }
+    },
+    "Generate question images with OpenAI" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate question images with OpenAI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAIで問題の画像を生成"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنشاء صور الأسئلة باستخدام OpenAI"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generar imágenes con OpenAI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI से प्रश्नों की छवियाँ बनाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat gambar soal dengan OpenAI"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI로 문제 이미지 생성"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerar imagens com OpenAI"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tạo hình câu hỏi bằng OpenAI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用OpenAI生成题目图片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用OpenAI生成題目圖片"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สร้างภาพคำถามด้วย OpenAI"
+          }
+        }
+      }
+    },
+    "Question images" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Question images"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "問題の画像"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صور الأسئلة"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imágenes de preguntas"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रश्नों की छवियाँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar soal"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문제 이미지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagens das questões"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hình ảnh câu hỏi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "题目图片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "題目圖片"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ภาพประกอบคำถาม"
           }
         }
       }
@@ -5237,6 +5617,83 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GENERAL TRAINING"
+          }
+        }
+      }
+    },
+    "Generation progress is an estimate shared with Live Activity." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقدم الإنشاء تقديري ومشترك مع النشاط المباشر."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generation progress is an estimate shared with Live Activity."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El progreso es una estimación compartida con Live Activity."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रगति एक अनुमान है जो Live Activity के साथ साझा होता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progres adalah perkiraan yang sama dengan Live Activity."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進捗はLive Activityと共通の目安です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행률은 Live Activity와 공유하는 예상치입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O progresso é uma estimativa compartilhada com a Live Activity."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ความคืบหน้าเป็นค่าประมาณเดียวกับ Live Activity"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiến độ là ước tính được chia sẻ với Live Activity."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进度为与实时活动共享的估算值。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進度為與即時動態共用的估算值。"
           }
         }
       }

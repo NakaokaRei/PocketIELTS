@@ -5,6 +5,8 @@ struct QuestionVisual: Codable, Equatable, Sendable {
     var title: String
     var description: String
     var elements: [Element]
+    var imageData: Data? = nil
+    var imageGenerationFailed: Bool? = nil
 
     struct Element: Codable, Equatable, Sendable {
         enum Kind: String, Codable, Sendable { case box, circle, line, arrow, label }
@@ -46,6 +48,7 @@ struct QuestionVisual: Codable, Equatable, Sendable {
     For maps, plans, diagram labelling, processes, or a task referring to a figure, you MUST include the figure.
     Use original, readable schematic vector artwork, not a photo URL, Markdown image, SVG, or external asset.
     For Listening Part 2 vary task types and include map/plan labelling when appropriate; do not always copy the example's question type.
+    For General Training Reading, vary task types and include diagram/plan labelling or flow-chart completion when supported by the passage. Supply a complete figure with numbered blanks and unambiguous evidence in the text.
     All skills support visuals, but preserve General Training formats: Writing Task 1 is a letter, NOT an Academic chart report; Speaking need not contain a figure.
     Each visual has {"title":"Community centre plan","description":"Accessible description of the visible layout only","elements":[{"kind":"box","x":5,"y":5,"width":25,"height":20,"label":"A"}]}.
     Coordinate canvas is 100 by 100, displayed at a 4:3 aspect ratio. Limit to 4 visuals and 60 elements each.
@@ -59,7 +62,11 @@ struct QuestionVisual: Codable, Equatable, Sendable {
     """
 
     static func context(_ visuals: [Self]?) -> String {
-        guard let visuals, !visuals.isEmpty, let data = try? JSONEncoder().encode(visuals) else { return "" }
+        guard let visuals, !visuals.isEmpty else { return "" }
+        let textOnly = visuals.map { visual in
+            var copy = visual; copy.imageData = nil; copy.imageGenerationFailed = nil; return copy
+        }
+        guard let data = try? JSONEncoder().encode(textOnly) else { return "" }
         return "\nVISUAL MATERIAL (coordinates on a 100 × 100 canvas):\n" + String(decoding: data, as: UTF8.self)
     }
 }
@@ -67,6 +74,7 @@ struct QuestionVisual: Codable, Equatable, Sendable {
 struct QuestionVisualView: View {
     let visual: QuestionVisual
     @State private var expanded = false
+    @State private var showOriginal = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -81,6 +89,13 @@ struct QuestionVisualView: View {
                     .accessibilityIdentifier("question.visual.expand")
             }
             artwork.aspectRatio(4 / 3, contentMode: .fit)
+            if visual.imageData != nil {
+                Toggle(String(localized: "Show original diagram"), isOn: $showOriginal)
+                    .font(StudyTypography.subheadline)
+            } else if visual.imageGenerationFailed == true {
+                Text(String(localized: "Image generation failed; showing the original diagram."))
+                    .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+            }
         }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             .sheet(isPresented: $expanded) {
                 NavigationStack {
@@ -94,7 +109,16 @@ struct QuestionVisualView: View {
             }
     }
 
-    private var artwork: some View {
+    @ViewBuilder private var artwork: some View {
+        if !showOriginal, let data = visual.imageData, let image = UIImage(data: data) {
+            Image(uiImage: image).resizable().scaledToFit()
+                .accessibilityLabel(visual.description).accessibilityIdentifier("question.visual")
+        } else {
+            vectorArtwork
+        }
+    }
+
+    private var vectorArtwork: some View {
         Canvas { context, size in
             let sx = size.width / 100, sy = size.height / 100
             for element in visual.elements {

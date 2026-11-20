@@ -6,6 +6,7 @@ struct SettingsScreen: View {
     @Environment(\.studyCloud) private var cloud
     let store: StoreOf<SettingsFeature>
     @AppStorage(SpeakingModel.preferenceKey) private var speakingModel = SpeakingModel.mini.rawValue
+    @AppStorage(QuestionImage.preferenceKey) private var generateImages = false
     @State private var speechKey = ""
     @State private var speechKeySaved = false
     @State private var speechKeyError: String?
@@ -68,6 +69,13 @@ struct SettingsScreen: View {
                     Text(SpeakingModel.resolve(speakingModel).rawValue).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 } header: { Text(String(localized: "Speaking 音声会話")) }
                 footer: { Text(String(localized: "Miniが初期設定です。標準モデルは料金が高くなります。変更は次の会話から適用されます。リスニングと同じAPIキーを使用し、ChatGPTプランとは別に課金されます。")) }
+                Section {
+                    Toggle(String(localized: "Generate question images with OpenAI"), isOn: $generateImages)
+                        .accessibilityIdentifier("settings.questionImages")
+                    Text(QuestionImage.model).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                    Link(String(localized: "APIの利用状況を確認"), destination: URL(string: "https://platform.openai.com/usage")!)
+                } header: { Text(String(localized: "Question images")) }
+                footer: { Text(String(localized: "Uses the same API key as audio. Image generation is billed separately from ChatGPT. Off by default; applies to new questions that need figures.")) }
                 if let cloud {
                     Section {
                         Toggle(String(localized: "iCloudで同期"), isOn: Binding(get: { cloud.enabled }, set: { cloud.enabled = $0; if $0 { Task { await cloud.sync() } } }))

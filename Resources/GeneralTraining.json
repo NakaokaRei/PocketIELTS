@@ -631,33 +631,33 @@
     "title": "Starting work and applying for training",
     "directions": "",
     "passages": [
-      "A · Your first month at North Quay Services\n\nYour appointment letter gives the time of your first shift, but new staff are asked to arrive twenty minutes earlier on that occasion. Use the staff entrance on King Street and give reception the name of the supervisor shown on the letter. Reception will issue a temporary badge against a signature. The badge opens the staff entrance and the changing rooms; it will not open the equipment store. A permanent badge is prepared after your supervisor confirms that you have completed the induction. Until then, do not borrow another employee's badge to open a door that yours will not unlock.\n\nFor the first three shifts you will work alongside a designated colleague, referred to on the rota as your partner. The partner demonstrates routine tasks and observes you attempting them. They can show you where to find a procedure, but they cannot sign off your induction. If your partner is moved to a different department during a shift, report to your supervisor before carrying on alone. A shortage of people in your department does not change this arrangement. The supervisor may pair you with another experienced employee or give you a different task for the rest of the shift.\n\nUniforms are collected from the clothing desk, which is closed at weekends. Staff starting on a Saturday or Sunday receive a clean loan set from the supervisor. Exchange it at the clothing desk on your next weekday shift. Bring every item in the set, including anything you did not wear. The desk checks the loan record before issuing your normal allocation. If a garment fits at the shoulders but is too tight when you bend, ask for another size. You will not have to explain your measurements, and exchanging an unworn garment does not count towards your annual replacement allowance.\n\nAt the end of each week, check your hours on the electronic timesheet. Breaks are entered separately; do not deduct them from the starting or finishing times you report. If a shift is missing altogether, send your supervisor a copy of the relevant rota. Payroll can correct an approved entry, but it cannot create a record of attendance simply because your name appears on next month's rota. Report discrepancies by noon on Monday if you want the correction included in the next regular payment. A later report can still be considered, although payment of the difference may be delayed.",
+      "A · Your first month at North Quay Services\n\nYour appointment letter gives the time of your first shift, but new staff are asked to arrive twenty minutes earlier on that occasion. Use the staff entrance on King Street and give reception the name of the supervisor shown on the letter. Reception will issue a temporary badge against a signature. The badge opens the staff entrance and the changing rooms; it will not open the equipment store. A permanent badge is prepared after your supervisor confirms that you have completed the induction. Until then, do not borrow another employee's badge to open a door that yours will not unlock.\n\nFor the first three shifts you will work alongside a designated colleague, referred to on the rota as your partner. The partner demonstrates routine tasks and observes you attempting them. They can show you where to find a procedure, but they cannot sign off your induction. If your partner is moved to a different department during a shift, report to your supervisor before carrying on alone. A shortage of people in your department does not change this arrangement. The supervisor may pair you with another experienced employee or give you a different task for the rest of the shift.\n\nUniforms are collected from the clothing desk, which is closed at weekends. Staff starting on a Saturday or Sunday receive a clean loan set from the supervisor. Exchange it at the clothing desk on your next weekday shift. Bring every item in the set, including anything you did not wear. The desk checks the loan record before issuing your normal allocation. If a garment fits at the shoulders but is too tight when you bend, ask for another size. You will not have to explain your measurements, and exchanging an unworn garment does not count towards your annual replacement allowance.\n\nAt the end of each week, check your hours on the electronic timesheet. Breaks are entered separately; do not deduct them from the starting or finishing times you report. If a shift is missing altogether, send your supervisor a copy of the relevant rota. Payroll can correct an approved entry, but it cannot create a record of attendance simply because your name appears on next month's rota. Report discrepancies by noon on Monday if you want the correction included in the next regular payment. A later report can still be considered, although payment of the difference may be delayed.\n\nFinding your way around the ground floor is straightforward. The staff entrance is at the bottom of the plan. Walk straight along the central corridor towards the stairs. The first room on your left is reception; this is where you collect your temporary badge. The second room on the left contains the changing rooms. Opposite the changing rooms, on the right of the corridor, is the equipment store. The room nearer the entrance on the right is the staff kitchen. The stairs are at the far end of the corridor. Do not enter the equipment store until your supervisor has authorised access.",
       "B · Applying for a course during working hours\n\nThe development scheme is open to employees who have completed their first month. Its purpose is to support learning that can be used in an employee's present role or in a role the organisation expects to need. You do not have to promise to apply for a promotion. A course chosen solely for a personal interest can be discussed with your manager, but its cost cannot be met from the development budget. If part of a course is relevant and part is not, explain the distinction on the application. The panel may offer a contribution instead of paying the whole fee.\n\nStart by discussing the dates with the person responsible for your rota. A course provider's offer of a place is not permission to leave a shift uncovered. Submit the form at least four weeks before the course begins and attach the provider's outline. An advertisement giving only the course title will not help the panel decide whether the proposed learning is relevant. If the provider gives no list of topics, ask for a short written description from the tutor. The organisation will accept that in place of an outline. A receipt should not accompany the application: you are advised to wait for the written decision before paying.\n\nApplications are assessed on two questions: what you expect to learn, and how colleagues or service users could benefit. The cheapest of two courses need not be chosen if the more expensive one offers practice on equipment that staff actually use. Explain that difference in the space provided. The panel will not assume that a high fee indicates better teaching. Where two applications have equal merit and funding is limited, preference goes to the employee who has received less support from the scheme in the previous twelve months.\n\nWithin ten working days of returning, complete a short account of one change you intend to try. A certificate proves attendance but does not replace this account. If the course was cancelled after a fee had been paid, forward the provider's notice to the training office. Staff there will pursue the refund so that two people do not make separate claims for the same payment. Any credit offered by the provider belongs to the organisation, even if the booking was made in your name. Before accepting a different date, check the rota again: approval of the original dates does not automatically release you from a later shift."
     ],
     "questions": [
       {
-        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
-        "prompt": "Give reception the name of your _____.",
+        "instruction": "Label the plan. Choose NO MORE THAN TWO WORDS from text A for each answer.",
+        "prompt": "Label 14 on the ground-floor plan: _____.",
         "answers": [
-          "supervisor"
+          "reception"
         ],
-        "explanation": "A · Use the name on the appointment letter."
+        "explanation": "Text A identifies the first room on the left when entering from the bottom of the plan as reception."
       },
       {
-        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
-        "prompt": "You must provide a _____ for a temporary badge.",
+        "instruction": "Label the plan. Choose NO MORE THAN TWO WORDS from text A for each answer.",
+        "prompt": "Label 15 on the ground-floor plan: _____.",
         "answers": [
-          "signature"
+          "changing rooms"
         ],
-        "explanation": "A · Reception issues the badge against a signature."
+        "explanation": "The second room on the left, beyond reception towards the stairs, contains the changing rooms."
       },
       {
-        "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
-        "prompt": "On the rota, the colleague who demonstrates tasks is called your _____.",
+        "instruction": "Label the plan. Choose NO MORE THAN TWO WORDS from text A for each answer.",
+        "prompt": "Label 16 on the ground-floor plan: _____.",
         "answers": [
-          "partner"
+          "equipment store"
         ],
-        "explanation": "A · This colleague observes routine work."
+        "explanation": "The equipment store is opposite the changing rooms, on the right of the corridor."
       },
       {
         "instruction": "Complete the notes. Choose ONE WORD ONLY from text A.",
@@ -741,7 +741,71 @@
       }
     ],
     "audio": null,
-    "oral": []
+    "oral": [],
+    "visuals": [
+      {
+        "title": "North Quay Services — ground floor",
+        "description": "The staff entrance is at the bottom. A central corridor leads upwards to stairs. On its left are blank 14 near the entrance and blank 15 near the stairs. On its right are the staff kitchen near the entrance and blank 16 near the stairs.",
+        "elements": [
+          {
+            "kind": "box",
+            "x": 38,
+            "y": 3,
+            "width": 24,
+            "height": 14,
+            "label": "Stairs"
+          },
+          {
+            "kind": "box",
+            "x": 39,
+            "y": 21,
+            "width": 22,
+            "height": 59,
+            "label": "Corridor"
+          },
+          {
+            "kind": "box",
+            "x": 3,
+            "y": 23,
+            "width": 32,
+            "height": 22,
+            "label": "15 _____"
+          },
+          {
+            "kind": "box",
+            "x": 3,
+            "y": 55,
+            "width": 32,
+            "height": 22,
+            "label": "14 _____"
+          },
+          {
+            "kind": "box",
+            "x": 65,
+            "y": 23,
+            "width": 32,
+            "height": 22,
+            "label": "16 _____"
+          },
+          {
+            "kind": "box",
+            "x": 65,
+            "y": 55,
+            "width": 32,
+            "height": 22,
+            "label": "Staff kitchen"
+          },
+          {
+            "kind": "label",
+            "x": 25,
+            "y": 85,
+            "width": 50,
+            "height": 12,
+            "label": "Staff entrance"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "Reading / Section 3",

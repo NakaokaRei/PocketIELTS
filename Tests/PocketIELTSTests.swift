@@ -846,3 +846,51 @@ extension PocketIELTSTests {
         XCTAssertFalse(player.generating)
     }
 }
+
+extension PocketIELTSTests {
+    func testReadingPlanHasMatchingBlanksAndAnswers() throws {
+        let paper = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
+        let visual = try XCTUnwrap(paper.visuals?.first)
+        try QuestionVisual.validate([visual], instructions: paper.questions.map(\.instruction))
+        XCTAssertEqual(paper.questions.count, 13)
+        XCTAssertEqual(paper.questions.prefix(3).map { $0.answers.first! }, ["reception", "changing rooms", "equipment store"])
+        for number in 14...16 { XCTAssertTrue(visual.elements.contains { $0.label == "\(number) _____" }) }
+        XCTAssertFalse(visual.elements.contains { $0.label == "reception" })
+        XCTAssertEqual(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)), paper)
+    }
+
+    func testImageRequestAndBoundedPersistence() throws {
+        var visual = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals?.first)
+        let request = try QuestionImage.request(visual: visual, key: "fixture-key")
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: Any])
+        XCTAssertEqual(body["model"] as? String, QuestionImage.model)
+        XCTAssertNil(body["response_format"])
+        let fixture = UIGraphicsImageRenderer(size: CGSize(width: 64, height: 48)).image { context in
+            UIColor.white.setFill(); context.fill(CGRect(x: 0, y: 0, width: 64, height: 48))
+        }.pngData()!
+        let payload = try JSONSerialization.data(withJSONObject: ["data": [["b64_json": fixture.base64EncodedString()]]])
+        let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+        let bytes = try QuestionImage.decode(payload, response: response)
+        XCTAssertLessThanOrEqual(bytes.count, QuestionImage.maximumStoredBytes)
+        XCTAssertNotNil(UIImage(data: bytes))
+        visual.imageData = bytes
+        XCTAssertFalse(QuestionVisual.context([visual]).contains("imageData"))
+        XCTAssertEqual(try JSONDecoder().decode(QuestionVisual.self, from: JSONEncoder().encode(visual)), visual)
+        XCTAssertThrowsError(try QuestionImage.decode(Data("{}".utf8), response: response))
+    }
+
+    func testImageOptOutFallbackAndCancellation() async throws {
+        let visuals = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals)
+        let unchanged = try await QuestionImage.prepare(visuals, enabled: false) { _ in
+            XCTFail("Opt-out must not call the image API"); return Data()
+        }
+        XCTAssertEqual(unchanged, visuals)
+        let failed = try await QuestionImage.prepare(visuals, enabled: true) { _ in throw URLError(.notConnectedToInternet) }
+        XCTAssertEqual(failed?.first?.elements, visuals.first?.elements)
+        XCTAssertEqual(failed?.first?.imageGenerationFailed, true)
+        do {
+            _ = try await QuestionImage.prepare(visuals, enabled: true) { _ in throw CancellationError() }
+            XCTFail("Cancellation must propagate")
+        } catch is CancellationError { }
+    }
+}
