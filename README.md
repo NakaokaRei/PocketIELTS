@@ -4,7 +4,7 @@
 
 **Practice a skill. Save an expression. Pick up where you left off.**
 
-Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. Swipe a saved word or exercise to reveal Delete, then confirm. Finishing a practice offers to save unsaved exercises for later review. The interface supports **English, Japanese, Simplified and Traditional Chinese, Korean, Spanish, Brazilian Portuguese, Vietnamese, Indonesian, Thai, Hindi and Arabic**, following your iOS app language. Practice materials remain in English.
+Pocket IELTS is a native SwiftUI app for IELTS **General Training** practice on iPhone and iPad. It brings Reading, Listening, Writing and Speaking into one study space, with contextual vocabulary, saved exercises and a persistent learning history. Swipe a saved word or exercise to reveal Delete, then confirm. Bookmark an exercise from the top-right corner to review it later. The interface supports **English, Japanese, Simplified and Traditional Chinese, Korean, Spanish, Brazilian Portuguese, Vietnamese, Indonesian, Thai, Hindi and Arabic**, following your iOS app language. Practice materials remain in English.
 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-home.png" width="250" alt="iPhone home with four color-coded IELTS skills" />
@@ -36,7 +36,7 @@ In each part card, **Practice bundled questions** opens the included exercise. *
 
 ## Clear questions and useful next steps
 
-Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review opens at the top without a button morphing animation. Ending practice uses a centered confirmation alert with **Save and finish**, **Finish without saving** and **Continue**. Save and finish remains available for already-saved exercises. Mock tests list the unsaved parts being saved. Cancelling keeps the current answers.
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review opens at the top without a button morphing animation. Each explanation includes the question prompt. Expand the exercise title to consult the passage. The exit alert offers **End practice** and **Continue**. Continuing keeps the current answers.
 
 New Reading and Listening attempts preserve every answer, including unanswered positions. History shows a score card and an expandable question-by-question review. Older records keep their existing saved data; missing historical answers cannot be reconstructed.
 
@@ -50,7 +50,6 @@ The tutor offers six editable question starters: meaning, grammar, paraphrases a
 
 <p align="center">
   <img src="Documentation/Screenshots/iphone-history-detail.png" width="250" alt="History score card with expandable answers and save and retry actions" />
-  <img src="Documentation/Screenshots/iphone-exit-alert.png" width="250" alt="End-practice alert offering save, finish without saving and continue" />
 </p>
 
 Swipe a vocabulary entry or saved exercise to reveal **Delete**, then confirm. Cancelling keeps it; confirmed deletions sync through iCloud without deleting your learning history.
@@ -215,7 +214,7 @@ The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and 
 
 ### Leaving a practice session
 
-The upper-left back button opens the exit confirmation; the upper-right bookmark saves the current paper. **Save and finish** remains available even if the paper is already saved (saving is idempotent). Finishing practice returns directly Home using native navigation; completed mock exams retain their score summary. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
+The upper-left back button opens the exit confirmation; the upper-right bookmark saves the current paper. Finishing practice returns directly Home using native navigation; completed mock exams retain their score summary. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
 
 
 Background generation uses Apple's `BGContinuedProcessingTask` on supported iOS/iPadOS 26+ devices. Start generation while the app is open; the system can then continue the job after you switch apps or lock the screen. Its system-managed Live Activity shows completed sections/audio segments, received KB for the current section, and a percentage. The app and Live Activity receive the same time-based estimate between validated sections, explicitly marked as approximate (≈). Payload size cannot advance the percentage. Both reach 100% together after validation and the completion animation. The OS controls the Live Activity's appearance and cancellation UI; no widget extension or push-notification server is required.
@@ -228,7 +227,7 @@ Background expiration diagnostics record elapsed time, completed count, received
 
 The listening player pairs Play/Pause with a compact **Rewind 10 seconds** control. Rewind stops at the beginning and keeps the current playing/paused state. The separate playback Stop button is removed; Cancel remains available while audio is being generated. Leaving the question still stops audio.
 
-Ending practice returns directly to Home after the save-or-exit confirmation, without an intermediate completion screen. Graded history and saved papers remain available. Completed mock exams retain their score summary.
+Ending practice returns directly to Home after the exit confirmation, without an intermediate completion screen. Graded history and saved papers remain available. Completed mock exams retain their score summary.
 
 The app and system Live Activity now consume the same per-job progress value, including the completion animation. Both use a time-based estimate between validated sections; received byte counts are diagnostic only and cannot push the percentage ahead. System UI refresh timing is controlled by iOS.
 

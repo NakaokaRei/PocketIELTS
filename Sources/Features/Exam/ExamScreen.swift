@@ -175,16 +175,8 @@ struct ExamScreen: View {
             }
         }
         .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd) {
-            Button(String(localized: "保存して終了")) {
-                (isMock ? units : units.isEmpty ? [] : [unit]).forEach { store.send(.savePaper($0)) }
-                endPractice()
-            }
-            Button(unsavedUnits.isEmpty ? String(localized: "練習を終了") : String(localized: "保存せずに終了"), role: .destructive) { endPractice() }
+            Button(String(localized: "練習を終了"), role: .destructive) { endPractice() }
             Button(String(localized: "続ける"), role: .cancel) {}
-        } message: {
-            Text(unsavedUnits.isEmpty ? String(localized: "採点済みの結果と保存した表現は残ります。") :
-                 String(localized: "あとで復習できるように問題を保存しますか？") + "\n\n" +
-                 unsavedUnits.map { $0.id }.joined(separator: "\n"))
         }
         .navigationDestination(isPresented: $finished) {
             ScrollView { results.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity) }
@@ -399,12 +391,26 @@ struct ExamScreen: View {
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
+            if !part.passages.isEmpty || !part.directions.isEmpty || !part.oral.isEmpty || (isMock && !(part.visuals ?? []).isEmpty) {
+                DisclosureGroup(part.title) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if !part.directions.isEmpty { Text(part.directions) }
+                        ForEach(Array((part.passages + part.oral).enumerated()), id: \.offset) { _, text in Text(text) }
+                        if isMock {
+                            ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
+                        }
+                    }.textSelection(.enabled)
+                }
+            }
             if let script = part.audio { DisclosureGroup(String(localized: "スクリプト")) { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }) } }
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("\(part.firstQuestionNumber + index). " + question.answers.joined(separator: " / "),
+                    Text("Question \(part.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                    Text(question.displayPrompt(number: part.firstQuestionNumber + index, localNumber: index + 1))
+                        .font(StudyTypography.headline).textSelection(.enabled)
+                    Label(question.answers.map { question.choiceText($0) }.joined(separator: " / "),
                           systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
                         .font(StudyTypography.headline)
                     Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
