@@ -181,7 +181,6 @@ struct WaitingVocabularyView: View {
     let words: [SavedExpression]
     @State private var cards: [VocabularyCard] = []
     @State private var index = 0
-    @ScaledMetric(relativeTo: .body) private var textAreaHeight = 240
     @StateObject private var pronunciation = WordPronouncer()
     init(words: [SavedExpression]) {
         self.words = words
@@ -193,25 +192,25 @@ struct WaitingVocabularyView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Label(String(localized: "Vocabulary while you wait"), systemImage: "book")
                         .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
+                    // Place the action before variable-length content, so the card can
+                    // fit its text without moving the action as words change.
+                    Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
+                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
                     Text(String(localized: card.personal ? "From your saved words" : "From the word library"))
                         .accessibilityIdentifier(card.personal ? "generation.source.personal" : "generation.source.bundled")
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                    // Keep controls outside a stable-height viewport so text wrapping
-                    // cannot move the next-word hit target under the user's finger.
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack(alignment: .top, spacing: 8) {
-                                Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
-                                WordPronunciationButton(word: card.word, pronunciation: pronunciation)
-                            }
-                            Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
-                                .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack(alignment: .top, spacing: 8) {
+                            Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
+                            WordPronunciationButton(word: card.word, pronunciation: pronunciation)
+                        }
+                        Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
+                            .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
+                        if !card.example.isEmpty {
                             Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
-                        }.frame(maxWidth: .infinity, alignment: .leading)
-                    }.frame(height: textAreaHeight)
-                        .id(card.id)
-                    Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
-                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
+                        }
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(String(localized: "Your practice opens automatically when ready."))
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
