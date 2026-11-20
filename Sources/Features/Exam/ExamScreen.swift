@@ -676,7 +676,7 @@ struct GeneratedExamScreen: View {
     @State private var generated: [ExamUnit] = []
     @State private var generationStarted = Date()
     @State private var completionStarted: Date?
-    @State private var completionFrom = 0.0
+    @State private var generationFraction: Double?
     @State private var showQuestions = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var error: String?
@@ -699,7 +699,7 @@ struct GeneratedExamScreen: View {
                                 Button(String(localized: "ChatGPTの接続設定"), systemImage: "person.crop.circle") { settings = true }.buttonStyle(StudySecondaryButtonStyle())
                             } else {
                                 GenerationLoadingView(completed: generated.count, total: templates.count,
-                                                      started: generationStarted, completionStarted: completionStarted, completionFrom: completionFrom)
+                                                      started: generationStarted, completionStarted: completionStarted, fraction: generationFraction)
                                 WaitingVocabularyView(words: store.vocabulary)
                             }
                             Button(String(localized: "キャンセルして戻る"), systemImage: "xmark.circle") { dismiss() }
@@ -720,14 +720,13 @@ struct GeneratedExamScreen: View {
             #endif
             guard !templates.isEmpty else { error = String(localized: "教材がありません。"); return }
             do {
-                try await BackgroundGeneration.run(title: String(localized: "あなただけの問題を準備中"), total: templates.count) { progress in
+                try await BackgroundGeneration.run(title: String(localized: "あなただけの問題を準備中"), total: templates.count, completionDuration: 0.8, onProgress: { generationFraction = $0 }) { progress in
                     progress.update(completed: generated.count, total: templates.count)
                     for template in templates.dropFirst(generated.count) {
                         generationStarted = Date()
                         let unit = try await StudyClient.generateUnit(like: template)
                         try Task.checkCancellation()
                         if generated.count + 1 == templates.count {
-                            completionFrom = GenerationProgress.estimate(completed: generated.count, total: templates.count, elapsed: Date().timeIntervalSince(generationStarted))
                             completionStarted = Date()
                         }
                         generated.append(unit)
@@ -785,11 +784,11 @@ private struct GenerationLoadingView: View {
     let total: Int
     let started: Date
     let completionStarted: Date?
-    let completionFrom: Double
+    let fraction: Double?
     var body: some View {
         TimelineView(.periodic(from: .now, by: completionStarted == nil ? 1 : 1.0 / 60)) { timeline in
             let elapsed = max(0, timeline.date.timeIntervalSince(started))
-            let estimate = completionStarted.map { GenerationProgress.finish(from: completionFrom, elapsed: timeline.date.timeIntervalSince($0)) } ?? GenerationProgress.estimate(completed: completed, total: total, elapsed: elapsed)
+            let estimate = fraction ?? GenerationProgress.estimate(completed: completed, total: total, elapsed: elapsed)
             VStack(spacing: 24) {
                 LoadingBookMascot().scaleEffect(0.5).frame(height: 110)
                 VStack(spacing: 10) {

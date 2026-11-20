@@ -115,12 +115,11 @@ enum SpeechAudio {
                 guard let key = try KeyStore.read(account: SpeechCredentials.account), !key.isEmpty else { throw StudyError.message(String(localized: "設定で音声生成用のAPIキーを登録してください。")) }
                 let (stream, response) = try await URLSession.shared.bytes(for: request(text: part.text, key: key, voice: part.voice))
                 var data = Data()
-                let expected = response.expectedContentLength > 0 ? Int(response.expectedContentLength) : nil
                 for try await byte in stream {
                     data.append(byte)
                     if data.count.isMultiple(of: 8192) {
                         try Task.checkCancellation()
-                        await GenerationTransferProgress.received(data.count, expected: expected, estimate: 480000)
+                        await GenerationTransferProgress.received(data.count)
                     }
                 }
                 try Task.checkCancellation()
@@ -142,6 +141,7 @@ enum SpeechAudio {
     private(set) var generating = false
     private(set) var completed = 0
     private(set) var total = 0
+    private(set) var generationFraction = 0.0
     private(set) var error: String?
     private var operation: Task<Void, Never>?
     private var generationID = UUID()
@@ -158,12 +158,15 @@ enum SpeechAudio {
             return
         }
         guard !generating else { return }
-        error = nil; generating = true; completed = 0; total = SpeechAudio.segments(script).count
+        error = nil; generating = true; generationFraction = 0; completed = 0; total = SpeechAudio.segments(script).count
         autoPlayWhenReady = UIApplication.shared.applicationState == .active
         let id = UUID(); generationID = id
         operation = Task { [weak self] in
             do {
-                let data = try await BackgroundGeneration.run(title: String(localized: "音声を生成中"), total: SpeechAudio.segments(script).count) { progress in
+                let data = try await BackgroundGeneration.run(title: String(localized: "音声を生成中"), total: SpeechAudio.segments(script).count, onProgress: { [weak self] fraction in
+                    guard let self, self.generationID == id else { return }
+                    self.generationFraction = fraction
+                }) { progress in
                     try await generate(script) { [weak self] completed, total in
                         progress.update(completed: completed, total: total)
                         guard let self, self.generationID == id else { return }
@@ -213,11 +216,11 @@ struct ListeningAudioView: View {
                 Label(String(localized: "リスニング音声"), systemImage: "headphones").font(StudyTypography.heading)
                 Text(String(localized: "AI生成音声 · 英国英語")).font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
                 if playback.generating {
-                    let fraction = Double(playback.completed) / Double(max(1, playback.total))
+                    let fraction = playback.generationFraction
                     HStack {
                         Text(playback.completed == playback.total ? String(localized: "再生の準備ができました") : String(localized: "音声を生成中"))
                         Spacer()
-                        Text("\(Int(fraction * 100))%").monospacedDigit()
+                        Text(fraction < 1 ? String(format: String(localized: "約 %@%% "), String(Int(fraction * 100))) : "100%").monospacedDigit()
                     }.font(StudyTypography.button)
                     ProgressView(value: fraction).animation(.easeInOut(duration: 0.35), value: fraction)
                     Text(String(format: String(localized: "生成済み %@ / %@ 音声区間"), String(playback.completed), String(playback.total))).font(StudyTypography.footnote)

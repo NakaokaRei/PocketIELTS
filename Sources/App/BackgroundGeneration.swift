@@ -4,13 +4,10 @@ import OSLog
 
 /// Transport callbacks inherit the current generation job, without changing API credentials.
 enum GenerationTransferProgress {
-    @TaskLocal static var report: (@Sendable (Double, Int) async -> Void)?
+    @TaskLocal static var report: (@Sendable (Int) async -> Void)?
 
-    static func received(_ bytes: Int, expected: Int? = nil, estimate: Double = 16000) async {
-        guard let report else { return }
-        let fraction = expected.map { Double(bytes) / Double(max(1, $0)) }
-            ?? (1 - exp(-Double(max(0, bytes)) / estimate))
-        await report(min(0.9, max(0, fraction) * 0.9), bytes)
+    static func received(_ bytes: Int) async {
+        await report?(max(0, bytes))
     }
 }
 
@@ -21,7 +18,12 @@ final class BackgroundGeneration {
     private let identifier = "app.pocketielts.study.generation." + UUID().uuidString
     private let title: String
     private var total: Int
-    private var partial = 0.0
+    private var sectionStarted = Date()
+    private var progressTicker: Task<Void, Never>?
+    private let onProgress: @MainActor (Double) -> Void
+    private let completionDuration: Double
+    private var completionStarted: Date?
+    private var completionFrom = 0.0
     private var receivedBytes = 0
     private(set) var fraction = 0.0
     private let started = Date()
@@ -33,15 +35,20 @@ final class BackgroundGeneration {
     private var cancelBeforeStart: (() -> Void)?
     private var lease = UIBackgroundTaskIdentifier.invalid
     private var systemTask: BGTask?
+    private var publishedPercent: Int?
 
-    private init(title: String, total: Int) {
+    private init(title: String, total: Int, completionDuration: Double, onProgress: @escaping @MainActor (Double) -> Void) {
+        self.onProgress = onProgress
+        self.completionDuration = completionDuration
         self.title = title
         self.total = max(1, total)
     }
 
     static func run<T>(title: String, total: Int, useSystemScheduler: Bool = true,
+                       completionDuration: Double = 0,
+                       onProgress: @escaping @MainActor (Double) -> Void = { _ in },
                        operation: @escaping @MainActor (BackgroundGeneration) async throws -> T) async throws -> T {
-        let job = BackgroundGeneration(title: title, total: total)
+        let job = BackgroundGeneration(title: title, total: total, completionDuration: completionDuration, onProgress: onProgress)
         return try await withTaskCancellationHandler {
             try Task.checkCancellation()
             return try await withCheckedThrowingContinuation { continuation in
@@ -49,14 +56,28 @@ final class BackgroundGeneration {
                 job.startWork = {
                     guard !job.finished, job.worker == nil else { return }
                     job.cancelBeforeStart = nil
+                    job.sectionStarted = Date()
+                    job.publishProgress()
+                    job.progressTicker = Task { [weak job] in
+                        while !Task.isCancelled {
+                            do { try await Task.sleep(for: .milliseconds(100)) } catch { return }
+                            guard let job, !job.finished else { return }
+                            job.publishProgress()
+                        }
+                    }
                     job.worker = Task {
                         do {
                             try Task.checkCancellation()
-                            let value = try await GenerationTransferProgress.$report.withValue({ fraction, bytes in
-                                await job.receiving(fraction: fraction, bytes: bytes)
+                            let value = try await GenerationTransferProgress.$report.withValue({ bytes in
+                                await job.receiving(bytes: bytes)
                             }) { try await operation(job) }
                             try Task.checkCancellation()
                             job.update(completed: job.total, total: job.total)
+                            if completionDuration > 0 {
+                                try await Task.sleep(for: .seconds(completionDuration))
+                                try Task.checkCancellation()
+                                job.publishProgress()
+                            }
                             job.finish(success: true)
                             continuation.resume(returning: value)
                         } catch {
@@ -133,13 +154,13 @@ final class BackgroundGeneration {
     }
 
     private var progressLabel: String {
-        let prefix = completed == total ? "" : "≈"
+        let prefix = fraction >= 1 ? "" : "≈"
         return "\(prefix)\(Int(fraction * 100))% · \(completed)/\(total) · \(receivedBytes / 1024) KB"
     }
 
-    func receiving(fraction: Double, bytes: Int) {
+    func receiving(bytes: Int) {
         guard !finished else { return }
-        partial = max(partial, min(0.9, max(0, fraction)))
+        // Bytes are diagnostic only: payload size is not generation completion.
         receivedBytes = max(receivedBytes, bytes)
         publishProgress()
     }
@@ -148,17 +169,34 @@ final class BackgroundGeneration {
         guard !finished else { return }
         self.total = max(1, total)
         let next = min(self.total, max(self.completed, completed))
-        if next > self.completed { partial = 0; receivedBytes = 0 }
+        if next > self.completed {
+            sectionStarted = Date(); receivedBytes = 0
+            if next == self.total {
+                completionFrom = fraction
+                completionStarted = Date()
+            }
+        }
         self.completed = next
         publishProgress()
     }
 
     private func publishProgress() {
-        fraction = max(fraction, min(1, (Double(completed) + partial) / Double(total)))
+        let value: Double
+        if completed == total {
+            let elapsed = Date().timeIntervalSince(completionStarted ?? Date())
+            value = completionDuration > 0 ? GenerationProgress.finish(from: completionFrom, elapsed: elapsed * 0.8 / completionDuration) : 1
+        } else {
+            value = GenerationProgress.estimate(completed: completed, total: total, elapsed: Date().timeIntervalSince(sectionStarted))
+        }
+        fraction = max(fraction, value)
+        onProgress(fraction)
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 26.0, *), let task = systemTask as? BGContinuedProcessingTask {
-            task.progress.totalUnitCount = 100000
-            task.progress.completedUnitCount = Int64(fraction * 100000)
+            let percent = Int(fraction * 100)
+            guard publishedPercent != percent else { return }
+            publishedPercent = percent
+            task.progress.totalUnitCount = 100
+            task.progress.completedUnitCount = Int64(percent)
             task.updateTitle(title, subtitle: progressLabel)
         }
         #endif
@@ -188,6 +226,7 @@ final class BackgroundGeneration {
     private func finish(success: Bool) {
         guard !finished else { return }
         finished = true
+        progressTicker?.cancel(); progressTicker = nil
         startWork = nil
         cancelBeforeStart = nil
         systemTask?.setTaskCompleted(success: success)

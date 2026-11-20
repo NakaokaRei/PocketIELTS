@@ -725,24 +725,41 @@ extension PocketIELTSTests {
 
 
 extension PocketIELTSTests {
-    func testTransferProgressAdvancesBeforeASectionCompletes() async throws {
-        try await BackgroundGeneration.run(title: "Fixture", total: 2, useSystemScheduler: false) { job in
-            XCTAssertEqual(job.fraction, 0)
-            await GenerationTransferProgress.received(8192)
+    func testSharedProgressDoesNotJumpWithLargePayloads() async throws {
+        var displayed = 0.0
+        var observed: BackgroundGeneration?
+        try await BackgroundGeneration.run(title: "Fixture", total: 2, useSystemScheduler: false,
+                                           onProgress: { displayed = $0 }) { job in
+            observed = job
+            await GenerationTransferProgress.received(10_000_000)
+            XCTAssertLessThan(job.fraction, 0.02, "Payload bytes must not push progress to 89%")
+            XCTAssertEqual(displayed, job.fraction)
+            try await Task.sleep(for: .milliseconds(250))
             XCTAssertGreaterThan(job.fraction, 0)
-            XCTAssertEqual(job.completed, 0)
-            let first = job.fraction
-            await GenerationTransferProgress.received(100) // Smaller/stale reports never move backwards.
-            XCTAssertEqual(job.fraction, first)
-            await GenerationTransferProgress.received(1_000_000, expected: 1_000_000)
-            XCTAssertLessThan(job.fraction, 0.5, "Receiving is not validation")
+            XCTAssertEqual(displayed, job.fraction)
             job.update(completed: 1, total: 2)
-            XCTAssertEqual(job.fraction, 0.5)
-            await GenerationTransferProgress.received(8192)
-            XCTAssertGreaterThan(job.fraction, 0.5)
-            XCTAssertLessThan(job.fraction, 1)
+            XCTAssertEqual(job.fraction, 0.5, accuracy: 0.001)
+            await GenerationTransferProgress.received(50_000_000)
+            XCTAssertLessThan(job.fraction, 0.52)
+            XCTAssertEqual(displayed, job.fraction)
         }
-        XCTAssertNil(GenerationTransferProgress.report, "Progress must not leak into unrelated tutor requests")
+        XCTAssertEqual(displayed, 1)
+        XCTAssertEqual(displayed, observed?.fraction)
+        XCTAssertNil(GenerationTransferProgress.report)
+    }
+
+    func testSharedCompletionReaches100BeforeReturning() async throws {
+        var displayed = 0.0
+        var values: [Double] = []
+        try await BackgroundGeneration.run(title: "Fixture", total: 1, useSystemScheduler: false,
+                                           completionDuration: 0.3,
+                                           onProgress: { displayed = $0; values.append($0) }) { job in
+            job.update(completed: 1, total: 1)
+            XCTAssertLessThan(displayed, 1)
+        }
+        XCTAssertEqual(displayed, 1)
+        XCTAssertTrue(values.contains { $0 > 0.1 && $0 < 1 })
+        XCTAssertEqual(values, values.sorted())
     }
 }
 
