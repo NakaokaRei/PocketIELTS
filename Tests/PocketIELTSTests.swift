@@ -926,3 +926,39 @@ extension PocketIELTSTests {
         XCTAssertTrue(writing.contains("letter"))
     }
 }
+
+extension PocketIELTSTests {
+    func testReadingRepairsShortPaperWithSpecificFeedback() async throws {
+        let unit = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
+        let valid = ReadingSet(title: unit.title, passages: unit.passages, questions: unit.questions, visuals: unit.visuals)
+        XCTAssertTrue(StudyClient.readingIssues(valid, section: 2).isEmpty)
+        var short = valid
+        short.passages = ["Short passage."]
+        short.questions.removeLast()
+        var calls = 0
+        let result = try await StudyClient.completeReading(section: 2) { input in
+            calls += 1
+            if calls == 2 {
+                XCTAssertTrue(input.contains("Expected 2 passages; received 1"))
+                XCTAssertTrue(input.contains("Expected exactly 13 questions; received 12"))
+                XCTAssertTrue(input.contains("at least 680 passage words"))
+            }
+            return String(decoding: try JSONEncoder().encode(calls == 1 ? short : valid), as: UTF8.self)
+        }
+        XCTAssertEqual(calls, 2)
+        XCTAssertEqual(result, valid)
+    }
+
+    func testReadingRepairIsBoundedAndDoesNotRetryNetworkErrors() async {
+        var calls = 0
+        do {
+            _ = try await StudyClient.completeReading(section: 1) { _ in calls += 1; return "{}" }
+            XCTFail("Invalid papers must not be accepted")
+        } catch { XCTAssertEqual(calls, 2) }
+        calls = 0
+        do {
+            _ = try await StudyClient.completeReading(section: 1) { _ in calls += 1; throw URLError(.notConnectedToInternet) }
+            XCTFail("Network failure must propagate")
+        } catch { XCTAssertEqual(calls, 1) }
+    }
+}
