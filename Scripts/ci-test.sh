@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+bash Scripts/test-package-sources.sh
 device_family="${1:-iPhone}"
 result_path="${2:-TestResults.xcresult}"
 sdk_version=$(xcrun --sdk iphonesimulator --show-sdk-version)

@@ -2,7 +2,7 @@
 # Run after Copy Bundle Resources, before code signing, for Debug and Release.
 set -euo pipefail
 cd "${SRCROOT:?}"
-source_packages="${LICENSE_PLIST_PACKAGE_SOURCES_PATH:-$(dirname "$(dirname "${BUILD_DIR:?}")")/SourcePackages}"
+source_packages="$(bash Scripts/resolve-package-sources.sh "${BUILD_DIR:?}")"
 mkdir -p "${DERIVED_FILE_DIR:?}"
 staging="$(mktemp -d "$DERIVED_FILE_DIR/Licenses.XXXXXX")"
 trap 'rm -rf "$staging"' EXIT
