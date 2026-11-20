@@ -179,6 +179,7 @@ struct WaitingVocabularyView: View {
     let words: [SavedExpression]
     @State private var cards: [VocabularyCard] = []
     @State private var index = 0
+    @ScaledMetric(relativeTo: .body) private var textAreaHeight = 240
     @StateObject private var pronunciation = WordPronouncer()
     init(words: [SavedExpression]) {
         self.words = words
@@ -193,10 +194,17 @@ struct WaitingVocabularyView: View {
                     Text(String(localized: card.personal ? "From your saved words" : "From the word library"))
                         .accessibilityIdentifier(card.personal ? "generation.source.personal" : "generation.source.bundled")
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                    Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
-                    Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
-                        .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
-                    Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                    // Keep controls outside a stable-height viewport so text wrapping
+                    // cannot move the next-word hit target under the user's finger.
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
+                            Text(card.meaning.isEmpty ? String(localized: "No saved meaning") : card.meaning)
+                                .font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
+                            Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                        }.frame(maxWidth: .infinity, alignment: .leading)
+                    }.frame(height: textAreaHeight)
+                        .id(card.id)
                     WordPronunciationButton(word: card.word, pronunciation: pronunciation)
                     Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
                         .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
@@ -204,6 +212,7 @@ struct WaitingVocabularyView: View {
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                     .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+                    .transaction { $0.animation = nil; $0.disablesAnimations = true }
             }
         }.onDisappear { pronunciation.stop() }
     }

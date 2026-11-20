@@ -253,7 +253,10 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["generation.meaning"].label.isEmpty)
         XCTAssertTrue(app.buttons["vocabulary.pronounce.available"].exists)
         capture("iphone-generation-vocabulary")
+        let nextButtonFrame = action.frame
         action.tap()
+        XCTAssertEqual(action.frame.minY, nextButtonFrame.minY, accuracy: 1)
+        XCTAssertEqual(action.frame.height, nextButtonFrame.height, accuracy: 1)
         let bundledWord = app.staticTexts["generation.word"].label
         XCTAssertNotEqual(bundledWord, "available")
         XCTAssertTrue(app.staticTexts["generation.source.bundled"].exists)
@@ -261,6 +264,11 @@ final class PocketIELTSUITests: XCTestCase {
         action.tap()
         XCTAssertNotEqual(app.staticTexts["generation.word"].label, bundledWord)
         XCTAssertNotEqual(app.staticTexts["generation.word"].label, "available")
+        for _ in 0..<5 {
+            action.tap()
+            XCTAssertEqual(action.frame.minY, nextButtonFrame.minY, accuracy: 1, "Word length must not move the button")
+            XCTAssertEqual(action.frame.height, nextButtonFrame.height, accuracy: 1)
+        }
         capture("iphone-generation-bundled-word")
         let cancel = app.buttons["キャンセルして戻る"]
         for _ in 0..<3 where !cancel.isHittable { app.swipeUp() }
