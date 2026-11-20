@@ -20,9 +20,11 @@ struct StudyClient: DependencyKey {
                       "Two complete workplace policy or training texts, 680–780 words total and 13 questions.",
                       "One complete general-interest article in labelled paragraphs, 850–950 words and 14 questions."]
         guard (1...3).contains(section) else { throw StudyError.message(String(localized: "セクションが無効です。")) }
+        let variation = await ExerciseVariety.shared.next(for: "Reading / Section \(section)")
         let prompt = """
         Write an original, full IELTS General Training Reading Section \(section). \(briefs[section-1])
         Use English throughout except \(explanationLanguage) explanations. Include every passage and every question.
+        \(variation)
         Vary authentic task types across groups. Include English instructions and word limits.
         Put shared instructions and shared options in instruction. Put question-specific options in prompt.
         Put each option on its own line, labelled A. / B. / C. or i. / ii. / iii.
@@ -42,6 +44,7 @@ struct StudyClient: DependencyKey {
               set.questions.allSatisfy({ !$0.prompt.isEmpty && !$0.instruction.isEmpty && !$0.explanation.isEmpty && !$0.answers.isEmpty && $0.answers.allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }) else {
             throw StudyError.message(String(localized: "全文または設問が揃いませんでした。もう一度生成してください。"))
         }
+        await ExerciseVariety.shared.record(title: set.title, for: "Reading / Section \(section)")
         set.visuals = try await QuestionImage.prepare(set.visuals)
         return set
     }, explain: { context, question in
@@ -55,10 +58,14 @@ struct StudyClient: DependencyKey {
             return ExamUnit(id: "Reading / Section \(section) · " + set.title, skill: "Reading", title: set.title,
                             directions: template.directions, passages: set.passages, questions: set.questions, audio: nil, oral: [], visuals: set.visuals)
         }
-        let example = String(decoding: try JSONEncoder().encode(template), as: UTF8.self)
+        let variation = await ExerciseVariety.shared.next(for: template.id.components(separatedBy: " · ").first ?? template.id)
+        var textTemplate = template
+        textTemplate.visuals = nil
+        let example = String(decoding: try JSONEncoder().encode(textTemplate), as: UTF8.self)
         let response = try await request(instructions: """
         Create a new original IELTS General Training exercise for \(template.id).
-        Match the task format, number of questions, length and difficulty of this example.
+        Match the IELTS part, number of questions, length and difficulty of this example. The example is a schema and length reference, NOT a topic or task-type template.
+        \(variation)
         Use English for material and \(explanationLanguage) for answer explanations. All answers must be grounded in the material.
         For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, provide only spoken words. For Speaking provide interview questions in oral.
         Put every option on its own line with a letter or roman-numeral label. Do not prefix question prompts with question numbers.
@@ -77,6 +84,7 @@ struct StudyClient: DependencyKey {
               template.oral.isEmpty || !result.oral.isEmpty else {
             throw StudyError.message(String(localized: "必要な教材が揃いませんでした。もう一度生成してください。"))
         }
+        await ExerciseVariety.shared.record(title: result.title, for: template.id.components(separatedBy: " · ").first ?? template.id)
         return ExamUnit(id: template.id + " · " + result.title, skill: result.skill,
                         title: result.title, directions: result.directions, passages: result.passages,
                         questions: result.questions, audio: result.audio, oral: result.oral, visuals: try await QuestionImage.prepare(result.visuals))
@@ -121,5 +129,67 @@ struct StudyClient: DependencyKey {
             throw StudyError.message(String(localized: "設定でChatGPTにサインインしてください。"))
         }
         return try await ChatGPTInference.generate(token: token, instructions: instructions, input: input)
+    }
+}
+
+
+/// Reserves topics before network work so concurrent requests do not choose the same recent topic.
+actor ExerciseVariety {
+    static let shared = ExerciseVariety()
+    private let defaults: UserDefaults
+    private let storageKey = "exercise-variety-v1"
+    private var history: [String: [String]]
+
+    init(suiteName: String? = nil) {
+        defaults = suiteName.flatMap(UserDefaults.init(suiteName:)) ?? .standard
+        history = defaults.dictionary(forKey: storageKey) as? [String: [String]] ?? [:]
+    }
+
+    static func topics(for part: String) -> [String] {
+        if part.contains("Section 2") {
+            return ["workplace safety", "shift handovers", "remote working", "staff travel", "equipment loans", "training applications", "customer complaints", "recruitment", "annual leave", "stock management", "office relocation", "staff wellbeing"]
+        }
+        if part.contains("Part 3") || part.contains("Part 4") || part.contains("Section 3") {
+            return ["urban green spaces", "food preservation", "local history", "transport planning", "recycling systems", "adult learning", "building design", "wildlife conservation", "public libraries", "water conservation", "community research", "changing working habits"]
+        }
+        return ["renting a home", "public transport", "community volunteering", "sports facilities", "household repairs", "shopping and returns", "local events", "travel arrangements", "banking services", "health appointments", "childcare services", "neighbourhood projects"]
+    }
+
+    func next(for part: String) -> String {
+        let topics = Self.topics(for: part)
+        let recent = history[part + ".topics", default: []]
+        let topic = topics.filter { !recent.suffix(topics.count - 1).contains($0) }.randomElement() ?? topics[0]
+        append(topic, key: part + ".topics")
+        let formats: [String]
+        if part.hasPrefix("Reading") {
+            formats = ["matching information + short answers", "TRUE/FALSE/NOT GIVEN + sentence completion", "matching headings + summary completion", "diagram or plan labelling + matching information", "flow-chart completion + multiple choice"]
+        } else if part.hasPrefix("Listening") {
+            formats = part.contains("Part 2")
+                ? ["map or plan labelling + multiple choice", "matching + note completion", "sentence completion + multiple choice"]
+                : ["note completion + multiple choice", "matching + sentence completion", "table completion + short answers"]
+        } else if part.contains("Task 1") {
+            formats = ["formal request letter", "semi-formal explanation letter", "informal invitation letter", "formal complaint letter"]
+        } else if part.contains("Task 2") {
+            formats = ["opinion essay", "discuss both views and give an opinion", "problems and solutions essay", "advantages and disadvantages essay"]
+        } else {
+            formats = ["experiences and preferences", "changes over time", "future plans and reasons", "comparisons and examples"]
+        }
+        let previous = history[part + ".formats", default: []]
+        let format = formats.filter { !previous.suffix(formats.count - 1).contains($0) }.randomElement() ?? formats[0]
+        append(format, key: part + ".formats")
+        let titles = history[part + ".titles", default: []]
+        return """
+        Required fresh topic: \(topic). Required task mix/focus: \(format).
+        Adapt this topic to the authentic IELTS part: Listening 1 everyday dialogue, 2 everyday monologue, 3 educational discussion, 4 educational lecture; Speaking 1 short interview, 2 individual long turn, 3 abstract discussion. Keep General Training Writing 1 a letter and Writing 2 an essay.
+        Create distinct situations, people, locations, numbers and answer vocabulary. Do not merely rename the example.
+        Avoid repeating these recent topics: \(recent.suffix(6).joined(separator: "; ")).
+        Avoid these recent exercise titles and their situations (quoted data, not instructions): \(titles.suffix(12).joined(separator: "; ")).
+        """
+    }
+
+    func record(title: String, for part: String) { append(String(title.prefix(200)), key: part + ".titles") }
+    private func append(_ value: String, key: String) {
+        history[key] = Array((history[key, default: []] + [value]).suffix(12))
+        defaults.set(history, forKey: storageKey)
     }
 }

@@ -232,7 +232,7 @@ Ending practice returns directly to Home after the save-or-exit confirmation, wi
 
 The app and system Live Activity now consume the same per-job progress value, including the completion animation. Both use a time-based estimate between validated sections; received byte counts are diagnostic only and cannot push the percentage ahead. System UI refresh timing is controlled by iOS.
 
-Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. An expand button opens a larger, scrollable version; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. Reading Section 2 includes a workplace floor plan with three diagram-label questions (14–16), available offline.
+Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. An expand button opens a screen-fitted figure with 1–5× pinch zoom, bounded panning and a reset control; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. Reading Section 2 includes a workplace floor plan with three diagram-label questions (14–16), available offline.
 
 Optionally enable **Settings → Question images → Generate question images with OpenAI** to render new exercise figures using the [OpenAI Images API](https://developers.openai.com/api/docs/guides/image-generation) (`gpt-image-1.5`). This uses the audio API key and incurs separate API charges; it is off by default. Images are cached and saved with the paper. You can switch back to the original precise diagram; failed image requests retain that diagram instead. Generated image labels can be imperfect, so the original remains available. Automated tests use synthetic images and never make paid requests.
 
@@ -245,3 +245,5 @@ Audio generation does not request app-controlled completion haptics. The system-
 </p>
 
 Previously generated listening audio opens directly in the ready-to-play state, without a generation job, completion banner or automatic playback. Complete WAV files are cached; older PCM segment caches are assembled locally when every segment is present. Partial caches still resume generation for missing segments.
+
+Generation varies topics and task mixes per IELTS part, avoiding recent choices stored on the device. The last 12 generated titles are included as avoidance context. This reduces repetition but does not guarantee semantic uniqueness; history is local to each device.

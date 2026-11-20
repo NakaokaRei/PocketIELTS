@@ -99,11 +99,8 @@ struct QuestionVisualView: View {
         }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             .sheet(isPresented: $expanded) {
                 NavigationStack {
-                    GeometryReader { proxy in
-                        ScrollView([.horizontal, .vertical]) {
-                            artwork.frame(width: max(900, proxy.size.width), height: max(900, proxy.size.width) * 0.75).padding(20)
-                        }
-                    }.navigationTitle(visual.title).navigationBarTitleDisplayMode(.inline)
+                    ZoomableQuestionFigure { artwork }
+                    .navigationTitle(visual.title).navigationBarTitleDisplayMode(.inline)
                         .toolbar { Button(String(localized: "完了")) { expanded = false } }
                 }
             }
@@ -157,5 +154,65 @@ struct QuestionVisualView: View {
             }
         }.accessibilityElement(children: .ignore).accessibilityLabel(visual.description)
             .accessibilityIdentifier("question.visual")
+    }
+}
+
+
+/// A fitted canvas with bounded pinch zoom and pan, including an accessible reset.
+private struct ZoomableQuestionFigure<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+    @State private var scale: CGFloat = 1
+    @State private var offset = CGSize.zero
+    @GestureState private var magnification: CGFloat = 1
+    @GestureState private var translation = CGSize.zero
+
+    var body: some View {
+        GeometryReader { proxy in
+            let fit = FigureViewport.fit(in: proxy.size)
+            let zoom = min(5, max(1, scale * magnification))
+            let pan = FigureViewport.clamp(CGSize(width: offset.width + translation.width,
+                                                  height: offset.height + translation.height),
+                                           fit: fit, viewport: proxy.size, scale: zoom)
+            content().frame(width: fit.width, height: fit.height)
+                .scaleEffect(zoom).offset(pan)
+                .frame(width: proxy.size.width, height: proxy.size.height)
+                .contentShape(Rectangle()).clipped()
+                .gesture(MagnifyGesture().updating($magnification) { value, state, _ in state = value.magnification }
+                    .onEnded { value in
+                        scale = min(5, max(1, scale * value.magnification))
+                        offset = FigureViewport.clamp(offset, fit: fit, viewport: proxy.size, scale: scale)
+                    })
+                .simultaneousGesture(DragGesture().updating($translation) { value, state, _ in state = value.translation }
+                    .onEnded { value in
+                        offset = FigureViewport.clamp(CGSize(width: offset.width + value.translation.width,
+                                                              height: offset.height + value.translation.height),
+                                                      fit: fit, viewport: proxy.size, scale: scale)
+                    })
+                .onChange(of: proxy.size) { _, _ in scale = 1; offset = .zero }
+                .accessibilityAdjustableAction { direction in
+                    scale = min(5, max(1, scale + (direction == .increment ? 0.5 : -0.5)))
+                    offset = FigureViewport.clamp(offset, fit: fit, viewport: proxy.size, scale: scale)
+                }
+                .accessibilityValue("\(Int(zoom * 100))%")
+                .overlay(alignment: .bottomTrailing) {
+                    Button { scale = 1; offset = .zero } label: {
+                        Image(systemName: "arrow.counterclockwise").frame(width: 44, height: 44)
+                    }.buttonStyle(.bordered).padding(16)
+                        .accessibilityLabel(String(localized: "Reset zoom"))
+                        .accessibilityIdentifier("question.visual.resetZoom")
+                }
+        }
+    }
+}
+
+enum FigureViewport {
+    static func fit(in viewport: CGSize) -> CGSize {
+        let width = max(0, min(viewport.width - 32, (viewport.height - 32) * 4 / 3))
+        return CGSize(width: width, height: width * 0.75)
+    }
+    static func clamp(_ offset: CGSize, fit: CGSize, viewport: CGSize, scale: CGFloat) -> CGSize {
+        let x = max(0, (fit.width * scale - viewport.width) / 2)
+        let y = max(0, (fit.height * scale - viewport.height) / 2)
+        return CGSize(width: min(x, max(-x, offset.width)), height: min(y, max(-y, offset.height)))
     }
 }

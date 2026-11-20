@@ -894,3 +894,35 @@ extension PocketIELTSTests {
         } catch is CancellationError { }
     }
 }
+
+
+extension PocketIELTSTests {
+    func testFigureFitsPortraitLandscapeAndBoundsPan() {
+        for viewport in [CGSize(width: 390, height: 700), CGSize(width: 800, height: 320)] {
+            let fit = FigureViewport.fit(in: viewport)
+            XCTAssertLessThanOrEqual(fit.width, viewport.width)
+            XCTAssertLessThanOrEqual(fit.height, viewport.height)
+            XCTAssertEqual(FigureViewport.clamp(CGSize(width: 900, height: -900), fit: fit, viewport: viewport, scale: 1), .zero)
+            let panned = FigureViewport.clamp(CGSize(width: 9000, height: -9000), fit: fit, viewport: viewport, scale: 5)
+            XCTAssertEqual(panned.width, max(0, (fit.width * 5 - viewport.width) / 2))
+        }
+    }
+
+    func testVarietyAvoidsRecentTopicsAndPersistsHistory() async {
+        let suite = "variety-tests-" + UUID().uuidString
+        defer { UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite) }
+        let planner = ExerciseVariety(suiteName: suite)
+        var topics = Set<String>()
+        for _ in 0..<12 {
+            let prompt = await planner.next(for: "Reading / Section 2")
+            let topic = String(prompt.split(separator: ".")[0])
+            XCTAssertTrue(topics.insert(topic).inserted)
+        }
+        await planner.record(title: "Fixture workplace", for: "Reading / Section 2")
+        let restored = ExerciseVariety(suiteName: suite)
+        let next = await restored.next(for: "Reading / Section 2")
+        XCTAssertTrue(next.contains("Fixture workplace"))
+        let writing = await restored.next(for: "Writing / Task 1")
+        XCTAssertTrue(writing.contains("letter"))
+    }
+}

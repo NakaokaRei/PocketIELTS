@@ -180,6 +180,11 @@ final class PocketIELTSUITests: XCTestCase {
         capture("iphone-reading-figure")
         expand.tap()
         XCTAssertTrue(app.buttons["完了"].waitForExistence(timeout: 5))
+        let figure = app.otherElements["question.visual"].firstMatch
+        if figure.exists { figure.pinch(withScale: 2, velocity: 1) }
+        let reset = app.buttons["question.visual.resetZoom"]
+        XCTAssertTrue(reset.exists)
+        reset.tap()
         capture("iphone-reading-figure-expanded")
         app.buttons["完了"].tap()
         XCTAssertTrue(expand.waitForExistence(timeout: 5))
