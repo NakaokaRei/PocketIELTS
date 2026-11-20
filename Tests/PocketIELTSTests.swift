@@ -40,30 +40,51 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertTrue(StarterWord.all.allSatisfy { !$0.definition.isEmpty })
     }
 
-    func testWaitingQuizPrioritizesSavedWordsAndMasksWholeExpressions() throws {
-        let saved = SavedExpression(expression: "available", source: "Reading", sourceText: "Available rooms are available today, but unavailable tomorrow.")
-        let card = try XCTUnwrap(WaitingWordQuiz.saved(saved))
-        XCTAssertEqual(card.prompt, "［ … ］ rooms are ［ … ］ today, but unavailable tomorrow.")
-        XCTAssertEqual(card.answer, "available")
-        XCTAssertTrue(card.isPersonal)
-        let deck = WaitingWordQuiz.deck(saved: [saved])
+    func testGeneralTrainingCoverageAndWaitingMeanings() throws {
+        for topic in StarterWord.topics {
+            XCTAssertEqual(StarterWord.all.filter { $0.topic == topic }.count, 100)
+        }
+        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.example.isEmpty && $0.example.localizedCaseInsensitiveContains($0.expression) })
+        let saved = SavedExpression(expression: "accommodation", source: "Reading", sourceText: "Find accommodation near work.")
+        let deck = VocabularyCard.waitingDeck([saved])
         XCTAssertEqual(deck.count, 1)
-        XCTAssertEqual(deck.first?.answer, "available")
-        XCTAssertFalse(WaitingWordQuiz.deck(saved: []).isEmpty)
-        XCTAssertTrue(WaitingWordQuiz.deck(saved: []).allSatisfy { !$0.isPersonal && $0.prompt.range(of: $0.answer, options: .caseInsensitive) == nil })
+        XCTAssertEqual(deck.first?.word, "accommodation")
+        XCTAssertFalse(try XCTUnwrap(deck.first).meaning.isEmpty)
+        XCTAssertTrue(try XCTUnwrap(deck.first).personal)
+        let unknown = SavedExpression(expression: "xyz unknown", source: "manual", sourceText: "")
+        XCTAssertTrue(VocabularyCard.waitingDeck([unknown]).allSatisfy { !$0.meaning.isEmpty && !$0.personal })
+        XCTAssertNil(VocabularyCard(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
     }
 
-    func testWaitingQuizHandlesMissingContextAndSpecialCharacters() throws {
-        let card = try XCTUnwrap(WaitingWordQuiz.saved(SavedExpression(expression: "resilient", source: "manual", sourceText: "")))
-        XCTAssertNotEqual(card.prompt, card.answer)
-        XCTAssertTrue(card.prompt.contains("_"))
-        XCTAssertNil(WaitingWordQuiz.saved(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
-        let phrase = try XCTUnwrap(WaitingWordQuiz.saved(SavedExpression(expression: "C++", source: "manual", sourceText: "The course teaches C++ to new students.")))
-        XCTAssertFalse(phrase.prompt.contains("C++"))
-        XCTAssertEqual(phrase.answer, "C++")
-        XCTAssertEqual(StarterWord.imported.count, 940)
-        XCTAssertTrue(StarterWord.imported.first { $0.expression == "address" }!.definition.contains("place"))
-        XCTAssertTrue(try OSSNotice.load().contains { $0.title.contains("WordNet") })
+    func testFlashcardsRequireRevealAndTrackReviewWithoutRepeats() throws {
+        let cards = StarterWord.all.prefix(30).map(VocabularyCard.init)
+        var session = FlashcardSession(cards: cards + cards)
+        XCTAssertEqual(session.cards.count, 20)
+        XCTAssertEqual(Set(session.cards.map(\.id)).count, 20)
+        session.answer(remembered: true)
+        XCTAssertEqual(session.index, 0)
+        for index in 0..<20 {
+            XCTAssertNotNil(session.current)
+            session.reveal()
+            session.answer(remembered: index.isMultiple(of: 2))
+            XCTAssertFalse(session.revealed)
+        }
+        XCTAssertNil(session.current)
+        XCTAssertEqual(session.remembered, 10)
+        XCTAssertEqual(session.review.count, 10)
+        session.answer(remembered: true)
+        XCTAssertEqual(session.remembered, 10)
+        XCTAssertNil(FlashcardSession(cards: []).current)
+    }
+
+    func testPronunciationUsesEnglishAndStopsCleanly() {
+        let utterance = WordPronouncer.utterance(for: "accommodation")
+        XCTAssertEqual(utterance.speechString, "accommodation")
+        XCTAssertTrue(utterance.voice?.language.hasPrefix("en") == true)
+        XCTAssertLessThan(utterance.rate, AVSpeechUtteranceDefaultSpeechRate)
+        let pronouncer = WordPronouncer()
+        pronouncer.stop()
+        XCTAssertNil(pronouncer.activeWord)
     }
 
     func testSpeakingReceivedAudioActuallyRendersAndInterruptionClearsIt() throws {

@@ -22,6 +22,10 @@ jobs:
       - uses: actions/checkout@v7
       - name: Validate localization coverage
         run: python3 Scripts/check-localizations.py
+      - name: Validate bundled General Training vocabulary
+        run: |
+          python3 Scripts/build-vocabulary.py
+          git diff --exit-code -- Resources/Vocabulary/GeneralTrainingWords.json
       - name: Select hosted Xcode
         run: |
           sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer

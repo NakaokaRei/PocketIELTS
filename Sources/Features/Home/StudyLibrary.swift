@@ -1,97 +1,38 @@
 import SwiftUI
+@preconcurrency import AVFoundation
 import ComposableArchitecture
 
-/// Original study material plus a curated, licensed WordNet subset. Levels are learning guides.
+/// Original General Training learning material; groupings are not official band predictions.
 struct StarterWord: Identifiable, Decodable {
     let expression: String
     let definition: String
     let example: String
+    let topic: String
     let level: Int
     var id: String { expression }
     var context: String { expression + "\n" + definition + "\n" + example }
     static let levels = ["Foundation · 4–5", "Developing · 5.5–6.5", "Advanced · 7+"]
-    private static let original: [Self] = groups.enumerated().flatMap { level, group in
-        group.split(separator: "\n").map { line in
-            let fields = line.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
-            return Self(expression: fields[0], definition: fields[1], example: fields[2], level: level)
+    static let topics = ["housing", "work", "training", "shopping", "travel", "health", "community", "money", "correspondence", "society"]
+    static func topicName(_ topic: String) -> String {
+        switch topic {
+        case "housing": String(localized: "Housing")
+        case "work": String(localized: "Work")
+        case "training": String(localized: "Study and training")
+        case "shopping": String(localized: "Shopping and services")
+        case "travel": String(localized: "Travel")
+        case "health": String(localized: "Health")
+        case "community": String(localized: "Community")
+        case "money": String(localized: "Money")
+        case "correspondence": String(localized: "Letters and requests")
+        default: String(localized: "Society and environment")
         }
     }
-    static let imported: [Self] = {
-        guard let url = Bundle.main.url(forResource: "WordNet", withExtension: "json", subdirectory: "Vocabulary"),
+    static let all: [Self] = {
+        guard let url = Bundle.main.url(forResource: "GeneralTrainingWords", withExtension: "json", subdirectory: "Vocabulary"),
               let data = try? Data(contentsOf: url),
               let words = try? JSONDecoder().decode([Self].self, from: data) else { return [] }
         return words
     }()
-    static let all = original + imported
-
-    private static let groups = [
-    """
-    accommodation|A place where you live or stay.|The college offers affordable accommodation near the campus.
-    appointment|An arrangement to meet someone at a particular time.|You need an appointment to speak to the adviser.
-    available|Ready to be used or obtained.|Evening classes are available on Tuesdays.
-    benefit|A useful or positive effect.|One benefit of cycling is improved health.
-    borrow|To take something with permission and return it later.|Members can borrow up to six books.
-    budget|The money available for a particular purpose.|We need to keep the project within our budget.
-    community|People who live in the same area or share interests.|The new centre provides services for the local community.
-    convenient|Easy to use or suitable for your needs.|Online booking is convenient for busy students.
-    deadline|The latest time when something must be completed.|The application deadline is Friday at noon.
-    equipment|The tools or items needed for an activity.|Safety equipment is provided during training.
-    fee|An amount of money paid for a service.|There is a small fee for replacing a lost card.
-    improve|To make or become better.|Regular practice can improve your confidence.
-    increase|To become or make something greater.|The number of visitors increased last year.
-    opportunity|A chance to do something useful or desirable.|Volunteering is an opportunity to learn new skills.
-    permission|Approval to do something.|You need permission to park behind the building.
-    provide|To give someone something they need.|The library provides free internet access.
-    reduce|To make something smaller or less.|Taking the bus can reduce travel costs.
-    reliable|Able to be trusted to work well.|A reliable train service helps people get to work.
-    require|To need something or make it necessary.|Some courses require previous experience.
-    resident|A person who lives in a particular place.|Local residents can use the garden throughout the year.
-    """,
-    """
-    accessible|Easy to reach, enter or use.|Public buildings should be accessible to wheelchair users.
-    allocate|To set aside resources for a particular purpose.|The council allocated more money to road repairs.
-    alternative|Another possible choice.|Working from home is an alternative to commuting every day.
-    approach|A way of dealing with a task or problem.|Schools need a flexible approach to teaching.
-    assess|To judge the quality, value or importance of something.|The team will assess the impact of the changes.
-    consequence|A result of an action or situation.|Poor planning can have serious consequences.
-    contribute|To help produce a result or give something to a cause.|Public transport can contribute to cleaner air.
-    decline|To become smaller, weaker or less common.|Sales declined during the winter months.
-    efficient|Working well without wasting time or resources.|Modern heating systems are more efficient.
-    evidence|Facts or information that support a belief.|There is clear evidence that exercise improves health.
-    flexible|Able to change to suit different conditions.|Flexible hours can help parents manage childcare.
-    maintain|To keep something in good condition or at the same level.|It is important to maintain public parks.
-    priority|Something that is more important than other things.|Road safety should be a priority for local authorities.
-    proportion|A part or share of a total.|A large proportion of students travel by bus.
-    relevant|Directly connected with the subject being considered.|Applicants should describe their relevant experience.
-    resource|Something useful that can help achieve a goal.|Clean water is a valuable resource.
-    significant|Large or important enough to have an effect.|The scheme led to a significant reduction in waste.
-    sustainable|Able to continue without using up resources or causing lasting harm.|Cities need more sustainable forms of transport.
-    trend|A general direction in which something changes.|There is a growing trend towards online learning.
-    voluntary|Done by choice rather than because it is required.|Participation in the survey is voluntary.
-    """,
-    """
-    alleviate|To make a problem or suffering less severe.|Better bus services could alleviate traffic congestion.
-    ambiguity|A lack of clarity that allows more than one interpretation.|The revised instructions remove the ambiguity.
-    coherent|Logical and clearly connected.|A strong essay presents a coherent argument.
-    compelling|Very convincing or persuasive.|The report offers compelling evidence for reform.
-    detrimental|Causing harm or damage.|Long working hours can be detrimental to wellbeing.
-    disparity|A noticeable difference, especially an unfair one.|There is a disparity in access to healthcare between regions.
-    empirical|Based on observation or experiments rather than theory alone.|The claim needs empirical evidence.
-    feasible|Possible and practical to carry out.|A pilot study will show whether the proposal is feasible.
-    implication|A possible effect or result of a decision or situation.|The policy has important implications for small businesses.
-    incentive|Something that encourages a person to take action.|Lower fares could provide an incentive to use public transport.
-    inevitable|Certain to happen and unable to be avoided.|Some disruption is inevitable during construction.
-    mitigate|To make the harmful effects of something less severe.|Planting trees can help mitigate urban heat.
-    nuanced|Showing small but important differences.|The issue requires a nuanced discussion of costs and benefits.
-    predominant|More common or influential than others.|Cars remain the predominant form of transport in the area.
-    reconcile|To find a way for different needs or ideas to work together.|Planners must reconcile economic growth with environmental protection.
-    resilience|The ability to recover or adapt after difficulties.|Diverse local businesses can strengthen economic resilience.
-    substantial|Large in amount, value or importance.|The new system requires substantial investment.
-    undermine|To gradually weaken or damage something.|Inconsistent rules can undermine public trust.
-    viable|Able to work successfully in practice.|The project must be financially viable in the long term.
-    outweigh|To be greater or more important than something else.|The long-term benefits may outweigh the initial costs.
-    """
-    ]
 }
 
 struct VocabularyLibraryScreen: View {
@@ -99,6 +40,12 @@ struct VocabularyLibraryScreen: View {
     @State private var level = 0
     @State private var selected: StarterWord?
     @State private var search = ""
+    @State private var topic = ""
+    @StateObject private var pronunciation = WordPronouncer()
+    private var filtered: [StarterWord] {
+        StarterWord.all.filter { $0.level == level && (topic.isEmpty || $0.topic == topic) &&
+            (search.isEmpty || $0.expression.localizedCaseInsensitiveContains(search) || $0.definition.localizedCaseInsensitiveContains(search)) }
+    }
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 20) {
@@ -106,6 +53,13 @@ struct VocabularyLibraryScreen: View {
                     .font(StudyTypography.subheadline).foregroundStyle(StudyColors.accent)
                 Text(String(localized: "Study levels are a guide, not official IELTS word lists."))
                     .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                Picker(String(localized: "Topic"), selection: $topic) {
+                    Text(String(localized: "All topics")).tag("")
+                    ForEach(StarterWord.topics, id: \.self) { Text(StarterWord.topicName($0)).tag($0) }
+                }.font(StudyTypography.subheadline)
+                StudyLink { FlashcardScreen(cards: filtered.map(VocabularyCard.init), store: store) } label: {
+                    Label(String(localized: "Flashcards"), systemImage: "rectangle.on.rectangle")
+                }.buttonStyle(StudyPrimaryButtonStyle()).disabled(filtered.isEmpty).accessibilityIdentifier("library.flashcards")
                 ForEach(StarterWord.levels.indices, id: \.self) { index in
                     Button { level = index } label: {
                         HStack {
@@ -115,12 +69,15 @@ struct VocabularyLibraryScreen: View {
                         }.padding(16).background(level == index ? StudyColors.reading : StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                     }.buttonStyle(.plain).accessibilityIdentifier("library.level.\(index)")
                 }
-                ForEach(StarterWord.all.filter { $0.level == level && (search.isEmpty || $0.expression.localizedCaseInsensitiveContains(search) || $0.definition.localizedCaseInsensitiveContains(search)) }) { word in
+                if filtered.isEmpty { ContentUnavailableView.search(text: search) }
+                ForEach(filtered) { word in
                     VStack(alignment: .leading, spacing: 12) {
+                        Text(StarterWord.topicName(word.topic)).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
                         Text(word.expression).font(StudyTypography.heading).textSelection(.enabled)
+                        WordPronunciationButton(word: word.expression, pronunciation: pronunciation)
                         Text(word.definition).font(StudyTypography.body).textSelection(.enabled)
                         if !word.example.isEmpty { Text(word.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText).textSelection(.enabled) }
-                        Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { selected = word }
+                        Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { pronunciation.stop(); selected = word }
                             .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("library.ask.\(word.id)")
                     }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                         .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
@@ -128,6 +85,9 @@ struct VocabularyLibraryScreen: View {
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationTitle(String(localized: "IELTS word library")).navigationBarTitleDisplayMode(.inline)
             .searchable(text: $search)
+            .onDisappear { pronunciation.stop() }
+            .onChange(of: level) { _, _ in pronunciation.stop() }
+            .onChange(of: topic) { _, _ in pronunciation.stop() }
             .sheet(item: $selected, onDismiss: { store.send(.closeQuestion) }) { word in
                 TutorScreen(store: store, context: word.context, selectedText: word.expression, vocabularyMode: true)
             }
@@ -193,7 +153,7 @@ struct OfflineLibraryScreen: View {
                 ForEach(["Reading", "Listening", "Writing", "Speaking"], id: \.self) { skill in
                     Text(skill).font(StudyTypography.heading)
                     ForEach(units.filter { $0.skill == skill }) { unit in
-                        NavigationLink { ExamScreen(units: [unit], store: store) } label: {
+                        StudyLink { ExamScreen(units: [unit], store: store) } label: {
                             HStack {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(unit.id).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
@@ -210,80 +170,208 @@ struct OfflineLibraryScreen: View {
     }
 }
 
-/// Offline recall prompts: saved context takes priority; no generated definitions or API calls.
-struct WaitingWordQuiz: Identifiable {
+struct VocabularyCard: Identifiable, Equatable {
     let id: String
-    let prompt: String
-    let answer: String
-    let detail: String
-    let isPersonal: Bool
-
-    static func saved(_ word: SavedExpression) -> Self? {
-        let answer = word.expression.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !answer.isEmpty else { return nil }
-        let context = word.contextExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
-        let pattern = "(?<![\\p{L}\\p{N}])" + NSRegularExpression.escapedPattern(for: answer) + "(?![\\p{L}\\p{N}])"
-        let expression = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-        let range = NSRange(context.startIndex..., in: context)
-        if !context.isEmpty, expression?.firstMatch(in: context, range: range) != nil {
-            let prompt = expression!.stringByReplacingMatches(in: context, range: range, withTemplate: "［ … ］")
-            if prompt.replacingOccurrences(of: "［ … ］", with: "").trimmingCharacters(in: .whitespacesAndNewlines).count > 8 {
-                return Self(id: word.id.uuidString, prompt: prompt, answer: answer, detail: context, isPersonal: true)
-            }
-        }
-        if let definition = StarterWord.all.first(where: { $0.expression.caseInsensitiveCompare(answer) == .orderedSame && $0.definition.range(of: answer, options: .caseInsensitive) == nil })?.definition {
-            return Self(id: word.id.uuidString, prompt: definition, answer: answer, detail: context, isPersonal: true)
-        }
-        // Words saved without context still get a spelling recall card.
-        let letters = Array(answer)
-        let masked = letters.enumerated().map { index, letter in
-            letter.isLetter && (index % 2 == 1 || letters.count == 1) ? "_" : String(letter)
-        }.joined(separator: " ")
-        return Self(id: word.id.uuidString, prompt: masked, answer: answer, detail: context, isPersonal: true)
+    let word: String
+    let meaning: String
+    let example: String
+    let personal: Bool
+    var context: String { [word, meaning, example].filter { !$0.isEmpty }.joined(separator: "\n") }
+    init(_ entry: StarterWord) {
+        id = entry.id; word = entry.expression; meaning = entry.definition; example = entry.example; personal = false
     }
+    init?(_ entry: SavedExpression) {
+        let value = entry.expression.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty else { return nil }
+        let match = StarterWord.all.first { $0.expression.caseInsensitiveCompare(value) == .orderedSame }
+        id = entry.id.uuidString; word = value; personal = true
+        let savedMeaning = entry.meaning.trimmingCharacters(in: .whitespacesAndNewlines)
+        meaning = savedMeaning.isEmpty ? match?.definition ?? "" : savedMeaning
+        example = entry.contextExcerpt.isEmpty ? match?.example ?? "" : entry.contextExcerpt
+    }
+    static func waitingDeck(_ saved: [SavedExpression]) -> [Self] {
+        let personal = saved.compactMap(Self.init).filter { !$0.meaning.isEmpty }
+        return (personal.isEmpty ? StarterWord.all.map(Self.init) : personal).shuffled()
+    }
+}
 
-    static func deck(saved words: [SavedExpression]) -> [Self] {
-        let personal = words.compactMap(saved)
-        if !personal.isEmpty { return personal.shuffled() }
-        return StarterWord.all.filter { $0.definition.range(of: $0.expression, options: .caseInsensitive) == nil }.shuffled().prefix(20).map {
-            Self(id: $0.id, prompt: $0.definition, answer: $0.expression, detail: $0.example, isPersonal: false)
+struct FlashcardSession {
+    private(set) var cards: [VocabularyCard]
+    private(set) var index = 0
+    private(set) var revealed = false
+    private(set) var remembered = 0
+    private(set) var review: [VocabularyCard] = []
+    var current: VocabularyCard? { cards.indices.contains(index) ? cards[index] : nil }
+    init(cards: [VocabularyCard], limit: Int = 20) {
+        var ids = Set<String>()
+        self.cards = Array(cards.filter { ids.insert($0.id).inserted }.shuffled().prefix(max(0, limit)))
+    }
+    mutating func reveal() { if current != nil { revealed = true } }
+    mutating func answer(remembered knew: Bool) {
+        guard revealed, let card = current else { return }
+        if knew { remembered += 1 } else { review.append(card) }
+        index += 1; revealed = false
+    }
+}
+
+struct FlashcardScreen: View {
+    let cards: [VocabularyCard]
+    let store: StoreOf<StudyFeature>
+    @State private var session: FlashcardSession
+    @State private var tutor: VocabularyCard?
+    @StateObject private var pronunciation = WordPronouncer()
+    init(cards: [VocabularyCard], store: StoreOf<StudyFeature>) {
+        self.cards = cards; self.store = store
+        _session = State(initialValue: FlashcardSession(cards: cards))
+    }
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                if let card = session.current {
+                    HStack {
+                        Text("\(session.index + 1) / \(session.cards.count)").font(StudyTypography.headline).monospacedDigit()
+                        Spacer()
+                        Label(String(localized: "Shuffled practice"), systemImage: "shuffle").font(StudyTypography.caption)
+                    }
+                    ProgressView(value: Double(session.index), total: Double(session.cards.count))
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text(card.word).font(StudyTypography.title).accessibilityIdentifier("flashcard.word")
+                        WordPronunciationButton(word: card.word, pronunciation: pronunciation)
+                        if session.revealed {
+                            Text(card.meaning.isEmpty ? String(localized: "Meaning unavailable. Ask AI to explain this word.") : card.meaning)
+                                .font(StudyTypography.body).accessibilityIdentifier("flashcard.meaning")
+                            if !card.example.isEmpty { Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText) }
+                            Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { pronunciation.stop(); tutor = card }
+                                .buttonStyle(StudySecondaryButtonStyle())
+                        } else {
+                            Button(String(localized: "Show meaning"), systemImage: "eye") { session.reveal() }
+                                .buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("flashcard.reveal")
+                        }
+                    }.padding(24).frame(maxWidth: .infinity, minHeight: 260, alignment: .leading)
+                        .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
+                    if session.revealed {
+                        Button(String(localized: "Remembered"), systemImage: "checkmark") { pronunciation.stop(); session.answer(remembered: true) }
+                            .buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("flashcard.remembered")
+                        Button(String(localized: "Review again"), systemImage: "arrow.counterclockwise") { pronunciation.stop(); session.answer(remembered: false) }
+                            .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("flashcard.again")
+                    }
+                    Text(String(localized: "Self-assessment only. This does not change your IELTS estimate."))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                } else if session.cards.isEmpty {
+                    ContentUnavailableView(String(localized: "No words to practise"), systemImage: "rectangle.on.rectangle")
+                } else {
+                    Label(String(localized: "Practice complete"), systemImage: "checkmark.seal.fill").font(StudyTypography.title)
+                    Text(String(format: String(localized: "Remembered: %@ / %@"), String(session.remembered), String(session.cards.count)))
+                        .font(StudyTypography.heading).accessibilityIdentifier("flashcard.result")
+                    if !session.review.isEmpty {
+                        Button(String(localized: "Review again"), systemImage: "arrow.counterclockwise") { session = FlashcardSession(cards: session.review) }
+                            .buttonStyle(StudyPrimaryButtonStyle())
+                    }
+                    Button(String(localized: "Shuffle and restart"), systemImage: "shuffle") { session = FlashcardSession(cards: cards) }
+                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("flashcard.restart")
+                }
+            }.padding(24).frame(maxWidth: 650).frame(maxWidth: .infinity)
+        }.navigationTitle(String(localized: "Flashcards")).navigationBarTitleDisplayMode(.inline)
+            .onDisappear { pronunciation.stop() }
+            .sheet(item: $tutor, onDismiss: { store.send(.closeQuestion) }) { card in
+                TutorScreen(store: store, context: card.context, selectedText: card.word, vocabularyMode: true)
+            }
+    }
+}
+
+struct WaitingVocabularyView: View {
+    let words: [SavedExpression]
+    @State private var cards: [VocabularyCard] = []
+    @State private var index = 0
+    @StateObject private var pronunciation = WordPronouncer()
+    init(words: [SavedExpression]) {
+        self.words = words
+        _cards = State(initialValue: VocabularyCard.waitingDeck(words))
+    }
+    var body: some View {
+        Group {
+            if let card = cards.isEmpty ? nil : cards[index % cards.count] {
+                VStack(alignment: .leading, spacing: 12) {
+                    Label(String(localized: "Vocabulary while you wait"), systemImage: "book")
+                        .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
+                    Text(String(localized: card.personal ? "From your saved words" : "From the word library"))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                    Text(card.word).font(StudyTypography.heading).accessibilityIdentifier("generation.word")
+                    Text(card.meaning).font(StudyTypography.body).accessibilityIdentifier("generation.meaning")
+                    Text(card.example).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                    WordPronunciationButton(word: card.word, pronunciation: pronunciation)
+                    Button(String(localized: "Next word"), systemImage: "arrow.right") { pronunciation.stop(); index = (index + 1) % cards.count }
+                        .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.nextWord")
+                    Text(String(localized: "Your practice opens automatically when ready."))
+                        .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                    .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
+            }
+        }.onDisappear { pronunciation.stop() }
+    }
+}
+
+@MainActor
+final class WordPronouncer: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
+    @Published private(set) var activeWord: String?
+    @Published private(set) var error: String?
+    private let synthesizer = AVSpeechSynthesizer()
+    private var utteranceID: ObjectIdentifier?
+    override init() { super.init(); synthesizer.delegate = self }
+    static func utterance(for word: String) -> AVSpeechUtterance {
+        let utterance = AVSpeechUtterance(string: word)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-GB") ?? AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.85
+        return utterance
+    }
+    func toggle(_ word: String) {
+        if activeWord == word { stop(); return }
+        stop(); error = nil
+        guard !word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .spokenAudio, options: .duckOthers)
+            try session.setActive(true)
+            let utterance = Self.utterance(for: word)
+            utteranceID = ObjectIdentifier(utterance); activeWord = word
+            synthesizer.speak(utterance)
+        } catch { self.error = error.localizedDescription }
+    }
+    func stop() {
+        let wasActive = activeWord != nil
+        utteranceID = nil; activeWord = nil
+        synthesizer.stopSpeaking(at: .immediate)
+        if wasActive { try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation) }
+    }
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        let id = ObjectIdentifier(utterance)
+        Task { @MainActor [weak self] in
+            guard self?.utteranceID == id else { return }
+            self?.stop()
+        }
+    }
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        let id = ObjectIdentifier(utterance)
+        Task { @MainActor [weak self] in
+            guard self?.utteranceID == id else { return }
+            self?.stop()
         }
     }
 }
 
-struct WaitingWordQuizView: View {
-    let words: [SavedExpression]
-    @State private var cards: [WaitingWordQuiz] = []
-    @State private var index = 0
-    @State private var revealed = false
+struct WordPronunciationButton: View {
+    let word: String
+    @ObservedObject var pronunciation: WordPronouncer
+    @Environment(\.scenePhase) private var scenePhase
     var body: some View {
-        if let card = cards.isEmpty ? nil : cards[index % cards.count] {
-            VStack(alignment: .leading, spacing: 12) {
-                Label(String(localized: "A little vocabulary practice"), systemImage: "rectangle.on.rectangle")
-                    .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
-                Text(String(localized: card.isPersonal ? "From your saved words" : "From the word library"))
-                    .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                Text(String(localized: "Which word fits?" )).font(StudyTypography.subheadline)
-                Text(card.prompt).font(StudyTypography.body).fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("generation.quiz.prompt")
-                if revealed {
-                    Text(card.answer).font(StudyTypography.heading).foregroundStyle(StudyColors.accent)
-                        .accessibilityIdentifier("generation.quiz.answer")
-                    if !card.detail.isEmpty { Text(card.detail).font(StudyTypography.caption) }
-                }
-                Button {
-                    if revealed { index = (index + 1) % cards.count; revealed = false }
-                    else { revealed = true }
-                } label: {
-                    Label(String(localized: revealed ? "Next word" : "Reveal answer"), systemImage: revealed ? "arrow.right" : "eye")
-                }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("generation.quiz.action")
-                Text(String(localized: "Your practice opens automatically when ready."))
-                    .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
-                .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
-                .transaction { $0.animation = nil; $0.disablesAnimations = true }
-        } else {
-            Color.clear.frame(height: 0).onAppear { cards = WaitingWordQuiz.deck(saved: words) }
-        }
+        VStack(alignment: .leading, spacing: 4) {
+            Button {
+                pronunciation.toggle(word)
+            } label: {
+                Label(String(localized: pronunciation.activeWord == word ? "Stop pronunciation" : "Hear pronunciation"),
+                      systemImage: pronunciation.activeWord == word ? "stop.fill" : "speaker.wave.2.fill")
+            }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.pronounce.\(word)")
+            if let error = pronunciation.error { Text(error).font(StudyTypography.caption).foregroundStyle(StudyColors.error) }
+        }.onChange(of: scenePhase) { _, phase in if phase != .active { pronunciation.stop() } }
     }
 }

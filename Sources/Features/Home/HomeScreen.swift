@@ -73,7 +73,7 @@ struct HomeScreen: View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: StudySpacing.gridGap),
                                              count: typeSize.isAccessibilitySize ? 1 : 2), spacing: StudySpacing.gridGap) {
                         ForEach(skills, id: \.name) { skill in
-                            NavigationLink {
+                            StudyLink {
                                 partPicker(skill.name)
                             } label: {
                                 VStack(alignment: .leading, spacing: 4) {
@@ -93,12 +93,12 @@ struct HomeScreen: View {
     }
     private var summaryCards: some View {
         VStack(spacing: 24) {
-        NavigationLink { OfflineLibraryScreen(units: units, store: store) } label: {
+        StudyLink { OfflineLibraryScreen(units: units, store: store) } label: {
             Label(String(localized: "Offline practice"), systemImage: "books.vertical.fill")
                 .font(StudyTypography.button).frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
         }.buttonStyle(.plain).accessibilityIdentifier("home.offline")
-        NavigationLink { SavedPapersScreen(store: store) } label: {
+        StudyLink { SavedPapersScreen(store: store) } label: {
             HStack(spacing: 12) {
                 Image(systemName: "bookmark.fill").font(.title2)
                 VStack(alignment: .leading, spacing: 6) {
@@ -109,7 +109,7 @@ struct HomeScreen: View {
             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                 .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
         }.buttonStyle(.plain).accessibilityIdentifier("home.savedPapers")
-        NavigationLink { history.navigationTitle(String(localized: "学習記録")) } label: {
+        StudyLink { history.navigationTitle(String(localized: "学習記録")) } label: {
                         VStack(alignment: .leading, spacing: StudySpacing.contentInset) {
                             Text(String(localized: "現在の推定レベル")).font(StudyTypography.subheadline.bold())
                             HStack {
@@ -119,7 +119,7 @@ struct HomeScreen: View {
                         }.padding(StudySpacing.screenInset).foregroundStyle(.white)
                             .background(StudyColors.levelCard, in: RoundedRectangle(cornerRadius: StudySpacing.cardRadius))
                     }.buttonStyle(.plain)
-                    NavigationLink {
+                    StudyLink {
                         if !units.isEmpty { MockIntroScreen(units: units, store: store) }
                         else { Text(loadError ?? String(localized: "教材を読み込み中…")) }
                     } label: {
@@ -162,13 +162,13 @@ struct HomeScreen: View {
             VStack(alignment: .leading, spacing: 24) {
                 Text("GENERAL TRAINING").font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                 Text(skill).font(StudyTypography.roundedTitle(34))
-                NavigationLink { SavedPapersScreen(store: store, skill: skill) } label: {
+                StudyLink { SavedPapersScreen(store: store, skill: skill) } label: {
                     Label(String(localized: "保存した問題から練習"), systemImage: "bookmark.fill")
                 }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("part.savedPapers")
                 Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(StudyTypography.headline)
                 ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
                     VStack(alignment: .leading, spacing: 16) {
-                        NavigationLink { ExamScreen(units: [part], store: store) } label: {
+                        StudyLink { ExamScreen(units: [part], store: store) } label: {
                             HStack {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
@@ -179,7 +179,7 @@ struct HomeScreen: View {
                             }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                         }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
                         Divider()
-                        NavigationLink { GeneratedExamScreen(templates: [part], store: store) } label: {
+                        StudyLink { GeneratedExamScreen(templates: [part], store: store) } label: {
                             Label(String(localized: "新しい問題を生成して練習"), systemImage: "sparkles").font(StudyTypography.subheadline)
                         }
                     }.padding(20).background(tint, in: RoundedRectangle(cornerRadius: 20))
@@ -233,7 +233,7 @@ struct ProgressScreen: View {
                     ContentUnavailableView(String(localized: "学習記録はまだありません"), systemImage: "chart.bar")
                 }
                 ForEach(store.records) { result in
-                    NavigationLink { ResultDetailScreen(result: result, store: store) } label: {
+                    StudyLink { ResultDetailScreen(result: result, store: store) } label: {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(result.skill + (result.isMock ? String(localized: " · 模擬テスト") : "")).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
                         Text(result.title).bold()
@@ -256,18 +256,22 @@ struct VocabularyScreen: View {
     @State private var adding = false
     @State private var deleting: SavedExpression?
     @State private var tutor = false
+    @StateObject private var pronunciation = WordPronouncer()
     @State private var context = ""
     @State private var selectedText: String?
     var body: some View {
         List {
             Section {
-                NavigationLink { VocabularyLibraryScreen(store: store) } label: {
+                StudyLink { VocabularyLibraryScreen(store: store) } label: {
                     VStack(alignment: .leading, spacing: 8) {
                         Label(String(localized: "IELTS word library"), systemImage: "books.vertical.fill").font(StudyTypography.heading)
-                        Text(String(format: String(localized: "%@ words · 3 levels · Offline"), String(StarterWord.all.count))).font(StudyTypography.subheadline)
+                        Text(String(format: String(localized: "%@ words and phrases · 10 topics · Offline"), String(StarterWord.all.count))).font(StudyTypography.subheadline)
                     }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                         .background(StudyColors.reading, in: RoundedRectangle(cornerRadius: 20))
                 }.buttonStyle(.plain).accessibilityIdentifier("vocabulary.library")
+                StudyLink { FlashcardScreen(cards: store.vocabulary.compactMap(VocabularyCard.init), store: store) } label: {
+                    Label(String(localized: "Flashcards"), systemImage: "rectangle.on.rectangle")
+                }.buttonStyle(StudyPrimaryButtonStyle()).disabled(store.vocabulary.isEmpty).accessibilityIdentifier("vocabulary.flashcards")
                 Text(String(localized: "My vocabulary")).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                 if store.vocabulary.isEmpty {
                     ContentUnavailableView(String(localized: "単語帳は空です"), systemImage: "book", description: Text(String(localized: "本文や解説を長押しして表現を追加できます。")))
@@ -279,14 +283,16 @@ struct VocabularyScreen: View {
                             Text(entry.expression).font(StudyTypography.heading).textSelection(.enabled)
                             Spacer()
                         }
+                        WordPronunciationButton(word: entry.expression, pronunciation: pronunciation)
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
+                            pronunciation.stop()
                             context = entry.expression + "\n\n" + entry.sourceText + "\n\n" + entry.meaning
                             selectedText = entry.expression
                             tutor = true
                         }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("vocabulary.askAI")
                         if let paper = entry.paper {
-                            NavigationLink { ExamScreen(units: [paper], store: store) } label: { Label(String(localized: "元の問題を復習"), systemImage: "book") }.buttonStyle(StudySecondaryButtonStyle())
+                            StudyLink { ExamScreen(units: [paper], store: store) } label: { Label(String(localized: "元の問題を復習"), systemImage: "book") }.buttonStyle(StudySecondaryButtonStyle())
                         }
                     }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
@@ -309,6 +315,7 @@ struct VocabularyScreen: View {
             Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id)); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
         } message: { entry in Text(entry.expression) }
+        .onDisappear { pronunciation.stop() }
         .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
             TutorScreen(store: store, context: context, selectedText: selectedText, vocabularyMode: true)
         }
@@ -378,7 +385,7 @@ struct ResultDetailScreen: View {
                         Button(String(localized: "AIの講評を確認・更新"), systemImage: "sparkles") { evaluating = true }.buttonStyle(StudySecondaryButtonStyle()).disabled(evaluating)
                         if evaluating { ProgressView(String(localized: "講評中…")) }
                     }
-                    NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                    StudyLink { ExamScreen(units: [paper], store: store) } label: {
                         Label(String(localized: "この問題をもう一度練習"), systemImage: "arrow.counterclockwise")
                     }.buttonStyle(StudyPrimaryButtonStyle())
                     Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(paper)); saved = true }
@@ -455,7 +462,7 @@ struct SavedPapersScreen: View {
                         }.accessibilityAddTraits(.isHeader)
                         ForEach(papers.filter { SavedPaperGrouping.part($0) == group }) { paper in
                             HStack(alignment: .top, spacing: 12) {
-                                NavigationLink { ExamScreen(units: [paper], store: store) } label: {
+                                StudyLink { ExamScreen(units: [paper], store: store) } label: {
                                     HStack(spacing: 16) {
                                         VStack(alignment: .leading, spacing: 10) {
                                             Text(paper.title).font(StudyTypography.heading).foregroundStyle(StudyColors.ink)

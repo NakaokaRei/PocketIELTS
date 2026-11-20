@@ -26,6 +26,8 @@ struct MockIntroScreen: View {
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     @State private var started = false
+    @State private var exitToProgress: Bool?
+    @Environment(\.studyNavigation) private var navigation
     @State private var generate = false
     private var ordered: [ExamUnit] {
         ["Listening", "Reading", "Writing", "Speaking"].flatMap { skill in units.filter { $0.skill == skill } }
@@ -67,11 +69,19 @@ struct MockIntroScreen: View {
                     .buttonStyle(StudyPrimaryButtonStyle()).disabled(units.isEmpty)
             }.padding(20).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }.navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $started) {
+            .fullScreenCover(isPresented: $started, onDismiss: {
+                if let progress = exitToProgress {
+                    exitToProgress = nil
+                    if progress { navigation.progress() } else { navigation.home() }
+                }
+            }) {
                 NavigationStack {
                     if generate { GeneratedExamScreen(templates: ordered, store: store, isMock: true) }
                     else { ExamScreen(units: ordered, store: store, isMock: true) }
-                }
+                }.environment(\.studyNavigation, StudyNavigationActions(
+                    home: { exitToProgress = false; started = false },
+                    progress: { exitToProgress = true; started = false }
+                ))
             }
     }
 }
@@ -128,15 +138,15 @@ struct ExamScreen: View {
                                 else { Text(started, style: .timer).monospacedDigit() }
                             }.foregroundStyle(StudyColors.accent)
                         }
-                        if finished { results } else { exercise }
+                        exercise
                     }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
                 }.scrollDismissesKeyboard(.interactively)
-                    .id("\(position)-\(finished)-\(showingReview)")
+                    .id("\(position)-\(showingReview)")
                     .transaction { $0.animation = nil; $0.disablesAnimations = true }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(!finished)
+        .navigationBarBackButtonHidden(true)
         .interactiveDismissDisabled(!finished)
         .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
@@ -156,23 +166,29 @@ struct ExamScreen: View {
                     }.accessibilityIdentifier("practice.dismissKeyboard")
                 }
             }
-            if !finished && !units.isEmpty { ToolbarItem(placement: .topBarTrailing) { Button(String(localized: "終了"), systemImage: "xmark") { completing = false; confirmEnd = true }.labelStyle(.iconOnly).accessibilityIdentifier("practice.finish") } }
+            if !finished && !units.isEmpty {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(unit)); saved = true }
+                        .labelStyle(.iconOnly).accessibilityIdentifier("practice.saveToolbar")
+                }
+            }
         }
         .alert(String(localized: "練習を終了しますか？"), isPresented: $confirmEnd) {
-            if !unsavedUnits.isEmpty {
-                Button(String(localized: "保存して終了")) {
-                    unsavedUnits.forEach { store.send(.savePaper($0)) }
-                    endPractice()
-                }
-                Button(String(localized: "保存せずに終了"), role: .destructive) { endPractice() }
-            } else {
-                Button(String(localized: "練習を終了")) { endPractice() }
+            Button(String(localized: "保存して終了")) {
+                (isMock ? units : units.isEmpty ? [] : [unit]).forEach { store.send(.savePaper($0)) }
+                endPractice()
             }
+            Button(unsavedUnits.isEmpty ? String(localized: "練習を終了") : String(localized: "保存せずに終了"), role: .destructive) { endPractice() }
             Button(String(localized: "続ける"), role: .cancel) {}
         } message: {
             Text(unsavedUnits.isEmpty ? String(localized: "採点済みの結果と保存した表現は残ります。") :
                  String(localized: "あとで復習できるように問題を保存しますか？") + "\n\n" +
                  unsavedUnits.map { $0.id }.joined(separator: "\n"))
+        }
+        .navigationDestination(isPresented: $finished) {
+            ScrollView { results.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity) }
+                .navigationBarBackButtonHidden(true).navigationBarTitleDisplayMode(.inline)
+                .toolbar(.hidden, for: .tabBar)
         }
         .onDisappear { speaker.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
         .onChange(of: audio.transcript) { _, text in
@@ -366,9 +382,9 @@ struct ExamScreen: View {
                     }
                 }.padding().background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
             }
-            Button(String(localized: "学習記録を見る"), systemImage: "chart.bar.xaxis") { dismiss(); navigation.progress() }
+            Button(String(localized: "学習記録を見る"), systemImage: "chart.bar.xaxis") { navigation.progress() }
                 .buttonStyle(StudyPrimaryButtonStyle())
-            Button(String(localized: "ホームに戻る"), systemImage: "house") { dismiss(); navigation.home() }
+            Button(String(localized: "ホームに戻る"), systemImage: "house") { navigation.home() }
                 .buttonStyle(StudySecondaryButtonStyle())
             Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
                 position = 0; finished = false; answers = [:]; reviewed = []; recorded = []; evaluatingID = nil
@@ -679,7 +695,7 @@ struct GeneratedExamScreen: View {
                             } else {
                                 GenerationLoadingView(completed: generated.count, total: templates.count,
                                                       started: generationStarted, completionStarted: completionStarted, completionFrom: completionFrom)
-                                WaitingWordQuizView(words: store.vocabulary)
+                                WaitingVocabularyView(words: store.vocabulary)
                             }
                             Button(String(localized: "キャンセルして戻る"), systemImage: "xmark.circle") { dismiss() }
                                 .buttonStyle(StudySecondaryButtonStyle())

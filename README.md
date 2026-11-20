@@ -181,7 +181,7 @@ AI tutor answers use Apple's Foundation Markdown parser with native selectable t
 
 Open **Offline practice** on Home to choose from the 12 bundled General Training parts: 3 Reading sections, 4 Listening parts, 2 Writing tasks and 3 Speaking parts. The included Reading passages, 40 questions, marking and explanations need no sign-in or internet. Writing prompts and Speaking topics are also bundled. AI feedback, live conversations and generating new Listening audio require internet; audio is not preinstalled with the app.
 
-Vocabulary has two separate areas: **My vocabulary** for your saved expressions, and **IELTS word library** with **1,000 words** and English definitions (examples where available): 60 original entries plus 940 curated WordNet 3.0 entries. The three levels (Foundation 4–5, Developing 5.5–6.5 and Advanced 7+) are study guides, not official IELTS word lists or score guarantees. The standard collection is available offline and never populates or changes your personal saved words.
+Vocabulary has two separate areas: **My vocabulary** for your saved expressions, and **General Training word library** with **1,000 original words and phrases**, each with an English meaning and a contextual example. Ten topics cover housing, work, study and training, shopping and services, travel, health, community, money, letters and requests, and society and environment. The collection works offline and does not populate or change your personal saved words.
 
 Tap **+** in Vocabulary to add a word or phrase and an optional example sentence. You can ask the AI tutor about the entered expression before saving, or from its saved card afterward. Blank entries and duplicate manually added words are prevented. Personal entries use the existing iCloud synchronization and swipe-to-delete flow.
 
@@ -197,12 +197,24 @@ For **My Mac (Designed for iPad)**, ChatGPT sign-in now uses `ASWebAuthenticatio
 
 After updating, start a new sign-in from Settings; an old localhost error tab belongs to an expired attempt and cannot complete a new sign-in. The callback is checked against the original OAuth state, and the listener is cleaned up after completion or cancellation. A local integration test verifies the callback without an OpenAI request. Live account authentication still requires verification on the Mac with the user's account.
 
-### Vocabulary sources and waiting-time practice
+### General Training vocabulary and flashcards
 
-The offline library contains 333 Foundation, 333 Developing and 334 Advanced words. Search by word or English definition within the selected level. The levels are editorial learning guides, not official IELTS or CEFR classifications.
+The collection contains 100 entries in each of ten topics: 400 Foundation (Band 4–5 guide), 400 Developing (5.5–6.5 guide) and 200 Advanced (7+ guide) entries overall. The familiar score-based groups are retained alongside the new topic filter. These are editorial learning guides, not official IELTS band assignments, CEFR classifications or an official word list. Content was rewritten for everyday life, employment, services and correspondence, following the contexts described in the official [General Training Reading format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-reading/) and [Writing format](https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-writing). Every definition and example in this collection is original; the previous WordNet subset is no longer bundled.
 
-Definitions and available examples for 940 entries come from [Princeton WordNet 3.0](https://wordnet.princeton.edu/). Each selected lexical sense is pinned in `Scripts/vocabulary-selection.json`. The database subset and [full license](Resources/Vocabulary/WordNet-LICENSE.txt) are bundled with the app, and its notice appears in Settings → OSS licenses through LicensePlist. The original 60 definitions and examples remain unchanged. Rebuild the subset from the official unpacked WordNet 3.0 `dict/` directory with `python3 Scripts/import-wordnet.py /path/to/dict` (no runtime download).
+Filter by topic and level, then search words or definitions. **Flashcards** shuffles up to 20 entries from the filtered collection or your personal vocabulary without repeating a card within the round. Reveal the meaning, mark **Remembered** or **Review again**, and review missed cards or shuffle a new round. This self-assessment does not change your IELTS estimate. Personal words without a stored or matching library meaning show an explicit message and offer the AI tutor.
 
-While new exercises are generated, an optional recall card prioritizes **your saved words**. It hides the selected expression in its saved context; if there is no usable context, it uses a matching library definition or a spelling prompt. Reveal the answer and move to the next word. When no personal words are saved, the standard library supplies prompts. This is self-review, not automatic grading, and does not alter your saved data or learning scores. It works locally without an extra API request and never delays completion: the exercise still opens automatically after the progress reaches 100%.
+**Hear pronunciation** uses an installed English system voice, preferring British English. It does not call a paid API. Playback stops when changing cards, leaving the screen or moving the app to the background. Offline playback depends on an English voice being installed on the device.
 
-<img src="Documentation/Screenshots/iphone-generation-quiz.png" width="250" alt="Optional vocabulary recall card while exercises are generated" />
+During exercise generation, a card immediately displays a **word, meaning and example**. It prioritizes saved words with known meanings and otherwise uses the General Training library. **Next word** and pronunciation are optional; there is no quiz or additional API request. The exercise still opens after the loading indicator reaches 100%.
+
+The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and validate all 1,000 entries with `python3 Scripts/build-vocabulary.py`. CI checks that this reproduces the bundled JSON.
+
+<p align="center">
+  <img src="Documentation/Screenshots/iphone-flashcard-front.png" width="250" alt="A random vocabulary flashcard before revealing its meaning" />
+  <img src="Documentation/Screenshots/iphone-flashcard-back.png" width="250" alt="Revealed meaning, contextual example and pronunciation action" />
+  <img src="Documentation/Screenshots/iphone-generation-vocabulary.png" width="250" alt="Word and meaning shown together while an exercise is generated" />
+</p>
+
+### Leaving a practice session
+
+The upper-left back button opens the exit confirmation; the upper-right bookmark saves the current paper. **Save and finish** remains available even if the paper is already saved (saving is idempotent). Finishing pushes the completion screen using native navigation. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
