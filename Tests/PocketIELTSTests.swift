@@ -810,3 +810,39 @@ extension PocketIELTSTests {
         XCTAssertNoThrow(try QuestionVisual.validate(nil, instructions: ["What does the speaker plan to do?"]))
     }
 }
+
+
+extension PocketIELTSTests {
+    func testCachedListeningLoadsReadyWithoutGenerationOrAutoplay() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let script = "Guide: Welcome to the centre."
+        let part = try XCTUnwrap(SpeechAudio.segments(script).first)
+        try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(part, directory: folder))
+        let player = ListeningPlayer(script: script, cacheDirectory: folder)
+        XCTAssertNotNil(player.player, "Legacy cached segments should be ready on initialization")
+        XCTAssertFalse(player.generating)
+        XCTAssertFalse(player.player?.isPlaying ?? true)
+        XCTAssertEqual(player.generationFraction, 1)
+        XCTAssertEqual(player.player?.currentTime, 0)
+        let complete = SpeechAudio.completeURL(script, directory: folder)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: complete.path))
+        try FileManager.default.removeItem(at: SpeechAudio.segmentURL(part, directory: folder))
+        XCTAssertNotNil(ListeningPlayer(script: script, cacheDirectory: folder).player, "Complete audio remains reusable without segment files")
+    }
+
+    func testPartialOrInvalidAudioCacheDoesNotPretendToBeReady() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let script = "Guide: Welcome.\nVisitor: Thank you."
+        let parts = SpeechAudio.segments(script)
+        try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(parts[0], directory: folder))
+        XCTAssertNil(SpeechAudio.cachedAudioURL(script, directory: folder))
+        try Data([1]).write(to: SpeechAudio.segmentURL(parts[1], directory: folder))
+        let player = ListeningPlayer(script: script, cacheDirectory: folder)
+        XCTAssertNil(player.player)
+        XCTAssertFalse(player.generating)
+    }
+}

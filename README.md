@@ -240,3 +240,5 @@ Audio generation does not request app-controlled completion haptics. The system-
   <img src="Documentation/Screenshots/iphone-listening-figure.png" width="250" alt="Listening question with an offline site plan" />
   <img src="Documentation/Screenshots/iphone-listening-figure-expanded.png" width="250" alt="Expanded, scrollable vector plan" />
 </p>
+
+Previously generated listening audio opens directly in the ready-to-play state, without a generation job, completion banner or automatic playback. Complete WAV files are cached; older PCM segment caches are assembled locally when every segment is present. Partial caches still resume generation for missing segments.

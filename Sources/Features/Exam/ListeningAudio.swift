@@ -99,16 +99,48 @@ enum SpeechAudio {
         return data
     }
 
+    static var cacheDirectory: URL {
+        FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("ListeningAudio", isDirectory: true)
+    }
+
+    static func segmentURL(_ part: Segment, directory: URL) -> URL {
+        let hash = SHA256.hash(data: Data(("dialogue-v1" + model + part.voice + instructions + part.text).utf8)).map { String(format: "%02x", $0) }.joined()
+        return directory.appendingPathComponent(hash + ".pcm")
+    }
+
+    static func completeURL(_ script: String, directory: URL) -> URL {
+        let hash = SHA256.hash(data: Data(("complete-dialogue-v1" + model + instructions + script).utf8)).map { String(format: "%02x", $0) }.joined()
+        return directory.appendingPathComponent(hash + ".wav")
+    }
+
+    /// Also upgrades previously cached PCM segments without an API request or generation UI.
+    static func cachedAudioURL(_ script: String, directory: URL = cacheDirectory) -> URL? {
+        let complete = completeURL(script, directory: directory)
+        if (try? AVAudioPlayer(contentsOf: complete)) != nil { return complete }
+        let parts = segments(script)
+        guard !parts.isEmpty else { return nil }
+        var pcm = Data()
+        for (index, part) in parts.enumerated() {
+            guard let data = try? Data(contentsOf: segmentURL(part, directory: directory)),
+                  !data.isEmpty, data.count.isMultiple(of: 2) else { return nil }
+            pcm.append(data)
+            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: 7200)) }
+        }
+        do {
+            try wave(pcm).write(to: complete, options: .atomic)
+            return complete
+        } catch { return nil }
+    }
+
     static func generate(_ text: String, progress: @escaping @MainActor (Int, Int) -> Void) async throws -> Data {
-        let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("ListeningAudio", isDirectory: true)
+        let directory = cacheDirectory
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         var pcm = Data()
         let parts = segments(text)
         await progress(0, parts.count)
         for (index, part) in parts.enumerated() {
             try Task.checkCancellation()
-            let hash = SHA256.hash(data: Data(("dialogue-v1" + model + part.voice + instructions + part.text).utf8)).map { String(format: "%02x", $0) }.joined()
-            let url = directory.appendingPathComponent(hash + ".pcm")
+            let url = segmentURL(part, directory: directory)
             if let cached = try? Data(contentsOf: url), !cached.isEmpty, cached.count.isMultiple(of: 2) {
                 pcm.append(cached)
             } else {
@@ -131,7 +163,9 @@ enum SpeechAudio {
             await progress(index + 1, parts.count)
         }
         guard !pcm.isEmpty else { throw StudyError.message(String(localized: "音声データを読み込めませんでした。")) }
-        return wave(pcm)
+        let result = wave(pcm)
+        try result.write(to: completeURL(text, directory: directory), options: .atomic)
+        return result
     }
 }
 
@@ -147,7 +181,20 @@ enum SpeechAudio {
     private var generationID = UUID()
     private var autoPlayWhenReady = false
 
+    init(script: String? = nil, cacheDirectory: URL = SpeechAudio.cacheDirectory) {
+        if let script { loadCached(script, directory: cacheDirectory) }
+    }
+
+    private func loadCached(_ script: String, directory: URL = SpeechAudio.cacheDirectory) {
+        guard player == nil, !generating, let url = SpeechAudio.cachedAudioURL(script, directory: directory),
+              let audio = try? AVAudioPlayer(contentsOf: url) else { return }
+        player = audio
+        completed = SpeechAudio.segments(script).count; total = completed
+        generationFraction = 1
+    }
+
     func play(script: String, generate: @escaping (String, @escaping @MainActor (Int, Int) -> Void) async throws -> Data = SpeechAudio.generate) {
+        loadCached(script)
         if let player {
             do {
                 try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
@@ -208,7 +255,13 @@ enum SpeechAudio {
 struct ListeningAudioView: View {
     let script: String
     let openSettings: () -> Void
-    @State private var playback = ListeningPlayer()
+    @State private var playback: ListeningPlayer
+
+    init(script: String, openSettings: @escaping () -> Void) {
+        self.script = script
+        self.openSettings = openSettings
+        _playback = State(initialValue: ListeningPlayer(script: script))
+    }
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.25)) { _ in
             let playing = playback.player?.isPlaying == true
@@ -224,7 +277,7 @@ struct ListeningAudioView: View {
                     }.font(StudyTypography.button)
                     ProgressView(value: fraction).animation(.easeInOut(duration: 0.35), value: fraction)
                     Text(String(format: String(localized: "生成済み %@ / %@ 音声区間"), String(playback.completed), String(playback.total))).font(StudyTypography.footnote)
-                    Text(String(localized: "完了した音声区間の割合です。区間の生成中は数値が止まることがあります。"))
+                    Text(String(localized: "Generation progress is an estimate shared with Live Activity."))
                         .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 }
                 if let player = playback.player {
