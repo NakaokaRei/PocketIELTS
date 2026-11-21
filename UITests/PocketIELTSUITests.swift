@@ -153,6 +153,15 @@ final class PocketIELTSUITests: XCTestCase {
         let word = passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12))
         word.tap()
         XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.menuItems["問題を保存"].exists)
+        let pronunciation = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@ AND (elementType == %d OR elementType == %d)", "発音を聞く", XCUIElement.ElementType.menuItem.rawValue, XCUIElement.ElementType.button.rawValue)).firstMatch
+        if !pronunciation.exists { app.buttons["進む"].tap() }
+        XCTAssertTrue(pronunciation.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.menuItems["問題を保存"].exists)
+        pronunciation.tap()
+        XCTAssertTrue(pronunciation.waitForNonExistence(timeout: 5))
+        word.tap()
+        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
         app.staticTexts["Community services"].tap()
         XCTAssertTrue(app.menuItems["単語帳に追加"].waitForNonExistence(timeout: 5))
@@ -169,6 +178,8 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["tutor.quick.0"].exists)
         app.buttons["tutor.quick.0"].tap()
         XCTAssertTrue((app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.value as? String ?? "").contains("この文脈での意味"))
+        app.buttons["翻訳する"].tap()
+        XCTAssertTrue((app.descendants(matching: .any).matching(identifier: "tutor.input").firstMatch.value as? String ?? "").contains("日本語に翻訳"))
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-tutor" : "iphone-tutor")
     }
 

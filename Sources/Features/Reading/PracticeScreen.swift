@@ -83,12 +83,7 @@ struct PracticeScreen: View {
             }
             store.send(.saveExpression(SavedExpression(expression: entry.expression,
                 source: "Reading / Section \(store.section)", sourceText: entry.sourceText, meaning: entry.meaning, paper: paper, sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
-        } onAsk: { entry in openTutor(entry.sourceText + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) } onSavePaper: {
-            if let set = store.session {
-                store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
-                    skill: "Reading", title: set.title, directions: "", passages: set.passages, questions: set.questions, audio: nil, oral: [], visuals: set.visuals)))
-            }
-        }
+        } onAsk: { entry in openTutor(entry.sourceText + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) }
     }
 
     private func openTutor(_ context: String, selection: String? = nil) {
@@ -164,8 +159,10 @@ struct TutorScreen: View {
 }
 
 enum TutorQuickQuestion {
+    static let translation = (title: String(localized: "Translate"), prompt: String(localized: "Translate the selected text into English in context."))
+
     static var vocabulary: [(title: String, prompt: String)] {
-        [all[0], (String(localized: "使い方を教えて"), String(localized: "この表現の使い方と、よく一緒に使う語を例文付きで教えてください。")), all[2], all[1]]
+        [all[0], (String(localized: "使い方を教えて"), String(localized: "この表現の使い方と、よく一緒に使う語を例文付きで教えてください。")), all[2], all[1], translation]
     }
     static let all: [(title: String, prompt: String)] = [
         (String(localized: "この意味は？"), String(localized: "選択した表現や文の、この文脈での意味をやさしい日本語で教えてください。")),
@@ -173,7 +170,8 @@ enum TutorQuickQuestion {
         (String(localized: "言い換えと例文"), String(localized: "選択した表現の自然な言い換えと、英語の例文を2つ、日本語訳付きで教えてください。")),
         (String(localized: "正解の根拠"), String(localized: "この問題の正解の根拠を、本文の該当箇所を示して説明してください。")),
         (String(localized: "他の選択肢との違い"), String(localized: "この問題で他の選択肢が合わない理由と、見分けるポイントを教えてください。")),
-        (String(localized: "ヒントだけほしい"), String(localized: "正解はまだ言わず、この問題を自分で解くためのヒントを一つください。"))
+        (String(localized: "ヒントだけほしい"), String(localized: "正解はまだ言わず、この問題を自分で解くためのヒントを一つください。")),
+        translation
     ]
 }
 

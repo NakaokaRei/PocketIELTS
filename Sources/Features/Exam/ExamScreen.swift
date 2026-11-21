@@ -486,7 +486,7 @@ struct ExamScreen: View {
         ExamMaterialText(text: text) { fragment, suffix in
             SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { save($0, paper: unit) },
                 onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
-                onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
+                allowsAI: !isMock)
         }
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
@@ -843,7 +843,7 @@ struct AssessmentContent: View {
                 store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
                     sourceText: entry.sourceText, meaning: entry.meaning, paper: paper,
                     sourceID: entry.sourceID, selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
-            }, onSavePaper: { store.send(.savePaper(paper)) })
+            })
         }
     }
 }

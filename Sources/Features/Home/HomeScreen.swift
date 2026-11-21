@@ -321,7 +321,7 @@ struct VocabularyScreen: View {
                     }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) { deleting = entry } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
+                            Button { deleting = entry } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
                         }
                 }
 
@@ -336,7 +336,7 @@ struct VocabularyScreen: View {
         } }
         .sheet(isPresented: $adding) { AddVocabularyScreen(store: store) }
         .alert(String(localized: "この単語を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { entry in
-            Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id)); deleting = nil }
+            Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id), animation: .default); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
         } message: { entry in Text(entry.expression) }
         .onDisappear { pronunciation.stop() }

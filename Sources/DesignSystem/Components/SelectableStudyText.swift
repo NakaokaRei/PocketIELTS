@@ -8,7 +8,6 @@ struct SelectableStudyText: View {
     let sourceID: String
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
-    var onSavePaper: (() -> Void)? = nil
     var allowsAI = true
     var markdown = false
     @State private var saved = false
@@ -19,7 +18,7 @@ struct SelectableStudyText: View {
             saved = true
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             UIAccessibility.post(notification: .announcement, argument: String(localized: "単語帳に保存しました"))
-        }, onAsk: allowsAI ? onAsk : nil, onSavePaper: onSavePaper, markdown: markdown)
+        }, onAsk: allowsAI ? onAsk : nil, markdown: markdown)
         .overlay(alignment: .top) {
             if saved {
                 Label(String(localized: "単語帳に保存しました"), systemImage: "checkmark.circle.fill")
@@ -53,7 +52,6 @@ struct StudyTextView: UIViewRepresentable {
     let sourceID: String
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
-    var onSavePaper: (() -> Void)? = nil
     var markdown = false
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -92,12 +90,30 @@ struct StudyTextView: UIViewRepresentable {
         }
     }
 
+    static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
+        coordinator.stopPronunciation()
+    }
+
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
         guard let width = proposal.width, width > 0 else { return nil }
         return uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
     }
 
     final class Coordinator: NSObject, UITextViewDelegate, UIEditMenuInteractionDelegate, UIGestureRecognizerDelegate {
+        private static let pronunciation = WordPronouncer()
+        private static weak var speakingCoordinator: Coordinator?
+
+        private func pronounce(_ expression: String) {
+            Self.speakingCoordinator = self
+            Self.pronunciation.toggle(expression)
+        }
+
+        func stopPronunciation() {
+            guard Self.speakingCoordinator === self else { return }
+            Self.pronunciation.stop()
+            Self.speakingCoordinator = nil
+        }
+
         var selectionAtTouch = false
         func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
             selectionAtTouch = (gestureRecognizer.view as? UITextView)?.selectedRange.length ?? 0 > 0
@@ -159,12 +175,10 @@ struct StudyTextView: UIViewRepresentable {
                     ask(entry)
                 })
             }
-            if let savePaper = current.onSavePaper {
-                actions.append(UIAction(title: String(localized: "問題を保存"), image: UIImage(systemName: "bookmark")) { _ in
-                    StudySelectionDismissal.shared.clear()
-                    savePaper()
-                })
-            }
+            actions.append(UIAction(title: String(localized: "Hear pronunciation"), image: UIImage(systemName: "speaker.wave.2")) { [weak self] _ in
+                StudySelectionDismissal.shared.clear()
+                self?.pronounce(entry.expression)
+            })
             actions.append(UIAction(title: String(localized: "コピー"), image: UIImage(systemName: "doc.on.doc")) { _ in
                 UIPasteboard.general.string = entry.expression
                 StudySelectionDismissal.shared.clear()
