@@ -1,12 +1,14 @@
 import AVFoundation
 import SwiftUI
-import XCTest
+import Testing
 import UIKit
 import ComposableArchitecture
 @testable import PocketIELTS
 
+@Suite(.serialized)
 @MainActor
-final class PocketIELTSTests: XCTestCase {
+struct PocketIELTSTests {
+    @Test
     func testExamMaterialPreservesTableBlanksAndSurroundingDirections() {
         let material = """
         Complete the table.
@@ -18,16 +20,17 @@ final class PocketIELTSTests: XCTestCase {
 
         Questions 7–10
         """
-        XCTAssertEqual(ExamMaterialBlock.parse(material.replacingOccurrences(of: "\n", with: "\r\n")), [
+        #expect(ExamMaterialBlock.parse(material.replacingOccurrences(of: "\n", with: "\r\n")) == [
             .prose("Complete the table."),
             .table([["Event", "Detail", "Information"], ["Dawn bird walk", "Meeting point", "(1) _____"],
                     ["Lantern workshop", "Cost per person", "£(6) _____"]]),
             .prose("Questions 7–10")
         ])
         let plain = "Choose A | B.\n---"
-        XCTAssertEqual(ExamMaterialBlock.parse(plain), [.prose(plain)])
+        #expect(ExamMaterialBlock.parse(plain) == [.prose(plain)])
     }
 
+    @Test
     func testListeningTableWithoutMarkdownSeparator() {
         let material = """
         Sources for the Millbank washhouse exhibition
@@ -42,22 +45,24 @@ final class PocketIELTSTests: XCTestCase {
         Questions 27–30
         """
         let blocks = ExamMaterialBlock.parse(material)
-        XCTAssertEqual(blocks.first, .prose("Sources for the Millbank washhouse exhibition"))
-        XCTAssertEqual(blocks.last, .prose("Questions 27–30"))
+        #expect(blocks.first == .prose("Sources for the Millbank washhouse exhibition"))
+        #expect(blocks.last == .prose("Questions 27–30"))
         guard blocks.count == 3, case let .table(rows) = blocks[1] else {
-            return XCTFail("Expected a two-column table between the title and the next instructions")
+            Issue.record("Expected a two-column table between the title and the next instructions")
+            return
         }
-        XCTAssertEqual(rows.count, 7)
-        XCTAssertTrue(rows.allSatisfy { $0.count == 2 })
+        #expect(rows.count == 7)
+        #expect(rows.allSatisfy { $0.count == 2 })
         let fragments = material.components(separatedBy: "\n")
         let grouped = ExamMaterialBlock.passages(fragments)
-        XCTAssertEqual(ExamMaterialBlock.parse(grouped[1].text), [.table(rows)])
-        XCTAssertEqual(grouped.last?.offset, fragments.count - 1)
-        XCTAssertEqual(rows[0], ["Source", "Detail to include in the exhibition"])
-        XCTAssertEqual(rows[1], ["Opening leaflet", "Item customers had to bring: (21) _____"])
-        XCTAssertEqual(rows[6], ["Closing notice", "New location of the washhouse equipment: (26) _____"])
+        #expect(ExamMaterialBlock.parse(grouped[1].text) == [.table(rows)])
+        #expect(grouped.last?.offset == fragments.count - 1)
+        #expect(rows[0] == ["Source", "Detail to include in the exhibition"])
+        #expect(rows[1] == ["Opening leaflet", "Item customers had to bring: (21) _____"])
+        #expect(rows[6] == ["Closing notice", "New location of the washhouse equipment: (26) _____"])
     }
 
+    @Test
     func testExamTablePlacesSelectableWordsUnderTheirHeaders() throws {
         try checkTableLayout("| Event | Detail | Information |\n| --- | --- | --- |\n| Dawn bird walk | Meeting point | (1) _____ |",
                              width: 375, firstHeader: "Event", answerHeader: "Information", answerCell: "(1) _____")
@@ -84,19 +89,20 @@ final class PocketIELTSTests: XCTestCase {
         }
         let cells = textViews(in: host.view)
         func rect(_ value: String) throws -> CGRect {
-            let cell = try XCTUnwrap(cells.first { $0.text == value && $0.window != nil })
+            let cell = try #require(cells.first { $0.text == value && $0.window != nil })
             return cell.convert(cell.bounds, to: host.view)
         }
         let event = try rect(firstHeader)
         let blank = try rect(answerCell)
-        XCTAssertGreaterThan(blank.minX, event.maxX)
-        XCTAssertGreaterThanOrEqual(blank.minY, event.maxY)
-        XCTAssertEqual(blank.minX, try rect(answerHeader).minX, accuracy: 1)
-        XCTAssertLessThanOrEqual(blank.maxX, window.bounds.width)
+        #expect(blank.minX > event.maxX)
+        #expect(blank.minY >= event.maxY)
+        #expect(abs(blank.minX - (try rect(answerHeader).minX)) <= 1)
+        #expect(blank.maxX <= window.bounds.width)
     }
 
+    @Test
     func testSectionPreparesOnceAndRefillsAfterExit() async throws {
-        let template = try XCTUnwrap(ExamUnit.load().first)
+        let template = try #require(ExamUnit.load().first)
         let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
         var requests = 0
@@ -106,35 +112,34 @@ final class PocketIELTSTests: XCTestCase {
         }
         let id = sections.key(template)
         sections.configure([template], enabled: false, active: true)
-        XCTAssertNil(sections.percent[id])
+        #expect(sections.percent[id] == nil)
         sections.configure([template], enabled: true, active: true)
-        XCTAssertEqual(sections.percent[id], 0)
+        #expect(sections.percent[id] == 0)
         let first = try await sections.open(template)
-        XCTAssertEqual(sections.ready[id], first)
-        XCTAssertEqual(requests, 1)
-        let restored = SectionPreparation(directory: directory) { _ in XCTFail("Unexpected request"); return template }
+        #expect(sections.ready[id] == first)
+        #expect(requests == 1)
+        let restored = SectionPreparation(directory: directory) { _ in Issue.record("Unexpected request"); return template }
         let cached = try await restored.open(template)
-        XCTAssertEqual(cached, first)
+        #expect(cached == first)
         sections.finished(template, paper: first)
-        XCTAssertNil(sections.ready[id])
-        XCTAssertEqual(sections.percent[id], 0)
+        #expect(sections.ready[id] == nil)
+        #expect(sections.percent[id] == 0)
         _ = try await sections.open(template)
-        XCTAssertEqual(requests, 2)
+        #expect(requests == 2)
         sections.configure([template], enabled: false, active: true)
         sections.finished(template, paper: template)
-        XCTAssertNil(sections.percent[id])
-        XCTAssertNil(sections.ready[id])
+        #expect(sections.percent[id] == nil)
+        #expect(sections.ready[id] == nil)
     }
 
+    @Test
     func testAllSectionsStartBeforeAnyCompletesAndFailIndependently() async throws {
         let templates = try ExamUnit.load()
-        XCTAssertEqual(templates.count, 12)
-        let first = try XCTUnwrap(templates.first)
+        #expect(templates.count == 12)
+        let first = try #require(templates.first)
         let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
 
-        let started = expectation(description: "Every section has entered generation")
-        started.expectedFulfillmentCount = templates.count
         var gates: [String: CheckedContinuation<Void, Never>] = [:]
         var calls: [String: Int] = [:]
         let sections = SectionPreparation(directory: directory) { template in
@@ -142,14 +147,13 @@ final class PocketIELTSTests: XCTestCase {
             if calls[template.id] == 1 {
                 await withCheckedContinuation { gate in
                     gates[template.id] = gate
-                    started.fulfill()
                 }
                 if template.id == first.id { throw StudyError.message("Test failure") }
             }
             return template
         }
         sections.configure(templates, enabled: true, active: true)
-        await fulfillment(of: [started], timeout: 5)
+        await waitUntil(timeout: .seconds(5)) { gates.count == templates.count }
         guard gates.count == templates.count else {
             sections.configure(templates, enabled: false, active: true)
             for gate in gates.values { gate.resume() }
@@ -158,30 +162,30 @@ final class PocketIELTSTests: XCTestCase {
         Task { for gate in gates.values { gate.resume() } }
         do {
             _ = try await sections.open(first)
-            XCTFail("The simulated failure must reach the section that failed")
+            Issue.record("The simulated failure must reach the section that failed")
         } catch {}
         for template in templates.dropFirst() {
             let paper = try await sections.open(template)
-            XCTAssertEqual(paper, template)
-            XCTAssertEqual(calls[template.id], 1)
+            #expect(paper == template)
+            #expect(calls[template.id] == 1)
         }
-        XCTAssertEqual(sections.errors.count, 1)
-        XCTAssertEqual(sections.ready.count, templates.count - 1)
+        #expect(sections.errors.count == 1)
+        #expect(sections.ready.count == templates.count - 1)
         _ = try await sections.open(first)
-        XCTAssertEqual(calls[first.id], 2)
-        XCTAssertTrue(sections.errors.isEmpty)
-        XCTAssertEqual(sections.ready.count, templates.count)
+        #expect(calls[first.id] == 2)
+        #expect(sections.errors.isEmpty)
+        #expect(sections.ready.count == templates.count)
     }
 
+    @Test
     func testLoopbackAuthenticationSurvivesInvalidRequestAndCompletes() async throws {
-        let opened = expectation(description: "Browser opens only after listener is ready")
         var redirect: URL?
-        let browser = SignInBrowser(presentForTesting: { redirect = $0; opened.fulfill() })
+        let browser = SignInBrowser(presentForTesting: { redirect = $0 })
         let task = Task { try await browser.authorize(state: "test-state") { $0 } }
         defer { task.cancel() }
-        await fulfillment(of: [opened], timeout: 5)
-        let base = try XCTUnwrap(redirect)
-        XCTAssertEqual(base.host, "127.0.0.1")
+        await waitUntil(timeout: .seconds(5)) { redirect != nil }
+        let base = try #require(redirect)
+        #expect(base.host == "127.0.0.1")
         let session = URLSession(configuration: .ephemeral)
         defer { session.invalidateAndCancel() }
         // A stale browser tab cannot consume the active sign-in attempt.
@@ -189,47 +193,52 @@ final class PocketIELTSTests: XCTestCase {
         _ = try? await session.data(from: invalid)
         let valid = URL(string: base.absoluteString + "?state=test-state&code=fixture")!
         let (data, response) = try await session.data(from: valid)
-        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
-        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("Pocket IELTS"))
+        #expect((response as? HTTPURLResponse)?.statusCode == 200)
+        #expect(String(decoding: data, as: UTF8.self).contains("Pocket IELTS"))
         let (callback, returnedRedirect) = try await task.value
-        XCTAssertEqual(callback, valid)
-        XCTAssertEqual(returnedRedirect, base)
+        #expect(callback == valid)
+        #expect(returnedRedirect == base)
     }
 
+    @Test
     func testOfflineLibraryHasAllPartsAndIndependentVocabulary() throws {
         let units = try ExamUnit.load()
-        XCTAssertEqual(units.count, 12)
-        XCTAssertEqual(units.filter { $0.skill == "Reading" }.flatMap(\.questions).count, 40)
-        XCTAssertEqual(units.filter { $0.skill == "Listening" }.flatMap(\.questions).count, 40)
-        XCTAssertEqual(StarterWord.all.count, 1000)
-        XCTAssertEqual(Set(StarterWord.all.map(\.id)).count, 1000)
-        for level in 0..<3 { XCTAssertGreaterThanOrEqual(StarterWord.all.filter { $0.level == level }.count, 90) }
-        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.definition.isEmpty })
+        #expect(units.count == 12)
+        #expect(units.filter { $0.skill == "Reading" }.flatMap(\.questions).count == 40)
+        #expect(units.filter { $0.skill == "Listening" }.flatMap(\.questions).count == 40)
+        #expect(StarterWord.all.count == 1000)
+        #expect(Set(StarterWord.all.map(\.id)).count == 1000)
+        for level in 0..<3 { #expect(StarterWord.all.filter { $0.level == level }.count >= 90) }
+        #expect(StarterWord.all.allSatisfy { !$0.definition.isEmpty })
     }
 
+    @Test
     func testGeneralTrainingCoverageAndWaitingMeanings() throws {
         for topic in StarterWord.topics {
-            XCTAssertEqual(StarterWord.all.filter { $0.topic == topic }.count, 100)
+            #expect(StarterWord.all.filter { $0.topic == topic }.count == 100)
         }
-        XCTAssertTrue(StarterWord.all.allSatisfy { !$0.example.isEmpty && $0.example.localizedCaseInsensitiveContains($0.expression) })
+        #expect(StarterWord.all.allSatisfy { !$0.example.isEmpty && $0.example.localizedCaseInsensitiveContains($0.expression) })
         let saved = SavedExpression(expression: "accommodation", source: "Reading", sourceText: "Find accommodation near work.")
         let deck = VocabularyCard.waitingDeck([saved])
-        XCTAssertEqual(deck.count, 1000)
-        XCTAssertEqual(deck.first?.word, "accommodation")
-        XCTAssertFalse(try XCTUnwrap(deck.first).meaning.isEmpty)
-        XCTAssertTrue(try XCTUnwrap(deck.first).personal)
+        #expect(deck.count == 1000)
+        #expect(deck.first?.word == "accommodation")
+        let first = try #require(deck.first)
+        #expect(!first.meaning.isEmpty)
+        #expect(first.personal)
         let unknown = SavedExpression(expression: "xyz unknown", source: "manual", sourceText: "")
         let withUnknown = VocabularyCard.waitingDeck([unknown])
-        XCTAssertEqual(withUnknown.first?.word, "xyz unknown")
-        XCTAssertTrue(try XCTUnwrap(withUnknown.first).personal)
-        XCTAssertTrue(try XCTUnwrap(withUnknown.first).meaning.isEmpty)
-        XCTAssertEqual(withUnknown.count, 1001)
-        XCTAssertTrue(withUnknown.dropFirst().allSatisfy { !$0.meaning.isEmpty && !$0.personal })
-        XCTAssertTrue(deck.dropFirst().allSatisfy { !$0.personal && $0.word.lowercased() != "accommodation" })
-        XCTAssertTrue(VocabularyCard.waitingDeck([]).allSatisfy { !$0.personal })
-        XCTAssertNil(VocabularyCard(SavedExpression(expression: "  ", source: "manual", sourceText: "")))
+        #expect(withUnknown.first?.word == "xyz unknown")
+        let firstUnknown = try #require(withUnknown.first)
+        #expect(firstUnknown.personal)
+        #expect(firstUnknown.meaning.isEmpty)
+        #expect(withUnknown.count == 1001)
+        #expect(withUnknown.dropFirst().allSatisfy { !$0.meaning.isEmpty && !$0.personal })
+        #expect(deck.dropFirst().allSatisfy { !$0.personal && $0.word.lowercased() != "accommodation" })
+        #expect(VocabularyCard.waitingDeck([]).allSatisfy { !$0.personal })
+        #expect(VocabularyCard(SavedExpression(expression: "  ", source: "manual", sourceText: "")) == nil)
     }
 
+    @Test
     func testWaitingDeckShowsAllPersonalWordsBeforeUniqueBundledWords() {
         let saved = ["available", "ventilation", "AVAILABLE", "my own phrase", "  "].map {
             SavedExpression(expression: $0, source: "manual", sourceText: "")
@@ -237,30 +246,32 @@ final class PocketIELTSTests: XCTestCase {
         // Assert ordering and membership independently of each random shuffle.
         for _ in 0..<10 {
             let deck = VocabularyCard.waitingDeck(saved)
-            XCTAssertEqual(Set(deck.prefix(3).map { $0.word.lowercased() }), ["available", "ventilation", "my own phrase"])
-            XCTAssertTrue(deck.prefix(3).allSatisfy(\.personal))
-            XCTAssertTrue(deck.dropFirst(3).allSatisfy { !$0.personal })
-            XCTAssertEqual(Set(deck.map { $0.word.lowercased() }).count, deck.count)
-            XCTAssertEqual(deck.count, 1001)
-            for pair in zip(deck, deck.dropFirst()) { XCTAssertNotEqual(pair.0.word.lowercased(), pair.1.word.lowercased()) }
+            #expect(Set(deck.prefix(3).map { $0.word.lowercased() }) == ["available", "ventilation", "my own phrase"])
+            #expect(deck.prefix(3).allSatisfy { $0.personal })
+            #expect(deck.dropFirst(3).allSatisfy { !$0.personal })
+            #expect(Set(deck.map { $0.word.lowercased() }).count == deck.count)
+            #expect(deck.count == 1001)
+            for pair in zip(deck, deck.dropFirst()) { #expect(pair.0.word.lowercased() != pair.1.word.lowercased()) }
         }
     }
 
+    @Test
     func testPronunciationUsesEnglishAndStopsCleanly() {
         let utterance = WordPronouncer.utterance(for: "accommodation")
-        XCTAssertEqual(utterance.speechString, "accommodation")
-        XCTAssertTrue(utterance.voice?.language.hasPrefix("en") == true)
-        XCTAssertLessThan(utterance.rate, AVSpeechUtteranceDefaultSpeechRate)
+        #expect(utterance.speechString == "accommodation")
+        #expect(utterance.voice?.language.hasPrefix("en") == true)
+        #expect(utterance.rate < AVSpeechUtteranceDefaultSpeechRate)
         let pronouncer = WordPronouncer()
         pronouncer.stop()
-        XCTAssertNil(pronouncer.activeWord)
+        #expect(pronouncer.activeWord == nil)
     }
 
+    @Test
     func testSpeakingReceivedAudioActuallyRendersAndInterruptionClearsIt() throws {
         // Exercise the real AVAudioEngine graph offline: no microphone, key, or API call.
         let engine = AVAudioEngine()
         let player = AVAudioPlayerNode()
-        let format = try XCTUnwrap(AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false))
+        let format = try #require(AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 24000, channels: 1, interleaved: false))
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
         try engine.enableManualRenderingMode(.offline, format: format, maximumFrameCount: 1024)
@@ -274,75 +285,80 @@ final class PocketIELTSTests: XCTestCase {
         }
         session.handle(["type": "response.created"])
         session.handle(["type": "response.output_audio.delta", "item_id": "audio", "delta": pcm.base64EncodedString()])
-        XCTAssertTrue(player.isPlaying)
-        let rendered = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024))
+        #expect(player.isPlaying)
+        let rendered = try #require(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024))
         var peak: Float = 0
         for _ in 0..<4 {
-            XCTAssertEqual(try engine.renderOffline(1024, to: rendered), .success)
+            #expect(try engine.renderOffline(1024, to: rendered) == .success)
             for i in 0..<Int(rendered.frameLength) { peak = max(peak, abs(rendered.floatChannelData![0][i])) }
         }
-        XCTAssertGreaterThan(peak, 0.1, "Received PCM must produce non-silent output, not just a speaking label")
+        #expect(peak > 0.1, "Received PCM must produce non-silent output, not just a speaking label")
         session.handle(["type": "input_audio_buffer.speech_started"])
-        XCTAssertFalse(player.isPlaying)
+        #expect(!player.isPlaying)
         session.handle(["type": "response.output_audio.delta", "item_id": "audio", "delta": pcm.base64EncodedString()])
-        XCTAssertFalse(player.isPlaying, "Late audio from the interrupted response must stay discarded")
+        #expect(!player.isPlaying, "Late audio from the interrupted response must stay discarded")
         session.stop()
-        XCTAssertFalse(engine.isRunning)
+        #expect(!engine.isRunning)
     }
 
+    @Test
     func testSpeakingPermissionDialogDoesNotCancelStartup() {
         let session = SpeakingConversation(phase: .connecting)
         session.sceneChanged(.inactive)
         session.audioInterrupted(.ended)
         session.sceneChanged(.active)
-        XCTAssertEqual(session.phase, .connecting)
-        XCTAssertTrue(session.active)
+        #expect(session.phase == .connecting)
+        #expect(session.active)
         session.sceneChanged(.background)
-        XCTAssertEqual(session.phase, .ended)
+        #expect(session.phase == .ended)
         session.sceneChanged(.active)
-        XCTAssertFalse(session.active)
+        #expect(!session.active)
     }
 
+    @Test
     func testSpeakingOnlyStopsForBeginningOfAnAudioInterruption() {
         let session = SpeakingConversation(phase: .listening)
         session.audioInterrupted(.ended)
-        XCTAssertTrue(session.active)
+        #expect(session.active)
         session.audioInterrupted(.began)
-        XCTAssertFalse(session.active)
+        #expect(!session.active)
         session.audioInterrupted(.ended)
-        XCTAssertFalse(session.active)
+        #expect(!session.active)
     }
 
+    @Test
     func testSpeakingAPIErrorMessagesIdentifyCauseWithoutEchoingSecrets() {
         let generic = SpeakingProtocol.errorDescription([:])
         for code in ["invalid_api_key", "insufficient_quota", "model_not_found"] {
             let message = SpeakingProtocol.errorDescription(["code": code, "message": "secret"])
-            XCTAssertNotEqual(message, generic)
-            XCTAssertFalse(message.contains("secret"))
+            #expect(message != generic)
+            #expect(!message.contains("secret"))
         }
-        XCTAssertNotEqual(SpeakingProtocol.errorDescription(["param": "session.audio.input.transcription.model"]), generic)
+        #expect(SpeakingProtocol.errorDescription(["param": "session.audio.input.transcription.model"]) != generic)
     }
 
+    @Test
     func testSpeakingDefaultsToMiniAndBuildsSelectedModelSession() throws {
-        XCTAssertEqual(SpeakingModel.resolve(nil), .mini)
-        XCTAssertEqual(SpeakingModel.resolve("unknown"), .mini)
-        XCTAssertEqual(SpeakingModel.resolve(SpeakingModel.standard.rawValue), .standard)
-        let unit = try XCTUnwrap(ExamUnit.load().first { $0.skill == "Speaking" })
+        #expect(SpeakingModel.resolve(nil) == .mini)
+        #expect(SpeakingModel.resolve("unknown") == .mini)
+        #expect(SpeakingModel.resolve(SpeakingModel.standard.rawValue) == .standard)
+        let unit = try #require(ExamUnit.load().first { $0.skill == "Speaking" })
         for model in SpeakingModel.allCases {
             let request = SpeakingProtocol.request(model: model, key: "test-only")
-            XCTAssertTrue(request.url!.absoluteString.contains(model.rawValue))
+            #expect(request.url!.absoluteString.contains(model.rawValue))
             let event = SpeakingProtocol.configuration(unit: unit, model: model)
-            let session = try XCTUnwrap(event["session"] as? [String: Any])
-            XCTAssertEqual(session["model"] as? String, model.rawValue)
-            let audio = try XCTUnwrap(session["audio"] as? [String: Any])
-            let input = try XCTUnwrap(audio["input"] as? [String: Any])
-            let vad = try XCTUnwrap(input["turn_detection"] as? [String: Any])
-            XCTAssertEqual(vad["type"] as? String, "semantic_vad")
-            XCTAssertEqual(vad["interrupt_response"] as? Bool, true)
-            XCTAssertNoThrow(try SpeakingProtocol.encode(event))
+            let session = try #require(event["session"] as? [String: Any])
+            #expect(session["model"] as? String == model.rawValue)
+            let audio = try #require(session["audio"] as? [String: Any])
+            let input = try #require(audio["input"] as? [String: Any])
+            let vad = try #require(input["turn_detection"] as? [String: Any])
+            #expect(vad["type"] as? String == "semantic_vad")
+            #expect(vad["interrupt_response"] as? Bool == true)
+            _ = try SpeakingProtocol.encode(event)
         }
     }
 
+    @Test
     func testSpeakingTranscriptUsesCommittedOrderAndOnlyCandidateAnswers() {
         let session = SpeakingConversation(phase: .listening)
         session.handle(["type": "input_audio_buffer.committed", "item_id": "first"])
@@ -350,43 +366,47 @@ final class PocketIELTSTests: XCTestCase {
         session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "second", "transcript": "Second answer"])
         session.handle(["type": "response.output_audio_transcript.done", "item_id": "examiner", "transcript": "Where do you live?"])
         session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "first", "transcript": "First answer"])
-        XCTAssertEqual(session.userTranscript, "First answer\n\nSecond answer")
+        #expect(session.userTranscript == "First answer\n\nSecond answer")
         session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "first", "transcript": "Corrected answer"])
-        XCTAssertEqual(session.turns.count, 3)
-        XCTAssertEqual(session.userTranscript, "Corrected answer\n\nSecond answer")
+        #expect(session.turns.count == 3)
+        #expect(session.userTranscript == "Corrected answer\n\nSecond answer")
         session.stop()
         session.handle(["type": "conversation.item.input_audio_transcription.completed", "item_id": "late", "transcript": "Ignored"])
-        XCTAssertEqual(session.phase, .ended)
-        XCTAssertEqual(session.turns.count, 3)
+        #expect(session.phase == .ended)
+        #expect(session.turns.count == 3)
         session.stop() // Dismissal and interruption may both stop a session.
     }
 
+    @Test
     func testSpeakingErrorsEndSessionWithoutExposingServerPayload() {
         let session = SpeakingConversation(phase: .thinking)
         session.handle(["type": "error", "error": ["message": "sensitive server payload"]])
-        XCTAssertFalse(session.active)
-        XCTAssertNotNil(session.error)
-        XCTAssertFalse(session.error!.contains("sensitive"))
-        XCTAssertThrowsError(try SpeakingProtocol.decode(.string("[]")))
+        #expect(!session.active)
+        #expect(session.error != nil)
+        #expect(!session.error!.contains("sensitive"))
+        #expect(throws: (any Error).self) { try SpeakingProtocol.decode(.string("[]")) }
     }
 
+    @Test
     func testAnswerAcceptsAlternativeSpellingAndWhitespace() {
         let question = ReadingSet.Question(instruction: "Write two words.", prompt: "Where?",
                                           answers: ["town centre", "town center"], explanation: "Location")
-        XCTAssertTrue(question.accepts("  TOWN   Center\n"))
-        XCTAssertFalse(question.accepts("town"))
-        XCTAssertFalse(question.accepts(""))
+        #expect(question.accepts("  TOWN   Center\n"))
+        #expect(!question.accepts("town"))
+        #expect(!question.accepts(""))
     }
 
+    @Test
     func testChatGPTOnlyPracticeGate() {
         var state = SettingsFeature.State()
-        XCTAssertFalse(state.canPractice)
+        #expect(!state.canPractice)
         state.account.active = "profile"
-        XCTAssertTrue(state.canPractice)
+        #expect(state.canPractice)
         state.account.active = nil
-        XCTAssertFalse(state.canPractice)
+        #expect(!state.canPractice)
     }
 
+    @Test
     func testAccountRefresh() async {
         let store = TestStore(initialState: SettingsFeature.State()) { SettingsFeature() }
             withDependencies: { $0[AccountClient.self] = AccountClient(status: { .init(active: "profile") }, signIn: { _ in }, signOut: {}) }
@@ -394,6 +414,7 @@ final class PocketIELTSTests: XCTestCase {
         await store.receive(\.accountChanged) { $0.account.active = "profile" }
     }
 
+    @Test
     func testReadingSessionLoadsGradesOnceAndFinishes() async {
         let question = ReadingSet.Question(instruction: "Write one word.", prompt: "When?",
                                            answers: ["Monday"], explanation: "Opening day")
@@ -404,7 +425,7 @@ final class PocketIELTSTests: XCTestCase {
             $0.uuid = .constant(UUID(uuidString: "00000000-0000-0000-0000-000000000001")!)
             $0.date.now = Date(timeIntervalSince1970: 0)
             $0[StudyClient.self].generate = { section in
-                XCTAssertEqual(section, 2)
+                #expect(section == 2)
                 return paper
             }
         }
@@ -436,6 +457,7 @@ final class PocketIELTSTests: XCTestCase {
             $0.answers = [:]
         }
     }
+    @Test
     func testSavedPaperAndExpressionKeepSource() async throws {
         let paper = ExamUnit(id: "Reading / Section 1", skill: "Reading", title: "Library", directions: "Read",
                              passages: ["Return books beside the entrance."], questions: [], audio: nil, oral: [])
@@ -447,38 +469,42 @@ final class PocketIELTSTests: XCTestCase {
         let entryData = try StudyPersistence.encode([entry])
         await store.send(.saveExpression(entry)) { $0.$vocabularyData.withLock { $0 = entryData } }
         await store.send(.saveExpression(entry))
-        XCTAssertEqual(store.state.vocabulary.first?.paper, paper)
-        XCTAssertEqual(store.state.vocabulary.first?.sourceText, paper.passages[0])
+        #expect(store.state.vocabulary.first?.paper == paper)
+        #expect(store.state.vocabulary.first?.sourceText == paper.passages[0])
     }
 
+    @Test
     func testResultsDoNotDuplicateSameAttempt() async throws {
         let result = StudyResult(skill: "Listening", title: "Booking", correct: 7, total: 10, isMock: true)
         let store = TestStore(initialState: StudyFeature.State()) { StudyFeature() }
         let data = try StudyPersistence.encode([result])
         await store.send(.record(result)) { $0.$resultData.withLock { $0 = data } }
         await store.send(.record(result))
-        XCTAssertEqual(store.state.records.count, 1)
+        #expect(store.state.records.count == 1)
     }
 
+    @Test
     func testBundledMaterialsDecode() throws {
         let units = try ExamUnit.load()
-        XCTAssertEqual(Set(units.map(\.skill)), Set(["Reading", "Listening", "Writing", "Speaking"]))
-        XCTAssertEqual(Set(units.map(\.id)).count, units.count)
+        #expect(Set(units.map(\.skill)) == Set(["Reading", "Listening", "Writing", "Speaking"]))
+        #expect(Set(units.map(\.id)).count == units.count)
         for unit in units where unit.skill == "Reading" || unit.skill == "Listening" {
-            XCTAssertFalse(unit.questions.isEmpty)
-            XCTAssertTrue(unit.questions.allSatisfy { !$0.answers.isEmpty && !$0.explanation.isEmpty })
+            #expect(!unit.questions.isEmpty)
+            #expect(unit.questions.allSatisfy { !$0.answers.isEmpty && !$0.explanation.isEmpty })
         }
     }
 
+    @Test
     func testSelectionExcerptRetainsUnicodeAndChosenOccurrence() {
         let text = "📚 Read this first. Put the book beside the door. Then close it."
         let range = (text as NSString).range(of: "beside")
-        XCTAssertEqual(StudyTextSelection.excerpt(text, range: range, expression: "beside"), "Put the book beside the door.")
-        XCTAssertEqual(StudyTextSelection.excerpt(text, range: NSRange(location: 9999, length: 1), expression: "beside"), text)
-        XCTAssertEqual(SavedExpression.legacy("beside").id, SavedExpression.legacy("beside").id)
-        XCTAssertNotEqual(SavedExpression.legacy("beside").id, SavedExpression.legacy("instead of").id)
+        #expect(StudyTextSelection.excerpt(text, range: range, expression: "beside") == "Put the book beside the door.")
+        #expect(StudyTextSelection.excerpt(text, range: NSRange(location: 9999, length: 1), expression: "beside") == text)
+        #expect(SavedExpression.legacy("beside").id == SavedExpression.legacy("beside").id)
+        #expect(SavedExpression.legacy("beside").id != SavedExpression.legacy("instead of").id)
     }
 
+    @Test
     func testMeaningEditOnlyChangesSelectedSource() async throws {
         let first = SavedExpression(expression: "book", source: "Reading", sourceText: "Read a book.")
         let second = SavedExpression(expression: "book", source: "Listening", sourceText: "Book a room.")
@@ -488,26 +514,29 @@ final class PocketIELTSTests: XCTestCase {
         var edited = second; edited.meaning = "予約する"
         let expected = try StudyPersistence.encode([first, edited])
         await store.send(.updateMeaning(second.id, "予約する")) { $0.$vocabularyData.withLock { $0 = expected } }
-        XCTAssertEqual(store.state.vocabulary[0].meaning, "")
-        XCTAssertEqual(store.state.vocabulary[1].meaning, "予約する")
+        #expect(store.state.vocabulary[0].meaning == "")
+        #expect(store.state.vocabulary[1].meaning == "予約する")
     }
 
+    @Test
     func testFigmaFontsAreBundledAndRegistered() {
         _ = StudyTypography.japaneseTitle(30)
         _ = StudyTypography.roundedTitle(24)
-        XCTAssertNotNil(UIFont(name: "ZenMaruGothic-Black", size: 30))
-        XCTAssertNotNil(UIFont(name: "Nunito-Black", size: 24))
+        #expect(UIFont(name: "ZenMaruGothic-Black", size: 30) != nil)
+        #expect(UIFont(name: "Nunito-Black", size: 24) != nil)
     }
 
+    @Test
     func testPracticeBandNeedsEnoughEvidenceAndUsesSkillSpecificAnchors() {
-        XCTAssertNil(StudyBand.objective(skill: "Reading", correct: 3, total: 3))
-        XCTAssertEqual(StudyBand.objective(skill: "Reading", correct: 30, total: 40), 6)
-        XCTAssertEqual(StudyBand.objective(skill: "Listening", correct: 30, total: 40), 7)
-        XCTAssertNil(StudyBand.objective(skill: "Reading", correct: 41, total: 40))
-        XCTAssertEqual(StudyBand.cefr(6), "B2")
-        XCTAssertNil(StudyBand.overall([]))
+        #expect(StudyBand.objective(skill: "Reading", correct: 3, total: 3) == nil)
+        #expect(StudyBand.objective(skill: "Reading", correct: 30, total: 40) == 6)
+        #expect(StudyBand.objective(skill: "Listening", correct: 30, total: 40) == 7)
+        #expect(StudyBand.objective(skill: "Reading", correct: 41, total: 40) == nil)
+        #expect(StudyBand.cefr(6) == "B2")
+        #expect(StudyBand.overall([]) == nil)
     }
 
+    @Test
     func testAssessmentAndRecordingSurvivePersistence() throws {
         let assessment = PracticeAssessment(criteria: [
             .init(name: "Coherence", band: 6, feedback: "具体例を追加"),
@@ -516,115 +545,128 @@ final class PocketIELTSTests: XCTestCase {
         let original = StudyResult(skill: "Speaking", title: "Home", correct: 0, total: 0,
             response: "I live near the park.", assessment: assessment, recordingFile: "recording.m4a", attemptID: UUID())
         let restored = try JSONDecoder().decode(StudyResult.self, from: StudyPersistence.encode(original))
-        XCTAssertEqual(restored, original)
-        XCTAssertTrue(restored.assessment!.isPartial)
-        XCTAssertEqual(restored.assessment?.estimatedBand, 6)
+        #expect(restored == original)
+        #expect(restored.assessment!.isPartial)
+        #expect(restored.assessment?.estimatedBand == 6)
         let legacy = Data(#"{"id":"00000000-0000-0000-0000-000000000001","date":0,"skill":"Reading","title":"Old","correct":3,"total":10,"isMock":false}"#.utf8)
-        XCTAssertNil(try JSONDecoder().decode(StudyResult.self, from: legacy).assessment)
+        #expect(try JSONDecoder().decode(StudyResult.self, from: legacy).assessment == nil)
     }
 
+    @Test
     func testJSONCodeFenceIsAcceptedWithoutTruncatingContent() throws {
         let data = StudyClient.jsonData("```json\n{\"title\":\"Example\"}\n```")
-        XCTAssertEqual(try JSONSerialization.jsonObject(with: data) as? [String:String], ["title":"Example"])
+        #expect(try JSONSerialization.jsonObject(with: data) as? [String:String] == ["title":"Example"])
     }
 
+    @Test
     func testFullPaperQuestionNumbersAndChoices() throws {
         let units = try ExamUnit.load()
-        XCTAssertEqual(units.first { $0.id == "Reading / Section 2" }?.firstQuestionNumber, 14)
-        XCTAssertEqual(units.first { $0.id == "Listening / Part 4" }?.firstQuestionNumber, 31)
-        XCTAssertEqual(units.first { $0.id == "Reading / Section 1" }?.questions.first?.choices, ["TRUE", "FALSE", "NOT GIVEN"])
-        XCTAssertEqual(units.first { $0.id == "Listening / Part 2" }?.questions.first?.choices, ["A", "B", "C"])
-        XCTAssertTrue(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
+        #expect(units.first { $0.id == "Reading / Section 2" }?.firstQuestionNumber == 14)
+        #expect(units.first { $0.id == "Listening / Part 4" }?.firstQuestionNumber == 31)
+        #expect(units.first { $0.id == "Reading / Section 1" }?.questions.first?.choices == ["TRUE", "FALSE", "NOT GIVEN"])
+        #expect(units.first { $0.id == "Listening / Part 2" }?.questions.first?.choices == ["A", "B", "C"])
+        #expect(units.flatMap(\.questions).allSatisfy { !$0.prompt.contains("\\n") })
     }
 
+    @Test
     func testInlineOptionsPreserveSemicolonsAndRemoveDuplicateNumber() {
         let instruction = "Choose the correct letter, A, B or C. Write ONE LETTER only. A. Mill Lane Repair Morning; B. Oakfield Library; Collecting Reserved Books; C. Community Garden."
         let layout = StudyQuestionLayout(instruction)
-        XCTAssertEqual(layout.options.map(\.label), ["A", "B", "C"])
-        XCTAssertEqual(layout.options[1].text, "Oakfield Library; Collecting Reserved Books")
-        XCTAssertTrue(layout.formatted.contains("\n\nB. Oakfield"))
+        #expect(layout.options.map(\.label) == ["A", "B", "C"])
+        #expect(layout.options[1].text == "Oakfield Library; Collecting Reserved Books")
+        #expect(layout.formatted.contains("\n\nB. Oakfield"))
         let question = ReadingSet.Question(instruction: instruction, prompt: "1. 1. how to collect a reserved item", answers: ["B"], explanation: "")
-        XCTAssertEqual(question.displayPrompt(number: 14, localNumber: 1), "how to collect a reserved item")
-        XCTAssertEqual(question.choiceText("B"), "B. Oakfield Library; Collecting Reserved Books")
+        #expect(question.displayPrompt(number: 14, localNumber: 1) == "how to collect a reserved item")
+        #expect(question.choiceText("B") == "B. Oakfield Library; Collecting Reserved Books")
     }
 
+    @Test
     func testHeadingChoicesIncludeTheEntireRomanRange() {
         let labels = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii"]
         var question = ReadingSet.Question(instruction: "Write the correct Roman numeral, i–viii.", prompt: "Paragraph A", answers: ["vii"], explanation: "")
-        XCTAssertEqual(question.choices, labels)
+        #expect(question.choices == labels)
         question.instruction += "\n" + labels.map { $0 + ". Heading " + $0 }.joined(separator: "\n")
-        XCTAssertEqual(question.choices, labels)
-        XCTAssertEqual(question.choiceText("vii"), "vii. Heading vii")
-        XCTAssertTrue(question.accepts("vii"))
+        #expect(question.choices == labels)
+        #expect(question.choiceText("vii") == "vii. Heading vii")
+        #expect(question.accepts("vii"))
     }
 
+    @Test
     func testQuestionLayoutHandlesBundledOptionsAndPreservesOrdinaryProse() throws {
         let units = try ExamUnit.load()
-        let choice = try XCTUnwrap(units.first { $0.id == "Listening / Part 2" }?.questions.first)
-        XCTAssertEqual(StudyQuestionLayout(choice.prompt).options.map(\.label), ["A", "B", "C"])
-        XCTAssertEqual(choice.choiceText("B"), "B. Beside the fountain")
-        let heading = try XCTUnwrap(units.first { $0.id == "Reading / Section 3" }?.questions.first)
-        XCTAssertEqual(StudyQuestionLayout(heading.instruction).options.count, 6)
+        let choice = try #require(units.first { $0.id == "Listening / Part 2" }?.questions.first)
+        #expect(StudyQuestionLayout(choice.prompt).options.map(\.label) == ["A", "B", "C"])
+        #expect(choice.choiceText("B") == "B. Beside the fountain")
+        let heading = try #require(units.first { $0.id == "Reading / Section 3" }?.questions.first)
+        #expect(StudyQuestionLayout(heading.instruction).options.count == 6)
         let prose = "A library needs space. B. Smith manages it; opening times vary."
-        XCTAssertEqual(StudyQuestionLayout(prose).formatted, prose)
+        #expect(StudyQuestionLayout(prose).formatted == prose)
         let decimal = ReadingSet.Question(instruction: "", prompt: "1.5 metres is the minimum distance.", answers: ["TRUE"], explanation: "")
-        XCTAssertEqual(decimal.displayPrompt(number: 1, localNumber: 1), decimal.prompt)
+        #expect(decimal.displayPrompt(number: 1, localNumber: 1) == decimal.prompt)
     }
 
+    @Test
     func testBrandFontsLoadWithoutFallback() {
         _ = StudyTypography.body
         for name in ["ZenMaruGothic-Regular", "ZenMaruGothic-Bold", "ZenMaruGothic-Black", "Nunito-Regular", "Nunito-Bold", "Nunito-Black"] {
-            XCTAssertNotNil(UIFont(name: name, size: 17), "Bundled font must load: \(name)")
+            #expect(UIFont(name: name, size: 17) != nil, "Bundled font must load: \(name)")
         }
     }
 
+    @Test
     func testQuestionAnswersPreserveGapsAndDecodeLegacyHistory() throws {
         let result = StudyResult(skill: "Reading", title: "Practice", correct: 1, total: 3,
                                  questionAnswers: ["TRUE", "", "C"])
         let encoded = try StudyPersistence.encode(result)
-        XCTAssertEqual(try JSONDecoder().decode(StudyResult.self, from: encoded).questionAnswers, ["TRUE", "", "C"])
-        var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        #expect(try JSONDecoder().decode(StudyResult.self, from: encoded).questionAnswers == ["TRUE", "", "C"])
+        var legacy = try #require(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
         legacy.removeValue(forKey: "questionAnswers")
         legacy["response"] = "TRUE"
         let decoded = try JSONDecoder().decode(StudyResult.self, from: JSONSerialization.data(withJSONObject: legacy))
-        XCTAssertNil(decoded.questionAnswers)
-        XCTAssertEqual(decoded.response, "TRUE")
+        #expect(decoded.questionAnswers == nil)
+        #expect(decoded.response == "TRUE")
     }
 
+    @Test
     func testAdditionalLocalizationsAreBundledAndSelectExplanationLanguage() throws {
         let expected = ["zh-Hans": "设置", "zh-Hant": "設定", "ko": "설정", "es": "Ajustes",
                         "pt-BR": "Ajustes", "vi": "Cài đặt", "id": "Pengaturan", "th": "การตั้งค่า",
                         "hi": "सेटिंग", "ar": "الإعدادات"]
         for (language, settings) in expected {
-            let bundle = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: language, ofType: "lproj"))))
-            XCTAssertEqual(bundle.localizedString(forKey: "設定", value: nil, table: nil), settings, language)
-            XCTAssertNotEqual(StudyClient.explanationLanguage(for: language), "English", language)
+            let bundlePath = try #require(Bundle.main.path(forResource: language, ofType: "lproj"))
+            let bundle = try #require(Bundle(path: bundlePath))
+            #expect(bundle.localizedString(forKey: "設定", value: nil, table: nil) == settings, "\(language)")
+            #expect(StudyClient.explanationLanguage(for: language) != "English", "\(language)")
             let permission = bundle.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist")
-            XCTAssertTrue(permission.contains("OpenAI"), language)
+            #expect(permission.contains("OpenAI"), "\(language)")
             let format = bundle.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
             let rendered = String(format: format, "1", "3")
-            XCTAssertTrue(rendered.contains("1") && rendered.contains("3"), language)
+            #expect(rendered.contains("1") && rendered.contains("3"), "\(language)")
         }
-        XCTAssertEqual(StudyClient.explanationLanguage(for: "unknown"), "English")
+        #expect(StudyClient.explanationLanguage(for: "unknown") == "English")
     }
 
+    @Test
     func testEnglishAndJapaneseCatalogsAreBundled() throws {
-        let english = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "en", ofType: "lproj"))))
-        let japanese = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: "ja", ofType: "lproj"))))
-        XCTAssertEqual(english.localizedString(forKey: "設定", value: nil, table: nil), "Settings")
-        XCTAssertEqual(japanese.localizedString(forKey: "設定", value: nil, table: nil), "設定")
+        let englishPath = try #require(Bundle.main.path(forResource: "en", ofType: "lproj"))
+        let english = try #require(Bundle(path: englishPath))
+        let japanesePath = try #require(Bundle.main.path(forResource: "ja", ofType: "lproj"))
+        let japanese = try #require(Bundle(path: japanesePath))
+        #expect(english.localizedString(forKey: "設定", value: nil, table: nil) == "Settings")
+        #expect(japanese.localizedString(forKey: "設定", value: nil, table: nil) == "設定")
         let format = english.localizedString(forKey: "生成・確認済み %@ / %@ セクション", value: nil, table: nil)
-        XCTAssertEqual(String(format: format, "1", "3"), "Sections ready: 1 / 3")
-        XCTAssertTrue(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Voice conversations send audio to OpenAI"))
-        XCTAssertEqual(english.localizedString(forKey: "音声会話を始める", value: nil, table: nil), "Start voice conversation")
-        XCTAssertEqual(japanese.localizedString(forKey: "音声会話を始める", value: nil, table: nil), "音声会話を始める")
+        #expect(String(format: format, "1", "3") == "Sections ready: 1 / 3")
+        #expect(english.localizedString(forKey: "NSMicrophoneUsageDescription", value: nil, table: "InfoPlist").contains("Voice conversations send audio to OpenAI"))
+        #expect(english.localizedString(forKey: "音声会話を始める", value: nil, table: nil) == "Start voice conversation")
+        #expect(japanese.localizedString(forKey: "音声会話を始める", value: nil, table: nil) == "音声会話を始める")
     }
 
+    @Test
     func testCloudResetRejectsOldOfflineItemsAndPreservesNewStudy() throws {
         var phone = CloudStudyJournal(), tablet = CloudStudyJournal()
         let before = Date(timeIntervalSince1970: 100)
         let after = before.addingTimeInterval(20)
-        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let paper = try #require(ExamUnit.load().first)
         try tablet.capture(.init(vocabulary: [.legacy("old")], results: [
             StudyResult(skill: paper.skill, title: paper.title, correct: 1, total: 2, recordingFile: "test.m4a")
         ], papers: [paper]), at: before)
@@ -632,13 +674,14 @@ final class PocketIELTSTests: XCTestCase {
         try phone.capture(.init(vocabulary: [.legacy("new")]), at: after)
         phone.merge(Array(tablet.items.values))
         tablet.merge(Array(phone.items.values))
-        XCTAssertEqual(try phone.snapshot(), try tablet.snapshot())
-        XCTAssertEqual(try tablet.snapshot().vocabulary.map(\.expression), ["new"])
-        XCTAssertTrue(try tablet.snapshot().results.isEmpty)
-        XCTAssertTrue(try tablet.snapshot().papers.isEmpty)
-        XCTAssertTrue(tablet.items.values.allSatisfy { $0.recording == nil })
+        #expect(try phone.snapshot() == (try tablet.snapshot()))
+        #expect(try tablet.snapshot().vocabulary.map(\.expression) == ["new"])
+        #expect(try tablet.snapshot().results.isEmpty)
+        #expect(try tablet.snapshot().papers.isEmpty)
+        #expect(tablet.items.values.allSatisfy { $0.recording == nil })
     }
 
+    @Test
     func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
         let word = SavedExpression(expression: "library", source: "Reading", sourceText: "The library is open.")
         var phone = CloudStudyJournal(), tablet = CloudStudyJournal()
@@ -650,92 +693,99 @@ final class PocketIELTSTests: XCTestCase {
         try tablet.capture(.init(vocabulary: [updated]), at: Date(timeIntervalSince1970: 3))
         let before = phone
         phone.merge(Array(tablet.items.values)); tablet.merge(Array(before.items.values))
-        XCTAssertEqual(try phone.snapshot(), try tablet.snapshot())
-        XCTAssertEqual(try phone.snapshot().vocabulary.count, 2)
-        XCTAssertEqual(try phone.snapshot().vocabulary.first { $0.id == word.id }?.meaning, "図書館")
+        #expect(try phone.snapshot() == (try tablet.snapshot()))
+        #expect(try phone.snapshot().vocabulary.count == 2)
+        #expect(try phone.snapshot().vocabulary.first { $0.id == word.id }?.meaning == "図書館")
         let revision = phone.items.values.first { $0.kind == "word" && $0.modified == Date(timeIntervalSince1970: 3) }?.revision
         try phone.capture(phone.snapshot(), at: Date(timeIntervalSince1970: 10))
-        XCTAssertTrue(phone.items.values.contains { $0.revision == revision })
+        #expect(phone.items.values.contains { $0.revision == revision })
     }
 
+    @Test
     func testCloudJournalRoundTripPreservesAnswersPapersAndAudioReference() throws {
-        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let paper = try #require(ExamUnit.load().first)
         let result = StudyResult(skill: "Speaking", title: "Practice", correct: 0, total: 0, response: "I take the bus.", recordingFile: "answer.m4a", paper: paper)
         var journal = CloudStudyJournal()
         try journal.capture(.init(results: [result], papers: [paper]))
         let restored = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(journal))
-        XCTAssertEqual(try restored.snapshot().results, [result])
-        XCTAssertEqual(try restored.snapshot().papers, [paper])
-        XCTAssertEqual(restored.items.values.first { $0.kind == "result" }?.recording, "answer.m4a")
+        #expect(try restored.snapshot().results == [result])
+        #expect(try restored.snapshot().papers == [paper])
+        #expect(restored.items.values.first { $0.kind == "result" }?.recording == "answer.m4a")
     }
 
+    @Test
     func testCloudEqualTimestampMergeConvergesAndAccountsStaySeparate() throws {
         let word = SavedExpression(expression: "book", source: "Reading", sourceText: "A book.")
         var left = CloudStudyJournal(); try left.capture(.init(vocabulary: [word]))
-        var first = try XCTUnwrap(left.items.values.first), second = first
+        var first = try #require(left.items.values.first), second = first
         first.revision = "a"; second.revision = "b"
         var right = CloudStudyJournal(); right.merge([second, first]); left.merge([first, second])
-        XCTAssertEqual(left.items, right.items)
-        XCTAssertTrue(CloudStudyJournal.accepts(account: "A", previous: nil))
-        XCTAssertTrue(CloudStudyJournal.accepts(account: "A", previous: "A"))
-        XCTAssertFalse(CloudStudyJournal.accepts(account: "B", previous: "A"))
+        #expect(left.items == right.items)
+        #expect(CloudStudyJournal.accepts(account: "A", previous: nil))
+        #expect(CloudStudyJournal.accepts(account: "A", previous: "A"))
+        #expect(!CloudStudyJournal.accepts(account: "B", previous: "A"))
         let folder = URL(fileURLWithPath: "/tmp/Recordings")
-        XCTAssertNil(CloudStudyJournal.safeRecordingURL("../secret.m4a", directory: folder))
-        XCTAssertNotNil(CloudStudyJournal.safeRecordingURL("answer.m4a", directory: folder))
+        #expect(CloudStudyJournal.safeRecordingURL("../secret.m4a", directory: folder) == nil)
+        #expect(CloudStudyJournal.safeRecordingURL("answer.m4a", directory: folder) != nil)
     }
 
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testGenerationCompletionReachesExactly100WithoutRegression() {
         for count in [0, 1, 11] {
             let from = GenerationProgress.estimate(completed: count, total: 12, elapsed: 60)
             let values = (0...100).map { GenerationProgress.finish(from: from, elapsed: Double($0) / 100) }
-            XCTAssertEqual(values.first!, from)
-            XCTAssertEqual(values.last!, 1)
-            XCTAssertTrue(zip(values, values.dropFirst()).allSatisfy { $0 <= $1 })
+            #expect(values.first! == from)
+            #expect(values.last! == 1)
+            #expect(zip(values, values.dropFirst()).allSatisfy { $0 <= $1 })
         }
-        XCTAssertLessThan(GenerationProgress.estimate(completed: 1, total: 1, elapsed: 1000), 1)
+        #expect(GenerationProgress.estimate(completed: 1, total: 1, elapsed: 1000) < 1)
     }
+    @Test
     func testAudioChunkingPreservesScriptAndAPIRequest() throws {
         let script = String(repeating: "Speaker A: Hello. Speaker B: Good morning!\n", count: 400)
         let chunks = SpeechAudio.chunks(script)
-        XCTAssertEqual(chunks.joined(), script)
-        XCTAssertTrue(chunks.allSatisfy { !$0.isEmpty && $0.count <= 2800 })
-        XCTAssertEqual(SpeechAudio.chunks(String(repeating: "a", count: 6000)).joined().count, 6000)
+        #expect(chunks.joined() == script)
+        #expect(chunks.allSatisfy { !$0.isEmpty && $0.count <= 2800 })
+        #expect(SpeechAudio.chunks(String(repeating: "a", count: 6000)).joined().count == 6000)
         let request = try SpeechAudio.request(text: chunks[0], key: "test-only-not-a-key")
-        XCTAssertEqual(request.url?.path, "/v1/audio/speech")
-        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: String])
-        XCTAssertEqual(json["response_format"], "pcm")
-        XCTAssertEqual(json["input"], chunks[0])
-        XCTAssertThrowsError(try SpeechAudio.validate(HTTPURLResponse(url: request.url!, statusCode: 429, httpVersion: nil, headerFields: nil)!, data: Data()))
+        #expect(request.url?.path == "/v1/audio/speech")
+        let requestBody = try #require(request.httpBody)
+        let json = try #require(JSONSerialization.jsonObject(with: requestBody) as? [String: String])
+        #expect(json["response_format"] == "pcm")
+        #expect(json["input"] == chunks[0])
+        #expect(throws: (any Error).self) { try SpeechAudio.validate(HTTPURLResponse(url: request.url!, statusCode: 429, httpVersion: nil, headerFields: nil)!, data: Data()) }
     }
-    @MainActor func testAudioStopRejectsLateGenerationAndResetsPlayback() async throws {
+    @Test
+    func testAudioStopRejectsLateGenerationAndResetsPlayback() async throws {
         let player = ListeningPlayer()
         let pcm = Data(repeating: 0, count: 48000)
         let wave = SpeechAudio.wave(pcm)
         let decoded = try AVAudioPlayer(data: wave)
-        XCTAssertEqual(decoded.duration, 1, accuracy: 0.01)
+        #expect(abs(decoded.duration - 1) <= 0.01)
         player.play(script: "Test") { _, _ in
             try? await Task.sleep(for: .milliseconds(100))
             return wave
         }
-        XCTAssertTrue(player.generating)
+        #expect(player.generating)
         player.stop()
         try await Task.sleep(for: .milliseconds(150))
-        XCTAssertFalse(player.generating)
-        XCTAssertNil(player.player)
+        #expect(!player.generating)
+        #expect(player.player == nil)
         player.play(script: "Test") { _, _ in wave }
         try await Task.sleep(for: .milliseconds(850))
-        XCTAssertNotNil(player.player)
+        #expect(player.player != nil)
         player.stop()
-        XCTAssertFalse(player.player?.isPlaying ?? true)
-        XCTAssertEqual(player.player?.currentTime, 0)
+        #expect(player.player?.isPlaying == false)
+        #expect(player.player?.currentTime == 0)
     }
 }
 
 extension PocketIELTSTests {
+    @Test
     func testCloudDeletionDoesNotResurrectOfflineVocabulary() throws {
         let entry = SavedExpression(expression: "ordinary", source: "Reading", sourceText: "An ordinary day.")
         var left = CloudStudyJournal(), right = CloudStudyJournal()
@@ -743,69 +793,75 @@ extension PocketIELTSTests {
         right.merge(Array(left.items.values))
         try left.capture(.init(deletedVocabulary: [.init(id: entry.id, date: Date(timeIntervalSince1970: 2))]), at: Date(timeIntervalSince1970: 2))
         left.merge(Array(right.items.values)); right.merge(Array(left.items.values))
-        XCTAssertTrue(try left.snapshot().vocabulary.isEmpty)
-        XCTAssertTrue(try right.snapshot().vocabulary.isEmpty)
-        XCTAssertEqual(try right.snapshot().deletedVocabulary.map(\.id), [entry.id])
+        #expect(try left.snapshot().vocabulary.isEmpty)
+        #expect(try right.snapshot().vocabulary.isEmpty)
+        #expect(try right.snapshot().deletedVocabulary.map(\.id) == [entry.id])
         var relaunched = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(right))
         try relaunched.capture(try right.snapshot(), at: Date(timeIntervalSince1970: 3))
-        XCTAssertTrue(try relaunched.snapshot().vocabulary.isEmpty)
+        #expect(try relaunched.snapshot().vocabulary.isEmpty)
     }
 }
 
 extension PocketIELTSTests {
+    @Test
     func testLicensePlistNoticesAreBundledAndReadable() throws {
         let notices = try OSSNotice.load()
-        XCTAssertGreaterThanOrEqual(notices.count, 17)
-        XCTAssertTrue(notices.contains { $0.title.contains("Nunito") })
-        XCTAssertTrue(notices.contains { $0.title.contains("swift-composable-architecture") })
-        XCTAssertTrue(notices.allSatisfy { $0.text.count > 100 })
+        #expect(notices.count >= 17)
+        #expect(notices.contains { $0.title.contains("Nunito") })
+        #expect(notices.contains { $0.title.contains("swift-composable-architecture") })
+        #expect(notices.allSatisfy { $0.text.count > 100 })
     }
 }
 
 extension PocketIELTSTests {
-    @MainActor func testMarkdownRendersStructureAndPreservesVisibleSelectionOffsets() {
+    @Test
+    func testMarkdownRendersStructureAndPreservesVisibleSelectionOffsets() {
         let source = "## Meaning\n\n**Buying** means buying.\n\n- First item\n- Second item\n\n1. Example one\n2. Example two\n\n`purchase`"
         let rendered = StudyMarkdown.render(source)
-        XCTAssertFalse(rendered.string.contains("**"))
-        XCTAssertFalse(rendered.string.contains("##"))
-        XCTAssertTrue(rendered.string.contains("•  First item"))
-        XCTAssertTrue(rendered.string.contains("2.  Example two"))
+        #expect(!rendered.string.contains("**"))
+        #expect(!rendered.string.contains("##"))
+        #expect(rendered.string.contains("•  First item"))
+        #expect(rendered.string.contains("2.  Example two"))
         let range = (rendered.string as NSString).range(of: "Buying")
-        XCTAssertEqual((rendered.string as NSString).substring(with: range), "Buying")
+        #expect((rendered.string as NSString).substring(with: range) == "Buying")
         let font = rendered.attribute(.font, at: range.location, effectiveRange: nil) as? UIFont
-        XCTAssertTrue(font?.fontDescriptor.symbolicTraits.contains(.traitBold) == true)
-        XCTAssertTrue(rendered.string.contains("purchase"))
-        XCTAssertFalse(rendered.string.contains("`"))
+        #expect(font?.fontDescriptor.symbolicTraits.contains(.traitBold) == true)
+        #expect(rendered.string.contains("purchase"))
+        #expect(!rendered.string.contains("`"))
     }
+    @Test
     func testSavedPapersGroupByRealSkillPartNotTitle() throws {
         let papers = try ExamUnit.load()
-        XCTAssertEqual(Set(papers.filter { $0.skill == "Reading" }.map(SavedPaperGrouping.part)), ["Section 1", "Section 2", "Section 3"])
-        XCTAssertEqual(Set(papers.filter { $0.skill == "Listening" }.map(SavedPaperGrouping.part)), ["Part 1", "Part 2", "Part 3", "Part 4"])
+        #expect(Set(papers.filter { $0.skill == "Reading" }.map(SavedPaperGrouping.part)) == ["Section 1", "Section 2", "Section 3"])
+        #expect(Set(papers.filter { $0.skill == "Listening" }.map(SavedPaperGrouping.part)) == ["Part 1", "Part 2", "Part 3", "Part 4"])
         let paper = ExamUnit(id: "Reading / Section 1 · Section 3 of the museum", skill: "Reading", title: "Section 3 of the museum", directions: "", passages: [], questions: [], audio: nil, oral: [])
-        XCTAssertEqual(SavedPaperGrouping.part(paper), "Section 1")
+        #expect(SavedPaperGrouping.part(paper) == "Section 1")
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testDialogueAudioRemovesLabelsAndKeepsVoicesStable() throws {
         let parts = SpeechAudio.segments("Receptionist: Welcome.\nCaller: Hello!\nReceptionist: We open at 9:30.\nPlease arrive early.")
-        XCTAssertEqual(parts.map(\.text), ["Welcome.", "Hello!", "We open at 9:30.\nPlease arrive early."])
-        XCTAssertEqual(parts[0].voice, parts[2].voice)
-        XCTAssertNotEqual(parts[0].voice, parts[1].voice)
+        #expect(parts.map(\.text) == ["Welcome.", "Hello!", "We open at 9:30.\nPlease arrive early."])
+        #expect(parts[0].voice == parts[2].voice)
+        #expect(parts[0].voice != parts[1].voice)
         let request = try SpeechAudio.request(text: parts[1].text, key: "test", voice: parts[1].voice)
-        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: String])
-        XCTAssertEqual(json["voice"], parts[1].voice)
-        XCTAssertEqual(json["input"], "Hello!")
-        XCTAssertEqual(SpeechAudio.segments("We open at 9:30. Bring this: your card.").first?.text, "We open at 9:30. Bring this: your card.")
-        XCTAssertEqual(SpeechAudio.segments("**Emma:** Good morning.\n**Tom:** Hello.").map(\.text), ["Good morning.", "Hello."])
-        XCTAssertTrue(SpeechAudio.segments("  ").isEmpty)
+        let requestBody = try #require(request.httpBody)
+        let json = try #require(JSONSerialization.jsonObject(with: requestBody) as? [String: String])
+        #expect(json["voice"] == parts[1].voice)
+        #expect(json["input"] == "Hello!")
+        #expect(SpeechAudio.segments("We open at 9:30. Bring this: your card.").first?.text == "We open at 9:30. Bring this: your card.")
+        #expect(SpeechAudio.segments("**Emma:** Good morning.\n**Tom:** Hello.").map(\.text) == ["Good morning.", "Hello."])
+        #expect(SpeechAudio.segments("  ").isEmpty)
     }
 }
 
 extension PocketIELTSTests {
+    @Test
     func testDeleteSavedPaperPreservesHistoryVocabularyAndCanSaveAgain() async throws {
-        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let paper = try #require(ExamUnit.load().first)
         let entry = SavedExpression(expression: "ordinary", source: paper.id, sourceText: "ordinary", paper: paper)
         let result = StudyResult(skill: paper.skill, title: paper.title, correct: 1, total: 1, paper: paper)
         let date = Date(timeIntervalSince1970: 10)
@@ -818,53 +874,56 @@ extension PocketIELTSTests {
             $0.$paperData.withLock { $0 = try! StudyPersistence.encode([ExamUnit]()) }
             $0.$deletedPaperData.withLock { $0 = try! StudyPersistence.encode([DeletedPaper(id: paper.id, date: date)]) }
         }
-        XCTAssertTrue(store.state.papers.isEmpty)
-        XCTAssertEqual(store.state.records, [result])
-        XCTAssertEqual(store.state.vocabulary, [entry])
+        #expect(store.state.papers.isEmpty)
+        #expect(store.state.records == [result])
+        #expect(store.state.vocabulary == [entry])
         await store.send(.deletePaper(paper.id))
         await store.send(.savePaper(paper)) {
             $0.$deletedPaperData.withLock { $0 = try! StudyPersistence.encode([DeletedPaper]()) }
             $0.$paperData.withLock { $0 = try! StudyPersistence.encode([paper]) }
         }
-        XCTAssertEqual(store.state.papers, [paper])
+        #expect(store.state.papers == [paper])
     }
 
+    @Test
     func testDeletedSavedPaperSurvivesOfflineMergeAndExplicitResave() throws {
-        let paper = try XCTUnwrap(ExamUnit.load().first)
+        let paper = try #require(ExamUnit.load().first)
         var left = CloudStudyJournal(), right = CloudStudyJournal()
         try left.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 1))
         right.merge(Array(left.items.values))
         try left.capture(.init(deletedPapers: [.init(id: paper.id, date: Date(timeIntervalSince1970: 2))]), at: Date(timeIntervalSince1970: 2))
         try right.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 3))
         left.merge(Array(right.items.values)); right.merge(Array(left.items.values))
-        XCTAssertTrue(try left.snapshot().papers.isEmpty)
-        XCTAssertTrue(try right.snapshot().papers.isEmpty)
+        #expect(try left.snapshot().papers.isEmpty)
+        #expect(try right.snapshot().papers.isEmpty)
         var relaunched = try JSONDecoder().decode(CloudStudyJournal.self, from: StudyPersistence.encode(left))
-        XCTAssertEqual(try relaunched.snapshot().deletedPapers.map(\.id), [paper.id])
+        #expect(try relaunched.snapshot().deletedPapers.map(\.id) == [paper.id])
         try relaunched.capture(.init(papers: [paper]), at: Date(timeIntervalSince1970: 4))
         right.merge(Array(relaunched.items.values))
-        XCTAssertEqual(try right.snapshot().papers, [paper])
-        XCTAssertTrue(try right.snapshot().deletedPapers.isEmpty)
+        #expect(try right.snapshot().papers == [paper])
+        #expect(try right.snapshot().deletedPapers.isEmpty)
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testBackgroundGenerationClampsProgressAndFinishes() async throws {
         var observed: BackgroundGeneration?
         let result = try await BackgroundGeneration.run(title: "Fixture", total: 3, useSystemScheduler: false) { job in
             observed = job
             job.update(completed: 2, total: 3)
             job.update(completed: 1, total: 3)
-            XCTAssertEqual(job.completed, 2)
+            #expect(job.completed == 2)
             job.update(completed: 9, total: 3)
-            XCTAssertEqual(job.completed, 3)
+            #expect(job.completed == 3)
             return 42
         }
-        XCTAssertEqual(result, 42)
-        XCTAssertTrue(try XCTUnwrap(observed).finished)
+        #expect(result == 42)
+        #expect(try #require(observed).finished)
     }
 
+    @Test
     func testBackgroundExpirationCancelsWorkAndRejectsLateResult() async throws {
         var observed: BackgroundGeneration?
         do {
@@ -875,52 +934,55 @@ extension PocketIELTSTests {
                 // A transport that ignores cancellation cannot mark the job complete.
                 return 42
             }
-            XCTFail("Interrupted work must not succeed")
+            Issue.record("Interrupted work must not succeed")
         } catch {
-            XCTAssertFalse(error is CancellationError, "System cancellation needs an actionable retry message")
+            #expect(!(error is CancellationError), "System cancellation needs an actionable retry message")
         }
-        XCTAssertTrue(try XCTUnwrap(observed).finished)
-        XCTAssertEqual(observed?.completed, 1)
+        #expect(try #require(observed).finished)
+        #expect(observed?.completed == 1)
     }
 
+    @Test
     func testBackgroundGenerationPropagatesOwnerCancellation() async throws {
-        let started = expectation(description: "Started")
-        let cancelled = expectation(description: "Cancelled")
+        var started = false
+        var cancelled = false
         let task = Task {
             try await BackgroundGeneration.run(title: "Fixture", total: 1, useSystemScheduler: false) { _ in
-                started.fulfill()
+                started = true
                 do { try await Task.sleep(for: .seconds(60)) }
-                catch { cancelled.fulfill(); throw error }
+                catch { cancelled = true; throw error }
             }
         }
-        await fulfillment(of: [started], timeout: 2)
+        await waitUntil { started }
         task.cancel()
-        do { try await task.value; XCTFail("Expected cancellation") } catch { XCTAssertTrue(error is CancellationError) }
-        await fulfillment(of: [cancelled], timeout: 2)
+        do { try await task.value; Issue.record("Expected cancellation") } catch { #expect(error is CancellationError) }
+        #expect(cancelled)
     }
 
+    @Test
     func testPausingListeningDoesNotCancelAudioGeneration() async throws {
         let player = ListeningPlayer()
-        let started = expectation(description: "Audio started")
+        var started = false
         player.play(script: "Fixture") { _, progress in
             await progress(0, 1)
-            started.fulfill()
+            started = true
             try await Task.sleep(for: .milliseconds(100))
             return SpeechAudio.wave(Data(repeating: 0, count: 48000))
         }
-        await fulfillment(of: [started], timeout: 2)
+        await waitUntil { started }
         player.pause() // Called when the app resigns active.
-        XCTAssertTrue(player.generating)
+        #expect(player.generating)
         try await Task.sleep(for: .milliseconds(850))
-        XCTAssertNotNil(player.player)
-        XCTAssertFalse(player.player?.isPlaying ?? true, "Returning to the app must not autoplay background-generated audio")
+        #expect(player.player != nil)
+        #expect(player.player?.isPlaying == false, "Returning to the app must not autoplay background-generated audio")
         player.stop() // Explicit stop / leaving the question still cancels.
-        XCTAssertFalse(player.generating)
+        #expect(!player.generating)
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testSharedProgressDoesNotJumpWithLargePayloads() async throws {
         var displayed = 0.0
         var observed: BackgroundGeneration?
@@ -928,22 +990,23 @@ extension PocketIELTSTests {
                                            onProgress: { displayed = $0 }) { job in
             observed = job
             await GenerationTransferProgress.received(10_000_000)
-            XCTAssertLessThan(job.fraction, 0.02, "Payload bytes must not push progress to 89%")
-            XCTAssertEqual(displayed, job.fraction)
+            #expect(job.fraction < 0.02, "Payload bytes must not push progress to 89%")
+            #expect(displayed == job.fraction)
             try await Task.sleep(for: .milliseconds(250))
-            XCTAssertGreaterThan(job.fraction, 0)
-            XCTAssertEqual(displayed, job.fraction)
+            #expect(job.fraction > 0)
+            #expect(displayed == job.fraction)
             job.update(completed: 1, total: 2)
-            XCTAssertEqual(job.fraction, 0.5, accuracy: 0.001)
+            #expect(abs(job.fraction - 0.5) <= 0.001)
             await GenerationTransferProgress.received(50_000_000)
-            XCTAssertLessThan(job.fraction, 0.52)
-            XCTAssertEqual(displayed, job.fraction)
+            #expect(job.fraction < 0.52)
+            #expect(displayed == job.fraction)
         }
-        XCTAssertEqual(displayed, 1)
-        XCTAssertEqual(displayed, observed?.fraction)
-        XCTAssertNil(GenerationTransferProgress.report)
+        #expect(displayed == 1)
+        #expect(displayed == observed?.fraction)
+        #expect(GenerationTransferProgress.report == nil)
     }
 
+    @Test
     func testSharedCompletionReaches100BeforeReturning() async throws {
         var displayed = 0.0
         var values: [Double] = []
@@ -951,16 +1014,17 @@ extension PocketIELTSTests {
                                            completionDuration: 0.3,
                                            onProgress: { displayed = $0; values.append($0) }) { job in
             job.update(completed: 1, total: 1)
-            XCTAssertLessThan(displayed, 1)
+            #expect(displayed < 1)
         }
-        XCTAssertEqual(displayed, 1)
-        XCTAssertTrue(values.contains { $0 > 0.1 && $0 < 1 })
-        XCTAssertEqual(values, values.sorted())
+        #expect(displayed == 1)
+        #expect(values.contains { $0 > 0.1 && $0 < 1 })
+        #expect(values == values.sorted())
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testListeningRewindClampsAtStartAndPreservesPause() async throws {
         let player = ListeningPlayer()
         player.rewindTenSeconds() // Safe before audio exists.
@@ -969,65 +1033,69 @@ extension PocketIELTSTests {
         }
         player.pause()
         try await Task.sleep(for: .milliseconds(850))
-        XCTAssertNotNil(player.player)
+        #expect(player.player != nil)
         player.seek(15)
         player.rewindTenSeconds()
-        XCTAssertEqual(try XCTUnwrap(player.player).currentTime, 5, accuracy: 0.05)
-        XCTAssertFalse(player.player?.isPlaying ?? true)
+        #expect(abs(try #require(player.player).currentTime - 5) <= 0.05)
+        #expect(player.player?.isPlaying == false)
         player.rewindTenSeconds()
-        XCTAssertEqual(player.player?.currentTime, 0)
+        #expect(player.player?.currentTime == 0)
         player.rewindTenSeconds()
-        XCTAssertEqual(player.player?.currentTime, 0)
+        #expect(player.player?.currentTime == 0)
         player.stop()
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testQuestionVisualsPersistAndOldPapersStillDecode() throws {
         let papers = try ExamUnit.load()
-        let paper = try XCTUnwrap(papers.first { $0.id == "Listening / Part 2" })
-        XCTAssertEqual(paper.visuals?.count, 1)
+        let paper = try #require(papers.first { $0.id == "Listening / Part 2" })
+        #expect(paper.visuals?.count == 1)
         try QuestionVisual.validate(paper.visuals)
-        XCTAssertEqual(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)), paper)
-        XCTAssertTrue(QuestionVisual.context(paper.visuals).contains("Fountain"))
-        XCTAssertNil(papers.first { $0.id == "Listening / Part 1" }?.visuals)
+        #expect(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)) == paper)
+        #expect(QuestionVisual.context(paper.visuals).contains("Fountain"))
+        #expect(papers.first { $0.id == "Listening / Part 1" }?.visuals == nil)
     }
 
+    @Test
     func testQuestionVisualRejectsInvalidGeometryAndMissingFigure() throws {
-        let paper = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Listening / Part 2" })
-        var figure = try XCTUnwrap(paper.visuals?.first)
+        let paper = try #require(try ExamUnit.load().first { $0.id == "Listening / Part 2" })
+        var figure = try #require(paper.visuals?.first)
         figure.elements[0].width = 200
-        XCTAssertThrowsError(try QuestionVisual.validate([figure]))
+        #expect(throws: (any Error).self) { try QuestionVisual.validate([figure]) }
         figure.elements[0].width = .infinity
-        XCTAssertThrowsError(try QuestionVisual.validate([figure]))
-        XCTAssertThrowsError(try QuestionVisual.validate(nil, instructions: ["Label the map below."]))
-        XCTAssertThrowsError(try QuestionVisual.validate([], instructions: ["Study the chart above."]))
-        XCTAssertNoThrow(try QuestionVisual.validate(nil, instructions: ["What does the speaker plan to do?"]))
+        #expect(throws: (any Error).self) { try QuestionVisual.validate([figure]) }
+        #expect(throws: (any Error).self) { try QuestionVisual.validate(nil, instructions: ["Label the map below."]) }
+        #expect(throws: (any Error).self) { try QuestionVisual.validate([], instructions: ["Study the chart above."]) }
+        try QuestionVisual.validate(nil, instructions: ["What does the speaker plan to do?"])
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testCachedListeningLoadsReadyWithoutGenerationOrAutoplay() throws {
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: folder) }
         let script = "Guide: Welcome to the centre."
-        let part = try XCTUnwrap(SpeechAudio.segments(script).first)
+        let part = try #require(SpeechAudio.segments(script).first)
         try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(part, directory: folder))
         let player = ListeningPlayer(script: script, cacheDirectory: folder)
-        XCTAssertNotNil(player.player, "Legacy cached segments should be ready on initialization")
-        XCTAssertFalse(player.generating)
-        XCTAssertFalse(player.player?.isPlaying ?? true)
-        XCTAssertEqual(player.generationFraction, 1)
-        XCTAssertEqual(player.player?.currentTime, 0)
+        #expect(player.player != nil, "Legacy cached segments should be ready on initialization")
+        #expect(!player.generating)
+        #expect(player.player?.isPlaying == false)
+        #expect(player.generationFraction == 1)
+        #expect(player.player?.currentTime == 0)
         let complete = SpeechAudio.completeURL(script, directory: folder)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: complete.path))
+        #expect(FileManager.default.fileExists(atPath: complete.path))
         try FileManager.default.removeItem(at: SpeechAudio.segmentURL(part, directory: folder))
-        XCTAssertNotNil(ListeningPlayer(script: script, cacheDirectory: folder).player, "Complete audio remains reusable without segment files")
+        #expect(ListeningPlayer(script: script, cacheDirectory: folder).player != nil, "Complete audio remains reusable without segment files")
     }
 
+    @Test
     func testPartialOrInvalidAudioCacheDoesNotPretendToBeReady() throws {
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
@@ -1035,107 +1103,114 @@ extension PocketIELTSTests {
         let script = "Guide: Welcome.\nVisitor: Thank you."
         let parts = SpeechAudio.segments(script)
         try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(parts[0], directory: folder))
-        XCTAssertNil(SpeechAudio.cachedAudioURL(script, directory: folder))
+        #expect(SpeechAudio.cachedAudioURL(script, directory: folder) == nil)
         try Data([1]).write(to: SpeechAudio.segmentURL(parts[1], directory: folder))
         let player = ListeningPlayer(script: script, cacheDirectory: folder)
-        XCTAssertNil(player.player)
-        XCTAssertFalse(player.generating)
+        #expect(player.player == nil)
+        #expect(!player.generating)
     }
 }
 
 extension PocketIELTSTests {
+    @Test
     func testReadingPlanHasMatchingBlanksAndAnswers() throws {
-        let paper = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
-        let visual = try XCTUnwrap(paper.visuals?.first)
+        let paper = try #require(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
+        let visual = try #require(paper.visuals?.first)
         try QuestionVisual.validate([visual], instructions: paper.questions.map(\.instruction))
-        XCTAssertEqual(paper.questions.count, 13)
-        XCTAssertEqual(paper.questions.prefix(3).map { $0.answers.first! }, ["reception", "changing rooms", "equipment store"])
-        for number in 14...16 { XCTAssertTrue(visual.elements.contains { $0.label == "\(number) _____" }) }
-        XCTAssertFalse(visual.elements.contains { $0.label == "reception" })
-        XCTAssertEqual(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)), paper)
+        #expect(paper.questions.count == 13)
+        #expect(paper.questions.prefix(3).map { $0.answers.first! } == ["reception", "changing rooms", "equipment store"])
+        for number in 14...16 { #expect(visual.elements.contains { $0.label == "\(number) _____" }) }
+        #expect(!visual.elements.contains { $0.label == "reception" })
+        #expect(try JSONDecoder().decode(ExamUnit.self, from: JSONEncoder().encode(paper)) == paper)
     }
 
+    @Test
     func testImageRequestAndBoundedPersistence() throws {
-        var visual = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals?.first)
+        var visual = try #require(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals?.first)
         let request = try QuestionImage.request(visual: visual, key: "fixture-key")
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(request.httpBody)) as? [String: Any])
-        XCTAssertEqual(body["model"] as? String, QuestionImage.model)
-        XCTAssertNil(body["response_format"])
+        let requestBody = try #require(request.httpBody)
+        let body = try #require(JSONSerialization.jsonObject(with: requestBody) as? [String: Any])
+        #expect(body["model"] as? String == QuestionImage.model)
+        #expect(body["response_format"] == nil)
         let fixture = UIGraphicsImageRenderer(size: CGSize(width: 64, height: 48)).image { context in
             UIColor.white.setFill(); context.fill(CGRect(x: 0, y: 0, width: 64, height: 48))
         }.pngData()!
         let payload = try JSONSerialization.data(withJSONObject: ["data": [["b64_json": fixture.base64EncodedString()]]])
         let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let bytes = try QuestionImage.decode(payload, response: response)
-        XCTAssertLessThanOrEqual(bytes.count, QuestionImage.maximumStoredBytes)
-        XCTAssertNotNil(UIImage(data: bytes))
+        #expect(bytes.count <= QuestionImage.maximumStoredBytes)
+        #expect(UIImage(data: bytes) != nil)
         visual.imageData = bytes
-        XCTAssertFalse(QuestionVisual.context([visual]).contains("imageData"))
-        XCTAssertEqual(try JSONDecoder().decode(QuestionVisual.self, from: JSONEncoder().encode(visual)), visual)
-        XCTAssertThrowsError(try QuestionImage.decode(Data("{}".utf8), response: response))
+        #expect(!QuestionVisual.context([visual]).contains("imageData"))
+        #expect(try JSONDecoder().decode(QuestionVisual.self, from: JSONEncoder().encode(visual)) == visual)
+        #expect(throws: (any Error).self) { try QuestionImage.decode(Data("{}".utf8), response: response) }
     }
 
+    @Test
     func testListeningPreparationUsesPreferenceAndPlaybackCache() async throws {
         let papers = try ExamUnit.load()
-        let paper = try XCTUnwrap(papers.first { $0.skill == "Listening" })
-        let script = try XCTUnwrap(paper.audio)
+        let paper = try #require(papers.first { $0.skill == "Listening" })
+        let script = try #require(paper.audio)
         let folder = URL.temporaryDirectory.appending(path: UUID().uuidString)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: folder) }
-        let reading = try XCTUnwrap(papers.first { $0.skill == "Reading" })
+        let reading = try #require(papers.first { $0.skill == "Reading" })
         for (unit, enabled) in [(reading, true), (paper, false)] {
             let result = try await SpeechAudio.prepare(for: unit, enabled: enabled, directory: folder) { _, _ in
-                XCTFail("Unexpected audio generation"); return Data()
+                Issue.record("Unexpected audio generation"); return Data()
             }
-            XCTAssertEqual(result, unit)
+            #expect(result == unit)
         }
         let failed = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { _, _ in
             throw URLError(.notConnectedToInternet)
         }
-        XCTAssertEqual(failed.audioPreparationFailed, true)
-        XCTAssertEqual(failed.questions, paper.questions)
+        #expect(failed.audioPreparationFailed == true)
+        #expect(failed.questions == paper.questions)
         let prepared = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { text, _ in
-            XCTAssertEqual(text, script)
+            #expect(text == script)
             let wav = SpeechAudio.wave(Data(repeating: 0, count: 48000))
             try wav.write(to: SpeechAudio.completeURL(text, directory: folder))
             return wav
         }
-        XCTAssertEqual(prepared, paper)
+        #expect(prepared == paper)
         _ = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { _, _ in
-            XCTFail("Cached audio should be reused"); return Data()
+            Issue.record("Cached audio should be reused"); return Data()
         }
-        XCTAssertNotNil(ListeningPlayer(script: script, cacheDirectory: folder).player)
+        #expect(ListeningPlayer(script: script, cacheDirectory: folder).player != nil)
     }
 
+    @Test
     func testImageOptOutFallbackAndCancellation() async throws {
-        let visuals = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals)
+        let visuals = try #require(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals)
         let unchanged = try await QuestionImage.prepare(visuals, enabled: false) { _ in
-            XCTFail("Opt-out must not call the image API"); return Data()
+            Issue.record("Opt-out must not call the image API"); return Data()
         }
-        XCTAssertEqual(unchanged, visuals)
+        #expect(unchanged == visuals)
         let failed = try await QuestionImage.prepare(visuals, enabled: true) { _ in throw URLError(.notConnectedToInternet) }
-        XCTAssertEqual(failed?.first?.elements, visuals.first?.elements)
-        XCTAssertEqual(failed?.first?.imageGenerationFailed, true)
+        #expect(failed?.first?.elements == visuals.first?.elements)
+        #expect(failed?.first?.imageGenerationFailed == true)
         do {
             _ = try await QuestionImage.prepare(visuals, enabled: true) { _ in throw CancellationError() }
-            XCTFail("Cancellation must propagate")
+            Issue.record("Cancellation must propagate")
         } catch is CancellationError { }
     }
 }
 
 
 extension PocketIELTSTests {
+    @Test
     func testFigureFitsPortraitLandscapeAndBoundsPan() {
         for viewport in [CGSize(width: 390, height: 700), CGSize(width: 800, height: 320)] {
             let fit = FigureViewport.fit(in: viewport)
-            XCTAssertLessThanOrEqual(fit.width, viewport.width)
-            XCTAssertLessThanOrEqual(fit.height, viewport.height)
-            XCTAssertEqual(FigureViewport.clamp(CGSize(width: 900, height: -900), fit: fit, viewport: viewport, scale: 1), .zero)
+            #expect(fit.width <= viewport.width)
+            #expect(fit.height <= viewport.height)
+            #expect(FigureViewport.clamp(CGSize(width: 900, height: -900), fit: fit, viewport: viewport, scale: 1) == .zero)
             let panned = FigureViewport.clamp(CGSize(width: 9000, height: -9000), fit: fit, viewport: viewport, scale: 5)
-            XCTAssertEqual(panned.width, max(0, (fit.width * 5 - viewport.width) / 2))
+            #expect(panned.width == max(0, (fit.width * 5 - viewport.width) / 2))
         }
     }
 
+    @Test
     func testVarietyAvoidsRecentTopicsAndPersistsHistory() async {
         let suite = "variety-tests-" + UUID().uuidString
         defer { UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite) }
@@ -1144,22 +1219,23 @@ extension PocketIELTSTests {
         for _ in 0..<12 {
             let prompt = await planner.next(for: "Reading / Section 2")
             let topic = String(prompt.split(separator: ".")[0])
-            XCTAssertTrue(topics.insert(topic).inserted)
+            #expect(topics.insert(topic).inserted)
         }
         await planner.record(title: "Fixture workplace", for: "Reading / Section 2")
         let restored = ExerciseVariety(suiteName: suite)
         let next = await restored.next(for: "Reading / Section 2")
-        XCTAssertTrue(next.contains("Fixture workplace"))
+        #expect(next.contains("Fixture workplace"))
         let writing = await restored.next(for: "Writing / Task 1")
-        XCTAssertTrue(writing.contains("letter"))
+        #expect(writing.contains("letter"))
     }
 }
 
 extension PocketIELTSTests {
+    @Test
     func testReadingRepairsShortPaperWithSpecificFeedback() async throws {
-        let unit = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
+        let unit = try #require(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
         let valid = ReadingSet(title: unit.title, passages: unit.passages, questions: unit.questions, visuals: unit.visuals)
-        XCTAssertTrue(StudyClient.readingIssues(valid, section: 2).isEmpty)
+        #expect(StudyClient.readingIssues(valid, section: 2).isEmpty)
         var short = valid
         short.passages = ["Short passage."]
         short.questions.removeLast()
@@ -1167,26 +1243,44 @@ extension PocketIELTSTests {
         let result = try await StudyClient.completeReading(section: 2) { input in
             calls += 1
             if calls == 2 {
-                XCTAssertTrue(input.contains("Expected 2 passages; received 1"))
-                XCTAssertTrue(input.contains("Expected exactly 13 questions; received 12"))
-                XCTAssertTrue(input.contains("at least 680 passage words"))
+                #expect(input.contains("Expected 2 passages; received 1"))
+                #expect(input.contains("Expected exactly 13 questions; received 12"))
+                #expect(input.contains("at least 680 passage words"))
             }
             return String(decoding: try JSONEncoder().encode(calls == 1 ? short : valid), as: UTF8.self)
         }
-        XCTAssertEqual(calls, 2)
-        XCTAssertEqual(result, valid)
+        #expect(calls == 2)
+        #expect(result == valid)
     }
 
+    @Test
     func testReadingRepairIsBoundedAndDoesNotRetryNetworkErrors() async {
         var calls = 0
         do {
             _ = try await StudyClient.completeReading(section: 1) { _ in calls += 1; return "{}" }
-            XCTFail("Invalid papers must not be accepted")
-        } catch { XCTAssertEqual(calls, 2) }
+            Issue.record("Invalid papers must not be accepted")
+        } catch { #expect(calls == 2) }
         calls = 0
         do {
             _ = try await StudyClient.completeReading(section: 1) { _ in calls += 1; throw URLError(.notConnectedToInternet) }
-            XCTFail("Network failure must propagate")
-        } catch { XCTAssertEqual(calls, 1) }
+            Issue.record("Network failure must propagate")
+        } catch { #expect(calls == 1) }
+    }
+}
+
+
+@MainActor
+private func waitUntil(
+    timeout: Duration = .seconds(2),
+    sourceLocation: SourceLocation = #_sourceLocation,
+    _ condition: () -> Bool
+) async {
+    let deadline = ContinuousClock.now + timeout
+    while !condition() {
+        guard ContinuousClock.now < deadline else {
+            Issue.record("Timed out waiting for the expected state", sourceLocation: sourceLocation)
+            return
+        }
+        try? await Task.sleep(for: .milliseconds(10))
     }
 }
