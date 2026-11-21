@@ -35,6 +35,7 @@ xcodebuild -project PocketIELTS.xcodeproj -scheme PocketIELTS \
   -destination "platform=iOS Simulator,id=$device_id,arch=$(uname -m)" \
   -derivedDataPath "${CI_DERIVED_DATA:-build}" \
   -resultBundlePath "$result_path" \
+  "${@:3}" \
   -parallel-testing-enabled NO \
   -skipMacroValidation \
   -disableAutomaticPackageResolution \

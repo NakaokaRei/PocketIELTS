@@ -1,24 +1,24 @@
 # Pocket IELTS
 
-iPhone・iPadでIELTS General Trainingの4技能を練習できるアプリです。苦手なパートを選んで解き、解説で迷った箇所を振り返れます。
+Practise all four IELTS General Training skills on iPhone and iPad. Choose a section to work on, then review your answers and the explanations.
 
 <p>
-  <img src="Documentation/Screenshots/iphone-speaking-conversation.png" width="30%" alt="AI試験官との音声会話" />
-  <img src="Documentation/Screenshots/iphone-reading-figure.png" width="30%" alt="図を参照して解くReadingの問題" />
-  <img src="Documentation/Screenshots/iphone-progress.png" width="30%" alt="4技能の学習記録から推定したバンドスコアとCEFR" />
+  <img src="Documentation/Screenshots/iphone-speaking-conversation.png" width="30%" alt="Speaking practice with an AI examiner" />
+  <img src="Documentation/Screenshots/iphone-reading-figure.png" width="30%" alt="A Reading question with a diagram" />
+  <img src="Documentation/Screenshots/iphone-progress.png" width="30%" alt="Estimated IELTS band score and CEFR level based on practice across all four skills" />
 </p>
 
-- **問題生成**　AIがパートごとに新しい問題を作成。設問に応じた図やListening音声も生成できます。
-- **AIチューター**　本文で知らない単語を選び、その文での意味や使い方を質問できます。
-- **Writing・Speaking**　レターやエッセイの講評を受けたり、AI試験官とリアルタイムで英会話を練習したりできます。
-- **学習記録**　Reading・Listeningの正答状況とWriting・Speakingの評価がそろうと、総合バンドスコアとCEFRの目安を表示します。
+- **Practice questions.** Generate new exercises for each section, with diagrams or Listening audio when needed.
+- **AI tutor.** Select a word in a passage to ask what it means and how it is used in that sentence.
+- **Writing and Speaking.** Get feedback on letters and essays, or practise a real-time conversation with an AI examiner.
+- **Progress.** See your estimated overall IELTS band score and CEFR level once you have Reading and Listening results and Writing and Speaking assessments.
 
-問題生成とAI解説にはChatGPT接続を使います。任意の音声生成・画像生成・リアルタイム英会話には、個人のOpenAI APIキーと別途API利用料が必要です。
+Connect your ChatGPT account to generate questions and get explanations. Optional audio generation, image generation and real-time Speaking practice use a personal OpenAI API key and incur separate API charges.
 
-## 開発
+## Development
 
-対象はiOS・iPadOS 26以降です。Xcodeで `PocketIELTS.xcodeproj` を開き、`PocketIELTS` スキームで実行してください。
+Requires iOS or iPadOS 26 or later. Open `PocketIELTS.xcodeproj` in Xcode and run the `PocketIELTS` scheme.
 
-[ストア掲載用画像](Documentation/AppStore) · [プライバシーポリシー](Documentation/Privacy.md) · [サポート](Documentation/Support.md) · [iCloudの設定](Documentation/iCloud.md) · [アイコン](Documentation/Brand/README.md) · [フォントとライセンス](Resources/Fonts)
+[App Store assets](Documentation/AppStore) · [Privacy policy](Documentation/Privacy.md) · [Support](Documentation/Support.md) · [iCloud setup](Documentation/iCloud.md) · [App icon](Documentation/Brand/README.md) · [Fonts and licences](Resources/Fonts)
 
-本プロジェクトは [MIT License](LICENSE) で公開しています。同梱フォントと外部ライブラリには、それぞれのライセンスが適用されます。
+Pocket IELTS is released under the [MIT License](LICENSE). Bundled fonts and third-party libraries have their own licences.

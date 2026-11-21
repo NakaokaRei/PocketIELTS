@@ -292,7 +292,7 @@ final class PocketIELTSUITests: XCTestCase {
         openReading()
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
-        XCTAssertTrue(app.menuItems["Save word"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["Review later"].waitForExistence(timeout: 5))
         app.menuItems["Ask AI"].tap()
         XCTAssertTrue(app.buttons["tutor.quick.0"].waitForExistence(timeout: 5))
         app.buttons["tutor.quick.0"].tap()

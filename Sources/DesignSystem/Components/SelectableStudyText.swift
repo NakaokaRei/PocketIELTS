@@ -16,9 +16,9 @@ struct SelectableStudyText: View {
 
     var body: some View {
         StudyTextView(text: text, sourceID: sourceID, onSave: { entry in
-            onSave(entry)
-            saved = !forLaterReview
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            onSave(entry)
+            if !forLaterReview { saved = true }
             UIAccessibility.post(notification: .announcement, argument: confirmation)
         }, onAsk: allowsAI ? onAsk : nil, markdown: markdown, forLaterReview: forLaterReview)
         .overlay(alignment: .top) {

@@ -275,7 +275,12 @@ struct StudyCloudHost: View {
     }
     var body: some View {
         HomeScreen(store: store).id(cloud.resetVersion).environment(\.studyCloud, cloud)
-            .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary, deletedPapers: store.deletedPapers)) { _, _ in cloud.captureLocalChanges() }
+            .task(id: [store.vocabularyData, store.words, store.resultData, store.paperData,
+                       store.deletedVocabularyData, store.deletedPaperData]) {
+                // Local edits are already persisted. Coalesce journal updates outside the selection animation.
+                do { try await Task.sleep(for: .milliseconds(500)) } catch { return }
+                cloud.captureLocalChanges()
+            }
             .task(id: phase) {
                 guard phase == .active else { cloud.captureLocalChanges(); return }
                 while !Task.isCancelled {

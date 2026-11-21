@@ -24,8 +24,10 @@ struct StudyFeature {
         var deletedVocabulary: [DeletedExpression] { (try? JSONDecoder().decode([DeletedExpression].self, from: deletedVocabularyData)) ?? [] }
         var vocabulary: [SavedExpression] {
             let details = (try? JSONDecoder().decode([SavedExpression].self, from: vocabularyData)) ?? []
-            return (details + entries.filter { word in !details.contains { $0.expression == word } }
-                .map(SavedExpression.legacy)).filter { entry in !deletedVocabulary.contains { $0.id == entry.id } }
+            let savedWords = Set(details.map(\.expression))
+            let deletedIDs = Set(deletedVocabulary.map(\.id))
+            let legacyWords = entries.filter { !savedWords.contains($0) }.map(SavedExpression.legacy)
+            return (details + legacyWords).filter { !deletedIDs.contains($0.id) }
         }
         var records: [StudyResult] { (try? JSONDecoder().decode([StudyResult].self, from: resultData)) ?? [] }
         var papers: [ExamUnit] { ((try? JSONDecoder().decode([ExamUnit].self, from: paperData)) ?? []).filter { paper in !deletedPapers.contains { $0.id == paper.id } } }

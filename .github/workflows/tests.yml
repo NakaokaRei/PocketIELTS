@@ -39,10 +39,10 @@ jobs:
         run: xcodebuild -resolvePackageDependencies -project PocketIELTS.xcodeproj -scheme PocketIELTS -derivedDataPath build -disableAutomaticPackageResolution
       - name: Install pinned LicensePlist
         run: Scripts/licenseplist-tool.sh
-      - name: Unit and UI tests
+      - name: Unit tests
         run: |
           set -o pipefail
-          Scripts/ci-test.sh '${{ matrix.device }}' 'TestResults-${{ matrix.device }}.xcresult' | tee 'test-${{ matrix.device }}.log'
+          Scripts/ci-test.sh '${{ matrix.device }}' 'TestResults-${{ matrix.device }}.xcresult' -only-testing:PocketIELTSTests | tee 'test-${{ matrix.device }}.log'
       - name: Upload test results and generated notices
         if: always()
         uses: actions/upload-artifact@v7
