@@ -6,6 +6,7 @@ struct SettingsScreen: View {
     @Environment(\.studyCloud) private var cloud
     let store: StoreOf<SettingsFeature>
     @AppStorage(SpeakingModel.preferenceKey) private var speakingModel = SpeakingModel.mini.rawValue
+    @AppStorage(SpeechAudio.preparationPreference) private var prepareAudio = false
     @AppStorage(QuestionImage.preferenceKey) private var generateImages = false
     @AppStorage(SectionPreparation.preference) private var prepareAhead = false
     @State private var speechKey = ""
@@ -46,6 +47,8 @@ struct SettingsScreen: View {
                     Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. After practice, prepare its replacement."))
                 }
                 Section {
+                    Toggle(String(localized: "Generate audio with new listening exercises"), isOn: $prepareAudio)
+                        .accessibilityIdentifier("settings.prepareListeningAudio")
                     Label(speechKeySaved ? String(localized: "APIキーを保存済み") : String(localized: "APIキーが未設定です"), systemImage: speechKeySaved ? "checkmark.shield" : "key")
                     SecureField(String(localized: "音声生成用APIキー"), text: $speechKey)
                         .textInputAutocapitalization(.never).autocorrectionDisabled().privacySensitive()

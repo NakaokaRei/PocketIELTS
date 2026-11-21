@@ -10,6 +10,7 @@ struct ExamUnit: Codable, Equatable, Identifiable, Sendable {
     let audio: String?
     let oral: [String]
     var visuals: [QuestionVisual]? = nil
+    var audioPreparationFailed: Bool? = nil
     var firstQuestionNumber: Int {
         if skill == "Reading" { return id.contains("Section 3") ? 27 : id.contains("Section 2") ? 14 : 1 }
         if skill == "Listening", let part = (1...4).first(where: { id.contains("Part \($0)") }) { return (part - 1) * 10 + 1 }
@@ -224,7 +225,7 @@ struct ExamScreen: View {
                 if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
                 ForEach(Array(unit.passages.enumerated()), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
                 if let script = unit.audio {
-                    ListeningAudioView(script: script) { settings = true }.id(unit.id)
+                    ListeningAudioView(script: script, preparationFailed: unit.audioPreparationFailed == true) { settings = true }.id(unit.id)
                 }
                 ForEach(unit.questions.indices, id: \.self) { index in
                     let item = unit.questions[index]

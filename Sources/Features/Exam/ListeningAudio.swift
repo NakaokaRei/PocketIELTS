@@ -8,6 +8,7 @@ enum SpeechCredentials {
 }
 
 enum SpeechAudio {
+    static let preparationPreference = "prepare-listening-audio"
     static let model = "gpt-4o-mini-tts"
     static let voice = "marin"
     static let instructions = "Read this IELTS listening script exactly, in clear natural British English at a measured conversational pace. Use natural pauses and distinct intonation for dialogue. Do not add commentary."
@@ -132,6 +133,24 @@ enum SpeechAudio {
         } catch { return nil }
     }
 
+    static func prepare(for paper: ExamUnit, enabled: Bool = UserDefaults.standard.bool(forKey: preparationPreference),
+                        directory: URL = cacheDirectory,
+                        generateAudio: (String, @escaping @MainActor (Int, Int) -> Void) async throws -> Data = generate) async throws -> ExamUnit {
+        guard enabled, paper.skill == "Listening", let script = paper.audio,
+              !script.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              cachedAudioURL(script, directory: directory) == nil else { return paper }
+        var prepared = paper
+        do {
+            _ = try await generateAudio(script) { _, _ in }
+            try Task.checkCancellation()
+        } catch {
+            if error is CancellationError { throw error }
+            try Task.checkCancellation()
+            prepared.audioPreparationFailed = true
+        }
+        return prepared
+    }
+
     static func generate(_ text: String, progress: @escaping @MainActor (Int, Int) -> Void) async throws -> Data {
         let directory = cacheDirectory
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -254,11 +273,13 @@ enum SpeechAudio {
 
 struct ListeningAudioView: View {
     let script: String
+    let preparationFailed: Bool
     let openSettings: () -> Void
     @State private var playback: ListeningPlayer
 
-    init(script: String, openSettings: @escaping () -> Void) {
+    init(script: String, preparationFailed: Bool = false, openSettings: @escaping () -> Void) {
         self.script = script
+        self.preparationFailed = preparationFailed
         self.openSettings = openSettings
         _playback = State(initialValue: ListeningPlayer(script: script))
     }
@@ -306,6 +327,10 @@ struct ListeningAudioView: View {
                         .buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("listening.stop")
                 }
                 if let error = playback.error { Text(error).font(StudyTypography.subheadline).foregroundStyle(StudyColors.error) }
+                else if preparationFailed && playback.player == nil && !playback.generating {
+                    Text(String(localized: "音声を生成できませんでした。時間をおいて再試行してください。"))
+                        .font(StudyTypography.subheadline).foregroundStyle(StudyColors.error)
+                }
                 Button(String(localized: "音声APIの設定"), systemImage: "gearshape") { playback.stop(); openSettings() }.buttonStyle(StudySecondaryButtonStyle())
                 if playback.player == nil { Text(String(localized: "初回生成にはAPI利用料がかかります。生成済み音声は端末に保存して再利用します。")) .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText) }
             }.padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))

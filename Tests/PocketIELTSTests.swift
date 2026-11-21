@@ -957,6 +957,38 @@ extension PocketIELTSTests {
         XCTAssertThrowsError(try QuestionImage.decode(Data("{}".utf8), response: response))
     }
 
+    func testListeningPreparationUsesPreferenceAndPlaybackCache() async throws {
+        let papers = try ExamUnit.load()
+        let paper = try XCTUnwrap(papers.first { $0.skill == "Listening" })
+        let script = try XCTUnwrap(paper.audio)
+        let folder = URL.temporaryDirectory.appending(path: UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let reading = try XCTUnwrap(papers.first { $0.skill == "Reading" })
+        for (unit, enabled) in [(reading, true), (paper, false)] {
+            let result = try await SpeechAudio.prepare(for: unit, enabled: enabled, directory: folder) { _, _ in
+                XCTFail("Unexpected audio generation"); return Data()
+            }
+            XCTAssertEqual(result, unit)
+        }
+        let failed = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { _, _ in
+            throw URLError(.notConnectedToInternet)
+        }
+        XCTAssertEqual(failed.audioPreparationFailed, true)
+        XCTAssertEqual(failed.questions, paper.questions)
+        let prepared = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { text, _ in
+            XCTAssertEqual(text, script)
+            let wav = SpeechAudio.wave(Data(repeating: 0, count: 48000))
+            try wav.write(to: SpeechAudio.completeURL(text, directory: folder))
+            return wav
+        }
+        XCTAssertEqual(prepared, paper)
+        _ = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { _, _ in
+            XCTFail("Cached audio should be reused"); return Data()
+        }
+        XCTAssertNotNil(ListeningPlayer(script: script, cacheDirectory: folder).player)
+    }
+
     func testImageOptOutFallbackAndCancellation() async throws {
         let visuals = try XCTUnwrap(try ExamUnit.load().first { $0.id == "Reading / Section 2" }?.visuals)
         let unchanged = try await QuestionImage.prepare(visuals, enabled: false) { _ in

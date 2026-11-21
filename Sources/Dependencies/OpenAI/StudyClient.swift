@@ -128,9 +128,10 @@ struct StudyClient: DependencyKey {
             throw StudyError.message(String(localized: "必要な教材が揃いませんでした。もう一度生成してください。"))
         }
         await ExerciseVariety.shared.record(title: result.title, for: template.id.components(separatedBy: " · ").first ?? template.id)
-        return ExamUnit(id: template.id + " · " + result.title, skill: result.skill,
+        let paper = ExamUnit(id: template.id + " · " + result.title, skill: result.skill,
                         title: result.title, directions: result.directions, passages: result.passages,
                         questions: result.questions, audio: result.audio, oral: result.oral, visuals: try await QuestionImage.prepare(result.visuals))
+        return try await SpeechAudio.prepare(for: paper)
     }
 
     static func assess(_ paper: ExamUnit, response: String) async throws -> PracticeAssessment {

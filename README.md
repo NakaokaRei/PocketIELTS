@@ -243,6 +243,8 @@ Audio generation does not request app-controlled completion haptics. The system-
   <img src="Documentation/Screenshots/iphone-listening-figure-expanded.png" width="250" alt="Expanded, scrollable vector plan" />
 </p>
 
+Enable **Generate audio with new listening exercises** in Settings to prepare the listening track during section preparation, manual exercise generation and generated mock tests. This is off by default and uses the personal audio API key. When a speech request fails, the exercise remains available and you can retry from the player. The separate question-image setting applies only to exercises that need figures.
+
 Previously generated listening audio opens directly in the ready-to-play state, without a generation job, completion banner or automatic playback. Complete WAV files are cached; older PCM segment caches are assembled locally when every segment is present. Partial caches still resume generation for missing segments.
 
 Generation varies topics and task mixes per IELTS part, avoiding recent choices stored on the device. The last 12 generated titles are included as avoidance context. This reduces repetition but does not guarantee semantic uniqueness; history is local to each device.
