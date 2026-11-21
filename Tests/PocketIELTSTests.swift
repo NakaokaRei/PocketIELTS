@@ -6,6 +6,37 @@ import ComposableArchitecture
 
 @MainActor
 final class PocketIELTSTests: XCTestCase {
+    func testSectionPreparesOnceAndRefillsAfterExit() async throws {
+        let template = try XCTUnwrap(ExamUnit.load().first)
+        let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        var requests = 0
+        let sections = SectionPreparation(directory: directory) { template in
+            requests += 1
+            return template
+        }
+        let id = sections.key(template)
+        sections.configure([template], enabled: false, active: true)
+        XCTAssertNil(sections.percent[id])
+        sections.configure([template], enabled: true, active: true)
+        XCTAssertEqual(sections.percent[id], 0)
+        let first = try await sections.open(template)
+        XCTAssertEqual(sections.ready[id], first)
+        XCTAssertEqual(requests, 1)
+        let restored = SectionPreparation(directory: directory) { _ in XCTFail("Unexpected request"); return template }
+        let cached = try await restored.open(template)
+        XCTAssertEqual(cached, first)
+        sections.finished(template, paper: first)
+        XCTAssertNil(sections.ready[id])
+        XCTAssertEqual(sections.percent[id], 0)
+        _ = try await sections.open(template)
+        XCTAssertEqual(requests, 2)
+        sections.configure([template], enabled: false, active: true)
+        sections.finished(template, paper: template)
+        XCTAssertNil(sections.percent[id])
+        XCTAssertNil(sections.ready[id])
+    }
+
     func testLoopbackAuthenticationSurvivesInvalidRequestAndCompletes() async throws {
         let opened = expectation(description: "Browser opens only after listener is ready")
         var redirect: URL?

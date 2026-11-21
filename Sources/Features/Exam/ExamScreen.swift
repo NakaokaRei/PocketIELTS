@@ -88,6 +88,7 @@ struct MockIntroScreen: View {
 }
 
 struct ExamScreen: View {
+    var onPracticeEnd: () -> Void = {}
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     var isMock = false
@@ -479,6 +480,7 @@ struct ExamScreen: View {
         recorded.insert(part.id)
     }
     private func endPractice() {
+        onPracticeEnd()
         speaker.stopSpeaking(at: .immediate)
         audio.stop(); audio.cancelTranscription()
         if completing { units.forEach(saveResult) }
@@ -694,10 +696,26 @@ struct GeneratedExamScreen: View {
     @State private var attempt = 0
     @State private var settings = false
     @Environment(\.dismiss) private var dismiss
+    private let sections = SectionPreparation.shared
+    private var section: ExamUnit? { isMock ? nil : templates.first }
+
+    init(templates: [ExamUnit], store: StoreOf<StudyFeature>, isMock: Bool = false) {
+        self.templates = templates
+        self.store = store
+        self.isMock = isMock
+        if !isMock, let template = templates.first,
+           let paper = SectionPreparation.shared.ready[SectionPreparation.shared.key(template)] {
+            _generated = State(initialValue: [paper])
+            _showQuestions = State(initialValue: true)
+        }
+    }
+
     var body: some View {
         ZStack {
             if showQuestions {
-                ExamScreen(units: generated, store: store, isMock: isMock)
+                ExamScreen(onPracticeEnd: {
+                    if let section, let paper = generated.first { sections.finished(section, paper: paper) }
+                }, units: generated, store: store, isMock: isMock)
                     .transition(reduceMotion ? .opacity : .move(edge: .trailing).combined(with: .opacity))
             } else {
                 GeometryReader { geometry in
@@ -710,10 +728,10 @@ struct GeneratedExamScreen: View {
                                 Button(String(localized: "ChatGPTの接続設定"), systemImage: "person.crop.circle") { settings = true }.buttonStyle(StudySecondaryButtonStyle())
                             } else {
                                 GenerationLoadingView(completed: generated.count, total: templates.count,
-                                                      started: generationStarted, completionStarted: completionStarted, fraction: generationFraction)
+                                                      started: generationStarted, completionStarted: completionStarted, fraction: section.flatMap { sections.percent[sections.key($0)].map { Double($0) / 100 } } ?? generationFraction)
                                 WaitingVocabularyView(words: store.vocabulary)
                             }
-                            Button(String(localized: "キャンセルして戻る"), systemImage: "xmark.circle") { dismiss() }
+                            Button(section != nil && UserDefaults.standard.bool(forKey: SectionPreparation.preference) ? String(localized: "Back to sections") : String(localized: "キャンセルして戻る"), systemImage: "chevron.backward") { dismiss() }
                                 .buttonStyle(StudySecondaryButtonStyle())
                         }.padding(24).frame(maxWidth: 480)
                             .frame(maxWidth: .infinity, minHeight: geometry.size.height)
@@ -722,6 +740,19 @@ struct GeneratedExamScreen: View {
             }
         }.clipped()
         .task(id: attempt) {
+            if let section {
+                guard !showQuestions else { return }
+                do {
+                    let paper = try await sections.open(section)
+                    try Task.checkCancellation()
+                    generated = [paper]
+                    generationFraction = 1
+                    completionStarted = Date()
+                    try await Task.sleep(for: .milliseconds(350))
+                    withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeInOut(duration: 0.38)) { showQuestions = true }
+                } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
+                return
+            }
             #if DEBUG
             if ProcessInfo.processInfo.arguments.contains("--ui-testing"),
                ProcessInfo.processInfo.arguments.contains("--ui-generation-preview") {
@@ -749,6 +780,9 @@ struct GeneratedExamScreen: View {
                 withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeInOut(duration: 0.38)) { showQuestions = true }
             } catch is CancellationError {
             } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
+        }
+        .onDisappear {
+            if let section, !showQuestions { sections.leaveLoading(section) }
         }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
     }

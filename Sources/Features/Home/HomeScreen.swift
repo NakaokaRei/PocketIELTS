@@ -5,6 +5,9 @@ struct HomeScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var settings = false
     @State private var practice = false
+    @AppStorage(SectionPreparation.preference) private var prepareAhead = false
+    @Environment(\.scenePhase) private var scenePhase
+    private let sections = SectionPreparation.shared
     private let units: [ExamUnit]
     private let loadError: String?
 
@@ -76,9 +79,16 @@ struct HomeScreen: View {
             store.send(.settings(.opened))
             store.send(.settings(.refreshAccount))
         }
+        .onChange(of: prepareAhead, initial: true) { configurePreparation() }
+        .onChange(of: store.settings.account.active) { configurePreparation() }
+        .onChange(of: scenePhase) { configurePreparation() }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         .fullScreenCover(isPresented: $practice, onDismiss: { store.send(.finish) }) { PracticeScreen(store: store) }
         .tint(StudyColors.accent)
+    }
+
+    private func configurePreparation() {
+        sections.configure(units, enabled: prepareAhead && store.settings.account.active != nil, active: scenePhase == .active)
     }
 
     private var skillGrid: some View {
@@ -180,22 +190,29 @@ struct HomeScreen: View {
                 Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(StudyTypography.headline)
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
                 ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
-                    VStack(alignment: .leading, spacing: 16) {
-                        StudyLink { ExamScreen(units: [part], store: store) } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
-                                    Label(String(localized: "収録問題で練習"), systemImage: "book.closed").font(StudyTypography.caption.bold())
-                                    Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(StudyTypography.subheadline)
-                                }
-                                Spacer(); Image(systemName: "chevron.right")
-                            }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
-                        }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
-                        Divider()
-                        StudyLink { GeneratedExamScreen(templates: [part], store: store) } label: {
-                            Label(String(localized: "新しい問題を生成して練習"), systemImage: "sparkles").font(StudyTypography.subheadline)
-                        }
-                    }.padding(20).background(tint, in: RoundedRectangle(cornerRadius: 20))
+                    let id = sections.key(part)
+                    StudyLink { GeneratedExamScreen(templates: [part], store: store) } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
+                                Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(StudyTypography.subheadline)
+                                Group {
+                                    if sections.ready[id] != nil {
+                                        Label(String(localized: "Ready to practise"), systemImage: "checkmark.circle.fill")
+                                    } else if let percent = sections.percent[id] {
+                                        ProgressView(value: Double(percent), total: 100)
+                                        Text(String(format: String(localized: "約 %@%% "), String(percent))).monospacedDigit()
+                                    } else if sections.errors[id] != nil {
+                                        Label(String(localized: "もう一度生成"), systemImage: "arrow.clockwise")
+                                    } else {
+                                        Label(String(localized: "新しい問題を生成して練習"), systemImage: "sparkles")
+                                    }
+                                }.font(StudyTypography.caption.bold())
+                            }
+                            Spacer(); Image(systemName: "chevron.right")
+                        }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+                            .background(tint, in: RoundedRectangle(cornerRadius: 20)).contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityIdentifier("part.open.\(part.id)")
                 }
                 Text(String(localized: "選んだ区分の全文・全設問で練習します。")).font(StudyTypography.footnote).foregroundStyle(StudyColors.secondaryText)
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }

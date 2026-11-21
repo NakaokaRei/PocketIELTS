@@ -276,7 +276,7 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["vocabulary.saveManual"].tap()
         navigate("ホーム", tag: 0)
         app.buttons["home.skill.Reading"].tap()
-        app.buttons["新しい問題を生成して練習"].firstMatch.tap()
+        app.buttons["part.open.Reading / Section 1"].tap()
         XCTAssertTrue(app.staticTexts["あなただけの問題を準備中"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["進捗の目安"].exists)
         let action = app.buttons["generation.nextWord"]

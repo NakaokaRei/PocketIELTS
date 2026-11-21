@@ -239,3 +239,134 @@ final class BackgroundGeneration {
         worker = nil
     }
 }
+
+// One prepared paper per section, shared by the section list and its loading screen.
+@MainActor @Observable
+final class SectionPreparation {
+    static let shared = SectionPreparation()
+    static let preference = "prepare-sections-in-advance"
+    private let directory: URL
+    private(set) var ready: [String: ExamUnit] = [:]
+    private(set) var percent: [String: Int] = [:]
+    private(set) var errors: [String: String] = [:]
+    private var templates: [ExamUnit] = []
+    private var automatic = false
+    private var jobs: [String: Task<ExamUnit, Error>] = [:]
+    private var automaticJob: String?
+    private var opened = Set<String>()
+    private var pausedAfterFailure = false
+
+    private let generate: @MainActor (ExamUnit) async throws -> ExamUnit
+
+    private static var cacheDirectory: URL {
+        var root = URL.applicationSupportDirectory
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing") {
+            root = URL.temporaryDirectory.appending(path: "SectionPreparation-UITests")
+            if ProcessInfo.processInfo.arguments.contains("--ui-reset") { try? FileManager.default.removeItem(at: root) }
+        }
+        #endif
+        return root.appending(path: "PreparedSections").appending(path: Bundle.main.preferredLocalizations.first ?? "en")
+    }
+
+    private static func generatePaper(_ template: ExamUnit) async throws -> ExamUnit {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing") {
+            if ProcessInfo.processInfo.arguments.contains("--ui-generation-preview") { try await Task.sleep(for: .seconds(120)) }
+            return template
+        }
+        #endif
+        return try await StudyClient.generateUnit(like: template)
+    }
+
+    private convenience init() {
+        self.init(directory: Self.cacheDirectory, generate: Self.generatePaper)
+    }
+
+    init(directory: URL, generate: @escaping @MainActor (ExamUnit) async throws -> ExamUnit) {
+        self.directory = directory
+        self.generate = generate
+        for url in (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? [] {
+            if let data = try? Data(contentsOf: url), let unit = try? JSONDecoder().decode(ExamUnit.self, from: data) {
+                ready[url.deletingPathExtension().lastPathComponent] = unit
+            }
+        }
+    }
+
+    func key(_ template: ExamUnit) -> String { template.id.replacingOccurrences(of: "/", with: "_") }
+
+    func configure(_ units: [ExamUnit], enabled: Bool, active: Bool) {
+        templates = active ? units : []
+        if enabled != automatic { pausedAfterFailure = false }
+        automatic = enabled
+        if !enabled, let id = automaticJob, !opened.contains(id) { jobs[id]?.cancel() }
+        schedule()
+    }
+
+    private func schedule() {
+        guard automatic, !pausedAfterFailure, jobs.isEmpty,
+              let next = templates.first(where: { ready[key($0)] == nil && errors[key($0)] == nil }) else { return }
+        automaticJob = key(next)
+        _ = start(next)
+    }
+
+    func open(_ template: ExamUnit) async throws -> ExamUnit {
+        let id = key(template)
+        if let paper = ready[id] { return paper }
+        opened.insert(id)
+        defer { opened.remove(id) }
+        return try await start(template).value
+    }
+
+    func leaveLoading(_ template: ExamUnit) {
+        let id = key(template)
+        if !automatic { jobs[id]?.cancel() }
+    }
+
+    func finished(_ template: ExamUnit, paper: ExamUnit) {
+        let id = key(template)
+        guard ready[id] == paper else { return }
+        try? FileManager.default.removeItem(at: directory.appending(path: id + ".json"))
+        ready[id] = nil
+        if automatic, !templates.isEmpty { templates.removeAll { key($0) == id }; templates.insert(template, at: 0) }
+        schedule()
+    }
+
+    private func start(_ template: ExamUnit) -> Task<ExamUnit, Error> {
+        let id = key(template)
+        if let job = jobs[id] { return job }
+        errors[id] = nil
+        percent[id] = 0
+        let job = Task<ExamUnit, Error> {
+            defer {
+                jobs[id] = nil
+                percent[id] = nil
+                if automaticJob == id { automaticJob = nil }
+                schedule()
+            }
+            do {
+                let unit = try await BackgroundGeneration.run(title: template.id, total: 1, useSystemScheduler: automaticJob != id,
+                    completionDuration: 0.8, onProgress: { fraction in
+                        let value = Int(fraction * 100)
+                        if self.percent[id] != value { self.percent[id] = value }
+                    }) { _ in
+                        try await self.generate(template)
+                    }
+                try Task.checkCancellation()
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                try JSONEncoder().encode(unit).write(to: directory.appending(path: id + ".json"), options: .atomic)
+                ready[id] = unit
+                pausedAfterFailure = false
+                return unit
+            } catch {
+                if !Task.isCancelled {
+                    errors[id] = error.localizedDescription
+                    pausedAfterFailure = true
+                }
+                throw error
+            }
+        }
+        jobs[id] = job
+        return job
+    }
+}

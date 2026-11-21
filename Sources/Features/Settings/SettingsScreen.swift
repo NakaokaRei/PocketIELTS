@@ -7,6 +7,7 @@ struct SettingsScreen: View {
     let store: StoreOf<SettingsFeature>
     @AppStorage(SpeakingModel.preferenceKey) private var speakingModel = SpeakingModel.mini.rawValue
     @AppStorage(QuestionImage.preferenceKey) private var generateImages = false
+    @AppStorage(SectionPreparation.preference) private var prepareAhead = false
     @State private var speechKey = ""
     @State private var speechKeySaved = false
     @State private var speechKeyError: String?
@@ -38,6 +39,12 @@ struct SettingsScreen: View {
                 } header: { Text(String(localized: "ChatGPT アカウント")) }
                   footer: { Text(String(localized: "問題の生成とAI解説に、接続したChatGPTプランの利用枠を使います。")) }
                   .disabled(store.connecting)
+                Section {
+                    Toggle(String(localized: "Prepare the next questions automatically"), isOn: $prepareAhead)
+                        .accessibilityIdentifier("settings.prepareAhead")
+                } footer: {
+                    Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. After practice, prepare its replacement."))
+                }
                 Section {
                     Label(speechKeySaved ? String(localized: "APIキーを保存済み") : String(localized: "APIキーが未設定です"), systemImage: speechKeySaved ? "checkmark.shield" : "key")
                     SecureField(String(localized: "音声生成用APIキー"), text: $speechKey)
