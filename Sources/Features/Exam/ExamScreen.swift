@@ -89,13 +89,14 @@ struct MockIntroScreen: View {
 }
 
 struct ExamScreen: View {
-    var onPracticeEnd: () -> Void = {}
+    var onFirstReview: () -> Void = {}
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     var isMock = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.studyNavigation) private var navigation
     @State private var confirmEnd = false
+    @State private var hasReachedReview = false
     @State private var completing = false
     @FocusState private var answerFocused: Bool
     @State private var position = 0
@@ -156,8 +157,9 @@ struct ExamScreen: View {
         .toolbar {
             if !finished && !units.isEmpty && !answerFocused {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(String(localized: "終了"), systemImage: "chevron.backward") {
-                        completing = false; confirmEnd = true
+                    Button(isMock ? String(localized: "終了") : String(localized: "Back"), systemImage: "chevron.backward") {
+                        if isMock { completing = false; confirmEnd = true }
+                        else { dismiss() }
                     }.labelStyle(.iconOnly).accessibilityIdentifier("practice.back")
                 }
             }
@@ -311,6 +313,10 @@ struct ExamScreen: View {
                         speaker.stopSpeaking(at: .immediate)
                         reviewed.insert(unit.id)
                         saveResult(unit)
+                        if !hasReachedReview {
+                            hasReachedReview = true
+                            onFirstReview()
+                        }
                     } else { advance() }
                 } label: {
                     Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
@@ -481,7 +487,6 @@ struct ExamScreen: View {
         recorded.insert(part.id)
     }
     private func endPractice() {
-        onPracticeEnd()
         speaker.stopSpeaking(at: .immediate)
         audio.stop(); audio.cancelTranscription()
         if completing { units.forEach(saveResult) }
@@ -714,7 +719,7 @@ struct GeneratedExamScreen: View {
     var body: some View {
         ZStack {
             if showQuestions {
-                ExamScreen(onPracticeEnd: {
+                ExamScreen(onFirstReview: {
                     if let section, let paper = generated.first { sections.finished(section, paper: paper) }
                 }, units: generated, store: store, isMock: isMock)
                     .transition(reduceMotion ? .opacity : .move(edge: .trailing).combined(with: .opacity))

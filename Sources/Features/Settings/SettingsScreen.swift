@@ -44,7 +44,7 @@ struct SettingsScreen: View {
                     Toggle(String(localized: "Prepare the next questions automatically"), isOn: $prepareAhead)
                         .accessibilityIdentifier("settings.prepareAhead")
                 } footer: {
-                    Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. After practice, prepare its replacement."))
+                    Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. Open the answer review to prepare the next exercise."))
                 }
                 Section {
                     Toggle(String(localized: "Generate audio with new listening exercises"), isOn: $prepareAudio)

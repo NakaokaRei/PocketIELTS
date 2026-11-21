@@ -1,6 +1,83 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Back" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رجوع"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वापस"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戻る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뒤로"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กลับ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quay lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        }
+      }
+    },
     "Back to sections" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6011,79 +6088,79 @@
         }
       }
     },
-    "While you use the app, prepare one exercise per section using your connected ChatGPT plan. After practice, prepare its replacement." : {
+    "While you use the app, prepare one exercise per section using your connected ChatGPT plan. Open the answer review to prepare the next exercise." : {
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "أثناء استخدام التطبيق، تُستخدم خطة ChatGPT المتصلة لتحضير تمرين لكل قسم. بعد إنهاء التمرين يُحضَّر تمرين جديد للقسم نفسه."
+            "value" : "أثناء استخدام التطبيق، تُستخدم خطة ChatGPT المتصلة لتحضير تمرين لكل قسم. يبدأ تحضير التمرين التالي عند فتح مراجعة الإجابات."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "While you use the app, prepare one exercise per section using your connected ChatGPT plan. After practice, prepare its replacement."
+            "value" : "While you use the app, prepare one exercise per section using your connected ChatGPT plan. Open the answer review to prepare the next exercise."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mientras usas la app, tu plan de ChatGPT conectado prepara un ejercicio por sección. Al terminar, se prepara otro para esa sección."
+            "value" : "Mientras usas la app, tu plan de ChatGPT conectado prepara un ejercicio por sección. El siguiente se prepara cuando abres la revisión de respuestas."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ऐप का उपयोग करते समय, जुड़ा हुआ ChatGPT प्लान हर सेक्शन के लिए एक अभ्यास तैयार करता है। अभ्यास समाप्त करने पर उस सेक्शन का अगला अभ्यास तैयार होता है।"
+            "value" : "ऐप का उपयोग करते समय, जुड़ा हुआ ChatGPT प्लान हर सेक्शन के लिए एक अभ्यास तैयार करता है। उत्तरों की समीक्षा खोलने पर अगला अभ्यास तैयार होता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saat Anda menggunakan aplikasi, paket ChatGPT yang terhubung menyiapkan satu latihan per bagian. Setelah latihan berakhir, latihan berikutnya akan disiapkan untuk bagian itu."
+            "value" : "Saat Anda menggunakan aplikasi, paket ChatGPT yang terhubung menyiapkan satu latihan per bagian. Latihan berikutnya disiapkan saat Anda membuka ulasan jawaban."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリの使用中に、接続したChatGPTプランの利用枠で各セクションに1題ずつ用意します。練習を終了すると、そのセクションの次の問題を準備します。"
+            "value" : "アプリの使用中に、接続したChatGPTプランの利用枠で各セクションに1題ずつ用意します。答えと解説を開くと、そのセクションの次の問題を準備します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 사용 중 연결한 ChatGPT 플랜으로 섹션마다 연습 문제를 하나씩 준비합니다. 연습을 마치면 해당 섹션의 다음 문제를 준비합니다."
+            "value" : "앱 사용 중 연결한 ChatGPT 플랜으로 섹션마다 연습 문제를 하나씩 준비합니다. 정답과 해설을 열면 해당 섹션의 다음 문제를 준비합니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enquanto você usa o app, seu plano do ChatGPT conectado prepara um exercício por seção. Ao terminar, outro é preparado para essa seção."
+            "value" : "Enquanto você usa o app, seu plano do ChatGPT conectado prepara um exercício por seção. O próximo é preparado quando você abre a revisão das respostas."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ระหว่างใช้แอป ระบบจะใช้แพ็กเกจ ChatGPT ที่เชื่อมต่อเพื่อเตรียมแบบฝึกหัดหนึ่งชุดต่อส่วน เมื่อจบการฝึก ระบบจะเตรียมชุดถัดไปสำหรับส่วนนั้น"
+            "value" : "ระหว่างใช้แอป ระบบจะใช้แพ็กเกจ ChatGPT ที่เชื่อมต่อเพื่อเตรียมแบบฝึกหัดหนึ่งชุดต่อส่วน เมื่อเปิดดูเฉลย ระบบจะเตรียมชุดถัดไปสำหรับส่วนนั้น"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khi bạn dùng ứng dụng, gói ChatGPT đã kết nối sẽ chuẩn bị một bài cho mỗi phần. Khi bạn kết thúc bài tập, một bài mới sẽ được chuẩn bị cho phần đó."
+            "value" : "Khi bạn dùng ứng dụng, gói ChatGPT đã kết nối sẽ chuẩn bị một bài cho mỗi phần. Bài tiếp theo được chuẩn bị khi bạn mở phần xem lại đáp án."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用应用时，通过已连接的 ChatGPT 套餐为每个分区准备一份练习。结束练习后会为该分区准备下一份。"
+            "value" : "使用应用时，通过已连接的 ChatGPT 套餐为每个分区准备一份练习。打开答案解析后，系统会为该分区准备下一份练习。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 App 時，透過已連結的 ChatGPT 方案為每個區段準備一份練習。結束練習後會為該區段準備下一份。"
+            "value" : "使用 App 時，透過已連結的 ChatGPT 方案為每個區段準備一份練習。開啟答案解析後，系統會為該區段準備下一份練習。"
           }
         }
       }
