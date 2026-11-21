@@ -144,7 +144,7 @@ The original [pocket-book app icon](Documentation/Brand/README.md) includes ligh
 
 ## Saved learning and vocabulary
 
-Open **Practise saved questions** from Home or a skill’s part picker. Saved questions live with practice entry points, while Vocabulary contains saved words and expressions. Each expression can open the AI tutor with its original context and word-focused suggested questions. Delete uses a confirmation alert; deletion records sync through iCloud so an older offline copy does not restore the word.
+Open **Practise saved questions** from Home. Each skill’s part picker opens generated exercises. Saved questions live with practice entry points, while Vocabulary contains saved words and expressions. Each expression can open the AI tutor with its original context and word-focused suggested questions. Delete uses a confirmation alert; deletion records sync through iCloud so an older offline copy does not restore the word.
 
 ## Continuous integration and dependencies
 

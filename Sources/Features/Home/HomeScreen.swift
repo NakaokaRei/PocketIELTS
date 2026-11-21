@@ -184,9 +184,6 @@ struct HomeScreen: View {
             VStack(alignment: .leading, spacing: 24) {
                 Text("GENERAL TRAINING").font(StudyTypography.caption.bold()).foregroundStyle(StudyColors.accent)
                 Text(skill).font(StudyTypography.roundedTitle(34))
-                StudyLink { SavedPapersScreen(store: store, skill: skill) } label: {
-                    Label(String(localized: "保存した問題から練習"), systemImage: "bookmark.fill")
-                }.buttonStyle(StudySecondaryButtonStyle()).accessibilityIdentifier("part.savedPapers")
                 Text(String(format: String(localized: "練習する%@を選択"), String(noun))).font(StudyTypography.headline)
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
                 ForEach(Array(parts.enumerated()), id: \.element.id) { index, part in
@@ -453,9 +450,9 @@ struct SavedPapersScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var selectedSkill: String
     @State private var deleting: ExamUnit?
-    init(store: StoreOf<StudyFeature>, skill: String? = nil) {
+    init(store: StoreOf<StudyFeature>) {
         self.store = store
-        _selectedSkill = State(initialValue: skill ?? SavedPaperGrouping.skills.first(where: { candidate in store.papers.contains { $0.skill == candidate } }) ?? "Reading")
+        _selectedSkill = State(initialValue: SavedPaperGrouping.skills.first(where: { candidate in store.papers.contains { $0.skill == candidate } }) ?? "Reading")
     }
     private var papers: [ExamUnit] { store.papers.filter { $0.skill == selectedSkill } }
     private var groups: [String] { Array(Set(papers.map(SavedPaperGrouping.part))).sorted { $0.localizedStandardCompare($1) == .orderedAscending } }

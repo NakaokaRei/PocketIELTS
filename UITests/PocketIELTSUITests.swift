@@ -88,6 +88,7 @@ final class PocketIELTSUITests: XCTestCase {
         for section in 1...3 {
             XCTAssertTrue(app.buttons["part.open.Reading / Section \(section)"].waitForExistence(timeout: 12))
         }
+        XCTAssertFalse(app.buttons["保存した問題から練習"].exists)
         capture("iphone-reading-sections")
         app.buttons["part.open.Reading / Section 1"].tap()
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
