@@ -400,8 +400,8 @@ struct ExamScreen: View {
             if part.questions.isEmpty {
                 DisclosureGroup(part.title) {
                     VStack(alignment: .leading, spacing: 12) {
-                        if !part.directions.isEmpty { Text(part.directions) }
-                        ForEach(Array((part.passages + part.oral).enumerated()), id: \.offset) { _, text in Text(text) }
+                        if !part.directions.isEmpty { reviewText(part.directions) }
+                        ForEach(Array((part.passages + part.oral).enumerated()), id: \.offset) { _, text in reviewText(text) }
                         if isMock {
                             ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         }
@@ -456,10 +456,16 @@ struct ExamScreen: View {
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
     }
+    private func reviewText(_ text: String) -> some View {
+        ExamMaterialText(text: text) { fragment, _ in Text(verbatim: fragment) }
+    }
+
     private func selectable(_ text: String, id: String) -> some View {
-        SelectableStudyText(text: text, sourceID: unit.id + id, onSave: { save($0, paper: unit) },
-            onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
-            onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
+        ExamMaterialText(text: text) { fragment, suffix in
+            SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { save($0, paper: unit) },
+                onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
+                onSavePaper: { store.send(.savePaper(unit)) }, allowsAI: !isMock)
+        }
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
         store.send(.saveExpression(SavedExpression(expression: entry.expression, source: paper.id,
@@ -909,12 +915,24 @@ struct QuestionReviewActions: View {
     }
     @State private var destination: Destination?
     private var question: ReadingSet.Question { part.questions[index] }
-    private var paragraphs: [String] {
-        (part.passages + [part.audio ?? ""]).flatMap { $0.split(whereSeparator: \.isNewline).map(String.init) }
+    private var paragraphs: [ExamMaterialBlock] {
+        ([part.directions] + part.passages + [part.audio ?? ""]).flatMap { text in
+            ExamMaterialBlock.parse(text).flatMap { block -> [ExamMaterialBlock] in
+                if case let .prose(value) = block {
+                    return value.split(whereSeparator: \.isNewline).map { .prose(String($0)) }
+                }
+                return [block]
+            }
+        }
     }
     private var target: Int? {
         guard let quote = question.evidenceQuote?.trimmingCharacters(in: .whitespacesAndNewlines), !quote.isEmpty else { return nil }
-        return paragraphs.firstIndex { $0.localizedCaseInsensitiveContains(quote) }
+        return paragraphs.firstIndex { block in
+            switch block {
+            case let .prose(text): return text.localizedCaseInsensitiveContains(quote)
+            case let .table(rows): return rows.contains { $0.joined(separator: " ").localizedCaseInsensitiveContains(quote) }
+            }
+        }
     }
     private var context: String {
         ([part.title, part.directions] + part.passages + [part.audio ?? "", QuestionVisual.context(part.visuals),
@@ -942,11 +960,14 @@ struct QuestionReviewActions: View {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text(question.prompt).font(StudyTypography.headline)
-                                Text(StudyQuestionLayout(question.instruction).formatted)
+                                ExamMaterialText(text: StudyQuestionLayout(question.instruction).formatted) { fragment, _ in Text(verbatim: fragment) }
                                 ForEach(StudyQuestionLayout(question.prompt).options, id: \.label) { option in Text(option.label + ". " + option.text) }
                                 ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
+                                let paragraphs = self.paragraphs
+                                let target = self.target
                                 ForEach(paragraphs.indices, id: \.self) { i in
-                                    Text(paragraphs[i]).textSelection(.enabled).padding(8)
+                                    ExamMaterialText(blocks: [paragraphs[i]]) { fragment, _ in Text(verbatim: fragment) }
+                                        .textSelection(.enabled).padding(8)
                                         .background(i == target ? StudyColors.reading : Color.clear, in: RoundedRectangle(cornerRadius: 8))
                                         .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
                                         .id(i)
@@ -961,5 +982,104 @@ struct QuestionReviewActions: View {
                 }
             }
         }
+    }
+}
+
+/// Generated papers can contain a Markdown table inside otherwise plain, selectable prose.
+enum ExamMaterialBlock: Equatable {
+    case prose(String)
+    case table([[String]])
+
+    static func parse(_ text: String) -> [Self] {
+        guard text.contains("|"), text.contains("---") else { return [.prose(text)] }
+        let lines = text.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map(String.init)
+        var blocks: [Self] = []
+        var start = 0
+        var index = 0
+        func appendProse(until end: Int) {
+            let value = lines[start..<end].joined(separator: "\n").trimmingCharacters(in: .newlines)
+            if !value.isEmpty { blocks.append(.prose(value)) }
+        }
+        while index + 1 < lines.count {
+            let header = cells(lines[index])
+            let separator = cells(lines[index + 1])
+            guard header.count >= 2, separator.count == header.count,
+                  separator.allSatisfy({ $0.range(of: "^:?-{3,}:?$", options: .regularExpression) != nil }) else {
+                index += 1
+                continue
+            }
+            appendProse(until: index)
+            var rows = [header]
+            index += 2
+            while index < lines.count {
+                let row = cells(lines[index])
+                guard row.count == header.count else { break }
+                rows.append(row)
+                index += 1
+            }
+            blocks.append(.table(rows))
+            start = index
+        }
+        guard !blocks.isEmpty else { return [.prose(text)] }
+        appendProse(until: lines.count)
+        return blocks
+    }
+
+    private static func cells(_ line: String) -> [String] {
+        var row = line.trimmingCharacters(in: .whitespaces)[...]
+        if row.first == "|" { row.removeFirst() }
+        if row.last == "|" { row.removeLast() }
+        return row.split(separator: "|", omittingEmptySubsequences: false).map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+    }
+}
+
+struct ExamMaterialText<Cell: View>: View {
+    let blocks: [ExamMaterialBlock]
+    @ViewBuilder let cell: (String, String) -> Cell
+
+    init(text: String, @ViewBuilder cell: @escaping (String, String) -> Cell) {
+        self.init(blocks: ExamMaterialBlock.parse(text), cell: cell)
+    }
+
+    init(blocks: [ExamMaterialBlock], @ViewBuilder cell: @escaping (String, String) -> Cell) {
+        self.blocks = blocks
+        self.cell = cell
+    }
+    @ScaledMetric(relativeTo: .body) private var minimumColumnWidth: CGFloat = 95
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            ForEach(blocks.indices, id: \.self) { index in
+                switch blocks[index] {
+                case let .prose(value):
+                    cell(value, blocks.count == 1 ? "" : "-text-\(index)")
+                case let .table(rows):
+                    let minimumWidth = CGFloat(rows[0].count) * minimumColumnWidth
+                    ViewThatFits(in: .horizontal) {
+                        table(rows, index: index).frame(minWidth: minimumWidth)
+                        ScrollView(.horizontal) { table(rows, index: index).frame(width: minimumWidth) }
+                    }
+                }
+            }
+        }
+    }
+
+    private func table(_ rows: [[String]], index: Int) -> some View {
+        VStack(spacing: 0) {
+            ForEach(rows.indices, id: \.self) { row in
+                if row > 0 { Divider() }
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(rows[row].indices, id: \.self) { column in
+                        cell(rows[row][column], "-table-\(index)-\(row)-\(column)")
+                            .padding(8).frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .background(row == 0 ? StudyColors.reading : Color.clear)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(.secondary.opacity(0.35)) }
     }
 }

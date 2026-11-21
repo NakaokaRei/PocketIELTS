@@ -1,4 +1,5 @@
 import AVFoundation
+import SwiftUI
 import XCTest
 import UIKit
 import ComposableArchitecture
@@ -6,6 +7,56 @@ import ComposableArchitecture
 
 @MainActor
 final class PocketIELTSTests: XCTestCase {
+    func testExamMaterialPreservesTableBlanksAndSurroundingDirections() {
+        let material = """
+        Complete the table.
+
+        | Event | Detail | Information |
+        | :--- | :---: | ---: |
+        | Dawn bird walk | Meeting point | (1) _____ |
+        | Lantern workshop | Cost per person | £(6) _____ |
+
+        Questions 7–10
+        """
+        XCTAssertEqual(ExamMaterialBlock.parse(material.replacingOccurrences(of: "\n", with: "\r\n")), [
+            .prose("Complete the table."),
+            .table([["Event", "Detail", "Information"], ["Dawn bird walk", "Meeting point", "(1) _____"],
+                    ["Lantern workshop", "Cost per person", "£(6) _____"]]),
+            .prose("Questions 7–10")
+        ])
+        let plain = "Choose A | B.\n---"
+        XCTAssertEqual(ExamMaterialBlock.parse(plain), [.prose(plain)])
+    }
+
+    func testExamTablePlacesSelectableWordsUnderTheirHeaders() throws {
+        let view = ExamMaterialText(text: "| Event | Detail | Information |\n| --- | --- | --- |\n| Dawn bird walk | Meeting point | (1) _____ |") { value, id in
+            SelectableStudyText(text: value, sourceID: id, onSave: { _ in })
+        }
+        let host = UIHostingController(rootView: view)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 375, height: 600))
+        window.rootViewController = host
+        window.isHidden = false
+        defer { window.isHidden = true }
+        host.view.layoutIfNeeded()
+        func textViews(in view: UIView) -> [UITextView] {
+            view.subviews.flatMap { child in
+                if let text = child as? UITextView { return [text] }
+                return textViews(in: child)
+            }
+        }
+        let cells = textViews(in: host.view)
+        func rect(_ value: String) throws -> CGRect {
+            let cell = try XCTUnwrap(cells.first { $0.text == value && $0.window != nil })
+            return cell.convert(cell.bounds, to: host.view)
+        }
+        let event = try rect("Event")
+        let blank = try rect("(1) _____")
+        XCTAssertGreaterThan(blank.minX, event.maxX)
+        XCTAssertGreaterThanOrEqual(blank.minY, event.maxY)
+        XCTAssertEqual(blank.minX, try rect("Information").minX, accuracy: 1)
+        XCTAssertLessThanOrEqual(blank.maxX, window.bounds.width)
+    }
+
     func testSectionPreparesOnceAndRefillsAfterExit() async throws {
         let template = try XCTUnwrap(ExamUnit.load().first)
         let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
