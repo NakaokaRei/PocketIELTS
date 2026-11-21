@@ -81,7 +81,7 @@ struct QuestionVisualView: View {
             HStack(alignment: .top) {
                 Text(visual.title).font(StudyTypography.headline)
                 Spacer()
-                Button { expanded = true } label: {
+                Button { presentFigure(true) } label: {
                     Image(systemName: "arrow.up.left.and.arrow.down.right")
                         .frame(width: 44, height: 44)
                 }.buttonStyle(.plain).foregroundStyle(StudyColors.accent)
@@ -89,6 +89,7 @@ struct QuestionVisualView: View {
                     .accessibilityIdentifier("question.visual.expand")
             }
             artwork.aspectRatio(4 / 3, contentMode: .fit)
+                .contentShape(Rectangle()).onTapGesture { presentFigure(true) }
             if visual.imageData != nil {
                 Toggle(String(localized: "Show original diagram"), isOn: $showOriginal)
                     .font(StudyTypography.subheadline)
@@ -97,13 +98,16 @@ struct QuestionVisualView: View {
                     .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
             }
         }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
-            .sheet(isPresented: $expanded) {
-                NavigationStack {
-                    ZoomableQuestionFigure { artwork }
-                    .navigationTitle(visual.title).navigationBarTitleDisplayMode(.inline)
-                        .toolbar { Button(String(localized: "完了")) { expanded = false } }
-                }
+            .fullScreenCover(isPresented: $expanded) {
+                FigureLightbox(close: { presentFigure(false) }) { artwork }
+                    .presentationBackground(.clear)
             }
+    }
+
+    private func presentFigure(_ value: Bool) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { expanded = value }
     }
 
     @ViewBuilder private var artwork: some View {
@@ -158,6 +162,45 @@ struct QuestionVisualView: View {
 }
 
 
+private struct FigureLightbox<Artwork: View>: View {
+    let close: () -> Void
+    @ViewBuilder var artwork: () -> Artwork
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var visible = false
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Color.black.opacity(visible ? 0.6 : 0)
+                .ignoresSafeArea().onTapGesture { dismissFigure() }
+                .accessibilityHidden(true)
+            ZoomableQuestionFigure {
+                artwork().background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .scaleEffect(visible || reduceMotion ? 1 : 0.88)
+            .opacity(visible ? 1 : 0)
+            Button(action: dismissFigure) {
+                Image(systemName: "xmark").font(.headline).frame(width: 44, height: 44)
+                    .background(.regularMaterial, in: Circle())
+            }.padding(12).buttonStyle(.plain).opacity(visible ? 1 : 0)
+                .accessibilityLabel(String(localized: "閉じる"))
+                .accessibilityIdentifier("question.visual.close")
+        }
+        .task {
+            do { try await Task.sleep(for: .milliseconds(20)) } catch { return }
+            withAnimation(.easeOut(duration: reduceMotion ? 0.15 : 0.28)) { visible = true }
+        }
+        .accessibilityAction(.escape) { dismissFigure() }
+    }
+
+    private func dismissFigure() {
+        guard visible else { return }
+        withAnimation(.easeInOut(duration: reduceMotion ? 0.12 : 0.2), completionCriteria: .removed) {
+            visible = false
+        } completion: { close() }
+    }
+}
+
 /// A fitted canvas with bounded pinch zoom and pan, including an accessible reset.
 private struct ZoomableQuestionFigure<Content: View>: View {
     @ViewBuilder var content: () -> Content
@@ -174,9 +217,8 @@ private struct ZoomableQuestionFigure<Content: View>: View {
                                                   height: offset.height + translation.height),
                                            fit: fit, viewport: proxy.size, scale: zoom)
             content().frame(width: fit.width, height: fit.height)
+                .contentShape(Rectangle())
                 .scaleEffect(zoom).offset(pan)
-                .frame(width: proxy.size.width, height: proxy.size.height)
-                .contentShape(Rectangle()).clipped()
                 .gesture(MagnifyGesture().updating($magnification) { value, state, _ in state = value.magnification }
                     .onEnded { value in
                         scale = min(5, max(1, scale * value.magnification))
@@ -194,6 +236,7 @@ private struct ZoomableQuestionFigure<Content: View>: View {
                     offset = FigureViewport.clamp(offset, fit: fit, viewport: proxy.size, scale: scale)
                 }
                 .accessibilityValue("\(Int(zoom * 100))%")
+                .frame(width: proxy.size.width, height: proxy.size.height).clipped()
                 .overlay(alignment: .bottomTrailing) {
                     Button { scale = 1; offset = .zero } label: {
                         Image(systemName: "arrow.counterclockwise").frame(width: 44, height: 44)

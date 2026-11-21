@@ -180,14 +180,14 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(expand.isHittable)
         capture("iphone-reading-figure")
         expand.tap()
-        XCTAssertTrue(app.buttons["完了"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["question.visual.close"].waitForExistence(timeout: 5))
         let figure = app.otherElements["question.visual"].firstMatch
         if figure.exists { figure.pinch(withScale: 2, velocity: 1) }
         let reset = app.buttons["question.visual.resetZoom"]
         XCTAssertTrue(reset.exists)
         reset.tap()
         capture("iphone-reading-figure-expanded")
-        app.buttons["完了"].tap()
+        app.buttons["question.visual.close"].tap()
         XCTAssertTrue(expand.waitForExistence(timeout: 5))
     }
 
@@ -199,9 +199,9 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(expand.isHittable)
         capture("iphone-listening-figure")
         expand.tap()
-        XCTAssertTrue(app.buttons["完了"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["question.visual.close"].waitForExistence(timeout: 5))
         capture("iphone-listening-figure-expanded")
-        app.buttons["完了"].tap()
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.18)).tap()
         XCTAssertTrue(expand.waitForExistence(timeout: 5))
     }
 
@@ -350,7 +350,7 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["完了"].tap()
         retry.tap()
         XCTAssertTrue(app.buttons["practice.review"].exists)
-        app.buttons["practice.back"].tap()
+        app.navigationBars.buttons.firstMatch.tap()
         let part = app.buttons["part.open.Reading / Section 1"]
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
@@ -425,7 +425,8 @@ final class PocketIELTSUITests: XCTestCase {
     func testBackBeforeReviewKeepsPaperReadyAndReturnsToItsSource() {
         openReading()
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
-        app.buttons["practice.back"].tap()
+        let edge = app.coordinate(withNormalizedOffset: CGVector(dx: 0.003, dy: 0.5))
+        edge.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
         let part = app.buttons["part.open.Reading / Section 1"]
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
@@ -434,7 +435,7 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
         app.buttons["practice.saveToolbar"].tap()
         app.alerts.buttons["学習を続ける"].tap()
-        app.buttons["practice.back"].tap()
+        app.navigationBars.buttons.firstMatch.tap()
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
         let savedPapers = app.buttons["home.savedPapers"]
@@ -442,9 +443,31 @@ final class PocketIELTSUITests: XCTestCase {
         savedPapers.tap()
         let saved = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
         XCTAssertTrue(saved.waitForExistence(timeout: 5)); saved.tap()
-        app.buttons["practice.back"].tap()
+        app.navigationBars.buttons.firstMatch.tap()
         XCTAssertTrue(saved.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
+    }
+
+    func testResetRequiresConfirmationAndClearsPersonalVocabulary() {
+        navigate("単語帳", tag: 2)
+        app.buttons["vocabulary.add"].tap()
+        let field = app.descendants(matching: .any)["vocabulary.expression"].firstMatch
+        field.tap(); field.typeText("refund")
+        if app.buttons["入力を完了"].exists { app.buttons["入力を完了"].tap() }
+        app.buttons["vocabulary.saveManual"].tap()
+        XCTAssertTrue(app.staticTexts["refund"].waitForExistence(timeout: 5))
+        navigate("ホーム", tag: 0)
+        app.buttons["home.settings"].tap()
+        let reset = app.buttons["settings.resetLearningData"]
+        for _ in 0..<12 where !reset.isHittable { app.swipeUp() }
+        reset.tap()
+        app.alerts.buttons["キャンセル"].tap()
+        reset.tap()
+        app.alerts.buttons["削除"].tap()
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
+        navigate("単語帳", tag: 2)
+        XCTAssertTrue(app.buttons["vocabulary.add"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["refund"].exists)
     }
 
     func testMockExitHasTwoChoices() {

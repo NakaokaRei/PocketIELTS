@@ -521,6 +521,25 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(japanese.localizedString(forKey: "音声会話を始める", value: nil, table: nil), "音声会話を始める")
     }
 
+    func testCloudResetRejectsOldOfflineItemsAndPreservesNewStudy() throws {
+        var phone = CloudStudyJournal(), tablet = CloudStudyJournal()
+        let before = Date(timeIntervalSince1970: 100)
+        let after = before.addingTimeInterval(20)
+        let paper = try XCTUnwrap(ExamUnit.load().first)
+        try tablet.capture(.init(vocabulary: [.legacy("old")], results: [
+            StudyResult(skill: paper.skill, title: paper.title, correct: 1, total: 2, recordingFile: "test.m4a")
+        ], papers: [paper]), at: before)
+        phone.reset(at: before.addingTimeInterval(10))
+        try phone.capture(.init(vocabulary: [.legacy("new")]), at: after)
+        phone.merge(Array(tablet.items.values))
+        tablet.merge(Array(phone.items.values))
+        XCTAssertEqual(try phone.snapshot(), try tablet.snapshot())
+        XCTAssertEqual(try tablet.snapshot().vocabulary.map(\.expression), ["new"])
+        XCTAssertTrue(try tablet.snapshot().results.isEmpty)
+        XCTAssertTrue(try tablet.snapshot().papers.isEmpty)
+        XCTAssertTrue(tablet.items.values.allSatisfy { $0.recording == nil })
+    }
+
     func testCloudMergePreservesOfflineAdditionsAndLatestMeaning() throws {
         let word = SavedExpression(expression: "library", source: "Reading", sourceText: "The library is open.")
         var phone = CloudStudyJournal(), tablet = CloudStudyJournal()

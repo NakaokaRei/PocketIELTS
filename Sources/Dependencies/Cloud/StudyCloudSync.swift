@@ -74,10 +74,25 @@ struct CloudStudyJournal: Codable {
             items[item.key] = item
         }
     }
+    var resetDate: Date? { items["study-reset"]?.modified }
+
+    mutating func reset(at date: Date) {
+        let marker = CloudStudyItem(key: "study-reset", kind: "reset", payload: Data(), modified: date, revision: UUID().uuidString)
+        merge([marker])
+    }
+
     mutating func merge(_ remote: [CloudStudyItem]) {
         for item in remote {
             if let local = items[item.key], !item.wins(over: local) { continue }
             items[item.key] = item
+        }
+        // Replace pre-reset payloads (including previously unseen offline items) on the server.
+        if let marker = items["study-reset"] {
+            for item in items.values where item.key != marker.key && item.modified <= marker.modified
+                && ["word", "result", "paper", "deletedWord", "deletedPaper"].contains(item.kind) {
+                items[item.key] = CloudStudyItem(key: item.key, kind: "resetDeleted", payload: Data(),
+                    modified: marker.modified, revision: marker.revision)
+            }
         }
     }
     func snapshot() throws -> CloudStudySnapshot {
@@ -123,6 +138,22 @@ final class StudyCloudSync {
         lastSynced = defaults.object(forKey: "iCloudLastSynced") as? Date
         if isTesting { status = String(localized: "テスト環境・端末内に保存") }
     }
+    private(set) var resetVersion = UUID()
+
+    func resetLearningData() async throws {
+        try SectionPreparation.shared.reset()
+        for folder in [SpeakingRecorder.archiveDirectory, SpeechAudio.cacheDirectory,
+                       URL.cachesDirectory.appending(path: "QuestionImages")] where FileManager.default.fileExists(atPath: folder.path) {
+            try FileManager.default.removeItem(at: folder)
+        }
+        journal.reset(at: Date())
+        store.send(.resetLearningData)
+        try persist()
+        await ExerciseVariety.shared.resetHistory()
+        resetVersion = UUID()
+        await sync()
+    }
+
     func captureLocalChanges() {
         guard !isTesting else { return }
         do {
@@ -159,15 +190,6 @@ final class StudyCloudSync {
                     guard record.recordType == "StudyItem", let data = record["payload"] as? Data else { continue }
                     let item = try JSONDecoder().decode(CloudStudyItem.self, from: data)
                     guard item.key == record.recordID.recordName else { continue }
-                    if let name = item.recording,
-                       let destination = CloudStudyJournal.safeRecordingURL(name, directory: SpeakingRecorder.archiveDirectory),
-                       !FileManager.default.fileExists(atPath: destination.path) {
-                        let withAudio = try await database.record(for: record.recordID)
-                        if let asset = withAudio["audio"] as? CKAsset, let source = asset.fileURL {
-                            try FileManager.default.createDirectory(at: SpeakingRecorder.archiveDirectory, withIntermediateDirectories: true)
-                            try FileManager.default.copyItem(at: source, to: destination)
-                        }
-                    }
                     records[item.key] = record; remote.append(item)
                 }
                 token = page.changeToken
@@ -178,16 +200,42 @@ final class StudyCloudSync {
             guard enabled, try await container.userRecordID().recordName == account else { return }
             // Capture edits made while downloading before resolving individual record versions.
             captureLocalChanges()
+            let priorReset = journal.resetDate
+            let oldRecordings = journal.items.values.compactMap(\.recording)
             journal.merge(remote)
+            if journal.resetDate != priorReset {
+                store.send(.resetLearningData)
+                resetVersion = UUID()
+            }
             try persist()
             store.send(.applyCloudSnapshot(try journal.snapshot()))
+            if journal.resetDate != priorReset {
+                let retained = Set(journal.items.values.compactMap(\.recording))
+                for name in Set(oldRecordings).subtracting(retained) {
+                    if let url = CloudStudyJournal.safeRecordingURL(name, directory: SpeakingRecorder.archiveDirectory),
+                       FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
+                }
+            }
             let remoteVersions = remote.reduce(into: [String: String]()) { $0[$1.key] = $1.revision }
+            for item in remote where journal.items[item.key]?.revision == item.revision {
+                guard let name = item.recording, let record = records[item.key],
+                      let destination = CloudStudyJournal.safeRecordingURL(name, directory: SpeakingRecorder.archiveDirectory),
+                      !FileManager.default.fileExists(atPath: destination.path) else { continue }
+                let withAudio = try await database.record(for: record.recordID)
+                guard journal.items[item.key]?.revision == item.revision else { continue }
+                if let asset = withAudio["audio"] as? CKAsset, let source = asset.fileURL {
+                    try FileManager.default.createDirectory(at: SpeakingRecorder.archiveDirectory, withIntermediateDirectories: true)
+                    try FileManager.default.copyItem(at: source, to: destination)
+                }
+            }
             let pending = journal.items.values.filter { remoteVersions[$0.key] != $0.revision }
             for item in pending {
                 try Task.checkCancellation()
                 guard enabled else { return }
+                guard journal.items[item.key]?.revision == item.revision else { continue }
                 let record = records[item.key] ?? CKRecord(recordType: "StudyItem", recordID: .init(recordName: item.key, zoneID: zone))
                 record["payload"] = try StudyPersistence.encode(item) as CKRecordValue
+                if item.kind == "resetDeleted" { record["audio"] = nil }
                 if let name = item.recording,
                    let url = CloudStudyJournal.safeRecordingURL(name, directory: SpeakingRecorder.archiveDirectory),
                    FileManager.default.fileExists(atPath: url.path) { record["audio"] = CKAsset(fileURL: url) }
@@ -226,7 +274,7 @@ struct StudyCloudHost: View {
         _cloud = State(initialValue: StudyCloudSync(store: store, isTesting: ProcessInfo.processInfo.arguments.contains("--ui-testing") || ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil))
     }
     var body: some View {
-        HomeScreen(store: store).environment(\.studyCloud, cloud)
+        HomeScreen(store: store).id(cloud.resetVersion).environment(\.studyCloud, cloud)
             .onChange(of: CloudStudySnapshot(vocabulary: store.vocabulary, results: store.records, papers: store.papers, deletedVocabulary: store.deletedVocabulary, deletedPapers: store.deletedPapers)) { _, _ in cloud.captureLocalChanges() }
             .task(id: phase) {
                 guard phase == .active else { cloud.captureLocalChanges(); return }

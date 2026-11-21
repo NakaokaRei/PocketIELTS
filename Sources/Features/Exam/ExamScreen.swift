@@ -93,7 +93,6 @@ struct ExamScreen: View {
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     var isMock = false
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.studyNavigation) private var navigation
     @State private var confirmEnd = false
     @State private var hasReachedReview = false
@@ -150,16 +149,15 @@ struct ExamScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .interactiveDismissDisabled(!finished)
+        .navigationBarBackButtonHidden(isMock || answerFocused)
+        .interactiveDismissDisabled(isMock && !finished)
         .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
         .toolbar {
-            if !finished && !units.isEmpty && !answerFocused {
+            if isMock && !finished && !units.isEmpty && !answerFocused {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(isMock ? String(localized: "終了") : String(localized: "Back"), systemImage: "chevron.backward") {
-                        if isMock { completing = false; confirmEnd = true }
-                        else { dismiss() }
+                    Button(String(localized: "終了"), systemImage: "chevron.backward") {
+                        completing = false; confirmEnd = true
                     }.labelStyle(.iconOnly).accessibilityIdentifier("practice.back")
                 }
             }

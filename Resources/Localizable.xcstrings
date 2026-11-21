@@ -78,6 +78,160 @@
         }
       }
     },
+    "Reset all learning data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة تعيين جميع بيانات التعلّم"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset all learning data"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer todos los datos de aprendizaje"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सभी अध्ययन डेटा रीसेट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atur ulang semua data belajar"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学習データをすべて削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 학습 데이터 초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redefinir todos os dados de estudo"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รีเซ็ตข้อมูลการเรียนทั้งหมด"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đặt lại toàn bộ dữ liệu học tập"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除所有学习数据"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除所有學習資料"
+          }
+        }
+      }
+    },
+    "This deletes your history, saved exercises, personal vocabulary, recordings and prepared material. Deletions sync to iCloud when enabled. This cannot be undone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيُحذف سجلّك وتمارينك المحفوظة ومفرداتك وتسجيلاتك والمواد المُعدّة. ستُزامَن عمليات الحذف مع iCloud عند تفعيل المزامنة. لا يمكن التراجع."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This deletes your history, saved exercises, personal vocabulary, recordings and prepared material. Deletions sync to iCloud when enabled. This cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se eliminarán tu historial, los ejercicios guardados, tu vocabulario, las grabaciones y el material preparado. Si la sincronización está activa, los datos se eliminarán también de iCloud. No se puede deshacer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका इतिहास, सहेजे गए अभ्यास, निजी शब्दावली, रिकॉर्डिंग और तैयार सामग्री मिट जाएगी। सिंक चालू होने पर iCloud से भी डेटा मिटेगा। इसे वापस नहीं लिया जा सकता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riwayat, latihan tersimpan, kosakata pribadi, rekaman, dan materi yang disiapkan akan dihapus. Jika sinkronisasi aktif, penghapusan juga diterapkan di iCloud. Tindakan ini tidak dapat dibatalkan."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学習履歴、保存した問題、自分の単語、録音、準備済みの教材を削除します。iCloud同期がオンの場合は、同期先の学習データにも反映されます。この操作は取り消せません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "학습 기록, 저장한 문제, 개인 단어, 녹음 및 준비된 자료를 삭제합니다. iCloud 동기화가 켜져 있으면 삭제가 동기화됩니다. 되돌릴 수 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu histórico, exercícios salvos, vocabulário pessoal, gravações e material preparado serão apagados. Se a sincronização estiver ativa, a exclusão também será aplicada no iCloud. Não é possível desfazer."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ประวัติ แบบฝึกหัดที่บันทึก คำศัพท์ส่วนตัว เสียงบันทึก และเนื้อหาที่เตรียมไว้จะถูกลบ หากเปิดการซิงค์ การลบจะมีผลใน iCloud ด้วย การกระทำนี้ย้อนกลับไม่ได้"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lịch sử, bài đã lưu, từ vựng cá nhân, bản ghi âm và tài liệu đã chuẩn bị sẽ bị xóa. Việc xóa sẽ được đồng bộ lên iCloud khi bật đồng bộ. Không thể hoàn tác."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将删除学习记录、收藏的练习、个人单词、录音和已准备的材料。启用同步时，删除操作也会同步到 iCloud。此操作不可撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將刪除學習記錄、已儲存的練習、個人單字、錄音和已準備的教材。啟用同步時，刪除操作也會同步至 iCloud。此操作無法復原。"
+          }
+        }
+      }
+    },
     "Back to sections" : {
       "extractionState" : "manual",
       "localizations" : {

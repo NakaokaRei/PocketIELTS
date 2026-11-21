@@ -189,6 +189,11 @@ actor ExerciseVariety {
         history = defaults.dictionary(forKey: storageKey) as? [String: [String]] ?? [:]
     }
 
+    func resetHistory() {
+        history.removeAll()
+        defaults.removeObject(forKey: storageKey)
+    }
+
     static func topics(for part: String) -> [String] {
         if part.contains("Section 2") {
             return ["workplace safety", "shift handovers", "remote working", "staff travel", "equipment loans", "training applications", "customer complaints", "recruitment", "annual leave", "stock management", "office relocation", "staff wellbeing"]

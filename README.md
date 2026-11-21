@@ -86,6 +86,8 @@ The app includes CloudKit synchronization using your **private iCloud database**
 | Completed practice | Answers, scores, feedback and history |
 | Speaking recordings | Archived audio and saved transcripts |
 
+Settings → **Reset all learning data** asks for confirmation before clearing study history, personal vocabulary, saved papers, recordings and prepared material. With iCloud sync enabled, the reset is also applied to synced study records.
+
 Data is saved locally first. While the app is active, it checks for changes every 30 seconds; **Settings → iCloud → Sync now** starts a check immediately. Offline changes remain local until a successful sync. Independent additions are merged. If the same item is edited on two devices, the newer timestamp wins, with a stable revision tie-breaker.
 
 Turning sync off keeps local data. Changing Apple Accounts pauses sync to avoid uploading the previous account's local data to another account. Return to the original account to resume. Live, unfinished practice sessions and ChatGPT credentials are not synchronized; sign in to ChatGPT separately on each device.
@@ -214,7 +216,7 @@ The editable source is in [Scripts/Vocabulary](Scripts/Vocabulary); rebuild and 
 
 ### Leaving a practice session
 
-In ordinary practice, the upper-left back button returns immediately to the screen that opened the exercise; the upper-right bookmark saves the current paper. Finishing practice returns directly Home using native navigation; completed mock exams retain their score summary. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
+In ordinary practice, swipe from the leading edge or use the upper-left back button to return immediately to the screen that opened the exercise; the upper-right bookmark saves the current paper. Finishing practice returns directly Home using native navigation; completed mock exams retain their score summary. Returning Home pops the existing stack rather than rebuilding it; mock-test covers dismiss before the underlying navigation changes. Reduce Motion is respected.
 
 
 Background generation uses Apple's `BGContinuedProcessingTask` on supported iOS/iPadOS 26+ devices. Start generation while the app is open; the system can then continue the job after you switch apps or lock the screen. Its system-managed Live Activity shows completed sections/audio segments, received KB for the current section, and a percentage. The app and Live Activity receive the same time-based estimate between validated sections, explicitly marked as approximate (≈). Payload size cannot advance the percentage. Both reach 100% together after validation and the completion animation. The OS controls the Live Activity's appearance and cancellation UI; no widget extension or push-notification server is required.
@@ -231,7 +233,7 @@ Ending practice returns directly to Home after the exit confirmation, without an
 
 The app and system Live Activity now consume the same per-job progress value, including the completion animation. Both use a time-based estimate between validated sections; received byte counts are diagnostic only and cannot push the percentage ahead. System UI refresh timing is controlled by iOS.
 
-Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. An expand button opens a screen-fitted figure with 1–5× pinch zoom, bounded panning and a reset control; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. Reading Section 2 includes a workplace floor plan with three diagram-label questions (14–16), available offline.
+Questions can include generated vector maps, floor plans, diagrams and simple charts when the task needs visual material. The figure is generated in the same response as the exercise, stored inside the paper, and remains available offline and through saved-paper sync. Tapping a figure or its expand button opens it over a dimmed exercise, fitted to the screen with 1–5× pinch zoom, bounded panning and a reset control; VoiceOver receives the visible-layout description. The tutor receives the diagram data too. The bundled Listening Part 2 includes a sample site plan. Reading Section 2 includes a workplace floor plan with three diagram-label questions (14–16), available offline.
 
 Optionally enable **Settings → Question images → Generate question images with OpenAI** to render new exercise figures using the [OpenAI Images API](https://developers.openai.com/api/docs/guides/image-generation) (`gpt-image-1.5`). This uses the audio API key and incurs separate API charges; it is off by default. Images are cached and saved with the paper. You can switch back to the original precise diagram; failed image requests retain that diagram instead. Generated image labels can be imperfect, so the original remains available. Automated tests use synthetic images and never make paid requests.
 

@@ -9,6 +9,9 @@ struct SettingsScreen: View {
     @AppStorage(SpeechAudio.preparationPreference) private var prepareAudio = false
     @AppStorage(QuestionImage.preferenceKey) private var generateImages = false
     @AppStorage(SectionPreparation.preference) private var prepareAhead = false
+    @State private var confirmReset = false
+    @State private var resetError: String?
+    @State private var resetting = false
     @State private var speechKey = ""
     @State private var speechKeySaved = false
     @State private var speechKeyError: String?
@@ -101,6 +104,27 @@ struct SettingsScreen: View {
                     NavigationLink { OSSLicensesScreen() } label: {
                         Label(String(localized: "OSSライセンス"), systemImage: "doc.text")
                     }.accessibilityIdentifier("settings.licenses")
+                }
+                if let cloud {
+                    Section {
+                        Button(String(localized: "Reset all learning data"), role: .destructive) { confirmReset = true }
+                            .accessibilityIdentifier("settings.resetLearningData")
+                            .disabled(resetting)
+                        if let resetError { Text(resetError).foregroundStyle(StudyColors.error) }
+                    }
+                    .alert(String(localized: "Reset all learning data"), isPresented: $confirmReset) {
+                        Button(String(localized: "キャンセル"), role: .cancel) {}
+                        Button(String(localized: "削除"), role: .destructive) {
+                            resetting = true
+                            Task {
+                                defer { resetting = false }
+                                do { try await cloud.resetLearningData() }
+                                catch { resetError = error.localizedDescription }
+                            }
+                        }
+                    } message: {
+                        Text(String(localized: "This deletes your history, saved exercises, personal vocabulary, recordings and prepared material. Deletions sync to iCloud when enabled. This cannot be undone."))
+                    }
                 }
                 if let error = store.error { Text(error).foregroundStyle(StudyColors.error) }
             }

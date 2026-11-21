@@ -294,6 +294,17 @@ final class SectionPreparation {
 
     func key(_ template: ExamUnit) -> String { template.id.replacingOccurrences(of: "/", with: "_") }
 
+    func reset() throws {
+        templates = []
+        for job in jobs.values { job.cancel() }
+        let allLanguages = directory.deletingLastPathComponent()
+        if FileManager.default.fileExists(atPath: allLanguages.path) {
+            try FileManager.default.removeItem(at: allLanguages)
+        }
+        ready.removeAll()
+        errors.removeAll()
+    }
+
     func configure(_ units: [ExamUnit], enabled: Bool, active: Bool) {
         templates = active ? units : []
         automatic = enabled

@@ -37,6 +37,7 @@ struct StudyFeature {
 
     enum Action {
         case settings(SettingsFeature.Action)
+        case resetLearningData
         case applyCloudSnapshot(CloudStudySnapshot)
         case start(Int), loaded(ReadingSet), failed(String), finish
         case answer(Int, String), review, save(String)
@@ -58,6 +59,15 @@ struct StudyFeature {
         Reduce { state, action in
             switch action {
             case .settings: break
+            case .resetLearningData:
+                state.$words.withLock { $0 = Data() }
+                state.$history.withLock { $0 = Data() }
+                state.$vocabularyData.withLock { $0 = Data() }
+                state.$paperData.withLock { $0 = Data() }
+                state.$resultData.withLock { $0 = Data() }
+                state.$deletedPaperData.withLock { $0 = Data() }
+                state.$deletedVocabularyData.withLock { $0 = Data() }
+                return .send(.finish)
             case let .applyCloudSnapshot(snapshot):
                 if let data = try? StudyPersistence.encode(snapshot.deletedPapers) { state.$deletedPaperData.withLock { $0 = data } }
                 if let data = try? StudyPersistence.encode(snapshot.deletedVocabulary) { state.$deletedVocabularyData.withLock { $0 = data } }
