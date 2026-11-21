@@ -37,6 +37,53 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertNil(sections.ready[id])
     }
 
+    func testAllSectionsStartBeforeAnyCompletesAndFailIndependently() async throws {
+        let templates = try ExamUnit.load()
+        XCTAssertEqual(templates.count, 12)
+        let first = try XCTUnwrap(templates.first)
+        let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let started = expectation(description: "Every section has entered generation")
+        started.expectedFulfillmentCount = templates.count
+        var gates: [String: CheckedContinuation<Void, Never>] = [:]
+        var calls: [String: Int] = [:]
+        let sections = SectionPreparation(directory: directory) { template in
+            calls[template.id, default: 0] += 1
+            if calls[template.id] == 1 {
+                await withCheckedContinuation { gate in
+                    gates[template.id] = gate
+                    started.fulfill()
+                }
+                if template.id == first.id { throw StudyError.message("Test failure") }
+            }
+            return template
+        }
+        sections.configure(templates, enabled: true, active: true)
+        await fulfillment(of: [started], timeout: 5)
+        guard gates.count == templates.count else {
+            sections.configure(templates, enabled: false, active: true)
+            for gate in gates.values { gate.resume() }
+            return
+        }
+        Task { for gate in gates.values { gate.resume() } }
+        do {
+            _ = try await sections.open(first)
+            XCTFail("The simulated failure must reach the section that failed")
+        } catch {}
+        for template in templates.dropFirst() {
+            let paper = try await sections.open(template)
+            XCTAssertEqual(paper, template)
+            XCTAssertEqual(calls[template.id], 1)
+        }
+        XCTAssertEqual(sections.errors.count, 1)
+        XCTAssertEqual(sections.ready.count, templates.count - 1)
+        _ = try await sections.open(first)
+        XCTAssertEqual(calls[first.id], 2)
+        XCTAssertTrue(sections.errors.isEmpty)
+        XCTAssertEqual(sections.ready.count, templates.count)
+    }
+
     func testLoopbackAuthenticationSurvivesInvalidRequestAndCompletes() async throws {
         let opened = expectation(description: "Browser opens only after listener is ready")
         var redirect: URL?

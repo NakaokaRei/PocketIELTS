@@ -252,9 +252,8 @@ final class SectionPreparation {
     private var templates: [ExamUnit] = []
     private var automatic = false
     private var jobs: [String: Task<ExamUnit, Error>] = [:]
-    private var automaticJob: String?
+    private var automaticJobs = Set<String>()
     private var opened = Set<String>()
-    private var pausedAfterFailure = false
 
     private let generate: @MainActor (ExamUnit) async throws -> ExamUnit
 
@@ -297,17 +296,21 @@ final class SectionPreparation {
 
     func configure(_ units: [ExamUnit], enabled: Bool, active: Bool) {
         templates = active ? units : []
-        if enabled != automatic { pausedAfterFailure = false }
         automatic = enabled
-        if !enabled, let id = automaticJob, !opened.contains(id) { jobs[id]?.cancel() }
+        if !enabled {
+            for id in automaticJobs.subtracting(opened) { jobs[id]?.cancel() }
+        }
         schedule()
     }
 
     private func schedule() {
-        guard automatic, !pausedAfterFailure, jobs.isEmpty,
-              let next = templates.first(where: { ready[key($0)] == nil && errors[key($0)] == nil }) else { return }
-        automaticJob = key(next)
-        _ = start(next)
+        guard automatic else { return }
+        for template in templates {
+            let id = key(template)
+            guard ready[id] == nil, errors[id] == nil, jobs[id] == nil else { continue }
+            automaticJobs.insert(id)
+            _ = start(template)
+        }
     }
 
     func open(_ template: ExamUnit) async throws -> ExamUnit {
@@ -328,7 +331,6 @@ final class SectionPreparation {
         guard ready[id] == paper else { return }
         try? FileManager.default.removeItem(at: directory.appending(path: id + ".json"))
         ready[id] = nil
-        if automatic, !templates.isEmpty { templates.removeAll { key($0) == id }; templates.insert(template, at: 0) }
         schedule()
     }
 
@@ -341,11 +343,11 @@ final class SectionPreparation {
             defer {
                 jobs[id] = nil
                 percent[id] = nil
-                if automaticJob == id { automaticJob = nil }
+                automaticJobs.remove(id)
                 schedule()
             }
             do {
-                let unit = try await BackgroundGeneration.run(title: template.id, total: 1, useSystemScheduler: automaticJob != id,
+                let unit = try await BackgroundGeneration.run(title: template.id, total: 1, useSystemScheduler: !automaticJobs.contains(id),
                     completionDuration: 0.8, onProgress: { fraction in
                         let value = Int(fraction * 100)
                         if self.percent[id] != value { self.percent[id] = value }
@@ -356,12 +358,10 @@ final class SectionPreparation {
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 try JSONEncoder().encode(unit).write(to: directory.appending(path: id + ".json"), options: .atomic)
                 ready[id] = unit
-                pausedAfterFailure = false
                 return unit
             } catch {
                 if !Task.isCancelled {
                     errors[id] = error.localizedDescription
-                    pausedAfterFailure = true
                 }
                 throw error
             }
