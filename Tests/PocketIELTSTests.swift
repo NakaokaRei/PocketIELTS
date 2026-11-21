@@ -28,12 +28,50 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(ExamMaterialBlock.parse(plain), [.prose(plain)])
     }
 
+    func testListeningTableWithoutMarkdownSeparator() {
+        let material = """
+        Sources for the Millbank washhouse exhibition
+        Source | Detail to include in the exhibition
+        Opening leaflet | Item customers had to bring: (21) _____
+        Caretaker’s notebook | Day reserved for washing blankets: (22) _____
+        Council accounts | Item that accounted for most of the annual running costs: (23) _____
+        Building inspector’s report | Reason for fitting new windows: better (24) _____
+        Staff photograph | Feature used to identify the building: (25) _____
+        Closing notice | New location of the washhouse equipment: (26) _____
+
+        Questions 27–30
+        """
+        let blocks = ExamMaterialBlock.parse(material)
+        XCTAssertEqual(blocks.first, .prose("Sources for the Millbank washhouse exhibition"))
+        XCTAssertEqual(blocks.last, .prose("Questions 27–30"))
+        guard blocks.count == 3, case let .table(rows) = blocks[1] else {
+            return XCTFail("Expected a two-column table between the title and the next instructions")
+        }
+        XCTAssertEqual(rows.count, 7)
+        XCTAssertTrue(rows.allSatisfy { $0.count == 2 })
+        let fragments = material.components(separatedBy: "\n")
+        let grouped = ExamMaterialBlock.passages(fragments)
+        XCTAssertEqual(ExamMaterialBlock.parse(grouped[1].text), [.table(rows)])
+        XCTAssertEqual(grouped.last?.offset, fragments.count - 1)
+        XCTAssertEqual(rows[0], ["Source", "Detail to include in the exhibition"])
+        XCTAssertEqual(rows[1], ["Opening leaflet", "Item customers had to bring: (21) _____"])
+        XCTAssertEqual(rows[6], ["Closing notice", "New location of the washhouse equipment: (26) _____"])
+    }
+
     func testExamTablePlacesSelectableWordsUnderTheirHeaders() throws {
-        let view = ExamMaterialText(text: "| Event | Detail | Information |\n| --- | --- | --- |\n| Dawn bird walk | Meeting point | (1) _____ |") { value, id in
+        try checkTableLayout("| Event | Detail | Information |\n| --- | --- | --- |\n| Dawn bird walk | Meeting point | (1) _____ |",
+                             width: 375, firstHeader: "Event", answerHeader: "Information", answerCell: "(1) _____")
+        try checkTableLayout("Source | Detail to include in the exhibition\nOpening leaflet | Item customers had to bring: (21) _____",
+                             width: 760, firstHeader: "Source", answerHeader: "Detail to include in the exhibition",
+                             answerCell: "Item customers had to bring: (21) _____")
+    }
+
+    private func checkTableLayout(_ material: String, width: CGFloat, firstHeader: String, answerHeader: String, answerCell: String) throws {
+        let view = ExamMaterialText(text: material) { value, id in
             SelectableStudyText(text: value, sourceID: id, onSave: { _ in })
         }
         let host = UIHostingController(rootView: view)
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 375, height: 600))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: width, height: 600))
         window.rootViewController = host
         window.isHidden = false
         defer { window.isHidden = true }
@@ -49,11 +87,11 @@ final class PocketIELTSTests: XCTestCase {
             let cell = try XCTUnwrap(cells.first { $0.text == value && $0.window != nil })
             return cell.convert(cell.bounds, to: host.view)
         }
-        let event = try rect("Event")
-        let blank = try rect("(1) _____")
+        let event = try rect(firstHeader)
+        let blank = try rect(answerCell)
         XCTAssertGreaterThan(blank.minX, event.maxX)
         XCTAssertGreaterThanOrEqual(blank.minY, event.maxY)
-        XCTAssertEqual(blank.minX, try rect("Information").minX, accuracy: 1)
+        XCTAssertEqual(blank.minX, try rect(answerHeader).minX, accuracy: 1)
         XCTAssertLessThanOrEqual(blank.maxX, window.bounds.width)
     }
 

@@ -242,7 +242,7 @@ struct ExamScreen: View {
                 reviewContent(unit)
             } else {
                 if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
-                ForEach(Array(unit.passages.enumerated()), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
+                ForEach(ExamMaterialBlock.passages(unit.passages), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
                 if let script = unit.audio {
                     ListeningAudioView(script: script, preparationFailed: unit.audioPreparationFailed == true) { settings = true }.id(unit.id)
                 }
@@ -433,7 +433,7 @@ struct ExamScreen: View {
                 DisclosureGroup(part.title) {
                     VStack(alignment: .leading, spacing: 12) {
                         if !part.directions.isEmpty { reviewText(part.directions) }
-                        ForEach(Array((part.passages + part.oral).enumerated()), id: \.offset) { _, text in reviewText(text) }
+                        ForEach(ExamMaterialBlock.passages(part.passages + part.oral), id: \.offset) { _, text in reviewText(text) }
                         if isMock {
                             ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         }
@@ -951,8 +951,8 @@ struct QuestionReviewActions: View {
     @State private var destination: Destination?
     private var question: ReadingSet.Question { part.questions[index] }
     private var paragraphs: [ExamMaterialBlock] {
-        ([part.directions] + part.passages + [part.audio ?? ""]).flatMap { text in
-            ExamMaterialBlock.parse(text).flatMap { block -> [ExamMaterialBlock] in
+        ExamMaterialBlock.passages([part.directions] + part.passages + [part.audio ?? ""]).flatMap { passage in
+            ExamMaterialBlock.parse(passage.text).flatMap { block -> [ExamMaterialBlock] in
                 if case let .prose(value) = block {
                     return value.split(whereSeparator: \.isNewline).map { .prose(String($0)) }
                 }
@@ -1026,7 +1026,7 @@ enum ExamMaterialBlock: Equatable {
     case table([[String]])
 
     static func parse(_ text: String) -> [Self] {
-        guard text.contains("|"), text.contains("---") else { return [.prose(text)] }
+        guard text.contains("|") else { return [.prose(text)] }
         let lines = text.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map(String.init)
         var blocks: [Self] = []
         var start = 0
@@ -1037,14 +1037,14 @@ enum ExamMaterialBlock: Equatable {
         }
         while index + 1 < lines.count {
             let header = cells(lines[index])
-            let separator = cells(lines[index + 1])
-            guard header.count >= 2, separator.count == header.count,
-                  separator.allSatisfy({ $0.range(of: "^:?-{3,}:?$", options: .regularExpression) != nil }) else {
+            let next = cells(lines[index + 1])
+            guard header.count >= 2, next.count == header.count else {
                 index += 1
                 continue
             }
             appendProse(until: index)
-            var rows = [header]
+            let hasSeparator = next.allSatisfy { $0.range(of: "^:?-{3,}:?$", options: .regularExpression) != nil }
+            var rows = hasSeparator ? [header] : [header, next]
             index += 2
             while index < lines.count {
                 let row = cells(lines[index])
@@ -1058,6 +1058,30 @@ enum ExamMaterialBlock: Equatable {
         guard !blocks.isEmpty else { return [.prose(text)] }
         appendProse(until: lines.count)
         return blocks
+    }
+
+    // A generated passage array can split one table across consecutive strings.
+    // Retain original indices so unrelated saved text selections keep their source IDs.
+    static func passages(_ values: [String]) -> [(offset: Int, text: String)] {
+        var result: [(offset: Int, text: String)] = []
+        var previousColumns = 0
+        for (index, value) in values.enumerated() {
+            guard value.contains("|") else {
+                result.append((index, value))
+                previousColumns = 0
+                continue
+            }
+            let trimmed = value.trimmingCharacters(in: .newlines)
+            let lines = trimmed.split(whereSeparator: \.isNewline)
+            let first = lines.first ?? ""
+            if previousColumns >= 2, cells(String(first)).count == previousColumns {
+                result[result.count - 1].text += "\n" + trimmed
+            } else {
+                result.append((index, trimmed))
+            }
+            previousColumns = cells(String(lines.last ?? "")).count
+        }
+        return result
     }
 
     private static func cells(_ line: String) -> [String] {
