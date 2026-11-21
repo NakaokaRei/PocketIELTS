@@ -402,14 +402,17 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Section 1"].exists)
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-saved-questions" : "iphone-saved-questions")
         for _ in 0..<8 where !saved.isHittable { app.swipeUp() }
-        app.cells.containing(.staticText, identifier: "Community services").firstMatch.swipeLeft()
+        let savedRow = app.cells.containing(.staticText, identifier: "Community services").firstMatch
+        let originalRowY = savedRow.frame.minY
+        savedRow.swipeLeft()
         capture("iphone-saved-swipe")
         app.buttons["削除"].firstMatch.tap()
         let confirmation = app.alerts["保存した問題を削除しますか？"]
         XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
         confirmation.buttons["キャンセル"].tap()
         XCTAssertTrue(saved.exists)
-        app.cells.containing(.staticText, identifier: "Community services").firstMatch.swipeLeft()
+        XCTAssertEqual(savedRow.frame.minY, originalRowY, accuracy: 2)
+        savedRow.swipeLeft()
         app.buttons["削除"].firstMatch.tap()
         confirmation.buttons["削除"].tap()
         XCTAssertTrue(app.staticTexts["保存した問題はありません"].waitForExistence(timeout: 5))

@@ -503,7 +503,8 @@ struct SavedPapersScreen: View {
                             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
                                 .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 20))
                                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                    Button(role: .destructive) { deleting = paper } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
+                                    // A destructive swipe animates the row away before the alert is answered.
+                                    Button { deleting = paper } label: { Label(String(localized: "削除"), systemImage: "trash") }.tint(.red)
                                 }
                         }
                     }
@@ -514,7 +515,7 @@ struct SavedPapersScreen: View {
             .frame(maxWidth: 800).frame(maxWidth: .infinity)
             .navigationTitle(String(localized: "保存した問題")).navigationBarTitleDisplayMode(.inline)
         .alert(String(localized: "保存した問題を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { paper in
-            Button(String(localized: "削除"), role: .destructive) { store.send(.deletePaper(paper.id)); deleting = nil }
+            Button(String(localized: "削除"), role: .destructive) { store.send(.deletePaper(paper.id), animation: .default); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }
         } message: { paper in
             Text(paper.title + "\n\n" + String(localized: "学習履歴と保存した単語は残ります。"))
