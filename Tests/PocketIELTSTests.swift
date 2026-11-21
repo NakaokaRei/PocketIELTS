@@ -548,6 +548,16 @@ final class PocketIELTSTests: XCTestCase {
         XCTAssertEqual(question.choiceText("B"), "B. Oakfield Library; Collecting Reserved Books")
     }
 
+    func testHeadingChoicesIncludeTheEntireRomanRange() {
+        let labels = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii"]
+        var question = ReadingSet.Question(instruction: "Write the correct Roman numeral, i–viii.", prompt: "Paragraph A", answers: ["vii"], explanation: "")
+        XCTAssertEqual(question.choices, labels)
+        question.instruction += "\n" + labels.map { $0 + ". Heading " + $0 }.joined(separator: "\n")
+        XCTAssertEqual(question.choices, labels)
+        XCTAssertEqual(question.choiceText("vii"), "vii. Heading vii")
+        XCTAssertTrue(question.accepts("vii"))
+    }
+
     func testQuestionLayoutHandlesBundledOptionsAndPreservesOrdinaryProse() throws {
         let units = try ExamUnit.load()
         let choice = try XCTUnwrap(units.first { $0.id == "Listening / Part 2" }?.questions.first)

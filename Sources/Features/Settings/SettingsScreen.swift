@@ -12,9 +12,9 @@ struct SettingsScreen: View {
     @State private var confirmReset = false
     @State private var resetError: String?
     @State private var resetting = false
-    @State private var speechKey = ""
-    @State private var speechKeySaved = false
-    @State private var speechKeyError: String?
+    @State private var apiKey = ""
+    @State private var apiKeySaved = false
+    @State private var apiKeyError: String?
 
     var body: some View {
         NavigationStack {
@@ -50,29 +50,35 @@ struct SettingsScreen: View {
                     Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. Open the answer review to prepare the next exercise."))
                 }
                 Section {
-                    Toggle(String(localized: "Generate audio with new listening exercises"), isOn: $prepareAudio)
-                        .accessibilityIdentifier("settings.prepareListeningAudio")
-                    Label(speechKeySaved ? String(localized: "APIキーを保存済み") : String(localized: "APIキーが未設定です"), systemImage: speechKeySaved ? "checkmark.shield" : "key")
-                    SecureField(String(localized: "音声生成用APIキー"), text: $speechKey)
+                    Label(apiKeySaved ? String(localized: "APIキーを保存済み") : String(localized: "APIキーが未設定です"), systemImage: apiKeySaved ? "checkmark.shield" : "key")
+                    SecureField(String(localized: "OpenAI API key"), text: $apiKey)
                         .textInputAutocapitalization(.never).autocorrectionDisabled().privacySensitive()
-                        .accessibilityIdentifier("settings.speechKey")
+                        .accessibilityIdentifier("settings.openAIKey")
                     Button(String(localized: "APIキーを保存")) {
                         do {
-                            try KeyStore.save(speechKey.trimmingCharacters(in: .whitespacesAndNewlines), account: SpeechCredentials.account)
-                            speechKey = ""; speechKeySaved = true; speechKeyError = nil
-                        } catch { speechKeyError = error.localizedDescription }
-                    }.disabled(speechKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    if speechKeySaved {
+                            try KeyStore.save(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), account: SpeechCredentials.account)
+                            apiKey = ""; apiKeySaved = true; apiKeyError = nil
+                        } catch { apiKeyError = error.localizedDescription }
+                    }.disabled(apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    if apiKeySaved {
                         Button(String(localized: "APIキーを削除"), role: .destructive) {
-                            do { try KeyStore.remove(account: SpeechCredentials.account); speechKeySaved = false; speechKey = ""; speechKeyError = nil }
-                            catch { speechKeyError = error.localizedDescription }
+                            do { try KeyStore.remove(account: SpeechCredentials.account); apiKeySaved = false; apiKey = ""; apiKeyError = nil }
+                            catch { apiKeyError = error.localizedDescription }
                         }
                     }
                     Link(destination: URL(string: "https://platform.openai.com/api-keys")!) { Label(String(localized: "APIキー取得ページを開く"), systemImage: "arrow.up.right.square") }
+                        .accessibilityIdentifier("settings.manageAPIKeys")
                     Link(destination: URL(string: "https://platform.openai.com/usage")!) { Label(String(localized: "APIの利用状況を確認"), systemImage: "chart.bar") }
-                    if let speechKeyError { Text(speechKeyError).foregroundStyle(StudyColors.error) }
-                } header: { Text(String(localized: "リスニング音声の生成")) }
-                footer: { Text(String(localized: "音声生成はOpenAI APIを使用し、ChatGPTプランとは別に課金されます。キーはこの端末のKeychainに保存され、iCloudには同期されません。")) }
+                    if let apiKeyError { Text(apiKeyError).foregroundStyle(StudyColors.error) }
+                } header: { Text(verbatim: "OpenAI API") }
+                footer: { Text(String(localized: "Listening audio, question images and Speaking share this key. API usage is billed separately from ChatGPT. The key stays in this device’s Keychain.")) }
+                Section {
+                    Toggle(String(localized: "Generate audio with new listening exercises"), isOn: $prepareAudio)
+                        .accessibilityIdentifier("settings.prepareListeningAudio")
+                    Toggle(String(localized: "Generate question images with OpenAI"), isOn: $generateImages)
+                        .accessibilityIdentifier("settings.questionImages")
+                    Text(QuestionImage.model).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
+                } header: { Text(String(localized: "Generate with new exercises")) }
                 Section {
                     Picker(String(localized: "会話モデル"), selection: $speakingModel) {
                         ForEach(SpeakingModel.allCases, id: \.rawValue) { model in
@@ -82,13 +88,6 @@ struct SettingsScreen: View {
                     Text(SpeakingModel.resolve(speakingModel).rawValue).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                 } header: { Text(String(localized: "Speaking 音声会話")) }
                 footer: { Text(String(localized: "Miniが初期設定です。標準モデルは料金が高くなります。変更は次の会話から適用されます。リスニングと同じAPIキーを使用し、ChatGPTプランとは別に課金されます。")) }
-                Section {
-                    Toggle(String(localized: "Generate question images with OpenAI"), isOn: $generateImages)
-                        .accessibilityIdentifier("settings.questionImages")
-                    Text(QuestionImage.model).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
-                    Link(String(localized: "APIの利用状況を確認"), destination: URL(string: "https://platform.openai.com/usage")!)
-                } header: { Text(String(localized: "Question images")) }
-                footer: { Text(String(localized: "Uses the same API key as audio. Image generation is billed separately from ChatGPT. Off by default; applies to new questions that need figures.")) }
                 if let cloud {
                     Section {
                         Toggle(String(localized: "iCloudで同期"), isOn: Binding(get: { cloud.enabled }, set: { cloud.enabled = $0; if $0 { Task { await cloud.sync() } } }))
@@ -138,9 +137,9 @@ struct SettingsScreen: View {
             .interactiveDismissDisabled(store.connecting)
             .navigationTitle(String(localized: "設定"))
             .toolbar { Button(String(localized: "完了")) { dismiss() }.disabled(store.connecting) }
-            .onDisappear { speechKey = "" }
+            .onDisappear { apiKey = "" }
             .onAppear {
-                speechKeySaved = (try? KeyStore.read(account: SpeechCredentials.account)) != nil
+                apiKeySaved = (try? KeyStore.read(account: SpeechCredentials.account)) != nil
                 speakingModel = SpeakingModel.resolve(speakingModel).rawValue
                 store.send(.opened)
                 store.send(.refreshAccount)

@@ -17,10 +17,14 @@ struct ReadingSet: Codable, Equatable, Sendable {
             let value = instruction.uppercased()
             if value.contains("TRUE"), value.contains("FALSE"), value.contains("NOT GIVEN") { return ["TRUE", "FALSE", "NOT GIVEN"] }
             if value.contains("YES"), value.contains("NO"), value.contains("NOT GIVEN") { return ["YES", "NO", "NOT GIVEN"] }
-            if value.contains("CORRECT LETTER, A, B OR C") { return ["A", "B", "C"] }
-            if value.contains("I–VI") || value.contains("I-VI") { return ["i", "ii", "iii", "iv", "v", "vi"] }
             let options = StudyQuestionLayout(instruction).options + StudyQuestionLayout(prompt).options
-            return Array(NSOrderedSet(array: options.map(\.label))) as? [String] ?? []
+            if !options.isEmpty { return Array(NSOrderedSet(array: options.map(\.label))) as? [String] ?? [] }
+            if value.contains("CORRECT LETTER, A, B OR C") { return ["A", "B", "C"] }
+            if let range = value.firstMatch(of: #/\bI\s*[-–—]\s*([IVX]+)\b/#),
+               let last = StudyQuestionLayout.roman.firstIndex(of: range.1.lowercased()) {
+                return Array(StudyQuestionLayout.roman[...last])
+            }
+            return []
         }
         func displayPrompt(number: Int, localNumber: Int) -> String {
             var result = StudyQuestionLayout(prompt).body
@@ -181,6 +185,7 @@ struct StudyQuestionLayout {
     var formatted: String {
         ([body] + options.map { $0.label + ". " + $0.text }).filter { !$0.isEmpty }.joined(separator: "\n\n")
     }
+    static let roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii", "xiv", "xv"]
     init(_ text: String) {
         let pattern = #"(?m)(?:^|\n|[ \t]{2,}|(?<=[;.!?])[ \t]+)([A-H]|[ivx]{1,5})([.)])?[ \t]+"#
         let regex = try! NSRegularExpression(pattern: pattern)
@@ -195,9 +200,8 @@ struct StudyQuestionLayout {
             return prefix.contains("\n") || prefix.count >= 2
         }
         let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H"]
-        let roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
         guard labels.count >= 2, consistentMarkers, separatedBareMarkers,
-              labels == Array(alphabet.prefix(labels.count)) || labels == Array(roman.prefix(labels.count)) else {
+              labels == Array(alphabet.prefix(labels.count)) || labels == Array(Self.roman.prefix(labels.count)) else {
             body = text; options = []; return
         }
         body = source.substring(to: matches[0].range.location).trimmingCharacters(in: .whitespacesAndNewlines)

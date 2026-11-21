@@ -10,18 +10,20 @@ struct SelectableStudyText: View {
     var onAsk: ((Entry) -> Void)? = nil
     var allowsAI = true
     var markdown = false
+    var forLaterReview = false
+    private var confirmation: String { forLaterReview ? String(localized: "Marked for review") : String(localized: "単語帳に保存しました") }
     @State private var saved = false
 
     var body: some View {
         StudyTextView(text: text, sourceID: sourceID, onSave: { entry in
             onSave(entry)
-            saved = true
+            saved = !forLaterReview
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-            UIAccessibility.post(notification: .announcement, argument: String(localized: "単語帳に保存しました"))
-        }, onAsk: allowsAI ? onAsk : nil, markdown: markdown)
+            UIAccessibility.post(notification: .announcement, argument: confirmation)
+        }, onAsk: allowsAI ? onAsk : nil, markdown: markdown, forLaterReview: forLaterReview)
         .overlay(alignment: .top) {
             if saved {
-                Label(String(localized: "単語帳に保存しました"), systemImage: "checkmark.circle.fill")
+                Label(confirmation, systemImage: "checkmark.circle.fill")
                     .font(.subheadline.bold()).padding(12)
                     .background(.regularMaterial, in: Capsule())
                     .allowsHitTesting(false).accessibilityIdentifier("selection.saved")
@@ -37,7 +39,6 @@ struct SelectableStudyText: View {
 
 /// Use for passages, prompts, answer choices, explanations, and completed AI messages.
 /// Persist the supplied entry in the same vocabulary store used by the vocabulary tab.
-@available(iOS 16.0, *)
 struct StudyTextView: UIViewRepresentable {
     struct Entry: Equatable, Identifiable {
         var id: String { sourceID + ":\(utf16Range.location):\(utf16Range.length)" }
@@ -53,6 +54,8 @@ struct StudyTextView: UIViewRepresentable {
     let onSave: (Entry) -> Void
     var onAsk: ((Entry) -> Void)? = nil
     var markdown = false
+
+    var forLaterReview = false
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -164,7 +167,7 @@ struct StudyTextView: UIViewRepresentable {
             let entry = Entry(expression: expression, sourceText: displayed,
                               sourceID: current.sourceID, utf16Range: range)
             var actions: [UIMenuElement] = [
-                UIAction(title: String(localized: "単語帳に追加"), image: UIImage(systemName: "text.badge.plus")) { _ in
+                UIAction(title: current.forLaterReview ? String(localized: "Review later") : String(localized: "単語帳に追加"), image: UIImage(systemName: current.forLaterReview ? "bookmark" : "text.badge.plus")) { _ in
                     StudySelectionDismissal.shared.clear()
                     current.onSave(entry)
                 }

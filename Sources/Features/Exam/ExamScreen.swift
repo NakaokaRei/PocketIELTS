@@ -94,6 +94,9 @@ struct ExamScreen: View {
     let store: StoreOf<StudyFeature>
     var isMock = false
     @Environment(\.studyNavigation) private var navigation
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    private enum JumpTarget: Hashable { case passage, question(Int) }
     @State private var confirmEnd = false
     @State private var hasReachedReview = false
     @State private var completing = false
@@ -108,6 +111,8 @@ struct ExamScreen: View {
     @State private var finished = false
     @State private var answers: [String: String] = [:]
     @State private var reviewPresented = false
+    @State private var markedWords: [String: [SelectableStudyText.Entry]] = [:]
+    @State private var wordExplanations: [String: String] = [:]
     @State private var questionPageID = UUID()
     @State private var recorded: Set<String> = []
     @State private var speaker: AVSpeechSynthesizer?
@@ -146,29 +151,36 @@ struct ExamScreen: View {
             if units.isEmpty {
                 ContentUnavailableView(String(localized: "教材がありません"), systemImage: "book")
             } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: StudySpacing.section) {
-                        if isMock {
-                            HStack {
-                                Text(String(localized: "模擬テスト")).bold(); Spacer()
-                                if let ended { Text(duration(ended.timeIntervalSince(started))).monospacedDigit() }
-                                else { Text(started, style: .timer).monospacedDigit() }
-                            }.foregroundStyle(StudyColors.accent)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: StudySpacing.section) {
+                            if isMock {
+                                HStack {
+                                    Text(String(localized: "模擬テスト")).bold(); Spacer()
+                                    if let ended { Text(duration(ended.timeIntervalSince(started))).monospacedDigit() }
+                                    else { Text(started, style: .timer).monospacedDigit() }
+                                }.foregroundStyle(StudyColors.accent)
+                            }
+                            exercise(showingReview: showingReview)
+                        }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
+                    }.scrollEdgeEffectStyle(.soft, for: .top)
+                        .scrollDismissesKeyboard(.interactively)
+                        .id(showingReview ? unit.id : "\(position)-\(questionPageID)")
+                        .safeAreaInset(edge: .bottom) {
+                            if !showingReview && (!unit.questions.isEmpty || unit.skill == "Writing" || unit.skill == "Speaking") {
+                                jumpControls(proxy)
+                            }
                         }
-                        exercise(showingReview: showingReview)
-                    }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
-                }.scrollEdgeEffectStyle(.soft, for: .top)
-                    .scrollDismissesKeyboard(.interactively)
-                    .id(showingReview ? unit.id : "\(position)-\(questionPageID)")
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(isMock || answerFocused)
-        .interactiveDismissDisabled(isMock && !finished)
+        .navigationBarBackButtonHidden(!units.isEmpty && (isMock || !showingReview || answerFocused))
+        .interactiveDismissDisabled(!finished && (isMock || !showingReview))
         .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
         .toolbar {
-            if isMock && !finished && !units.isEmpty && !answerFocused {
+            if (isMock || !showingReview) && !finished && !units.isEmpty && !answerFocused {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(String(localized: "終了"), systemImage: "chevron.backward") {
                         completing = false; confirmEnd = true
@@ -191,7 +203,9 @@ struct ExamScreen: View {
             }
         }
         .alert(String(localized: "練習を終了しますか？"), isPresented: active ? $confirmEnd : .constant(false)) {
-            Button(String(localized: "練習を終了"), role: .destructive) { endPractice() }
+            Button(String(localized: "練習を終了"), role: .destructive) {
+                if !isMock && !completing { dismiss() } else { endPractice() }
+            }
             Button(String(localized: "続ける"), role: .cancel) {}
         }
         .onDisappear { speaker?.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription() }
@@ -221,14 +235,51 @@ struct ExamScreen: View {
         }
     }
 
+    private func jumpControls(_ proxy: ScrollViewProxy) -> some View {
+        let index = unit.questions.indices.last { index in
+            guard let answer = answers[unit.id + "-\(index)"] else { return false }
+            return !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        } ?? 0
+        let destination = unit.questions.isEmpty ? String(localized: "Your response")
+            : String(format: String(localized: "Question %@"), String(unit.firstQuestionNumber + index))
+
+        return GlassEffectContainer(spacing: 8) {
+            HStack(spacing: 10) {
+                Button {
+                    jump(to: .passage, using: proxy)
+                } label: {
+                    Label(String(localized: "Passage"), systemImage: "text.alignleft")
+                }.accessibilityIdentifier("practice.jumpPassage")
+                Button {
+                    jump(to: .question(index), using: proxy)
+                } label: {
+                    Label(destination, systemImage: "list.number")
+                }.accessibilityIdentifier("practice.jumpQuestion")
+            }
+            .font(StudyTypography.subheadline.bold())
+            .buttonStyle(.glass)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+    }
+
+    private func jump(to target: JumpTarget, using proxy: ScrollViewProxy) {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        withAnimation(reduceMotion ? nil : .default) { proxy.scrollTo(target, anchor: .top) }
+    }
+
     private func exercise(showingReview: Bool) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(unit.id).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
             Text(showingReview ? String(localized: "答えと解説") : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
+                .id(JumpTarget.passage)
             ForEach(Array((showingReview ? [] : unit.visuals ?? []).enumerated()), id: \.offset) { _, visual in
                 QuestionVisualView(visual: visual)
             }
             if showingReview {
+                if !unit.questions.isEmpty { scoreSummary(unit) }
                 reviewContent(unit)
             } else {
                 if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
@@ -237,14 +288,16 @@ struct ExamScreen: View {
                     ListeningAudioView(script: script, preparationFailed: unit.audioPreparationFailed == true) { settings = true }.id(unit.id)
                 }
                 if !unit.questions.isEmpty {
-                    LazyVStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 20) {
                         ForEach(unit.questions.indices, id: \.self) { index in
                             questionRow(index)
+                                .id(JumpTarget.question(index))
                         }
                     }
                 }
                 if unit.skill == "Writing" {
                     Text(String(localized: "Your response")).font(StudyTypography.headline)
+                        .id(JumpTarget.question(0))
                     TextEditor(text: binding(0)).disabled(recorded.contains(unit.id)).focused($answerFocused).keyboardType(.asciiCapable).frame(minHeight: 220)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(.secondary.opacity(0.4)))
                         .accessibilityLabel(String(localized: "英作文の回答"))
@@ -258,6 +311,7 @@ struct ExamScreen: View {
                     Button(String(localized: "AI試験官と音声会話"), systemImage: "waveform") {
                         speaker?.stopSpeaking(at: .immediate); audio.stop(); audio.cancelTranscription(); conversation = true
                     }.buttonStyle(StudyPrimaryButtonStyle()).accessibilityIdentifier("speaking.conversation").disabled(recorded.contains(unit.id))
+                        .id(JumpTarget.question(0))
                     Button(String(localized: "マイクで回答"), systemImage: "mic.fill") {
                         speaker?.stopSpeaking(at: .immediate)
                         recording = true
@@ -299,7 +353,7 @@ struct ExamScreen: View {
                 .buttonStyle(StudyPrimaryButtonStyle())
                 .disabled(audio.transcribing || audio.isRecording)
                 .accessibilityIdentifier("practice.review")
-                if !isMock {
+                if showingReview && !isMock {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
                         Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
                             store.send(.savePaper(unit)); saved = true
@@ -312,6 +366,8 @@ struct ExamScreen: View {
                 if showingReview {
                     Button(String(localized: "このパートをもう一度"), systemImage: "arrow.counterclockwise") {
                         reviewPresented = false
+                        markedWords[unit.id] = nil
+                        wordExplanations[unit.id] = nil
                         questionPageID = UUID()
                         recorded.remove(unit.id)
                         answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
@@ -363,8 +419,8 @@ struct ExamScreen: View {
                             .overlay(RoundedRectangle(cornerRadius: 12).stroke(StudyColors.accent.opacity(binding(index).wrappedValue == choice ? 0.8 : 0.2)))
                     }
                 } else {
-                    TextField(String(localized: "解答"), text: binding(index)).textFieldStyle(.roundedBorder).disabled(recorded.contains(unit.id))
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    ShortAnswerField(text: binding(index))
+                        .disabled(recorded.contains(unit.id))
                 }
             }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
         }
@@ -398,7 +454,7 @@ struct ExamScreen: View {
             ForEach(units.filter { recorded.contains($0.id) }) { part in
                 VStack(alignment: .leading, spacing: 10) {
                     Text(part.id).font(StudyTypography.headline)
-                    if !part.questions.isEmpty { Text(String(format: String(localized: "%@ / %@ 正解"), String(score(part)), String(part.questions.count))).font(StudyTypography.heading) }
+                    if !part.questions.isEmpty { scoreSummary(part) }
                     else { Text(String(localized: "学習用推定 ") + StudyBand.label(assessments[part.id]?.estimatedBand)).font(StudyTypography.subheadline) }
                     DisclosureGroup(String(localized: "答えと解説・振り返り")) { reviewContent(part) }
                     if part.skill == "Writing", let response = answers[part.id + "-0"] {
@@ -411,14 +467,24 @@ struct ExamScreen: View {
             Button(String(localized: "ホームに戻る"), systemImage: "house") { navigation.home() }
                 .buttonStyle(StudySecondaryButtonStyle())
             Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
+                markedWords = [:]; wordExplanations = [:]
                 position = 0; finished = false; answers = [:]; reviewPresented = false; recorded = []; evaluatingID = nil
                 started = Date(); ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
             }.buttonStyle(StudySecondaryButtonStyle())
         }
     }
 
+    private func scoreSummary(_ part: ExamUnit) -> some View {
+        Text(String(format: String(localized: "%@ / %@ 正解"), String(score(part)), String(part.questions.count)))
+            .font(StudyTypography.heading)
+            .accessibilityIdentifier("practice.score")
+    }
+
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
+            if let words = markedWords[part.id], !words.isEmpty {
+                MarkedWordReview(words: words, store: store, explanation: $wordExplanations[part.id])
+            }
             if part.questions.isEmpty {
                 DisclosureGroup(part.title) {
                     VStack(alignment: .leading, spacing: 12) {
@@ -484,9 +550,15 @@ struct ExamScreen: View {
 
     private func selectable(_ text: String, id: String) -> some View {
         ExamMaterialText(text: text) { fragment, suffix in
-            SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { save($0, paper: unit) },
+            SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { entry in
+                if !(markedWords[unit.id] ?? []).contains(where: { $0.id == entry.id }) {
+                    markedWords[unit.id, default: []].append(entry)
+                    wordExplanations[unit.id] = nil
+                }
+                save(entry, paper: unit)
+            },
                 onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
-                allowsAI: !isMock)
+                allowsAI: !isMock, forLaterReview: true)
         }
     }
     private func save(_ entry: SelectableStudyText.Entry, paper: ExamUnit) {
@@ -924,6 +996,57 @@ private struct LoadingBookMascot: View {
                     .rotationEffect(.degrees(reduceMotion ? 0 : sin(elapsed * 1.8) * 5))
                     .offset(y: reduceMotion ? 0 : sin(elapsed * 1.8) * 7)
                 }.frame(height: 220).accessibilityHidden(true)
+        }
+    }
+}
+
+private struct MarkedWordReview: View {
+    let words: [SelectableStudyText.Entry]
+    let store: StoreOf<StudyFeature>
+    @Binding var explanation: String?
+    @Dependency(StudyClient.self) private var client
+    @State private var retry = 0
+    @State private var error: String?
+    @State private var settings = false
+
+    private func context(_ word: SelectableStudyText.Entry) -> String {
+        StudyTextSelection.excerpt(word.sourceText, range: word.utf16Range, expression: word.expression)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label(String(localized: "Words to review"), systemImage: "bookmark.fill").font(StudyTypography.heading)
+            ForEach(words) { word in
+                Text(verbatim: word.expression).bold()
+                Text(verbatim: context(word)).font(StudyTypography.subheadline)
+                if !store.settings.canPractice,
+                   let match = StarterWord.all.first(where: { $0.expression.caseInsensitiveCompare(word.expression) == .orderedSame }) {
+                    Text(verbatim: match.definition)
+                }
+            }
+            if let explanation {
+                Text(verbatim: explanation).textSelection(.enabled)
+            } else if !store.settings.canPractice {
+                Button(String(localized: "ChatGPTの接続設定")) { settings = true }
+            } else if let error {
+                Text(verbatim: error).foregroundStyle(StudyColors.error)
+                Button(String(localized: "もう一度生成")) { retry += 1 }
+            } else {
+                ProgressView(String(localized: "講評中…"))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading).padding()
+        .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
+        .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
+        .task(id: "\(store.settings.canPractice)-\(retry)-\(words.count)") {
+            guard store.settings.canPractice, explanation == nil else { return }
+            error = nil
+            do {
+                let material = words.map { $0.expression + "\n" + context($0) }.joined(separator: "\n\n")
+                let result = try await client.explain(material, "For each marked expression in order, give its meaning in the quoted sentence and briefly explain its usage. Use plain text.")
+                try Task.checkCancellation()
+                explanation = result
+            } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
         }
     }
 }

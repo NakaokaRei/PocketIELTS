@@ -36,6 +36,36 @@ struct IELTSPracticeSession<Content: View>: View {
     }
 }
 
+struct ShortAnswerField: View {
+    @Binding var text: String
+    @State private var selection: TextSelection?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            TextField(String(localized: "解答"), text: $text, selection: $selection)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            PasteButton(payloadType: String.self) { strings in
+                guard let pasted = strings.first, !pasted.isEmpty else { return }
+                let range: Range<String.Index>
+                if let selection, case .selection(let selectedRange) = selection.indices {
+                    range = selectedRange
+                } else {
+                    range = text.endIndex..<text.endIndex
+                }
+                let prefix = text[..<range.lowerBound] + pasted
+                text = String(prefix) + text[range.upperBound...]
+                selection = TextSelection(insertionPoint: String.Index(utf16Offset: prefix.utf16.count, in: text))
+            }
+            .labelStyle(.iconOnly)
+            .controlSize(.large)
+            .tint(StudyColors.accent)
+            .accessibilityIdentifier("answer.paste")
+        }
+    }
+}
+
 /// A visible, full-hit-area action for supporting study tasks.
 struct StudySecondaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled

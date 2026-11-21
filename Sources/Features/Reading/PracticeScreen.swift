@@ -42,8 +42,8 @@ struct PracticeScreen: View {
                                 ForEach(item.choices, id: \.self) { choice in
                                     selectable(item.choiceText(choice), id: "choice-\(i)-\(choice)")
                                 }
-                                TextField(String(localized: "解答"), text: Binding(get: { store.answers[i] ?? "" }, set: { store.send(.answer(i, $0)) }))
-                                    .textFieldStyle(.roundedBorder).disabled(store.reviewed)
+                                ShortAnswerField(text: Binding(get: { store.answers[i] ?? "" }, set: { store.send(.answer(i, $0)) }))
+                                    .disabled(store.reviewed)
                                 if store.reviewed {
                                     Label(item.answers.joined(separator: " / "), systemImage: item.accepts(store.answers[i] ?? "") ? "checkmark.circle" : "xmark.circle")
                                     selectable(item.explanation, id: "explanation-\(i)")
@@ -54,15 +54,17 @@ struct PracticeScreen: View {
                         Button(store.reviewed ? String(localized: "次のセットを生成") : String(localized: "採点して解説を見る")) {
                             if store.reviewed { store.send(.start(store.section)) } else { store.send(.review) }
                         }.buttonStyle(.borderedProminent)
-                        Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
-                            store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
-                                skill: "Reading", title: set.title, directions: "", passages: set.passages,
-                                questions: set.questions, audio: nil, oral: [], visuals: set.visuals)))
-                            saved = true
-                        }
-                        .buttonStyle(StudySecondaryButtonStyle())
-                        Button(String(localized: "この問題をAIに質問"), systemImage: "bubble.left.and.bubble.right") { openTutor(QuestionVisual.context(set.visuals) + set.passages.joined(separator: "\n") + "\n" + set.questions.map(\.prompt).joined(separator: "\n")) }
+                        if store.reviewed {
+                            Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
+                                store.send(.savePaper(ExamUnit(id: "Reading / Section \(store.section) · " + set.title,
+                                    skill: "Reading", title: set.title, directions: "", passages: set.passages,
+                                    questions: set.questions, audio: nil, oral: [], visuals: set.visuals)))
+                                saved = true
+                            }
                             .buttonStyle(StudySecondaryButtonStyle())
+                            Button(String(localized: "この問題をAIに質問"), systemImage: "bubble.left.and.bubble.right") { openTutor(QuestionVisual.context(set.visuals) + set.passages.joined(separator: "\n") + "\n" + set.questions.map(\.prompt).joined(separator: "\n")) }
+                                .buttonStyle(StudySecondaryButtonStyle())
+                        }
                     }
                 }.padding(.horizontal, StudySpacing.screenInset)
                     .padding(.vertical, StudySpacing.contentInset)

@@ -331,7 +331,7 @@ struct ListeningAudioView: View {
                     Text(String(localized: "音声を生成できませんでした。時間をおいて再試行してください。"))
                         .font(StudyTypography.subheadline).foregroundStyle(StudyColors.error)
                 }
-                Button(String(localized: "音声APIの設定"), systemImage: "gearshape") { playback.stop(); openSettings() }.buttonStyle(StudySecondaryButtonStyle())
+                Button(String(localized: "OpenAI API key"), systemImage: "gearshape") { playback.stop(); openSettings() }.buttonStyle(StudySecondaryButtonStyle())
                 if playback.player == nil { Text(String(localized: "初回生成にはAPI利用料がかかります。生成済み音声は端末に保存して再利用します。")) .font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText) }
             }.padding(20).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
         }

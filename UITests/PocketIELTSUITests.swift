@@ -111,10 +111,16 @@ final class PocketIELTSUITests: XCTestCase {
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         XCTAssertTrue(passage.waitForExistence(timeout: 5))
         passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
-        let save = app.menuItems["単語帳に追加"]
+        let save = app.menuItems["後で確認"]
         XCTAssertTrue(save.waitForExistence(timeout: 5))
         save.tap()
-        XCTAssertTrue(app.staticTexts["単語帳に保存しました"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.descendants(matching: .any)["selection.saved"].exists)
+        app.buttons["practice.jumpQuestion"].tap()
+        let review = app.buttons["practice.review"]
+        for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        review.tap()
+        XCTAssertTrue(app.staticTexts["後で確認する語句"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["practice.score"].label, "0 / 13 正解")
         app.terminate()
         app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
         app.launch()
@@ -152,7 +158,7 @@ final class PocketIELTSUITests: XCTestCase {
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         let word = passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12))
         word.tap()
-        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["後で確認"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.menuItems["問題を保存"].exists)
         let pronunciation = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@ AND (elementType == %d OR elementType == %d)", "発音を聞く", XCUIElement.ElementType.menuItem.rawValue, XCUIElement.ElementType.button.rawValue)).firstMatch
         if !pronunciation.exists { app.buttons["進む"].tap() }
@@ -161,10 +167,10 @@ final class PocketIELTSUITests: XCTestCase {
         pronunciation.tap()
         XCTAssertTrue(pronunciation.waitForNonExistence(timeout: 5))
         word.tap()
-        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["後で確認"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.navigationBars["テキスト選択"].exists)
         app.staticTexts["Community services"].tap()
-        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["後で確認"].waitForNonExistence(timeout: 5))
         word.press(forDuration: 1)
         XCTAssertTrue(app.menuItems["AIに質問"].waitForExistence(timeout: 5))
         app.menuItems["AIに質問"].tap()
@@ -214,6 +220,26 @@ final class PocketIELTSUITests: XCTestCase {
         capture("iphone-listening-figure-expanded")
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.18)).tap()
         XCTAssertTrue(expand.waitForExistence(timeout: 5))
+    }
+
+    func testPasteSelectedWordIntoListeningAnswer() {
+        app.buttons["home.skill.Listening"].tap()
+        app.buttons["part.open.Listening / Part 1"].tap()
+        let jump = app.buttons["practice.jumpQuestion"]
+        XCTAssertTrue(jump.waitForExistence(timeout: 8))
+        jump.tap()
+        let first = app.textFields["解答"].firstMatch
+        first.tap()
+        first.typeText("Course")
+        first.typeKey("a", modifierFlags: .command)
+        first.typeKey("c", modifierFlags: .command)
+        let paste = app.buttons.matching(identifier: "answer.paste").element(boundBy: 1)
+        for _ in 0..<5 where !paste.isHittable { app.swipeUp() }
+        paste.tap()
+        let second = app.textFields.element(boundBy: 1)
+        let pasted = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "Course"), object: second)
+        XCTAssertEqual(XCTWaiter.wait(for: [pasted], timeout: 5), .completed, app.debugDescription)
+
     }
 
     func testReadableChoicesAndAnswerSelection() {
@@ -339,6 +365,9 @@ final class PocketIELTSUITests: XCTestCase {
         openReading()
         let review = app.buttons["practice.review"]
         for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        XCTAssertFalse(app.buttons["practice.save"].exists)
+        XCTAssertFalse(app.buttons["practice.ask"].exists)
+        XCTAssertTrue(app.buttons["practice.saveToolbar"].isHittable)
         XCTAssertTrue(review.isHittable); review.tap()
         XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["答えと解説"].isHittable, "Review must start at the top, not retain the question scroll offset")
@@ -368,7 +397,8 @@ final class PocketIELTSUITests: XCTestCase {
         app.buttons["完了"].tap()
         retry.tap()
         XCTAssertTrue(app.buttons["practice.review"].exists)
-        app.navigationBars.buttons.firstMatch.tap()
+        app.buttons["practice.back"].tap()
+        app.alerts.buttons["練習を終了"].tap()
         let part = app.buttons["part.open.Reading / Section 1"]
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
@@ -445,6 +475,28 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
         let edge = app.coordinate(withNormalizedOffset: CGVector(dx: 0.003, dy: 0.5))
         edge.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+        XCTAssertTrue(app.buttons["practice.back"].isHittable)
+        let jump = app.buttons["practice.jumpQuestion"]
+        jump.tap()
+        let firstChoice = app.buttons["answer.choice.0.TRUE"]
+        XCTAssertTrue(firstChoice.isHittable)
+        firstChoice.tap()
+        let second = app.buttons["answer.choice.1.TRUE"]
+        for _ in 0..<8 where !second.isHittable { app.swipeUp() }
+        second.tap()
+        let prior = app.buttons["answer.choice.0.FALSE"]
+        for _ in 0..<8 where !prior.isHittable { app.swipeDown() }
+        prior.tap()
+        XCTAssertTrue(jump.label.contains("2"))
+        app.buttons["practice.jumpPassage"].tap()
+        XCTAssertTrue(app.staticTexts["Community services"].isHittable)
+        jump.tap()
+        XCTAssertTrue(second.isHittable)
+        app.buttons["practice.back"].tap()
+        app.alerts.buttons["続ける"].tap()
+        XCTAssertTrue(second.isHittable)
+        app.buttons["practice.back"].tap()
+        app.alerts.buttons["練習を終了"].tap()
         let part = app.buttons["part.open.Reading / Section 1"]
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
@@ -453,7 +505,8 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
         app.buttons["practice.saveToolbar"].tap()
         app.alerts.buttons["学習を続ける"].tap()
-        app.navigationBars.buttons.firstMatch.tap()
+        app.buttons["practice.back"].tap()
+        app.alerts.buttons["練習を終了"].tap()
         XCTAssertTrue(part.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
         let savedPapers = app.buttons["home.savedPapers"]
@@ -461,7 +514,8 @@ final class PocketIELTSUITests: XCTestCase {
         savedPapers.tap()
         let saved = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
         XCTAssertTrue(saved.waitForExistence(timeout: 5)); saved.tap()
-        app.navigationBars.buttons.firstMatch.tap()
+        app.buttons["practice.back"].tap()
+        app.alerts.buttons["練習を終了"].tap()
         XCTAssertTrue(saved.waitForExistence(timeout: 5))
         XCTAssertFalse(app.alerts.firstMatch.exists)
     }
@@ -545,13 +599,20 @@ final class PocketIELTSUITests: XCTestCase {
         // Never start a paid API session or request microphone access in UI tests.
     }
 
-    func testSettingsSeparatesChatGPTAndAudioAPI() {
+    func testSettingsShowsSharedAPIKeyAndMediaToggles() {
         app.buttons["home.settings"].tap()
         XCTAssertTrue(app.buttons["settings.signIn"].waitForExistence(timeout: 5))
-        let key = app.secureTextFields["settings.speechKey"]
+        let key = app.secureTextFields["settings.openAIKey"]
         for _ in 0..<8 where !key.isHittable { app.swipeUp() }
         XCTAssertTrue(key.exists)
-        XCTAssertTrue(app.buttons["APIキー取得ページを開く"].exists || app.links["APIキー取得ページを開く"].exists)
+        let manageKeys = app.descendants(matching: .any).matching(identifier: "settings.manageAPIKeys").firstMatch
+        for _ in 0..<8 where !manageKeys.isHittable { app.swipeUp() }
+        XCTAssertTrue(manageKeys.isHittable)
+        let audio = app.switches["settings.prepareListeningAudio"]
+        let images = app.switches["settings.questionImages"]
+        for _ in 0..<8 where !images.isHittable { app.swipeUp() }
+        XCTAssertTrue(audio.isHittable)
+        XCTAssertTrue(images.isHittable)
         capture("iphone-audio-settings")
     }
     func testOSSLicensesCanBeReadInSettings() {
@@ -639,9 +700,9 @@ final class PocketIELTSUITests: XCTestCase {
         capture(prefix + "-reading")
         let passage = app.textViews["study.text.Reading / Section 1passage-0"]
         passage.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 75, dy: 12)).tap()
-        XCTAssertTrue(app.menuItems["単語帳に追加"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems["後で確認"].waitForExistence(timeout: 5))
         capture(prefix + "-selection")
-        app.menuItems["単語帳に追加"].tap()
+        app.menuItems["後で確認"].tap()
         app.terminate()
         app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing"]
         app.launch()

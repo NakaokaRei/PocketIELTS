@@ -97,7 +97,7 @@ final class BackgroundGeneration {
 
     private func schedule(useSystemScheduler: Bool) {
         #if !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
-        if #available(iOS 26.0, *), useSystemScheduler, !ProcessInfo.processInfo.isiOSAppOnMac {
+        if useSystemScheduler, !ProcessInfo.processInfo.isiOSAppOnMac {
             let registered = BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: .main) { [weak self] task in
                 Task { @MainActor in
                     guard let self, !self.finished, let task = task as? BGContinuedProcessingTask else {
@@ -132,7 +132,6 @@ final class BackgroundGeneration {
     }
 
     #if !targetEnvironment(macCatalyst)
-    @available(iOS 26.0, *)
     private nonisolated static func submit(_ request: BGContinuedProcessingTaskRequest) async throws {
         #if compiler(>=6.4)
         if #available(iOS 27.0, *) {
@@ -193,7 +192,7 @@ final class BackgroundGeneration {
         fraction = max(fraction, value)
         onProgress(fraction)
         #if !targetEnvironment(macCatalyst)
-        if #available(iOS 26.0, *), let task = systemTask as? BGContinuedProcessingTask {
+        if let task = systemTask as? BGContinuedProcessingTask {
             let percent = Int(fraction * 100)
             guard publishedPercent != percent else { return }
             publishedPercent = percent
