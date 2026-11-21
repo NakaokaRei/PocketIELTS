@@ -19,6 +19,6 @@ iPhone・iPadでIELTS General Trainingの4技能を練習できるアプリで�
 
 対象はiOS・iPadOS 26以降です。Xcodeで `PocketIELTS.xcodeproj` を開き、`PocketIELTS` スキームで実行してください。
 
-[ストア掲載用画像](Documentation/AppStore/ja) · [iCloudの設定](Documentation/iCloud.md) · [アイコン](Documentation/Brand/README.md) · [フォントとライセンス](Resources/Fonts)
+[ストア掲載用画像](Documentation/AppStore) · [プライバシーポリシー](Documentation/Privacy.md) · [サポート](Documentation/Support.md) · [iCloudの設定](Documentation/iCloud.md) · [アイコン](Documentation/Brand/README.md) · [フォントとライセンス](Resources/Fonts)
 
 本プロジェクトは [MIT License](LICENSE) で公開しています。同梱フォントと外部ライブラリには、それぞれのライセンスが適用されます。

@@ -101,6 +101,12 @@ struct SettingsScreen: View {
                     footer: { Text(String(localized: "同じApple AccountのiPhone・iPadで、単語帳・保存した問題・学習履歴・回答・講評・録音を同期します。オフラインでも保存でき、アプリ使用中に再同期します。ChatGPTの接続は端末ごとに設定してください。")) }
                 }
                 Section {
+                    Link(destination: URL(string: "https://github.com/NakaokaRei/PocketIELTS/blob/main/Documentation/Privacy.md")!) {
+                        Label(String(localized: "Privacy policy"), systemImage: "hand.raised")
+                    }
+                    Link(destination: URL(string: "https://github.com/NakaokaRei/PocketIELTS/blob/main/Documentation/Support.md")!) {
+                        Label(String(localized: "Contact support"), systemImage: "envelope")
+                    }
                     NavigationLink { OSSLicensesScreen() } label: {
                         Label(String(localized: "OSSライセンス"), systemImage: "doc.text")
                     }.accessibilityIdentifier("settings.licenses")
