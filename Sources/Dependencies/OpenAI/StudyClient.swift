@@ -31,6 +31,7 @@ struct StudyClient: DependencyKey {
         Do not prefix prompt with a question number; the app displays it.
         For completion tasks use words from the text. Include all acceptable answers separately.
         \(QuestionVisual.generationInstructions)
+        Include evidenceQuote in each question: copy a short exact excerpt from the relevant passage, or the closest context for NOT GIVEN.
         Give evidence for each answer in \(explanationLanguage). Return only a JSON object:
         {"title":"...","passages":["full document with title and paragraphs"],"questions":[{"instruction":"...","prompt":"...","answers":["..."],"explanation":"..."}]}
         """
@@ -109,6 +110,7 @@ struct StudyClient: DependencyKey {
         \(variation)
         Use English for material and \(explanationLanguage) for answer explanations. All answers must be grounded in the material.
         For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, provide only spoken words. For Speaking provide interview questions in oral.
+        For each Reading or Listening question include evidenceQuote: a short exact excerpt from the relevant passage or script, including the closest context for NOT GIVEN.
         Put every option on its own line with a letter or roman-numeral label. Do not prefix question prompts with question numbers.
         Return only a JSON object using the example keys plus the optional visuals array.
         \(QuestionVisual.generationInstructions)

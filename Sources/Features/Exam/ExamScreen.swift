@@ -214,7 +214,7 @@ struct ExamScreen: View {
         VStack(alignment: .leading, spacing: 20) {
             Text(unit.id).font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
             Text(showingReview ? String(localized: "答えと解説") : unit.title).font(showingReview ? StudyTypography.japaneseTitle(30) : .system(size: 24, weight: .bold))
-            ForEach(Array((unit.visuals ?? []).enumerated()), id: \.offset) { _, visual in
+            ForEach(Array((showingReview ? [] : unit.visuals ?? []).enumerated()), id: \.offset) { _, visual in
                 QuestionVisualView(visual: visual)
             }
             if showingReview {
@@ -391,7 +391,7 @@ struct ExamScreen: View {
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            if !part.passages.isEmpty || !part.directions.isEmpty || !part.oral.isEmpty || (isMock && !(part.visuals ?? []).isEmpty) {
+            if part.questions.isEmpty {
                 DisclosureGroup(part.title) {
                     VStack(alignment: .leading, spacing: 12) {
                         if !part.directions.isEmpty { Text(part.directions) }
@@ -402,7 +402,7 @@ struct ExamScreen: View {
                     }.textSelection(.enabled)
                 }
             }
-            if let script = part.audio { DisclosureGroup(String(localized: "スクリプト")) { SelectableStudyText(text: script, sourceID: part.id + "-script", onSave: { save($0, paper: part) }, onSavePaper: { store.send(.savePaper(part)) }) } }
+
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
                 let answer = answers[part.id + "-\(index)", default: ""]
@@ -417,6 +417,7 @@ struct ExamScreen: View {
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)
                     } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) }
+                    QuestionReviewActions(part: part, index: index, answer: answer, store: store)
                 }
             }
             if part.questions.isEmpty {
@@ -854,6 +855,73 @@ private struct LoadingBookMascot: View {
                     .rotationEffect(.degrees(reduceMotion ? 0 : sin(elapsed * 1.8) * 5))
                     .offset(y: reduceMotion ? 0 : sin(elapsed * 1.8) * 7)
                 }.frame(height: 220).accessibilityHidden(true)
+        }
+    }
+}
+
+/// Each review row owns its presentation so dismissal returns to the same answer.
+struct QuestionReviewActions: View {
+    let part: ExamUnit
+    let index: Int
+    let answer: String
+    let store: StoreOf<StudyFeature>
+    private enum Destination: Int, Identifiable {
+        case source, tutor
+        var id: Int { rawValue }
+    }
+    @State private var destination: Destination?
+    private var question: ReadingSet.Question { part.questions[index] }
+    private var paragraphs: [String] {
+        (part.passages + [part.audio ?? ""]).flatMap { $0.split(whereSeparator: \.isNewline).map(String.init) }
+    }
+    private var target: Int? {
+        guard let quote = question.evidenceQuote?.trimmingCharacters(in: .whitespacesAndNewlines), !quote.isEmpty else { return nil }
+        return paragraphs.firstIndex { $0.localizedCaseInsensitiveContains(quote) }
+    }
+    private var context: String {
+        ([part.title, part.directions] + part.passages + [part.audio ?? "", QuestionVisual.context(part.visuals),
+          "Question \(part.firstQuestionNumber + index)", question.instruction, question.prompt,
+          "Accepted answers: " + question.answers.map(question.choiceText).joined(separator: " / "),
+          "Learner answer: " + (answer.isEmpty ? "Unanswered" : question.choiceText(answer)),
+          "Provided explanation: " + question.explanation]).joined(separator: "\n")
+    }
+    var body: some View {
+        HStack {
+            Button { destination = .source } label: {
+                Label(String(localized: "全文を見る"), systemImage: "text.magnifyingglass")
+            }.accessibilityIdentifier("review.source.\(index)")
+            Button {
+                destination = .tutor
+                store.send(.ask(context, String(localized: "この問題の正解の根拠を、本文の該当箇所を示して説明してください。")))
+            } label: { Label(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") }.accessibilityIdentifier("review.tutor.\(index)")
+        }.buttonStyle(.bordered)
+        .sheet(item: $destination, onDismiss: { store.send(.closeQuestion) }) { route in
+            if route == .tutor {
+                TutorScreen(store: store, context: context, selectedText: question.prompt)
+            } else {
+                NavigationStack {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text(question.prompt).font(StudyTypography.headline)
+                                Text(StudyQuestionLayout(question.instruction).formatted)
+                                ForEach(StudyQuestionLayout(question.prompt).options, id: \.label) { option in Text(option.label + ". " + option.text) }
+                                ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
+                                ForEach(paragraphs.indices, id: \.self) { i in
+                                    Text(paragraphs[i]).textSelection(.enabled).padding(8)
+                                        .background(i == target ? StudyColors.reading : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                                        .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
+                                        .id(i)
+                                }
+                            }.padding()
+                        }.task {
+                            await Task.yield()
+                            if let target { proxy.scrollTo(target, anchor: .top) }
+                        }
+                    }.navigationTitle("Question \(part.firstQuestionNumber + index)").navigationBarTitleDisplayMode(.inline)
+                        .toolbar { Button(String(localized: "完了")) { destination = nil } }
+                }
+            }
         }
     }
 }

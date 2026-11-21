@@ -373,6 +373,7 @@ struct ResultDetailScreen: View {
                                         .font(StudyTypography.subheadline).bold()
                                     Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(StudyTypography.subheadline)
                                     Text(question.explanation).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                                    QuestionReviewActions(part: paper, index: index, answer: answer, store: store)
                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                             }

@@ -36,7 +36,7 @@ In each part card, **Practice bundled questions** opens the included exercise. *
 
 ## Clear questions and useful next steps
 
-Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review opens at the top without a button morphing animation. Each explanation includes the question prompt. Expand the exercise title to consult the passage. The exit alert offers **End practice** and **Continue**. Continuing keeps the current answers.
+Instructions are separated from individual questions. Lettered choices appear on separate rows, with a clear selected state and no duplicated question numbers. After review, a prominent result button sits above outlined, icon-labeled actions for saving, asking AI and retrying. Review opens at the top without a button morphing animation. Each explanation includes the question prompt. Open the source from an individual answer to jump to its evidence paragraph or listening transcript. Ask the tutor on that row for an explanation grounded in the material, the question, your answer and the accepted answer. The exit alert offers **End practice** and **Continue**. Continuing keeps the current answers.
 
 New Reading and Listening attempts preserve every answer, including unanswered positions. History shows a score card and an expandable question-by-question review. Older records keep their existing saved data; missing historical answers cannot be reconstructed.
 

@@ -47,6 +47,7 @@ struct PracticeScreen: View {
                                 if store.reviewed {
                                     Label(item.answers.joined(separator: " / "), systemImage: item.accepts(store.answers[i] ?? "") ? "checkmark.circle" : "xmark.circle")
                                     selectable(item.explanation, id: "explanation-\(i)")
+                                    if let currentPaper { QuestionReviewActions(part: currentPaper, index: i, answer: store.answers[i] ?? "", store: store) }
                                 }
                             }
                         }

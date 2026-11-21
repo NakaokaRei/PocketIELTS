@@ -12,6 +12,7 @@ struct ReadingSet: Codable, Equatable, Sendable {
         var prompt: String
         var answers: [String]
         var explanation: String
+        var evidenceQuote: String? = nil
         var choices: [String] {
             let value = instruction.uppercased()
             if value.contains("TRUE"), value.contains("FALSE"), value.contains("NOT GIVEN") { return ["TRUE", "FALSE", "NOT GIVEN"] }

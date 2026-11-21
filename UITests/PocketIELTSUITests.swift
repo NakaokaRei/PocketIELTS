@@ -309,6 +309,20 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["part.open.Reading / Section 1"].waitForExistence(timeout: 5))
     }
 
+    func testPerAnswerSourceAndTutor() {
+        openReading()
+        let review = app.buttons["practice.review"]
+        for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        review.tap()
+        let source = app.buttons["review.source.0"]
+        for _ in 0..<8 where !source.isHittable { app.swipeUp() }
+        source.tap()
+        XCTAssertTrue(app.staticTexts["review.source.target"].firstMatch.waitForExistence(timeout: 5))
+        app.buttons["完了"].tap()
+        app.buttons["review.tutor.0"].tap()
+        XCTAssertTrue(app.staticTexts["tutor.subject"].waitForExistence(timeout: 5))
+    }
+
     func testReviewRetryAndReturnHome() {
         openReading()
         let review = app.buttons["practice.review"]
