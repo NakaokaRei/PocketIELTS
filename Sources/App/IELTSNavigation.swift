@@ -15,10 +15,10 @@ extension EnvironmentValues {
 }
 
 /// A stable destination identity lets every study link participate in the stack's path.
-/// Destination content is captured in the navigation value. Load bundled data before creating links.
+/// Build the destination when the stack opens it, including when a section becomes ready after its link appears.
 struct StudyRoute: Hashable {
     let id: UUID
-    let destination: AnyView
+    let destination: () -> AnyView
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
@@ -27,7 +27,7 @@ struct StudyLink<Destination: View, Label: View>: View {
     @ViewBuilder let destination: () -> Destination
     @ViewBuilder let label: () -> Label
     var body: some View {
-        NavigationLink(value: StudyRoute(id: id, destination: AnyView(destination())), label: label)
+        NavigationLink(value: StudyRoute(id: id, destination: { AnyView(destination()) }), label: label)
     }
 }
 
@@ -67,20 +67,20 @@ struct IELTSNavigation<Home: View, Progress: View, Vocabulary: View>: View {
                             case 2: vocabulary().navigationTitle(String(localized: "単語帳"))
                             default: home()
                             }
-                        }.navigationDestination(for: StudyRoute.self) { $0.destination }
+                        }.navigationDestination(for: StudyRoute.self) { $0.destination() }
                     }
                 }.navigationSplitViewStyle(.balanced)
             } else {
                 TabView(selection: $selectedTab) {
-                    NavigationStack(path: $homePath) { home().navigationDestination(for: StudyRoute.self) { $0.destination } }
+                    NavigationStack(path: $homePath) { home().navigationDestination(for: StudyRoute.self) { $0.destination() } }
                         .tabItem { Label(String(localized: "ホーム"), systemImage: "house") }.tag(0)
                     NavigationStack(path: $progressPath) {
                         progress().navigationTitle(String(localized: "学習記録"))
-                            .navigationDestination(for: StudyRoute.self) { $0.destination }
+                            .navigationDestination(for: StudyRoute.self) { $0.destination() }
                     }.tabItem { Label(String(localized: "学習記録"), systemImage: "chart.bar") }.tag(1)
                     NavigationStack(path: $vocabularyPath) {
                         vocabulary().navigationTitle(String(localized: "単語帳"))
-                            .navigationDestination(for: StudyRoute.self) { $0.destination }
+                            .navigationDestination(for: StudyRoute.self) { $0.destination() }
                     }.tabItem { Label(String(localized: "単語帳"), systemImage: "book") }.tag(2)
                 }
             }

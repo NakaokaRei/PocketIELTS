@@ -189,7 +189,7 @@ enum SpeechAudio {
 }
 
 /// Screen-owned playback. Cancellation also invalidates late network responses.
-@MainActor @Observable final class ListeningPlayer {
+@MainActor @Observable final class ListeningPlayer: ObservableObject {
     private(set) var player: AVAudioPlayer?
     private(set) var generating = false
     private(set) var completed = 0
@@ -275,13 +275,13 @@ struct ListeningAudioView: View {
     let script: String
     let preparationFailed: Bool
     let openSettings: () -> Void
-    @State private var playback: ListeningPlayer
+    @StateObject private var playback: ListeningPlayer
 
     init(script: String, preparationFailed: Bool = false, openSettings: @escaping () -> Void) {
         self.script = script
         self.preparationFailed = preparationFailed
         self.openSettings = openSettings
-        _playback = State(initialValue: ListeningPlayer(script: script))
+        _playback = StateObject(wrappedValue: ListeningPlayer(script: script))
     }
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.25)) { _ in
