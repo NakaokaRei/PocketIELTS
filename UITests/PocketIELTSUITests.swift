@@ -331,6 +331,13 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(review.isHittable); review.tap()
         XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["答えと解説"].isHittable, "Review must start at the top, not retain the question scroll offset")
+        let edge = app.coordinate(withNormalizedOffset: CGVector(dx: 0.003, dy: 0.5))
+        edge.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+        XCTAssertTrue(review.waitForExistence(timeout: 5))
+        XCTAssertTrue(review.isHittable, "Native back should restore the question's scroll position")
+        XCTAssertFalse(app.staticTexts["答えと解説"].exists)
+        review.tap()
+        XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
         let retry = app.buttons["practice.retry"]
         for _ in 0..<20 where !retry.isHittable { app.swipeUp(velocity: .fast) }
         XCTAssertTrue(retry.isHittable)
