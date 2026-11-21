@@ -134,11 +134,13 @@ final class BackgroundGeneration {
     #if !targetEnvironment(macCatalyst)
     @available(iOS 26.0, *)
     private nonisolated static func submit(_ request: BGContinuedProcessingTaskRequest) async throws {
+        #if compiler(>=6.4)
         if #available(iOS 27.0, *) {
             try await BGTaskScheduler.shared.submitTaskRequest(request)
-        } else {
-            try BGTaskScheduler.shared.submit(request)
+            return
         }
+        #endif
+        try BGTaskScheduler.shared.submit(request)
     }
     #endif
 
