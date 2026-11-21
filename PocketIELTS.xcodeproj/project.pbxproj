@@ -521,13 +521,13 @@
 
 /* Begin XCBuildConfiguration section */
         D820A0A124101DA934C12509 = {isa = XCBuildConfiguration; buildSettings = {
-            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 26.0;
             PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
             SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
             TEST_TARGET_NAME = PocketIELTS;
         }; name = Release; };
         D820A0A124101DA934C12508 = {isa = XCBuildConfiguration; buildSettings = {
-            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+            GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 26.0;
             PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
             SDKROOT = iphoneos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";
             TEST_TARGET_NAME = PocketIELTS;
@@ -538,7 +538,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -553,7 +553,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.tests;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -634,7 +634,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -728,7 +728,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

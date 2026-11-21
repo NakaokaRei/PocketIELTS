@@ -103,7 +103,7 @@ Authentication is stored in the device Keychain. When you explicitly request AI 
 ## Build and run
 
 - **Xcode 27.2** was used for development and verification.
-- Deployment target: **iOS / iPadOS 17.0+**.
+- Deployment target: **iOS / iPadOS 26.0+**.
 - Swift Package Manager resolves **The Composable Architecture 1.26.0** and its dependencies.
 
 1. Clone the repository and open `PocketIELTS.xcodeproj`.

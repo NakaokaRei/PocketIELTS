@@ -88,16 +88,6 @@ struct MockIntroScreen: View {
     }
 }
 
-private extension View {
-    @ViewBuilder func examScrollEdge() -> some View {
-        if #available(iOS 26.0, *) {
-            self.scrollEdgeEffectStyle(.soft, for: .top)
-        } else {
-            self
-        }
-    }
-}
-
 struct ExamScreen: View {
     var onFirstReview: () -> Void = {}
     let units: [ExamUnit]
@@ -167,7 +157,7 @@ struct ExamScreen: View {
                         }
                         exercise(showingReview: showingReview)
                     }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
-                }.examScrollEdge()
+                }.scrollEdgeEffectStyle(.soft, for: .top)
                     .scrollDismissesKeyboard(.interactively)
                     .id(showingReview ? unit.id : "\(position)-\(questionPageID)")
             }

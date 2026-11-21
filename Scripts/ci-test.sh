@@ -14,7 +14,7 @@ runtimes = [(runtime, devices) for runtime, devices in json.load(sys.stdin)["dev
 for runtime, devices in sorted(runtimes, key=lambda item: tuple(
         int(n) for n in item[0].split(".iOS-")[1].split("-")), reverse=True):
     version=tuple(int(n) for n in runtime.split(".iOS-")[1].split("-")[:2])
-    if version > sdk: continue
+    if version[0] < 26 or version > sdk: continue
     matches=[d for d in devices if d["name"].startswith(family) and d.get("isAvailable")]
     if matches:
         print("Using", runtime, matches[0]["name"], file=sys.stderr)
