@@ -57,7 +57,7 @@ struct IELTSNavigation<Home: View, Progress: View, Vocabulary: View>: View {
                         sidebarRow(String(localized: "ホーム"), symbol: "house", tag: 0)
                         sidebarRow(String(localized: "学習記録"), symbol: "chart.bar", tag: 1)
                         sidebarRow(String(localized: "単語帳"), symbol: "book", tag: 2)
-                    }.navigationTitle("Pocket IELTS")
+                    }.navigationTitle("Pocket Band AI")
                         .navigationSplitViewColumnWidth(min: 220, ideal: 240, max: 280)
                 } detail: {
                     NavigationStack(path: selectedPath) {

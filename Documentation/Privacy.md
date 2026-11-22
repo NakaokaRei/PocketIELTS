@@ -1,10 +1,10 @@
-# Pocket IELTS Privacy Policy / プライバシーポリシー
+# Pocket Band AI Privacy Policy / プライバシーポリシー
 
 NakaokaRei · 2026-11-21 · [日本語](#日本語)
 
 ## English
 
-Pocket IELTS stores your study material on your device. You can use bundled exercises and vocabulary offline. The developer operates no study-data server and the app includes no advertising or third-party analytics SDK.
+Pocket Band AI stores your study material on your device. You can use bundled exercises and vocabulary offline. The developer operates no study-data server and the app includes no advertising or third-party analytics SDK.
 
 | When you use… | What happens to your data |
 |---|---|
@@ -18,11 +18,11 @@ Pocket IELTS stores your study material on your device. You can use bundled exer
 
 **Your controls.** Delete individual saved words or exercises, or choose **Settings → Reset all learning data** to clear your study history, saved material, archived recordings and generated caches. To propagate deletion to iCloud, keep sync enabled and allow it to finish online. Turning sync off pauses transfers and leaves existing copies in place. Manage iCloud storage and device backups through Apple. You can disable automatic preparation, sign out of ChatGPT and remove the API key separately in Settings. Signing out clears the active session; profile choices may remain on the device.
 
-OpenAI and Apple process information under their respective terms. Resetting Pocket IELTS does not request deletion of records already held independently by those providers. The developer cannot access your private iCloud database or erase records from your OpenAI account. For a request concerning support correspondence or this policy, email [rei.n@me.com](mailto:rei.n@me.com). For provider-specific requests, see [OpenAI Privacy](https://openai.com/policies/privacy-policy/) and [Apple Privacy](https://www.apple.com/legal/privacy/).
+OpenAI and Apple process information under their respective terms. Resetting Pocket Band AI does not request deletion of records already held independently by those providers. The developer cannot access your private iCloud database or erase records from your OpenAI account. For a request concerning support correspondence or this policy, email [rei.n@me.com](mailto:rei.n@me.com). For provider-specific requests, see [OpenAI Privacy](https://openai.com/policies/privacy-policy/) and [Apple Privacy](https://www.apple.com/legal/privacy/).
 
 ## 日本語
 
-Pocket IELTSの開発者はNakaokaReiです。学習データは端末に保存され、収録問題や単語はオフラインでも利用できます。開発者独自の学習データサーバー、広告、第三者のアクセス解析SDKは使用していません。
+Pocket Band AIの開発者はNakaokaReiです。学習データは端末に保存され、収録問題や単語はオフラインでも利用できます。開発者独自の学習データサーバー、広告、第三者のアクセス解析SDKは使用していません。
 
 | 利用する機能 | データの扱い |
 |---|---|

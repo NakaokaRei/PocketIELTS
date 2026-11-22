@@ -1,4 +1,4 @@
-# Pocket IELTS 1.0.0 · ストア申請用資料
+# Pocket Band AI 1.0.0 · ストア申請用資料
 
 ## App Store Connectに入力するURL
 
@@ -9,9 +9,9 @@
 
 ## 日本語の掲載文案
 
-**名称**　Pocket IELTS
+**名称**　Pocket Band AI
 
-**サブタイトル**　AIで学ぶGeneral Trainingの4技能
+**サブタイトル**　General Trainingの英語4技能対策
 
 **キーワード**　英語,リスニング,リーディング,ライティング,スピーキング,英作文,模擬試験,試験対策,CEFR
 
@@ -23,9 +23,9 @@ Writingでは手紙やエッセイを書いて講評を受け、SpeakingではAI
 
 ## English listing draft
 
-**Name**　Pocket IELTS
+**Name**　Pocket Band AI
 
-**Subtitle**　General Training with AI
+**Subtitle**　General Training: Four Skills
 
 **Keywords**　listening,reading,writing,speaking,letters,essays,exam,practice,band,CEFR
 
@@ -37,7 +37,16 @@ Bundled material works offline. Question generation and AI explanations use your
 
 ## App Review notes draft
 
-Open Home → Offline material to try the bundled exercises. Choose a skill on Home for generated practice. Reading and Listening are scored from answers; Writing and Speaking use feedback on submitted responses. The estimates are study aids, not official test results. ChatGPT sign-in and a separate personal OpenAI API key serve different features. Settings contains the privacy policy, support, credential controls, iCloud sync and the learning-data reset.
+**提出前に**　角括弧を実測・確認した内容で置き換える。実機動画は審査担当者がアクセスできる形で添付する。以下は現行ソースをもとにした下書きのため、提出ビルドで同じ操作ができることを確認する。
+
+1. **Recording and testing.** [Attachment filename or reviewer-accessible video link]. Recorded from launch on [physical device, OS version, build number]. We tested this build on [iPhone and iPad models and OS versions actually tested].
+2. **Purpose and audience.** This is a self-study app for English learners preparing for General Training reading, listening, writing and speaking tasks. Learners can practise a single section, understand mistakes and track estimated proficiency over time. Band and CEFR estimates are for personal study.
+3. **How to review.** Launch the app and select Home → Offline practice → Reading → a section. Answer the questions and open the answer review to see your score and explanations. No sign-in or sample file is required for this flow. For new exercises, connect ChatGPT in Settings, return to Home and choose a skill and section. Use the answer review to ask the AI tutor about a question. Submit a Writing response for feedback. Optional listening audio, generated figures and realtime Speaking use a separately configured OpenAI API key. Enable the relevant media option in Settings. For realtime Speaking, start a Speaking session and allow microphone access. [Insert tested reviewer access instructions for the online features in App Store Connect.] OpenAI handles external sign-in. There is no separate developer-operated account system. Settings includes ChatGPT sign-out, API key removal and a separate reset for learning data. Answers, recordings and tutor conversations are private to the learner. There is no public posting or user-to-user messaging.
+4. **Services and payment.** OpenAI provides ChatGPT authentication, exercise generation, tutoring, feedback and optional speech, image and realtime voice APIs. Apple provides optional private iCloud sync via CloudKit and on-device speech recognition for recorded answers. The app is free and offers no in-app purchases. Use of a personal OpenAI API key is billed separately by OpenAI.
+5. **Regions.** [Confirm against the submitted build and selected storefronts.] The app offers the same study flows and bundled exercises across its distribution regions. Interface and explanation language can vary. Online AI features also depend on OpenAI service and account availability.
+6. **Materials and rights.** This is an independent educational app. Its proficiency estimates do not confer a qualification. Bundled font licences for Nunito and Zen Maru Gothic are included. [Identify any protected materials or marks used in the final build and listing, and attach applicable permissions. Confirm the provenance of included exercises and visuals.]
+
+**実機録画の順序**　ホーム画面のアイコンから起動し、未ログインでReadingを1問解いて採点・解説を開く。続いてChatGPTの接続、問題生成、設問へのAI質問、音声再生、Writingの講評、Speakingの実際の1往復を見せる。最後に設定で接続解除とデータ削除の場所を示す。APIキー・認証情報・個人のメールアドレスは録画に映さない。
 
 ## 提出者が入力・確認する項目
 

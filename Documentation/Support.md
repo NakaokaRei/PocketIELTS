@@ -1,4 +1,4 @@
-# Pocket IELTS Support / サポート
+# Pocket Band AI Support / サポート
 
 **Email / メール**　[rei.n@me.com](mailto:rei.n@me.com)
 

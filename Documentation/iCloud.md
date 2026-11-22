@@ -1,6 +1,6 @@
 # iCloud setup and verification
 
-Pocket IELTS uses CloudKit's private database, not the public database or a shared group account. Synchronization is for one person's devices signed into the same Apple Account.
+Pocket Band AI uses CloudKit's private database, not the public database or a shared group account. Synchronization is for one person's devices signed into the same Apple Account.
 
 ## Signing and container
 

@@ -1,4 +1,4 @@
-# App Store 掲載素材
+# Pocket Band AI · App Store 掲載素材
 
 各言語で撮影した実画面を、問題生成・AIチューター・推定スコア・Writing・Speakingの順に掲載しています。各フォルダのJPEGを番号順にアップロードできます。
 
