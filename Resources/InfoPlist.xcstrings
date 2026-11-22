@@ -1,316 +1,314 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "CFBundleDisplayName": {
-      "comment": "Bundle display name",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         }
       }
     },
-    "CFBundleName": {
-      "comment": "Bundle name",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pocket Band AI"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pocket Band AI"
           }
         }
       }
     },
-    "NSMicrophoneUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI."
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم الميكروفون لتسجيل الإجابات أو التحدث مع ممتحن ذكاء اصطناعي. ترسل المحادثات الصوت إلى OpenAI."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speakingの回答録音とAI試験官との音声会話にマイクを使用します。音声会話では音声をOpenAIへ送信します。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI."
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "使用麦克风录制口语回答或与AI考官对话。语音对话会将音频发送给OpenAI。"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa el micrófono para grabar respuestas o hablar con un examinador de IA. Las conversaciones envían audio a OpenAI."
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "使用麥克風錄製口說回答或與AI考官對話。語音對話會將音訊傳送給OpenAI。"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "उत्तर रिकॉर्ड करने या AI परीक्षक से बात करने के लिए माइक्रोफ़ोन इस्तेमाल होता है। बातचीत का ऑडियो OpenAI को भेजा जाता है।"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "말하기 답변 녹음과 AI 시험관과의 대화에 마이크를 사용합니다. 음성 대화는 오디오를 OpenAI로 전송합니다."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon digunakan untuk merekam jawaban atau berbicara dengan penguji AI. Percakapan mengirim audio ke OpenAI."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usa el micrófono para grabar respuestas o hablar con un examinador de IA. Las conversaciones envían audio a OpenAI."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speakingの回答録音とAI試験官との音声会話にマイクを使用します。音声会話では音声をOpenAIへ送信します。"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Use o microfone para gravar respostas ou conversar com um examinador de IA. As conversas enviam áudio à OpenAI."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말하기 답변 녹음과 AI 시험관과의 대화에 마이크를 사용합니다. 음성 대화는 오디오를 OpenAI로 전송합니다."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dùng micrô để ghi câu trả lời hoặc trò chuyện với giám khảo AI. Cuộc trò chuyện gửi âm thanh tới OpenAI."
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o microfone para gravar respostas ou conversar com um examinador de IA. As conversas enviam áudio à OpenAI."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofon digunakan untuk merekam jawaban atau berbicara dengan penguji AI. Percakapan mengirim audio ke OpenAI."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ไมโครโฟนอัดคำตอบหรือคุยกับผู้สอบ AI การสนทนาจะส่งเสียงให้ OpenAI"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ใช้ไมโครโฟนอัดคำตอบหรือคุยกับผู้สอบ AI การสนทนาจะส่งเสียงให้ OpenAI"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng micrô để ghi câu trả lời hoặc trò chuyện với giám khảo AI. Cuộc trò chuyện gửi âm thanh tới OpenAI."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "उत्तर रिकॉर्ड करने या AI परीक्षक से बात करने के लिए माइक्रोफ़ोन इस्तेमाल होता है। बातचीत का ऑडियो OpenAI को भेजा जाता है।"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用麦克风录制口语回答或与AI考官对话。语音对话会将音频发送给OpenAI。"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يُستخدم الميكروفون لتسجيل الإجابات أو التحدث مع ممتحن ذكاء اصطناعي. ترسل المحادثات الصوت إلى OpenAI."
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用麥克風錄製口說回答或與AI考官對話。語音對話會將音訊傳送給OpenAI。"
           }
         }
       }
     },
-    "NSSpeechRecognitionUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transcribe your recorded English responses to review your practice."
+    "NSSpeechRecognitionUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفريغ إجاباتك المسجلة بالإنجليزية لمراجعة التدريب."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "録音した英語の回答を文字起こしし、学習の振り返りに使います。"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribe your recorded English responses to review your practice."
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "将录制的英语回答转写为文字，用于学习回顾。"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribe tus respuestas grabadas en inglés para revisar tu práctica."
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "將錄製的英語回答轉寫為文字，以便複習。"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभ्यास की समीक्षा के लिए रिकॉर्ड किए अंग्रेज़ी उत्तरों का प्रतिलेखन करें।"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "녹음한 영어 답변을 글로 옮겨 학습을 돌아봅니다."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transkripsikan rekaman jawaban Inggris untuk meninjau latihan."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transcribe tus respuestas grabadas en inglés para revisar tu práctica."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音した英語の回答を文字起こしし、学習の振り返りに使います。"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transcreva suas respostas gravadas em inglês para revisar a prática."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "녹음한 영어 답변을 글로 옮겨 학습을 돌아봅니다."
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chép lời câu trả lời tiếng Anh đã ghi để xem lại bài luyện."
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcreva suas respostas gravadas em inglês para revisar a prática."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transkripsikan rekaman jawaban Inggris untuk meninjau latihan."
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ถอดเสียงคำตอบภาษาอังกฤษที่อัดไว้เพื่อทบทวนการฝึก"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ถอดเสียงคำตอบภาษาอังกฤษที่อัดไว้เพื่อทบทวนการฝึก"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chép lời câu trả lời tiếng Anh đã ghi để xem lại bài luyện."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "अभ्यास की समीक्षा के लिए रिकॉर्ड किए अंग्रेज़ी उत्तरों का प्रतिलेखन करें।"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将录制的英语回答转写为文字，用于学习回顾。"
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تفريغ إجاباتك المسجلة بالإنجليزية لمراجعة التدريب."
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將錄製的英語回答轉寫為文字，以便複習。"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
