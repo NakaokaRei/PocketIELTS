@@ -35,18 +35,15 @@ Write letters and essays for feedback, or answer an AI examiner aloud in a realt
 
 Bundled material works offline. Question generation and AI explanations use your connected ChatGPT account. Optional generated audio, generated images and realtime speaking use your own OpenAI API key and incur separate API charges.
 
-## App Review notes draft
+## App Review Information
 
-**提出前に**　角括弧を実測・確認した内容で置き換える。実機動画は審査担当者がアクセスできる形で添付する。以下は現行ソースをもとにした下書きのため、提出ビルドで同じ操作ができることを確認する。
+[英語のNotes本文](Review/Notes.txt) · [実機録画（約75秒）](Review/Pocket-Band-AI-review.mp4) · [ホームのOffline practiceボタン](Review/01-home.jpg)
 
-1. **Recording and testing.** [Attachment filename or reviewer-accessible video link]. Recorded from launch on [physical device, OS version, build number]. We tested this build on [iPhone and iPad models and OS versions actually tested].
-2. **Purpose and audience.** This is a self-study app for English learners preparing for General Training reading, listening, writing and speaking tasks. Learners can practise a single section, understand mistakes and track estimated proficiency over time. Band and CEFR estimates are for personal study.
-3. **How to review.** Launch the app and select Home → Offline practice → Reading → a section. Answer the questions and open the answer review to see your score and explanations. No sign-in or sample file is required for this flow. For new exercises, connect ChatGPT in Settings, return to Home and choose a skill and section. Use the answer review to ask the AI tutor about a question. Submit a Writing response for feedback. Optional listening audio, generated figures and realtime Speaking use a separately configured OpenAI API key. Enable the relevant media option in Settings. For realtime Speaking, start a Speaking session and allow microphone access. [Insert tested reviewer access instructions for the online features in App Store Connect.] OpenAI handles external sign-in. There is no separate developer-operated account system. Settings includes ChatGPT sign-out, API key removal and a separate reset for learning data. Answers, recordings and tutor conversations are private to the learner. There is no public posting or user-to-user messaging.
-4. **Services and payment.** OpenAI provides ChatGPT authentication, exercise generation, tutoring, feedback and optional speech, image and realtime voice APIs. Apple provides optional private iCloud sync via CloudKit and on-device speech recognition for recorded answers. The app is free and offers no in-app purchases. Use of a personal OpenAI API key is billed separately by OpenAI.
-5. **Regions.** [Confirm against the submitted build and selected storefronts.] The app offers the same study flows and bundled exercises across its distribution regions. Interface and explanation language can vary. Online AI features also depend on OpenAI service and account availability.
-6. **Materials and rights.** This is an independent educational app. Its proficiency estimates do not confer a qualification. Bundled font licences for Nunito and Zen Maru Gothic are included. [Identify any protected materials or marks used in the final build and listing, and attach applicable permissions. Confirm the provenance of included exercises and visuals.]
+録画端末はiPhone 14 Pro、iOS 27.2.1。録画は接続済みのReading・AI解説、Listening再生、外部サインインを示す。未ログインでの審査にはホームの「Offline practice」からReadingの「Community services」を案内する。再提出時に選択したビルドと実機QAの対象を照合する。
 
-**実機録画の順序**　ホーム画面のアイコンから起動し、未ログインでReadingを1問解いて採点・解説を開く。続いてChatGPTの接続、問題生成、設問へのAI質問、音声再生、Writingの講評、Speakingの実際の1往復を見せる。最後に設定で接続解除とデータ削除の場所を示す。APIキー・認証情報・個人のメールアドレスは録画に映さない。
+### App Reviewへの返信案
+
+Thank you for reviewing our app. To try a complete exercise without signing in, please open Home, tap **Offline practice** below the four skill cards, and select **Reading / Section 1 — Community services**. After answering, tap **Check answers and review** to see the score and explanations. The included exercises require no credentials or sample files. Our review notes describe the optional online features and their access requirements. The accompanying iPhone recording demonstrates connected Reading practice, the AI tutor, Listening playback and ChatGPT sign-in.
 
 ## 提出者が入力・確認する項目
 
