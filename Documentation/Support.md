@@ -1,4 +1,4 @@
-# Pokelts（ポケルツ） Support / サポート
+# Pokelts Support / サポート
 
 **Email / メール**　[rei.n@me.com](mailto:rei.n@me.com)
 

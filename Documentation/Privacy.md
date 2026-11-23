@@ -1,4 +1,4 @@
-# Pokelts（ポケルツ） Privacy Policy / プライバシーポリシー
+# Pokelts Privacy Policy / プライバシーポリシー
 
 NakaokaRei · 2026-11-21 · [日本語](#日本語)
 
@@ -22,7 +22,7 @@ OpenAI and Apple process information under their respective terms. Resetting Pok
 
 ## 日本語
 
-ポケルツの開発者はNakaokaReiです。学習データは端末に保存され、収録問題や単語はオフラインでも利用できます。開発者独自の学習データサーバー、広告、第三者のアクセス解析SDKは使用していません。
+Pokeltsの開発者はNakaokaReiです。学習データは端末に保存され、収録問題や単語はオフラインでも利用できます。開発者独自の学習データサーバー、広告、第三者のアクセス解析SDKは使用していません。
 
 | 利用する機能 | データの扱い |
 |---|---|

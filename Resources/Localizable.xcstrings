@@ -8514,7 +8514,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ポケルツ"
+            "value" : "Pokelts"
           }
         },
         "ko" : {
@@ -27532,7 +27532,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定アプリでポケルツのマイク使用を許可してください。"
+            "value" : "設定アプリでPokeltsのマイク使用を許可してください。"
           }
         },
         "ko" : {
