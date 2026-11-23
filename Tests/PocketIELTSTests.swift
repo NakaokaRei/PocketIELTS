@@ -209,7 +209,7 @@ struct PocketIELTSTests {
         let valid = URL(string: base.absoluteString + "?state=test-state&code=fixture")!
         let (data, response) = try await session.data(from: valid)
         #expect((response as? HTTPURLResponse)?.statusCode == 200)
-        #expect(String(decoding: data, as: UTF8.self).contains("Pocket Band AI"))
+        #expect(String(decoding: data, as: UTF8.self).contains("Pokelts"))
         let (callback, returnedRedirect) = try await task.value
         #expect(callback == valid)
         #expect(returnedRedirect == base)

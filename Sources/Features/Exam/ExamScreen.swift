@@ -688,7 +688,7 @@ final class SpeakingRecorder {
         error = nil
         let allowed = await AVAudioApplication.requestRecordPermission()
         guard !Task.isCancelled else { return }
-        guard allowed else { error = String(localized: "設定アプリでPocket Band AIのマイク使用を許可してください。"); return }
+        guard allowed else { error = String(localized: "設定アプリでPokeltsのマイク使用を許可してください。"); return }
         do {
             stop()
             let session = AVAudioSession.sharedInstance()

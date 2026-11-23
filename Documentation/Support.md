@@ -1,4 +1,4 @@
-# Pocket Band AI Support / サポート
+# Pokelts（ポケルツ） Support / サポート
 
 **Email / メール**　[rei.n@me.com](mailto:rei.n@me.com)
 

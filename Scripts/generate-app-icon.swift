@@ -1,4 +1,4 @@
-// Original Pocket Band AI artwork. Regenerate PNG and editable SVG from the same paths:
+// Original Pokelts artwork. Regenerate PNG and editable SVG from the same paths:
 // swift Scripts/generate-app-icon.swift
 import AppKit
 

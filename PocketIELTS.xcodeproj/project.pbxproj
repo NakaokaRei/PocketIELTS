@@ -632,7 +632,7 @@
                 ICLOUD_CONTAINER_ENVIRONMENT = Production;
                 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pocket Band AI";
+				INFOPLIST_KEY_CFBundleDisplayName = "Pokelts";
                 INFOPLIST_FILE = Resources/AppInfo.plist;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe your recorded English responses to review your practice.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";
@@ -726,7 +726,7 @@
                 ICLOUD_CONTAINER_ENVIRONMENT = Development;
                 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pocket Band AI";
+				INFOPLIST_KEY_CFBundleDisplayName = "Pokelts";
                 INFOPLIST_FILE = Resources/AppInfo.plist;
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe your recorded English responses to review your practice.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Use the microphone to record Speaking answers or talk with an AI examiner. Voice conversations send audio to OpenAI.";

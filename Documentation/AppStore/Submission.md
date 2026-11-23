@@ -1,4 +1,4 @@
-# Pocket Band AI 1.0.0 · ストア申請用資料
+# Pokelts 1.0.0 · ストア申請用資料
 
 ## App Store Connectに入力するURL
 
@@ -9,9 +9,9 @@
 
 ## 日本語の掲載文案
 
-**名称**　Pocket Band AI
+**名称**　ポケルツ
 
-**サブタイトル**　General Trainingの英語4技能対策
+**サブタイトル**　AIで英語4技能の試験対策
 
 **キーワード**　英語,リスニング,リーディング,ライティング,スピーキング,英作文,模擬試験,試験対策,CEFR
 
@@ -23,9 +23,9 @@ Writingでは手紙やエッセイを書いて講評を受け、SpeakingではAI
 
 ## English listing draft
 
-**Name**　Pocket Band AI
+**Name**　Pokelts
 
-**Subtitle**　General Training: Four Skills
+**Subtitle**　English Exam Prep for 4 Skills
 
 **Keywords**　listening,reading,writing,speaking,letters,essays,exam,practice,band,CEFR
 
@@ -39,7 +39,7 @@ Bundled material works offline. Question generation and AI explanations use your
 
 [英語のNotes本文](Review/Notes.txt) · [実機録画（約75秒）](Review/Pocket-Band-AI-review.mp4) · [ホームのOffline practiceボタン](Review/01-home.jpg)
 
-録画端末はiPhone 14 Pro、iOS 27.2.1。録画は接続済みのReading・AI解説、Listening再生、外部サインインを示す。未ログインでの審査にはホームの「Offline practice」からReadingの「Community services」を案内する。再提出時に選択したビルドと実機QAの対象を照合する。
+この録画は旧名のビルドで収録。新名称で再申請する際は新ビルドの実機録画に差し替える。録画端末はiPhone 14 Pro、iOS 27.2.1。録画は接続済みのReading・AI解説、Listening再生、外部サインインを示す。未ログインでの審査にはホームの「Offline practice」からReadingの「Community services」を案内する。再提出時に選択したビルドと実機QAの対象を照合する。
 
 ### App Reviewへの返信案
 

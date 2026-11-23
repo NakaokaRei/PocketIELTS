@@ -52,7 +52,7 @@ enum ChatGPTAccount {
                           "response_type": "code", "scope": scopes, "resource": resource, "state": state,
                           "nonce": nonce, "code_challenge": challenge, "code_challenge_method": "S256",
                           "redirect_uri": redirect.absoluteString]
-            if profile == nil { fields["agent_name_hint"] = "Pocket Band AI" }
+            if profile == nil { fields["agent_name_hint"] = "Pokelts" }
             else { fields["login_hint"] = profile?.email }
             components.queryItems = fields.map(URLQueryItem.init)
             return components.url!

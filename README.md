@@ -1,4 +1,4 @@
-# Pocket Band AI
+# Pokelts
 
 Practise all four IELTS General Training skills on iPhone and iPad. Choose a section to work on, then review your answers and the explanations.
 
@@ -21,4 +21,4 @@ Requires iOS or iPadOS 26 or later. Open `PocketIELTS.xcodeproj` in Xcode and ru
 
 [App Store assets](Documentation/AppStore) · [Privacy policy](Documentation/Privacy.md) · [Support](Documentation/Support.md) · [iCloud setup](Documentation/iCloud.md) · [App icon](Documentation/Brand/README.md) · [Fonts and licences](Resources/Fonts)
 
-Pocket Band AI is released under the [MIT License](LICENSE). Bundled fonts and third-party libraries have their own licences.
+Pokelts is released under the [MIT License](LICENSE). Bundled fonts and third-party libraries have their own licences.

@@ -39,7 +39,7 @@ struct HomeScreen: View {
                 VStack(alignment: .leading, spacing: StudySpacing.section) {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Pocket Band AI")
+                            Text("Pokelts")
                                 .font(.system(size: 14, weight: .bold))
                             Spacer()
                             Button { settings = true } label: {

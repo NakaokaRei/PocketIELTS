@@ -119,7 +119,7 @@ final class SignInBrowser: NSObject, @MainActor SFSafariViewControllerDelegate, 
                       let callback = URL(string: String(line[1]), relativeTo: redirect)?.absoluteURL,
                       let items = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems,
                       items.filter({ $0.name == "state" }).map(\.value) == [state] else { self.close(connection); return }
-                let reply = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nCache-Control: no-store\r\nConnection: close\r\n\r\nYou can return to Pocket Band AI."
+                let reply = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nCache-Control: no-store\r\nConnection: close\r\n\r\nYou can return to Pokelts."
                 connection.send(content: Data(reply.utf8), completion: .contentProcessed { _ in
                     Task { @MainActor in self.finish(.success((callback, redirect))) }
                 })
