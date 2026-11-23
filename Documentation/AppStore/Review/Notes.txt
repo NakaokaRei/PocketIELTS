@@ -2,7 +2,7 @@ Please start your review in Offline practice. Launch the app, open Home and tap 
 
 Pokelts is a self-study app for English learners preparing for General Training. It helps learners practise individual skills, understand mistakes and track progress. Band and CEFR estimates are for personal study.
 
-Recording: Pocket-Band-AI-review.mp4 shows the previous app name and was captured on an iPhone 14 Pro running iOS 27.2.1. It starts at app launch and demonstrates Reading, answer review and the AI tutor, followed by Listening audio playback and optional ChatGPT sign-in. The recording shows connected practice. To test the bundled material yourself, use the Offline practice route above.
+Recording: The attached Pokelts-review.mp4 (1 minute 4 seconds) begins with launching Pokelts on an iPhone. It shows a Reading exercise with a diagram, answering questions and reviewing explanations, followed by Listening audio playback and optional ChatGPT sign-in. Account details are masked. For practice without signing in, follow the Offline practice steps above.
 
 Optional online features: Connect an existing ChatGPT account in Settings for new exercises, contextual explanations and feedback. From Home, choose a skill and a section to practise. Generated listening audio, generated images and realtime Speaking use a separate personal OpenAI API key in Settings. Realtime Speaking also requires microphone permission. OpenAI handles external sign-in. The app has no developer-operated account registration. Settings provides sign-out, key removal and a learning-data reset. Answers, recordings and conversations are private; there is no public feed or messaging between users.
 

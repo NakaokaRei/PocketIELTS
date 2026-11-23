@@ -37,13 +37,13 @@ Bundled material works offline. Question generation and AI explanations use your
 
 ## App Review Information
 
-[英語のNotes本文](Review/Notes.txt) · [実機録画（約75秒）](Review/Pocket-Band-AI-review.mp4) · [ホームのOffline practiceボタン](Review/01-home.jpg)
+[英語のNotes本文](Review/Notes.txt) · [実機録画（約64秒）](Review/Pokelts-review.mp4) · [ホームのOffline practiceボタン](Review/01-home.jpg)
 
-この録画は旧名のビルドで収録。新名称で再申請する際は新ビルドの実機録画に差し替える。録画端末はiPhone 14 Pro、iOS 27.2.1。録画は接続済みのReading・AI解説、Listening再生、外部サインインを示す。未ログインでの審査にはホームの「Offline practice」からReadingの「Community services」を案内する。再提出時に選択したビルドと実機QAの対象を照合する。
+実機録画はPokeltsの起動、Readingの図・設問・解説、Listeningの再生、任意のChatGPTサインインを示す。未ログインでの審査にはホームの「Offline practice」からReadingの「Community services」を案内する。
 
 ### App Reviewへの返信案
 
-Thank you for reviewing our app. To try a complete exercise without signing in, please open Home, tap **Offline practice** below the four skill cards, and select **Reading / Section 1 — Community services**. After answering, tap **Check answers and review** to see the score and explanations. The included exercises require no credentials or sample files. Our review notes describe the optional online features and their access requirements. The accompanying iPhone recording demonstrates connected Reading practice, the AI tutor, Listening playback and ChatGPT sign-in.
+Thank you for reviewing our app. To try a complete exercise without signing in, please open Home, tap **Offline practice** below the four skill cards, and select **Reading / Section 1 — Community services**. After answering, tap **Check answers and review** to see the score and explanations. The included exercises require no credentials or sample files. Our review notes describe the optional online features and their access requirements. The accompanying iPhone recording demonstrates Reading practice and answer review, Listening playback and ChatGPT sign-in.
 
 ## 提出者が入力・確認する項目
 
