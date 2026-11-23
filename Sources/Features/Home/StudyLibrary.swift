@@ -115,14 +115,23 @@ struct AddVocabularyScreen: View {
                     TextField(String(localized: "Example sentence (optional)"), text: $example, axis: .vertical)
                         .lineLimit(3...6).font(StudyTypography.body).focused($editing, equals: .example)
                         .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
-                    Button(String(localized: "AIに質問"), systemImage: "sparkles") {
-                        editing = nil
-                        lookupError = nil
-                        lookup = trimmed
+                    if lookup != nil {
+                        HStack(spacing: 10) {
+                            ProgressView().accessibilityHidden(true)
+                            Text(String(localized: "返答を考えています"))
+                        }
+                        .font(StudyTypography.button)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .padding(.vertical, 8)
+                    } else {
+                        Button(String(localized: "AIに質問"), systemImage: "sparkles") {
+                            editing = nil
+                            lookupError = nil
+                            lookup = trimmed
+                        }
+                        .buttonStyle(StudySecondaryButtonStyle()).disabled(trimmed.isEmpty)
+                        .accessibilityIdentifier("vocabulary.composeAI")
                     }
-                    .buttonStyle(StudySecondaryButtonStyle()).disabled(trimmed.isEmpty || lookup != nil)
-                    .accessibilityIdentifier("vocabulary.composeAI")
-                    if lookup != nil { ProgressView() }
                     if let lookupError { Text(lookupError).foregroundStyle(.secondary) }
                     ForEach(suggestions) { suggestion in
                         VStack(alignment: .leading, spacing: 12) {
@@ -192,6 +201,9 @@ struct OfflineLibraryScreen: View {
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(unit.id).font(StudyTypography.caption).foregroundStyle(StudyColors.accent)
                                     Text(unit.title).font(StudyTypography.heading)
+                                    if let estimate = unit.estimatedTime {
+                                        Label(estimate, systemImage: "clock").font(StudyTypography.caption)
+                                    }
                                 }
                                 Spacer(); Image(systemName: "chevron.right")
                             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)

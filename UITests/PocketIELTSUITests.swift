@@ -104,13 +104,16 @@ final class PocketIELTSUITests: XCTestCase {
         app.terminate()
         app.launch()
         app.buttons["home.skill.Reading"].tap()
-        for section in 1...3 {
-            XCTAssertTrue(app.buttons["part.open.Reading / Section \(section)"].waitForExistence(timeout: 12))
+        for (index, minutes) in [15, 20, 25].enumerated() {
+            let section = app.buttons["part.open.Reading / Section \(index + 1)"]
+            XCTAssertTrue(section.waitForExistence(timeout: 12))
+            XCTAssertTrue(section.label.contains(String(minutes)))
         }
         XCTAssertFalse(app.buttons["保存した問題から練習"].exists)
         capture("iphone-reading-sections")
         app.buttons["part.open.Reading / Section 1"].tap()
         XCTAssertTrue(app.staticTexts["Community services"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["practice.elapsed"].firstMatch.exists)
     }
 
     func testOfflineLibraryOpensBundledReading() {

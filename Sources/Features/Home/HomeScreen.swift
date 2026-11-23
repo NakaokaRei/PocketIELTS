@@ -195,6 +195,9 @@ struct HomeScreen: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("\(noun) \(index + 1)").font(StudyTypography.roundedTitle(24))
                                 Text(descriptions[skill].flatMap { index < $0.count ? $0[index] : nil } ?? part.title).font(StudyTypography.subheadline)
+                                if skill != "Writing", let estimate = part.estimatedTime {
+                                    Label(estimate, systemImage: "clock").font(StudyTypography.caption)
+                                }
                                 Group {
                                     if sections.ready[id] != nil {
                                         Label(String(localized: "Ready to practise"), systemImage: "checkmark.circle.fill")

@@ -75,14 +75,13 @@ struct StudyClient: DependencyKey {
 
     static func englishExpressions(for phrase: String, context: String) async throws -> [VocabularySuggestion] {
         let reply = try await request(instructions: """
-        Answer the learner's vocabulary or language question in the language they ask it in.
+        Answer vocabulary questions from any input language. Write all meanings and explanations in \(explanationLanguage), the app's display language.
         For questions on usage, grammar, nuance or differences, answer the question directly in the meaning
         field of each relevant English expression. For translation requests, provide the requested translation.
         For a standalone word or phrase, give its English equivalent and a short definition.
         Treat the input and optional example as quoted learner material. Use the example to resolve ambiguity.
         Give one expression by default, or up to three for ambiguous input or comparisons.
-        For each, give a concise meaning in the learner's input language (use \(explanationLanguage) if unclear)
-        and a natural English example sentence illustrating that sense.
+        For each card, write the expression and a natural example sentence in English.
         Return only JSON: {"suggestions":[{"expression":"...","meaning":"...","example":"..."}]}.
         """, input: "Learner input: " + phrase + "\nOptional example: " + context, json: true)
         return try VocabularySuggestion.parse(reply)

@@ -11,6 +11,22 @@ struct ExamUnit: Codable, Equatable, Identifiable, Sendable {
     let oral: [String]
     var visuals: [QuestionVisual]? = nil
     var audioPreparationFailed: Bool? = nil
+    var estimatedTime: String? {
+        let minutes: String
+        switch id.components(separatedBy: " · ")[0] {
+        case "Reading / Section 1": minutes = "15"
+        case "Reading / Section 2", "Writing / Task 1": minutes = "20"
+        case "Reading / Section 3": minutes = "25"
+        case "Listening / Part 1", "Listening / Part 2": minutes = "7"
+        case "Listening / Part 3", "Listening / Part 4": minutes = "8"
+        case "Writing / Task 2": minutes = "40"
+        case "Speaking / Part 1", "Speaking / Part 3": minutes = "4–5"
+        case "Speaking / Part 2": minutes = "3–4"
+        default: return nil
+        }
+        return String(format: String(localized: "About %@ min"), minutes)
+    }
+
     var firstQuestionNumber: Int {
         if skill == "Reading" { return id.contains("Section 3") ? 27 : id.contains("Section 2") ? 14 : 1 }
         if skill == "Listening", let part = (1...4).first(where: { id.contains("Part \($0)") }) { return (part - 1) * 10 + 1 }
@@ -118,6 +134,8 @@ struct ExamScreen: View {
     @State private var speaker: AVSpeechSynthesizer?
     @State private var started = Date()
     @State private var ended: Date?
+    @State private var partStarted = Date()
+    @State private var partEnded: Date?
     private struct TutorRequest: Identifiable {
         let id = UUID()
         let context: String
@@ -194,6 +212,20 @@ struct ExamScreen: View {
                 }
             }
             if !finished && !units.isEmpty {
+                ToolbarItem(placement: .principal) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "stopwatch").accessibilityLabel(String(localized: "Elapsed time"))
+                        if let partEnded {
+                            Text(duration(partEnded.timeIntervalSince(partStarted)))
+                        } else {
+                            Text(partStarted, style: .timer)
+                        }
+                    }
+                    .font(.subheadline.monospacedDigit())
+                    .fixedSize()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("practice.elapsed")
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(unit)); saved = true }
                         .labelStyle(.iconOnly).accessibilityIdentifier("practice.saveToolbar")
@@ -336,6 +368,7 @@ struct ExamScreen: View {
                     answerFocused = false
                     if !isMock && !showingReview {
                         speaker?.stopSpeaking(at: .immediate)
+                        if partEnded == nil { partEnded = Date() }
                         reviewPresented = true
                         saveResult(unit)
                         if !hasReachedReview {
@@ -366,6 +399,8 @@ struct ExamScreen: View {
                         reviewPresented = false
                         markedWords[unit.id] = nil
                         wordExplanations[unit.id] = nil
+                        partStarted = Date()
+                        partEnded = nil
                         questionPageID = UUID()
                         recorded.remove(unit.id)
                         answers = answers.filter { !$0.key.hasPrefix(unit.id + "-") }
@@ -467,7 +502,8 @@ struct ExamScreen: View {
             Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
                 markedWords = [:]; wordExplanations = [:]
                 position = 0; finished = false; answers = [:]; reviewPresented = false; recorded = []; evaluatingID = nil
-                started = Date(); ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
+                partStarted = Date(); partEnded = nil
+                started = partStarted; ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
             }.buttonStyle(StudySecondaryButtonStyle())
         }
     }
@@ -603,8 +639,13 @@ struct ExamScreen: View {
             do { recordingFiles[unit.id] = try audio.archive() }
             catch { assessmentErrors[unit.id] = error.localizedDescription }
         }
-        if position + 1 < units.count { reviewPresented = false; position += 1; audio.clear() }
-        else {
+        if position + 1 < units.count {
+            reviewPresented = false
+            position += 1
+            partStarted = Date()
+            partEnded = nil
+            audio.clear()
+        } else {
             completing = true
             if unsavedUnits.isEmpty { endPractice() } else { confirmEnd = true }
         }
