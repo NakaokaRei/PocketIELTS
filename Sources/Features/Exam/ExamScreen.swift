@@ -141,7 +141,6 @@ struct ExamScreen: View {
             .navigationDestination(isPresented: $finished) {
                 ScrollView { results.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity) }
                     .navigationBarBackButtonHidden(true).navigationBarTitleDisplayMode(.inline)
-                    .toolbar(.hidden, for: .tabBar)
             }
     }
 
@@ -177,7 +176,6 @@ struct ExamScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(!units.isEmpty && (isMock || !showingReview || answerFocused))
         .interactiveDismissDisabled(!finished && (isMock || !showingReview))
-        .toolbar(.hidden, for: .tabBar)
         .foregroundStyle(StudyColors.ink)
         .toolbar {
             if (isMock || !showingReview) && !finished && !units.isEmpty && !answerFocused {

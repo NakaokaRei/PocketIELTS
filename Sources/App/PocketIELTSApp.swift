@@ -24,7 +24,42 @@ struct PocketIELTSApp: App {
         WindowGroup {
             StudyCloudHost(store: store).tint(StudyColors.accent)
                 .font(StudyTypography.body)
-                .preferredColorScheme(store.settings.appearance == "light" ? .light : store.settings.appearance == "dark" ? .dark : nil)
+                .background(WindowAppearance(preference: store.settings.appearance))
+        }
+    }
+}
+
+/// Apply the preference to the scene's window so presented sheets inherit the same traits.
+private struct WindowAppearance: UIViewRepresentable {
+    let preference: String
+
+    final class ObserverView: UIView {
+        var style: UIUserInterfaceStyle = .unspecified {
+            didSet { applyStyle() }
+        }
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            applyStyle()
+        }
+
+        private func applyStyle() {
+            guard let window, window.overrideUserInterfaceStyle != style else { return }
+            window.overrideUserInterfaceStyle = style
+        }
+    }
+
+    func makeUIView(context: Context) -> ObserverView {
+        let view = ObserverView()
+        view.isUserInteractionEnabled = false
+        return view
+    }
+
+    func updateUIView(_ view: ObserverView, context: Context) {
+        switch preference {
+        case "light": view.style = .light
+        case "dark": view.style = .dark
+        default: view.style = .unspecified
         }
     }
 }

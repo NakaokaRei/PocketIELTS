@@ -56,10 +56,7 @@ final class PocketIELTSUITests: XCTestCase {
         field.tap(); field.typeText("resilient")
         if app.buttons["入力を完了"].exists { app.buttons["入力を完了"].tap() }
         capture("iphone-add-vocabulary")
-        app.buttons["vocabulary.composeAI"].tap()
-        XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["tutor.quick.0"].exists)
-        app.buttons["完了"].tap()
+        XCTAssertEqual(app.buttons["vocabulary.composeAI"].label, "AIに質問")
         app.buttons["vocabulary.saveManual"].tap()
         XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
         capture("iphone-my-vocabulary")
@@ -79,6 +76,28 @@ final class PocketIELTSUITests: XCTestCase {
         app.launchArguments = ["-AppleLanguages", "(ja)", "--ui-testing"]
         app.launch(); navigate("単語帳", tag: 2)
         XCTAssertTrue(app.staticTexts["resilient"].waitForExistence(timeout: 5))
+    }
+
+    func testTabBarReturnsWithHomeAfterLeavingAnExercise() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone)
+        let homeTab = app.tabBars.buttons["ホーム"]
+        let reading = app.buttons["home.skill.Reading"]
+        let section = app.buttons["part.open.Reading / Section 1"]
+        XCTAssertTrue(homeTab.isHittable)
+        reading.tap()
+        XCTAssertTrue(section.waitForExistence(timeout: 5))
+        XCTAssertFalse(homeTab.isHittable)
+        section.tap()
+        let back = app.buttons["practice.back"]
+        XCTAssertTrue(back.waitForExistence(timeout: 5))
+        XCTAssertFalse(homeTab.isHittable)
+        back.tap()
+        app.alerts.buttons["練習を終了"].tap()
+        XCTAssertTrue(section.waitForExistence(timeout: 5))
+        XCTAssertFalse(homeTab.isHittable)
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(reading.waitForExistence(timeout: 5))
+        XCTAssertTrue(homeTab.isHittable)
     }
 
     func testSectionsAvailableOnFirstNavigation() {
@@ -256,6 +275,10 @@ final class PocketIELTSUITests: XCTestCase {
     }
 
     func testAppearancePersistsAndCanFollowSystem() {
+        let device = XCUIDevice.shared
+        let originalAppearance = device.appearance
+        defer { device.appearance = originalAppearance }
+        device.appearance = .dark
         app.buttons["home.settings"].tap()
         let picker = app.segmentedControls["settings.appearance"]
         XCTAssertTrue(picker.waitForExistence(timeout: 5))
@@ -274,6 +297,15 @@ final class PocketIELTSUITests: XCTestCase {
         capture("iphone-settings-light")
         picker.buttons["システム"].tap()
         XCTAssertTrue(picker.buttons["システム"].isSelected)
+        XCTAssertLessThan(backgroundBrightness(), 0.4, "Light → System must restore dark on the open sheet")
+        device.appearance = .light
+        // Device appearance changes asynchronously, including its crossfade.
+        let followsSystem = expectation(for: NSPredicate { _, _ in self.backgroundBrightness() > 0.6 },
+                                        evaluatedWith: nil)
+        wait(for: [followsSystem], timeout: 5)
+        picker.buttons["ダーク"].tap()
+        picker.buttons["システム"].tap()
+        XCTAssertGreaterThan(backgroundBrightness(), 0.6, "Dark → System must restore light on the open sheet")
     }
 
     func testEnglishInterfaceAndTutorSuggestions() {

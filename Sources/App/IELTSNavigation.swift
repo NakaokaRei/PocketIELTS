@@ -32,6 +32,7 @@ struct StudyLink<Destination: View, Label: View>: View {
 }
 
 struct IELTSNavigation<Home: View, Progress: View, Vocabulary: View>: View {
+    let addVocabulary: () -> Void
     @ViewBuilder let home: () -> Home
     @ViewBuilder let progress: () -> Progress
     @ViewBuilder let vocabulary: () -> Vocabulary
@@ -64,27 +65,36 @@ struct IELTSNavigation<Home: View, Progress: View, Vocabulary: View>: View {
                         Group {
                             switch selectedTab {
                             case 1: progress().navigationTitle(String(localized: "学習記録"))
-                            case 2: vocabulary().navigationTitle(String(localized: "単語帳"))
+                            case 2: vocabulary().navigationTitle(String(localized: "単語帳")).toolbar { vocabularyToolbar }
                             default: home()
                             }
                         }.navigationDestination(for: StudyRoute.self) { $0.destination() }
                     }
                 }.navigationSplitViewStyle(.balanced)
             } else {
-                TabView(selection: $selectedTab) {
-                    NavigationStack(path: $homePath) { home().navigationDestination(for: StudyRoute.self) { $0.destination() } }
-                        .tabItem { Label(String(localized: "ホーム"), systemImage: "house") }.tag(0)
-                    NavigationStack(path: $progressPath) {
-                        progress().navigationTitle(String(localized: "学習記録"))
-                            .navigationDestination(for: StudyRoute.self) { $0.destination() }
-                    }.tabItem { Label(String(localized: "学習記録"), systemImage: "chart.bar") }.tag(1)
-                    NavigationStack(path: $vocabularyPath) {
-                        vocabulary().navigationTitle(String(localized: "単語帳"))
-                            .navigationDestination(for: StudyRoute.self) { $0.destination() }
-                    }.tabItem { Label(String(localized: "単語帳"), systemImage: "book") }.tag(2)
+                // The tab bar belongs to the root page and travels with it during native pushes and pops.
+                NavigationStack(path: selectedPath) {
+                    TabView(selection: $selectedTab) {
+                        home()
+                            .tabItem { Label(String(localized: "ホーム"), systemImage: "house") }.tag(0)
+                        progress()
+                            .tabItem { Label(String(localized: "学習記録"), systemImage: "chart.bar") }.tag(1)
+                        vocabulary()
+                            .tabItem { Label(String(localized: "単語帳"), systemImage: "book") }.tag(2)
+                    }
+                    .navigationTitle(selectedTab == 2 ? String(localized: "単語帳") : (selectedTab == 1 ? String(localized: "学習記録") : String(localized: "ホーム")))
+                    .toolbar(selectedTab == 0 ? .hidden : .visible, for: .navigationBar)
+                    .toolbar { if selectedTab == 2 { vocabularyToolbar } }
+                    .navigationDestination(for: StudyRoute.self) { $0.destination() }
                 }
             }
         }.environment(\.studyNavigation, StudyNavigationActions(home: { returnToRoot(tab: 0) }, progress: { returnToRoot(tab: 1) }))
+    }
+    private var vocabularyToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(String(localized: "Add vocabulary"), systemImage: "plus", action: addVocabulary)
+                .accessibilityIdentifier("vocabulary.add")
+        }
     }
     private func returnToRoot(tab: Int) {
         guard !returning else { return }

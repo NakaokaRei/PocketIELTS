@@ -4,6 +4,7 @@ import SwiftUI
 struct HomeScreen: View {
     let store: StoreOf<StudyFeature>
     @State private var settings = false
+    @State private var adding = false
     @State private var practice = false
     @AppStorage(SectionPreparation.preference) private var prepareAhead = false
     @Environment(\.scenePhase) private var scenePhase
@@ -33,7 +34,7 @@ struct HomeScreen: View {
     ]
 
     var body: some View {
-        IELTSNavigation {
+        IELTSNavigation(addVocabulary: { adding = true }) {
             ScrollView {
                 VStack(alignment: .leading, spacing: StudySpacing.section) {
                     VStack(alignment: .leading, spacing: 12) {
@@ -82,6 +83,7 @@ struct HomeScreen: View {
         .onChange(of: prepareAhead, initial: true) { configurePreparation() }
         .onChange(of: store.settings.account.active) { configurePreparation() }
         .onChange(of: scenePhase) { configurePreparation() }
+        .sheet(isPresented: $adding) { AddVocabularyScreen(store: store) }
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         .fullScreenCover(isPresented: $practice, onDismiss: { store.send(.finish) }) { PracticeScreen(store: store) }
         .tint(StudyColors.accent)
@@ -215,7 +217,6 @@ struct HomeScreen: View {
                 if let loadError { Text(loadError).foregroundStyle(StudyColors.error) }
             }.padding(20).frame(maxWidth: 760).frame(maxWidth: .infinity).foregroundStyle(StudyColors.ink)
         }.navigationTitle(String(localized: "パート選択")).navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
     }
 }
 
@@ -280,7 +281,6 @@ struct ProgressScreen: View {
 
 struct VocabularyScreen: View {
     let store: StoreOf<StudyFeature>
-    @State private var adding = false
     @State private var deleting: SavedExpression?
     @State private var tutor = false
     @StateObject private var pronunciation = WordPronouncer()
@@ -308,6 +308,7 @@ struct VocabularyScreen: View {
                             WordPronunciationButton(word: entry.expression, pronunciation: pronunciation)
                             Spacer(minLength: 0)
                         }
+                        if !entry.meaning.isEmpty { Text(entry.meaning).font(StudyTypography.body).textSelection(.enabled) }
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
                             pronunciation.stop()
@@ -330,11 +331,6 @@ struct VocabularyScreen: View {
         }.listStyle(.plain).scrollContentBackground(.hidden)
             .frame(maxWidth: 800).frame(maxWidth: .infinity)
             .background(Color(uiColor: .systemGroupedBackground))
-        .toolbar { ToolbarItem(placement: .topBarTrailing) {
-            Button(String(localized: "Add vocabulary"), systemImage: "plus") { adding = true }
-                .accessibilityIdentifier("vocabulary.add")
-        } }
-        .sheet(isPresented: $adding) { AddVocabularyScreen(store: store) }
         .alert(String(localized: "この単語を削除しますか？"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), presenting: deleting) { entry in
             Button(String(localized: "削除"), role: .destructive) { store.send(.deleteExpression(entry.id), animation: .default); deleting = nil }
             Button(String(localized: "キャンセル"), role: .cancel) { deleting = nil }

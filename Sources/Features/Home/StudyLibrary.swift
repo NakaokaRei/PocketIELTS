@@ -75,44 +75,100 @@ struct VocabularyLibraryScreen: View {
 struct AddVocabularyScreen: View {
     let store: StoreOf<StudyFeature>
     @Environment(\.dismiss) private var dismiss
-    @FocusState private var editing: Bool
+    private enum Field { case expression, example }
+    @FocusState private var editing: Field?
     @State private var expression = ""
     @State private var example = ""
-    @State private var tutor = false
+    @State private var lookup: String?
+    @State private var suggestions: [VocabularySuggestion] = []
+    @State private var lookupError: String?
+    @StateObject private var pronunciation = WordPronouncer()
     private var trimmed: String { expression.trimmingCharacters(in: .whitespacesAndNewlines) }
-    private var duplicate: Bool { store.vocabulary.contains { $0.sourceID == "manual" && $0.expression.caseInsensitiveCompare(trimmed) == .orderedSame } }
+    private func isSaved(_ word: String) -> Bool {
+        store.vocabulary.contains { $0.sourceID == "manual" && $0.expression.caseInsensitiveCompare(word) == .orderedSame }
+    }
+
+    private func saveButton(_ word: String, meaning: String, sentence: String) -> some View {
+        let duplicate = isSaved(word)
+        return Button(duplicate ? String(localized: "Already in your vocabulary") : String(localized: "Save to my vocabulary"), systemImage: "plus.circle.fill") {
+            store.send(.saveExpression(SavedExpression(expression: word, source: "My vocabulary",
+                                                       sourceText: sentence, meaning: meaning, sourceID: "manual")))
+            dismiss()
+        }.buttonStyle(StudyPrimaryButtonStyle()).disabled(word.isEmpty || duplicate)
+    }
+
+    private func clearLookup() {
+        lookup = nil
+        suggestions = []
+        lookupError = nil
+        pronunciation.stop()
+    }
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     Text(String(localized: "Add a word or phrase")).font(StudyTypography.title)
-                    TextField(String(localized: "Word or phrase"), text: $expression, axis: .vertical)
-                        .textInputAutocapitalization(.never).autocorrectionDisabled().font(StudyTypography.heading).focused($editing)
+                    TextField(String(localized: "Word, phrase or question in any language"), text: $expression, axis: .vertical)
+                        .textInputAutocapitalization(.never).autocorrectionDisabled().font(StudyTypography.heading).focused($editing, equals: .expression)
                         .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
                         .accessibilityIdentifier("vocabulary.expression")
                     TextField(String(localized: "Example sentence (optional)"), text: $example, axis: .vertical)
-                        .lineLimit(3...6).font(StudyTypography.body).focused($editing)
+                        .lineLimit(3...6).font(StudyTypography.body).focused($editing, equals: .example)
                         .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
-                    Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") { tutor = true }
-                        .buttonStyle(StudySecondaryButtonStyle()).disabled(trimmed.isEmpty)
-                        .accessibilityIdentifier("vocabulary.composeAI")
-                    Button(duplicate ? String(localized: "Already in your vocabulary") : String(localized: "Save to my vocabulary"), systemImage: "plus.circle.fill") {
-                        store.send(.saveExpression(SavedExpression(expression: trimmed, source: "My vocabulary", sourceText: example.trimmingCharacters(in: .whitespacesAndNewlines), sourceID: "manual")))
-                        dismiss()
-                    }.buttonStyle(StudyPrimaryButtonStyle()).disabled(trimmed.isEmpty || duplicate)
-                        .accessibilityIdentifier("vocabulary.saveManual")
+                    Button(String(localized: "AIに質問"), systemImage: "sparkles") {
+                        editing = nil
+                        lookupError = nil
+                        lookup = trimmed
+                    }
+                    .buttonStyle(StudySecondaryButtonStyle()).disabled(trimmed.isEmpty || lookup != nil)
+                    .accessibilityIdentifier("vocabulary.composeAI")
+                    if lookup != nil { ProgressView() }
+                    if let lookupError { Text(lookupError).foregroundStyle(.secondary) }
+                    ForEach(suggestions) { suggestion in
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text(suggestion.expression).font(StudyTypography.heading)
+                                WordPronunciationButton(word: suggestion.expression, pronunciation: pronunciation)
+                            }
+                            Text(suggestion.meaning).font(StudyTypography.body)
+                            Text(suggestion.example).font(StudyTypography.subheadline)
+                            saveButton(suggestion.expression, meaning: suggestion.meaning, sentence: suggestion.example)
+                        }
+                        .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
+                    }
+                    if suggestions.isEmpty && lookup == nil {
+                        saveButton(trimmed, meaning: "", sentence: example.trimmingCharacters(in: .whitespacesAndNewlines))
+                            .accessibilityIdentifier("vocabulary.saveManual")
+                    }
                 }.padding(24).frame(maxWidth: 650).frame(maxWidth: .infinity)
             }.navigationTitle(String(localized: "Add vocabulary")).navigationBarTitleDisplayMode(.inline)
                 .scrollDismissesKeyboard(.interactively)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) { Button(String(localized: "キャンセル")) { dismiss() } }
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button(String(localized: "入力を完了")) { editing = false }
+                }
+                .safeAreaInset(edge: .bottom, alignment: .trailing, spacing: 0) {
+                    if editing != nil {
+                        Button(String(localized: "入力を完了")) { editing = nil }
+                            .buttonStyle(.glass)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
                     }
                 }
-                .sheet(isPresented: $tutor, onDismiss: { store.send(.closeQuestion) }) {
-                    TutorScreen(store: store, context: trimmed + "\n" + example, selectedText: trimmed, vocabularyMode: true)
+                .onChange(of: expression) { clearLookup() }
+                .onChange(of: example) { clearLookup() }
+                .onDisappear { pronunciation.stop() }
+                .task(id: lookup) {
+                    guard let phrase = lookup else { return }
+                    do {
+                        let result = try await StudyClient.englishExpressions(for: phrase, context: example)
+                        try Task.checkCancellation()
+                        guard lookup == phrase else { return }
+                        suggestions = result
+                    } catch {
+                        guard !Task.isCancelled, lookup == phrase else { return }
+                        lookupError = error.localizedDescription
+                    }
+                    lookup = nil
                 }
         }
     }

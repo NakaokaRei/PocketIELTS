@@ -133,7 +133,6 @@ struct SettingsScreen: View {
                 }
                 if let error = store.error { Text(error).foregroundStyle(StudyColors.error) }
             }
-            .preferredColorScheme(store.appearance == "light" ? .light : store.appearance == "dark" ? .dark : nil)
             .interactiveDismissDisabled(store.connecting)
             .navigationTitle(String(localized: "設定"))
             .toolbar { Button(String(localized: "完了")) { dismiss() }.disabled(store.connecting) }

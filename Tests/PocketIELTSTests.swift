@@ -9,6 +9,21 @@ import ComposableArchitecture
 @MainActor
 struct PocketIELTSTests {
     @Test
+    func vocabularySuggestionsKeepCompleteDistinctCards() throws {
+        let reply = """
+        {"suggestions":[{"expression":" leave ","meaning":"休暇","example":"I am on leave."},
+        {"expression":"LEAVE","meaning":"休み","example":"She took leave."},
+        {"expression":"day off","meaning":"","example":"I have a day off."},
+        {"expression":"take time off","meaning":"休みを取る","example":"Can I take time off?"}]}
+        """
+        let cards = try VocabularySuggestion.parse(reply)
+        #expect(cards.map(\.expression) == ["leave", "take time off"])
+        #expect(cards.first?.meaning == "休暇")
+        #expect(cards.first?.example == "I am on leave.")
+        #expect(throws: StudyError.self) { try VocabularySuggestion.parse("{}") }
+    }
+
+    @Test
     func testExamMaterialPreservesTableBlanksAndSurroundingDirections() {
         let material = """
         Complete the table.
