@@ -352,6 +352,7 @@ struct ResultDetailScreen: View {
     @State private var evaluating = false
     @State private var error: String?
     @State private var saved = false
+    @State private var transcript: ListeningTranscript?
     private var current: StudyResult { store.records.first { $0.id == result.id } ?? result }
     var body: some View {
         ScrollView {
@@ -371,6 +372,9 @@ struct ResultDetailScreen: View {
                             .tint(StudyColors.accent)
                     }
                 }.padding(24).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
+                if let paper = current.paper {
+                    ListeningReviewButton(part: paper, transcript: $transcript, question: nil)
+                }
                 if let answers = current.questionAnswers, let paper = current.paper {
                     DisclosureGroup(String(localized: "あなたの回答")) {
                         VStack(alignment: .leading, spacing: 16) {
@@ -386,6 +390,7 @@ struct ResultDetailScreen: View {
                                         .font(StudyTypography.subheadline).bold()
                                     Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(StudyTypography.subheadline)
                                     Text(question.explanation).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                                    ListeningReviewButton(part: paper, transcript: $transcript, question: paper.firstQuestionNumber + index)
                                     QuestionReviewActions(part: paper, index: index, answer: answer, store: store)
                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
@@ -422,6 +427,7 @@ struct ResultDetailScreen: View {
         .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける"), role: .cancel) {} }
         .navigationTitle(String(localized: "学習の振り返り")).navigationBarTitleDisplayMode(.inline)
         .onDisappear { audio.stop() }
+        .task(id: current.id) { transcript = current.paper.flatMap(ListeningTranscript.init(part:)) }
         .task(id: evaluating) {
             guard evaluating, let paper = current.paper, let response = current.response else { return }
             do {

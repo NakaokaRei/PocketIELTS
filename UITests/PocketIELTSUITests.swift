@@ -382,6 +382,51 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["part.open.Reading / Section 1"].waitForExistence(timeout: 5))
     }
 
+    private func openListeningTranscript() {
+        app.buttons["home.skill.Listening"].tap()
+        app.buttons["part.open.Listening / Part 1"].tap()
+        let review = app.buttons["practice.review"]
+        for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
+        review.tap()
+
+        let transcript = app.buttons["review.transcript"]
+        XCTAssertTrue(transcript.waitForExistence(timeout: 5))
+        transcript.tap()
+        let firstLine = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Eastbank Community Centre")).firstMatch
+        XCTAssertTrue(firstLine.waitForExistence(timeout: 5))
+    }
+
+    func testEnglishTranscriptHidesTranslationControl() {
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "--ui-testing", "--ui-reset"]
+        app.launch()
+        openListeningTranscript()
+        XCTAssertFalse(app.buttons["review.translation.0"].exists)
+    }
+
+    func testListeningReviewOpensPausedTranscriptAndReturnsToAnswer() {
+        openListeningTranscript()
+        XCTAssertTrue(app.buttons["review.translation.0"].isHittable)
+        XCTAssertTrue(app.buttons["review.translation.1"].exists)
+        XCTAssertTrue(app.buttons["音声を再生"].exists)
+        // Check playback geometry when the simulator has a prepared recording.
+        if app.sliders["再生位置"].exists {
+            let row = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "That photograph was taken")).firstMatch
+            for _ in 0..<3 where !row.isHittable { app.swipeUp() }
+            XCTAssertTrue(row.isHittable)
+            let before = row.frame.minY
+            row.tap()
+            XCTAssertTrue(app.buttons["一時停止"].waitForExistence(timeout: 5))
+            XCTAssertEqual(row.frame.minY, before, accuracy: 1)
+            row.tap()
+            XCTAssertEqual(row.frame.minY, before, accuracy: 1)
+        }
+        app.buttons["閉じる"].tap()
+        let evidence = app.buttons["review.listen.1"]
+        for _ in 0..<6 where !evidence.isHittable { app.swipeUp() }
+        XCTAssertTrue(evidence.isHittable)
+    }
+
     func testPerAnswerSourceAndTutor() {
         openReading()
         let review = app.buttons["practice.review"]

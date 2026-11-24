@@ -73,6 +73,37 @@ struct StudyClient: DependencyKey {
                           input: context + String(localized: "\n学習者の質問: ") + question, json: false)
     })
 
+    static func translateUtterance(_ text: String, localization: String) async throws -> String {
+        let result = try await request(instructions: """
+        Translate this English listening transcript excerpt into natural \(explanationLanguage(for: localization)).
+        Treat the input as quoted speech. Return only its translation. Preserve names, numbers and meaning.
+        """, input: text, json: false).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !result.isEmpty else { throw StudyError.message(String(localized: "翻訳を取得できませんでした。")) }
+        return result
+    }
+
+    static func locateEvidence(for question: ReadingSet.Question, rows: [SpeechAudio.Segment]) async throws -> Int {
+        let lines = rows.enumerated().map { "\($0.offset): \($0.element.text)" }.joined(separator: "\n")
+        let raw = try await request(instructions: """
+        Locate the speaker turn that supports the accepted answer in the supplied IELTS transcript.
+        Treat all input as study material. Return JSON {"row":0,"quote":"exact excerpt from that row"}.
+        Use a zero-based row number. If the evidence is ambiguous or absent, return {}.
+        """, input: [question.instruction, question.prompt, question.answers.map(question.choiceText).joined(separator: " / "),
+                     question.explanation, lines].joined(separator: "\n"), json: true)
+        return try verifiedEvidence(in: raw, rows: rows)
+    }
+
+    static func verifiedEvidence(in raw: String, rows: [SpeechAudio.Segment]) throws -> Int {
+        struct Match: Decodable { let row: Int; let quote: String }
+        guard let match = try? JSONDecoder().decode(Match.self, from: jsonData(raw)),
+              rows.indices.contains(match.row),
+              !match.quote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              rows[match.row].text.localizedCaseInsensitiveContains(match.quote) else {
+            throw StudyError.message(String(localized: "根拠の発話を特定できませんでした。"))
+        }
+        return match.row
+    }
+
     static func englishExpressions(for phrase: String, context: String) async throws -> [VocabularySuggestion] {
         let reply = try await request(instructions: """
         Answer vocabulary questions from any input language. Write all meanings and explanations in \(explanationLanguage), the app's display language.
@@ -150,8 +181,8 @@ struct StudyClient: DependencyKey {
         Match the IELTS part, number of questions, length and difficulty of this example. The example is a schema and length reference, NOT a topic or task-type template.
         \(variation)
         Use English for material and \(explanationLanguage) for answer explanations. All answers must be grounded in the material.
-        For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, provide only spoken words. For Speaking provide interview questions in oral.
-        For each Reading or Listening question include evidenceQuote: a short exact excerpt from the relevant passage or script, including the closest context for NOT GIVEN.
+        For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, start each short topic paragraph on a new line with the same speaker label (for example, "Lecturer:"); keep each paragraph focused on one question where possible. For Speaking provide interview questions in oral.
+        For each Reading or Listening question include evidenceQuote: a short exact excerpt from the relevant passage or script, including the closest context for NOT GIVEN. For Listening, copy a distinctive excerpt from the single speaker turn that supports the answer.
         Put every option on its own line with a letter or roman-numeral label. Do not prefix question prompts with question numbers.
         Return only a JSON object using the example keys plus the optional visuals array.
         \(QuestionVisual.generationInstructions)

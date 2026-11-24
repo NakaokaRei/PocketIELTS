@@ -114,6 +114,28 @@ enum SpeechAudio {
         return directory.appendingPathComponent(hash + ".wav")
     }
 
+    static let gapBytes = 7200  // 150 ms of 24 kHz mono Int16 PCM.
+    static let bytesPerSecond = 48000.0
+
+    static func startTimes(_ script: String, parts: [Segment], directory: URL = cacheDirectory) -> [Double]? {
+        let url = completeURL(script, directory: directory).appendingPathExtension("cues")
+        if let data = try? Data(contentsOf: url),
+           let times = try? JSONDecoder().decode([Double].self, from: data),
+           times.count == parts.count, times.first == 0,
+           zip(times, times.dropFirst()).allSatisfy({ $0 < $1 }) { return times }
+
+        var bytes = 0
+        var times = [Double]()
+        for part in parts {
+            times.append(Double(bytes) / bytesPerSecond)
+            guard let size = try? segmentURL(part, directory: directory).resourceValues(forKeys: [.fileSizeKey]).fileSize,
+                  size > 0, size.isMultiple(of: 2) else { return nil }
+            bytes += size + gapBytes
+        }
+        if !times.isEmpty { try? JSONEncoder().encode(times).write(to: url, options: .atomic) }
+        return times
+    }
+
     /// Also upgrades previously cached PCM segments without an API request or generation UI.
     static func cachedAudioURL(_ script: String, directory: URL = cacheDirectory) -> URL? {
         let complete = completeURL(script, directory: directory)
@@ -125,7 +147,7 @@ enum SpeechAudio {
             guard let data = try? Data(contentsOf: segmentURL(part, directory: directory)),
                   !data.isEmpty, data.count.isMultiple(of: 2) else { return nil }
             pcm.append(data)
-            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: 7200)) }
+            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: gapBytes)) }
         }
         do {
             try wave(pcm).write(to: complete, options: .atomic)
@@ -155,10 +177,12 @@ enum SpeechAudio {
         let directory = cacheDirectory
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         var pcm = Data()
+        var times = [Double]()
         let parts = segments(text)
         await progress(0, parts.count)
         for (index, part) in parts.enumerated() {
             try Task.checkCancellation()
+            times.append(Double(pcm.count) / bytesPerSecond)
             let url = segmentURL(part, directory: directory)
             if let cached = try? Data(contentsOf: url), !cached.isEmpty, cached.count.isMultiple(of: 2) {
                 pcm.append(cached)
@@ -178,12 +202,14 @@ enum SpeechAudio {
                 try data.write(to: url, options: .atomic)
                 pcm.append(data)
             }
-            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: 7200)) } // 150 ms between turns.
+            if index + 1 < parts.count { pcm.append(Data(repeating: 0, count: gapBytes)) } // 150 ms between turns.
             await progress(index + 1, parts.count)
         }
         guard !pcm.isEmpty else { throw StudyError.message(String(localized: "音声データを読み込めませんでした。")) }
         let result = wave(pcm)
-        try result.write(to: completeURL(text, directory: directory), options: .atomic)
+        let url = completeURL(text, directory: directory)
+        try result.write(to: url, options: .atomic)
+        try JSONEncoder().encode(times).write(to: url.appendingPathExtension("cues"), options: .atomic)
         return result
     }
 }
@@ -198,6 +224,8 @@ enum SpeechAudio {
     private(set) var error: String?
     private var operation: Task<Void, Never>?
     private var generationID = UUID()
+    private var requestedRow: Int?
+    private(set) var times: [Double]?
     private var autoPlayWhenReady = false
 
     init(script: String? = nil, cacheDirectory: URL = SpeechAudio.cacheDirectory) {
@@ -207,15 +235,20 @@ enum SpeechAudio {
     private func loadCached(_ script: String, directory: URL = SpeechAudio.cacheDirectory) {
         guard player == nil, !generating, let url = SpeechAudio.cachedAudioURL(script, directory: directory),
               let audio = try? AVAudioPlayer(contentsOf: url) else { return }
+        times = SpeechAudio.startTimes(script, parts: SpeechAudio.segments(script), directory: directory)
+        audio.enableRate = true
         player = audio
         completed = SpeechAudio.segments(script).count; total = completed
         generationFraction = 1
     }
 
-    func play(script: String, generate: @escaping (String, @escaping @MainActor (Int, Int) -> Void) async throws -> Data = SpeechAudio.generate) {
+    func play(script: String, row: Int? = nil, generate: @escaping (String, @escaping @MainActor (Int, Int) -> Void) async throws -> Data = SpeechAudio.generate) {
         loadCached(script)
-        if let player {
+        requestedRow = row
+        if let player, row == nil || times != nil {
             do {
+                error = nil
+                if let row, let times, times.indices.contains(row) { seek(times[row]) }
                 try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
                 try AVAudioSession.sharedInstance().setActive(true)
                 if player.currentTime >= player.duration { player.currentTime = 0 }
@@ -246,8 +279,11 @@ enum SpeechAudio {
                 try Task.checkCancellation()
                 guard self.generationID == id else { return }
                 self.player = try AVAudioPlayer(data: data)
+                self.player?.enableRate = true
+                self.times = SpeechAudio.startTimes(script, parts: SpeechAudio.segments(script))
                 self.generating = false
-                if self.autoPlayWhenReady, UIApplication.shared.applicationState == .active { self.play(script: script) }
+                if self.requestedRow != nil && self.times == nil { throw StudyError.message(String(localized: "音声データを読み込めませんでした。")) }
+                if self.autoPlayWhenReady, UIApplication.shared.applicationState == .active { self.play(script: script, row: self.requestedRow) }
             } catch {
                 guard let self, self.generationID == id else { return }
                 self.generating = false

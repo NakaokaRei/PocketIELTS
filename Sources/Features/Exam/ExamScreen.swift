@@ -141,6 +141,7 @@ struct ExamScreen: View {
         let context: String
         let selection: String?
     }
+    @State private var transcripts: [String: ListeningTranscript] = [:]
     @State private var tutor: TutorRequest?
     @State private var saved = false
     @State private var recording = false
@@ -516,6 +517,7 @@ struct ExamScreen: View {
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
+            ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: nil)
             if let words = markedWords[part.id], !words.isEmpty {
                 MarkedWordReview(words: words, store: store, explanation: $wordExplanations[part.id])
             }
@@ -545,6 +547,7 @@ struct ExamScreen: View {
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)
                     } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) }
+                    ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: part.firstQuestionNumber + index)
                     QuestionReviewActions(part: part, index: index, answer: answer, store: store)
                 }
             }
@@ -577,6 +580,7 @@ struct ExamScreen: View {
                 Button(String(localized: "AIに追加で質問")) { openTutor(material(part) + String(localized: "\n学習者の回答:\n") + answers[part.id + "-0", default: ""]) }
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
+        .task(id: part.id) { transcripts[part.id] = ListeningTranscript(part: part) }
     }
     private func reviewText(_ text: String) -> some View {
         ExamMaterialText(text: text) { fragment, _ in Text(verbatim: fragment) }

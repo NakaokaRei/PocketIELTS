@@ -1299,3 +1299,56 @@ private func waitUntil(
         try? await Task.sleep(for: .milliseconds(10))
     }
 }
+
+extension PocketIELTSTests {
+    @Test
+    func everyBundledListeningQuestionHasAPlayableEvidenceRow() throws {
+        for part in try ExamUnit.load() where part.skill == "Listening" {
+            let transcript = try #require(ListeningTranscript(part: part))
+            #expect(transcript.evidence.count == part.questions.count)
+            for i in part.questions.indices {
+                let row = try #require(transcript.evidence[part.firstQuestionNumber + i])
+                let quote = try #require(part.questions[i].evidenceQuote)
+                let segment = transcript.rows[row]
+                #expect([segment.speaker, segment.text].compactMap { $0 }.joined(separator: ": ").contains(quote))
+            }
+        }
+    }
+
+    @Test
+    func listeningReviewSeeksUsingAudioLengthsAndInterTurnSilence() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let script = "Guide: First.\nVisitor: Second.\nGuide: Third."
+        let parts = SpeechAudio.segments(script)
+        for (index, part) in parts.enumerated() {
+            try Data(repeating: 0, count: 48000 * (index + 1)).write(to: SpeechAudio.segmentURL(part, directory: directory))
+        }
+        let playback = ListeningPlayer(script: script, cacheDirectory: directory)
+        #expect(playback.times == [0, 1.15, 3.3])
+        for part in parts { try FileManager.default.removeItem(at: SpeechAudio.segmentURL(part, directory: directory)) }
+        let reopened = ListeningPlayer(script: script, cacheDirectory: directory)
+        #expect(reopened.times == playback.times)
+        #expect(reopened.player?.isPlaying == false)
+        for row in [2, 1, 1] {
+            reopened.play(script: script, row: row)
+            let audio = try #require(reopened.player)
+            #expect(audio.isPlaying)
+            #expect(abs(audio.currentTime - [0, 1.15, 3.3][row]) < 0.1)
+        }
+        reopened.stop()
+    }
+}
+
+
+extension PocketIELTSTests {
+    @Test
+    func listeningEvidenceLookupVerifiesTheSelectedTurn() throws {
+        let rows = SpeechAudio.segments("Guide: Welcome.\nStudent: I booked for Tuesday.")
+        #expect(try StudyClient.verifiedEvidence(in: #"{"row":1,"quote":"booked for Tuesday"}"#, rows: rows) == 1)
+        for invalid in [#"{"row":0,"quote":"Tuesday"}"#, #"{"row":5,"quote":"Welcome"}"#, "{}"] {
+            #expect(throws: (any Error).self) { try StudyClient.verifiedEvidence(in: invalid, rows: rows) }
+        }
+    }
+}
