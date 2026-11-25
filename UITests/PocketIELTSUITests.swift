@@ -230,6 +230,18 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(expand.waitForExistence(timeout: 5))
     }
 
+    func testListeningControlsAppearBelowPlaybackSlider() {
+        app.buttons["home.skill.Listening"].tap()
+        app.buttons["part.open.Listening / Part 1"].tap()
+        let play = app.buttons["listening.play"]
+        for _ in 0..<8 where !play.isHittable { app.swipeUp() }
+        XCTAssertTrue(play.isHittable)
+        let slider = app.sliders["再生位置"]
+        XCTAssertTrue(slider.exists)
+        XCTAssertGreaterThanOrEqual(play.frame.minY, slider.frame.maxY)
+        XCTAssertGreaterThanOrEqual(app.buttons["listening.rewind"].frame.minY, slider.frame.maxY)
+    }
+
     func testListeningFigureCanExpandAndReturn() {
         app.buttons["home.skill.Listening"].tap()
         app.buttons["part.open.Listening / Part 2"].tap()
