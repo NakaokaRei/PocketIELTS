@@ -356,6 +356,23 @@ final class PocketIELTSUITests: XCTestCase {
         capture("iphone-tutor-en")
     }
 
+    func testBackgroundingDuringSectionGeneration() {
+        app.terminate()
+        app.launchArguments.append("--ui-generation-preview")
+        app.launch()
+        app.buttons["home.skill.Reading"].tap()
+        app.buttons["part.open.Reading / Section 1"].tap()
+        XCTAssertTrue(app.staticTexts["進捗の目安"].waitForExistence(timeout: 5))
+        XCUIDevice.shared.press(.home)
+        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 5))
+        let home = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        home.name = "generation-live-activity-background"
+        home.lifetime = .keepAlways
+        add(home)
+        app.activate()
+        XCTAssertTrue(app.staticTexts["進捗の目安"].waitForExistence(timeout: 5))
+    }
+
     func testGenerationLoadingAndCancel() {
         app.terminate()
         app.launchArguments = ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "--ui-testing", "--ui-reset", "--ui-generation-preview"]

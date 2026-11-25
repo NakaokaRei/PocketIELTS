@@ -3,5 +3,6 @@
 <plist version="1.0"><dict>
 <key>ITSAppUsesNonExemptEncryption</key><false/>
 <key>BGTaskSchedulerPermittedIdentifiers</key><array><string>app.pocketielts.study.generation.*</string></array>
+<key>NSSupportsLiveActivities</key><true/>
 <key>UIBackgroundModes</key><array><string>processing</string></array>
 </dict></plist>

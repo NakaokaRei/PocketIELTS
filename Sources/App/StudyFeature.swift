@@ -98,7 +98,9 @@ struct StudyFeature {
                 state.loading = true
                 state.error = nil
                 return .run { send in
-                    let result = try await client.generate(section)
+                    let result = try await BackgroundGeneration.run(title: "Reading / Section \(section)", total: 1) { _ in
+                        try await client.generate(section)
+                    }
                     try Task.checkCancellation()
                     await send(.loaded(result))
                     await GenerationNotifications.post(title: String(localized: "問題の準備ができました"), body: result.title)

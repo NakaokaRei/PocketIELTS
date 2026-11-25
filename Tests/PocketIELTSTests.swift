@@ -1,3 +1,4 @@
+import ActivityKit
 import AVFoundation
 import SwiftUI
 import Testing
@@ -146,6 +147,43 @@ struct PocketIELTSTests {
         #expect(sections.percent[id] == nil)
         #expect(sections.ready[id] == nil)
     }
+
+    @Test
+    func completionNotificationsOnlyPresentWhileActive() {
+        #expect(GenerationNotifications.presentationOptions(for: .active).contains(.banner))
+        #expect(GenerationNotifications.presentationOptions(for: .inactive).isEmpty)
+        #expect(GenerationNotifications.presentationOptions(for: .background).isEmpty)
+    }
+
+    #if targetEnvironment(simulator)
+    @Test(.enabled(if: ActivityAuthorizationInfo().areActivitiesEnabled))
+    func reviewedSectionRefillKeepsLiveActivityWhenSceneLeavesForeground() async throws {
+        let template = try #require(ExamUnit.load().first)
+        let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        var gate: CheckedContinuation<Void, Never>?
+        var requests = 0
+        let sections = SectionPreparation(directory: directory) { template in
+            requests += 1
+            if requests == 2 { await withCheckedContinuation { gate = $0 } }
+            return template
+        }
+        sections.configure([template], enabled: true, active: true)
+        let first = try await sections.open(template)
+        sections.finished(template, paper: first)
+        await waitUntil(timeout: .seconds(5)) { gate != nil }
+        defer { gate?.resume() }
+        let activity = try #require(Activity<GenerationActivity>.activities.first {
+            $0.content.state.title == template.id && $0.activityState == .active
+        })
+        sections.configure([template], enabled: true, active: false)
+        #expect(Activity<GenerationActivity>.activities.contains { $0.id == activity.id })
+        gate?.resume()
+        gate = nil
+        _ = try await sections.open(template)
+        #expect(requests == 2)
+    }
+    #endif
 
     @Test
     func testAllSectionsStartBeforeAnyCompletesAndFailIndependently() async throws {

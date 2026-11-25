@@ -1,3 +1,4 @@
+import ActivityKit
 import BackgroundTasks
 import UIKit
 import OSLog
@@ -6,24 +7,108 @@ import UserNotifications
 final class GenerationNotifications: NSObject, UNUserNotificationCenterDelegate {
     static let shared = GenerationNotifications()
 
+    static func presentationOptions(for state: UIApplication.State) -> UNNotificationPresentationOptions {
+        state == .active ? [.banner, .sound] : []
+    }
+
+    @MainActor
     static func post(title: String, body: String) async {
+        guard !presentationOptions(for: UIApplication.shared.applicationState).isEmpty else { return }
         let center = UNUserNotificationCenter.current()
         let authorization = await center.notificationSettings().authorizationStatus
-        guard !Task.isCancelled, authorization == .authorized || authorization == .provisional || authorization == .ephemeral else { return }
+        guard !presentationOptions(for: UIApplication.shared.applicationState).isEmpty, !Task.isCancelled, authorization == .authorized || authorization == .provisional || authorization == .ephemeral else { return }
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.threadIdentifier = "generation"
         content.sound = .default
+        let id = UUID().uuidString
         do {
-            try await center.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
+            try await center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
+            if UIApplication.shared.applicationState != .active {
+                center.removePendingNotificationRequests(withIdentifiers: [id])
+                center.removeDeliveredNotifications(withIdentifiers: [id])
+            }
         } catch {
             Logger(subsystem: "app.pocketielts.study", category: "Notifications").error("Could not deliver completion notification: \(error.localizedDescription)")
         }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+        await MainActor.run { Self.presentationOptions(for: UIApplication.shared.applicationState) }
+    }
+}
+
+/// Jobs without a system progress UI share one activity, including parallel section preparation.
+@MainActor
+final class GenerationActivityDisplay {
+    static let shared = GenerationActivityDisplay()
+    private var jobs: [String: GenerationActivity.ContentState] = [:]
+    private var activity: Activity<GenerationActivity>?
+    private var lastState: GenerationActivity.ContentState?
+    private var lastUpdate = Date.distantPast
+    private var retryAfter = Date.distantPast
+    private var update: Task<Void, Never>?
+
+    private init() {
+        // Generation workers do not survive a process restart.
+        for previous in Activity<GenerationActivity>.activities {
+            Task { await previous.end(nil, dismissalPolicy: .immediate) }
+        }
+    }
+
+    func report(_ id: String, title: String, percent: Int) {
+        jobs[id] = .init(title: title, percent: percent)
+        refresh()
+    }
+
+    private func refresh() {
+        guard var state = jobs.values.first else { return }
+        if jobs.count > 1 {
+            state.title = String(localized: "あなただけの問題を準備中")
+            state.percent = jobs.values.map(\.percent).reduce(0, +) / jobs.count
+        }
+        let now = Date()
+        let content = ActivityContent(state: state, staleDate: now.addingTimeInterval(90))
+        if let activity {
+            guard state != lastState, now.timeIntervalSince(lastUpdate) >= 2 else { return }
+            let previous = update
+            update = Task {
+                await previous?.value
+                guard !Task.isCancelled else { return }
+                await activity.update(content)
+            }
+        } else {
+            guard UIApplication.shared.applicationState == .active, now >= retryAfter else { return }
+            retryAfter = now.addingTimeInterval(5)
+            guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+            do {
+                activity = try Activity.request(attributes: GenerationActivity(), content: content, pushType: nil)
+            } catch {
+                Logger(subsystem: "app.pocketielts.study", category: "Generation").error("Could not start Live Activity: \(error.localizedDescription)")
+                return
+            }
+        }
+        lastState = state
+        lastUpdate = now
+    }
+
+    func finish(_ id: String, success: Bool) {
+        guard var state = jobs.removeValue(forKey: id) else { return }
+        guard jobs.isEmpty else { refresh(); return }
+        if let activity {
+            let previous = update
+            if success { state.percent = 100 }
+            let content = ActivityContent(state: state, staleDate: nil)
+            Task {
+                await previous?.value
+                await activity.end(content, dismissalPolicy: success ? .after(Date().addingTimeInterval(15)) : .immediate)
+            }
+        }
+        update = nil
+        activity = nil
+        lastState = nil
+        retryAfter = .distantPast
     }
 }
 
@@ -61,6 +146,7 @@ final class BackgroundGeneration {
     private var lease = UIBackgroundTaskIdentifier.invalid
     private var systemTask: BGTask?
     private var publishedPercent: Int?
+    private var hasCustomActivity = false
 
     private init(title: String, total: Int, completionDuration: Double, onProgress: @escaping @MainActor (Double) -> Void) {
         self.onProgress = onProgress
@@ -130,6 +216,7 @@ final class BackgroundGeneration {
                         return
                     }
                     self.systemTask = task
+                    self.stopCustomActivity(success: false)
                     task.expirationHandler = { [weak self] in
                         Task { @MainActor in self?.interrupt() }
                     }
@@ -139,6 +226,8 @@ final class BackgroundGeneration {
                 }
             }
             if registered {
+                // ActivityKit can start here, but not after a backgrounded submission fails.
+                startCustomActivity()
                 let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: title, subtitle: progressLabel)
                 request.strategy = .fail // Never queue paid API work for a later, unexpected start.
                 Task { [weak self] in
@@ -146,14 +235,14 @@ final class BackgroundGeneration {
                     do { try await Self.submit(request) }
                     catch {
                         guard !self.finished else { return }
-                        self.startWithShortLease(useSystemScheduler: useSystemScheduler)
+                        self.startWithShortLease()
                     }
                 }
                 return
             }
         }
         #endif
-        startWithShortLease(useSystemScheduler: useSystemScheduler)
+        startWithShortLease()
     }
 
     #if !targetEnvironment(macCatalyst)
@@ -168,15 +257,26 @@ final class BackgroundGeneration {
     }
     #endif
 
-    private func startWithShortLease(useSystemScheduler: Bool) {
+    private func startWithShortLease() {
         guard !finished, worker == nil else { return }
-        if useSystemScheduler {
-            lease = UIApplication.shared.beginBackgroundTask(withName: title) { [weak self] in
-                self?.interrupt()
-            }
+        startCustomActivity()
+        lease = UIApplication.shared.beginBackgroundTask(withName: title) { [weak self] in
+            self?.interrupt()
         }
         startWork?()
         startWork = nil
+    }
+
+    private func startCustomActivity() {
+        guard !hasCustomActivity else { return }
+        hasCustomActivity = true
+        GenerationActivityDisplay.shared.report(identifier, title: title, percent: Int(fraction * 100))
+    }
+
+    private func stopCustomActivity(success: Bool) {
+        guard hasCustomActivity else { return }
+        hasCustomActivity = false
+        GenerationActivityDisplay.shared.finish(identifier, success: success)
     }
 
     private var progressLabel: String {
@@ -216,6 +316,9 @@ final class BackgroundGeneration {
         }
         fraction = max(fraction, value)
         onProgress(fraction)
+        if hasCustomActivity {
+            GenerationActivityDisplay.shared.report(identifier, title: title, percent: Int(fraction * 100))
+        }
         #if !targetEnvironment(macCatalyst)
         if let task = systemTask as? BGContinuedProcessingTask {
             let percent = Int(fraction * 100)
@@ -252,6 +355,7 @@ final class BackgroundGeneration {
     private func finish(success: Bool) {
         guard !finished else { return }
         finished = true
+        stopCustomActivity(success: success)
         progressTicker?.cancel(); progressTicker = nil
         startWork = nil
         cancelBeforeStart = nil
@@ -346,7 +450,7 @@ final class SectionPreparation {
             let id = key(template)
             guard ready[id] == nil, errors[id] == nil, jobs[id] == nil else { continue }
             automaticJobs.insert(id)
-            _ = start(template)
+            _ = start(template, useSystemScheduler: false)
         }
     }
 
@@ -368,10 +472,15 @@ final class SectionPreparation {
         guard ready[id] == paper else { return }
         try? FileManager.default.removeItem(at: directory.appending(path: id + ".json"))
         ready[id] = nil
+        // Reviewing a paper explicitly starts its replacement. Register while still in the foreground.
+        if automatic, templates.contains(where: { key($0) == id }) {
+            automaticJobs.insert(id)
+            _ = start(template, useSystemScheduler: true)
+        }
         schedule()
     }
 
-    private func start(_ template: ExamUnit) -> Task<ExamUnit, Error> {
+    private func start(_ template: ExamUnit, useSystemScheduler: Bool = true) -> Task<ExamUnit, Error> {
         let id = key(template)
         if let job = jobs[id] { return job }
         errors[id] = nil
@@ -384,16 +493,18 @@ final class SectionPreparation {
                 schedule()
             }
             do {
-                let unit = try await BackgroundGeneration.run(title: template.id, total: 1, useSystemScheduler: !automaticJobs.contains(id),
+                let unit = try await BackgroundGeneration.run(title: template.id, total: 1, useSystemScheduler: useSystemScheduler,
                     completionDuration: 0.8, onProgress: { fraction in
                         let value = Int(fraction * 100)
                         if self.percent[id] != value { self.percent[id] = value }
                     }) { _ in
-                        try await self.generate(template)
+                        let unit = try await self.generate(template)
+                        try Task.checkCancellation()
+                        try FileManager.default.createDirectory(at: self.directory, withIntermediateDirectories: true)
+                        try JSONEncoder().encode(unit).write(to: self.directory.appending(path: id + ".json"), options: .atomic)
+                        return unit
                     }
                 try Task.checkCancellation()
-                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-                try JSONEncoder().encode(unit).write(to: directory.appending(path: id + ".json"), options: .atomic)
                 ready[id] = unit
                 await GenerationNotifications.post(title: String(localized: "問題の準備ができました"), body: unit.id)
                 return unit

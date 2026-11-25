@@ -6,6 +6,7 @@ import UserNotifications
 struct PocketIELTSApp: App {
     let store: StoreOf<StudyFeature>
     init() {
+        _ = GenerationActivityDisplay.shared
         UNUserNotificationCenter.current().delegate = GenerationNotifications.shared
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--ui-testing") {

@@ -6,7 +6,15 @@
 	objectVersion = 54;
 	objects = {
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AC7100000000000000000009 = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (AC7100000000000000000007, ); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXBuildFile section */
+		AC7100000000000000000004 = {isa = PBXBuildFile; fileRef = AC7100000000000000000001; };
+		AC7100000000000000000005 = {isa = PBXBuildFile; fileRef = AC7100000000000000000001; };
+		AC7100000000000000000006 = {isa = PBXBuildFile; fileRef = AC7100000000000000000002; };
+		AC7100000000000000000007 = {isa = PBXBuildFile; fileRef = AC7100000000000000000003; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
  B62000000000000000000001 = {isa = PBXBuildFile; fileRef = B62000000000000000000002; };
 		A02100000000000000000001 = {isa = PBXBuildFile; fileRef = A02100000000000000000002; };
  A02000000000000000000001 = {isa = PBXBuildFile; fileRef = A02000000000000000000002; };
@@ -60,6 +68,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AC7100000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationWidget/GenerationActivity.swift; sourceTree = SOURCE_ROOT; };
+		AC7100000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationWidget/GenerationWidget.swift; sourceTree = SOURCE_ROOT; };
+		AC7100000000000000000003 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = GenerationWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
  B62000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/App/BackgroundGeneration.swift; sourceTree = SOURCE_ROOT; };
 		A02100000000000000000002 = {isa = PBXFileReference; lastKnownFileType = folder; path = Vocabulary; sourceTree = "<group>"; };
  A02000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyLibrary.swift; sourceTree = "<group>"; };
@@ -129,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				39DA41E884D721725F7A004F /* App */,
+				AC7100000000000000000001, AC7100000000000000000002,
 				B49BCC0C1E25E8574A0BAA03 /* Dependencies */,
 				80CD1606E462630EF461520F /* DesignSystem */,
 				30817FB0AAC3267F77957C7B /* Features */,
@@ -143,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				282F2E1DD73CFFDB68BED98C /* PocketIELTS.app */,
+				AC7100000000000000000003,
 				1EDFE26D205ED2EC28808F3B /* PocketIELTSTests.xctest */,
                 D820A0A124101DA934C12503,
 			);
@@ -340,6 +353,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AC710000000000000000000B = {isa = PBXNativeTarget; buildConfigurationList = AC710000000000000000000C; buildPhases = (AC7100000000000000000008, ); buildRules = (); dependencies = (); name = GenerationWidget; productName = GenerationWidget; productReference = AC7100000000000000000003; productType = "com.apple.product-type.app-extension"; };
         D820A0A124101DA934C12506 /* PocketIELTSUITests */ = {
             isa = PBXNativeTarget; buildConfigurationList = D820A0A124101DA934C12507;
             buildPhases = (D820A0A124101DA934C12504, D820A0A124101DA934C12505,);
@@ -374,10 +388,12 @@
 				53FEA6089979A0A36A370054 /* Frameworks */,
 				B3FAECDB2862783B3E5E141E /* Resources */,
                 A01100000000000000000005 /* Sync OSS Licenses */,
+				AC7100000000000000000009,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AC710000000000000000000A,
 			);
 			name = PocketIELTS;
 			packageProductDependencies = (
@@ -423,6 +439,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				AC710000000000000000000B,
 				CF48A862FA5F1F9E7E6FCD00 /* PocketIELTS */,
 				7F06E3947551DAE1321652CC /* PocketIELTSTests */,
                 D820A0A124101DA934C12506 /* PocketIELTSUITests */,
@@ -470,6 +487,7 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AC7100000000000000000008 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AC7100000000000000000005, AC7100000000000000000006, ); runOnlyForDeploymentPostprocessing = 0; };
         D820A0A124101DA934C12504 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D820A0A124101DA934C12501,); runOnlyForDeploymentPostprocessing = 0; };
 		91C9D66B0EF8D5CE5593AB06 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -485,6 +503,7 @@
 			files = (
 				FA4BB5B120D0779929E6698D /* IELTSNavigation.swift in Sources */,
 				336A4F40E6891B8632DE67F6 /* PocketIELTSApp.swift in Sources */,
+				AC7100000000000000000004,
                 B62000000000000000000001,
                 C10000000000000000000001,
 				C0EFB27F3AF89E39998AD858 /* StudyFeature.swift in Sources */,
@@ -519,6 +538,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AC710000000000000000000A = {isa = PBXTargetDependency; target = AC710000000000000000000B; };
 		3696148B03FBC6389BFF58F0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = PocketIELTS;
@@ -528,6 +548,8 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AC710000000000000000000D = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = 7ZJJ7KR6WA; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = GenerationWidget/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = Pokelts; IPHONEOS_DEPLOYMENT_TARGET = 26.0; PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.GenerationWidget; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";}; name = Debug; };
+		AC710000000000000000000E = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = 7ZJJ7KR6WA; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = GenerationWidget/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = Pokelts; IPHONEOS_DEPLOYMENT_TARGET = 26.0; PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.GenerationWidget; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2";}; name = Release; };
         D820A0A124101DA934C12509 = {isa = XCBuildConfiguration; buildSettings = {
             GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 26.0;
             PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study.uitests; PRODUCT_NAME = "$(TARGET_NAME)";
@@ -573,6 +595,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				MARKETING_VERSION = 1.1.0;
+				CURRENT_PROJECT_VERSION = 1;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -629,7 +653,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
                 CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
                 CODE_SIGN_STYLE = Automatic;
@@ -647,7 +670,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -660,6 +682,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				MARKETING_VERSION = 1.1.0;
+				CURRENT_PROJECT_VERSION = 1;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -723,7 +747,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ZJJ7KR6WA;
                 CODE_SIGN_ENTITLEMENTS = Resources/PocketIELTS.entitlements;
                 CODE_SIGN_STYLE = Automatic;
@@ -741,7 +764,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.pocketielts.study;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -752,6 +774,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AC710000000000000000000C = {isa = XCConfigurationList; buildConfigurations = (AC710000000000000000000D, AC710000000000000000000E, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
         D820A0A124101DA934C12507 = {isa = XCConfigurationList; buildConfigurations = (D820A0A124101DA934C12508, D820A0A124101DA934C12509,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 		21E1C5205D471214769FF6FB /* Build configuration list for PBXNativeTarget "PocketIELTS" */ = {
 			isa = XCConfigurationList;
