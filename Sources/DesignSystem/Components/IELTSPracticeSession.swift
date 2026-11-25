@@ -39,6 +39,8 @@ struct IELTSPracticeSession<Content: View>: View {
 struct ShortAnswerField: View {
     @Binding var text: String
     @State private var selection: TextSelection?
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var canPaste = UIPasteboard.general.hasStrings
 
     var body: some View {
         HStack(spacing: 8) {
@@ -46,23 +48,44 @@ struct ShortAnswerField: View {
                 .textFieldStyle(.roundedBorder)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-            PasteButton(payloadType: String.self) { strings in
-                guard let pasted = strings.first, !pasted.isEmpty else { return }
-                let range: Range<String.Index>
-                if let selection, case .selection(let selectedRange) = selection.indices {
-                    range = selectedRange
+            Group {
+                if canPaste {
+                    PasteButton(payloadType: String.self) { strings in
+                        guard let pasted = strings.first, !pasted.isEmpty else { return }
+                        insert(pasted)
+                    }
                 } else {
-                    range = text.endIndex..<text.endIndex
+                    Button {} label: {
+                        Label(String(localized: "Paste"), systemImage: "document.on.clipboard")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(true)
                 }
-                let prefix = text[..<range.lowerBound] + pasted
-                text = String(prefix) + text[range.upperBound...]
-                selection = TextSelection(insertionPoint: String.Index(utf16Offset: prefix.utf16.count, in: text))
             }
             .labelStyle(.iconOnly)
-            .controlSize(.large)
+            .fixedSize(horizontal: true, vertical: false)
             .tint(StudyColors.accent)
             .accessibilityIdentifier("answer.paste")
         }
+        .onAppear { canPaste = UIPasteboard.general.hasStrings }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { canPaste = UIPasteboard.general.hasStrings }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in
+            canPaste = UIPasteboard.general.hasStrings
+        }
+    }
+
+    private func insert(_ pasted: String) {
+        let range: Range<String.Index>
+        if let selection, case .selection(let selectedRange) = selection.indices {
+            range = selectedRange
+        } else {
+            range = text.endIndex..<text.endIndex
+        }
+        let prefix = text[..<range.lowerBound] + pasted
+        text = String(prefix) + text[range.upperBound...]
+        selection = TextSelection(insertionPoint: String.Index(utf16Offset: prefix.utf16.count, in: text))
     }
 }
 

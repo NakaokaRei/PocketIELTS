@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
+import UserNotifications
 
 struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
@@ -48,6 +49,9 @@ struct SettingsScreen: View {
                         .accessibilityIdentifier("settings.prepareAhead")
                 } footer: {
                     Text(String(localized: "While you use the app, prepare one exercise per section using your connected ChatGPT plan. Open the answer review to prepare the next exercise."))
+                }
+                Section {
+                    GenerationNotificationSettings()
                 }
                 Section {
                     Label(apiKeySaved ? String(localized: "APIキーを保存済み") : String(localized: "APIキーが未設定です"), systemImage: apiKeySaved ? "checkmark.shield" : "key")
@@ -195,5 +199,29 @@ struct OSSLicensesScreen: View {
             if let error { Text(error).foregroundStyle(StudyColors.error) }
         }.navigationTitle(String(localized: "OSSライセンス")).navigationBarTitleDisplayMode(.inline)
             .task { do { notices = try OSSNotice.load() } catch { self.error = error.localizedDescription } }
+    }
+}
+
+private struct GenerationNotificationSettings: View {
+    @Environment(\.openURL) private var openURL
+    @State private var requesting = false
+    @State private var error: String?
+
+    var body: some View {
+        Button(String(localized: "生成完了の通知設定"), systemImage: "bell") {
+            requesting = true
+            error = nil
+            Task { @MainActor in
+                defer { requesting = false }
+                let center = UNUserNotificationCenter.current()
+                if await center.notificationSettings().authorizationStatus == .notDetermined {
+                    do { _ = try await center.requestAuthorization(options: [.alert, .sound]) }
+                    catch { self.error = error.localizedDescription }
+                } else if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                    openURL(url)
+                }
+            }
+        }.disabled(requesting)
+        if let error { Text(error).font(.footnote).foregroundStyle(StudyColors.error) }
     }
 }

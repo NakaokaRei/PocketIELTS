@@ -520,6 +520,35 @@ struct PocketIELTSTests {
     }
 
     @Test
+    func testMarkedMeaningUsesDisplayLanguageAndSavesToTheWord() async throws {
+        let paper = try #require(try ExamUnit.load().first)
+        let entry = SavedExpression(expression: "courtyard", source: paper.id,
+                                    sourceText: "Cross the courtyard.", paper: paper)
+        let key = MarkedWordKey(expression: entry.expression, context: entry.contextExcerpt,
+                                language: StudyClient.explanationLanguage(for: "ja"))
+        let meaning = "中庭。この文は「中庭を横切ってください」という意味です。"
+        var initial = StudyFeature.State()
+        initial.settings.account.active = "profile"
+        initial.$vocabularyData.withLock { $0 = try! StudyPersistence.encode([entry]) }
+        let store = TestStore(initialState: initial) { StudyFeature() } withDependencies: {
+            $0[StudyClient.self].explain = { context, prompt in
+                #expect(prompt.contains("Japanese"))
+                #expect(context.contains("Cross the courtyard."))
+                return meaning
+            }
+        }
+        var updated = entry
+        updated.meaning = meaning
+        updated.meaningLanguage = "Japanese"
+        let data = try StudyPersistence.encode([updated])
+        await store.send(.explainMarkedWord(key)) { $0.markedMeanings[key] = .loading }
+        await store.receive(\.markedMeaningResult) {
+            $0.markedMeanings[key] = .ready(meaning)
+            $0.$vocabularyData.withLock { $0 = data }
+        }
+    }
+
+    @Test
     func testMeaningEditOnlyChangesSelectedSource() async throws {
         let first = SavedExpression(expression: "book", source: "Reading", sourceText: "Read a book.")
         let second = SavedExpression(expression: "book", source: "Listening", sourceText: "Book a room.")

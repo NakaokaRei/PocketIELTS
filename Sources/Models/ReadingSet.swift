@@ -55,6 +55,7 @@ struct SavedExpression: Codable, Equatable, Identifiable {
     var source: String
     var sourceText: String
     var meaning = ""
+    var meaningLanguage: String? = nil
     var paper: ExamUnit?
     var sourceID: String?
     var selectionLocation: Int?

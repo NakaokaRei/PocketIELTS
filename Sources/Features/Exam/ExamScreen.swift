@@ -128,7 +128,6 @@ struct ExamScreen: View {
     @State private var answers: [String: String] = [:]
     @State private var reviewPresented = false
     @State private var markedWords: [String: [SelectableStudyText.Entry]] = [:]
-    @State private var wordExplanations: [String: String] = [:]
     @State private var questionPageID = UUID()
     @State private var recorded: Set<String> = []
     @State private var speaker: AVSpeechSynthesizer?
@@ -399,7 +398,6 @@ struct ExamScreen: View {
                     Button(String(localized: "このパートをもう一度"), systemImage: "arrow.counterclockwise") {
                         reviewPresented = false
                         markedWords[unit.id] = nil
-                        wordExplanations[unit.id] = nil
                         partStarted = Date()
                         partEnded = nil
                         questionPageID = UUID()
@@ -501,7 +499,7 @@ struct ExamScreen: View {
             Button(String(localized: "ホームに戻る"), systemImage: "house") { navigation.home() }
                 .buttonStyle(StudySecondaryButtonStyle())
             Button(String(localized: "もう一度練習する"), systemImage: "arrow.counterclockwise") {
-                markedWords = [:]; wordExplanations = [:]
+                markedWords = [:]
                 position = 0; finished = false; answers = [:]; reviewPresented = false; recorded = []; evaluatingID = nil
                 partStarted = Date(); partEnded = nil
                 started = partStarted; ended = nil; audio.clear(); attemptID = UUID(); resultIDs = [:]; assessments = [:]; assessmentErrors = [:]; recordingFiles = [:]
@@ -519,7 +517,7 @@ struct ExamScreen: View {
         VStack(alignment: .leading, spacing: 18) {
             ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: nil)
             if let words = markedWords[part.id], !words.isEmpty {
-                MarkedWordReview(words: words, store: store, explanation: $wordExplanations[part.id])
+                MarkedWordReview(words: words, store: store)
             }
             if part.questions.isEmpty {
                 DisclosureGroup(part.title) {
@@ -591,9 +589,9 @@ struct ExamScreen: View {
             SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { entry in
                 if !(markedWords[unit.id] ?? []).contains(where: { $0.id == entry.id }) {
                     markedWords[unit.id, default: []].append(entry)
-                    wordExplanations[unit.id] = nil
                 }
                 save(entry, paper: unit)
+                store.send(.explainMarkedWord(entry.reviewKey))
             },
                 onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
                 allowsAI: !isMock, forLaterReview: true)
@@ -925,6 +923,7 @@ struct GeneratedExamScreen: View {
                         progress.update(completed: generated.count, total: templates.count)
                     }
                 }
+                await GenerationNotifications.post(title: String(localized: "問題の準備ができました"), body: String(localized: "模擬テスト"))
                 try await Task.sleep(for: .milliseconds(1300))
                 try Task.checkCancellation()
                 withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeInOut(duration: 0.38)) { showQuestions = true }
@@ -1043,54 +1042,49 @@ private struct LoadingBookMascot: View {
     }
 }
 
+private extension StudyTextView.Entry {
+    var reviewKey: MarkedWordKey {
+        MarkedWordKey(expression: expression, context: StudyTextSelection.excerpt(sourceText, range: utf16Range, expression: expression),
+                      language: StudyClient.explanationLanguage)
+    }
+}
+
 private struct MarkedWordReview: View {
     let words: [SelectableStudyText.Entry]
     let store: StoreOf<StudyFeature>
-    @Binding var explanation: String?
-    @Dependency(StudyClient.self) private var client
-    @State private var retry = 0
-    @State private var error: String?
     @State private var settings = false
-
-    private func context(_ word: SelectableStudyText.Entry) -> String {
-        StudyTextSelection.excerpt(word.sourceText, range: word.utf16Range, expression: word.expression)
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label(String(localized: "Words to review"), systemImage: "bookmark.fill").font(StudyTypography.heading)
             ForEach(words) { word in
-                Text(verbatim: word.expression).bold()
-                Text(verbatim: context(word)).font(StudyTypography.subheadline)
-                if !store.settings.canPractice,
-                   let match = StarterWord.all.first(where: { $0.expression.caseInsensitiveCompare(word.expression) == .orderedSame }) {
-                    Text(verbatim: match.definition)
+                let key = word.reviewKey
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(verbatim: word.expression).bold()
+                    switch store.markedMeanings[key] {
+                    case let .ready(meaning): Text(verbatim: meaning).textSelection(.enabled)
+                    case let .failed(message):
+                        Text(verbatim: message).foregroundStyle(StudyColors.error)
+                        if store.settings.canPractice {
+                            Button(String(localized: "もう一度生成")) { store.send(.explainMarkedWord(key)) }
+                        }
+                    case .loading: ProgressView()
+                    case nil:
+                        if key.language == "English", let match = StarterWord.all.first(where: { $0.expression.caseInsensitiveCompare(word.expression) == .orderedSame }) {
+                            Text(verbatim: match.definition)
+                        }
+                    }
+                    Text(verbatim: key.context).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
+                }
+                .task(id: store.settings.canPractice) {
+                    if store.markedMeanings[key] == nil { store.send(.explainMarkedWord(key)) }
                 }
             }
-            if let explanation {
-                Text(verbatim: explanation).textSelection(.enabled)
-            } else if !store.settings.canPractice {
-                Button(String(localized: "ChatGPTの接続設定")) { settings = true }
-            } else if let error {
-                Text(verbatim: error).foregroundStyle(StudyColors.error)
-                Button(String(localized: "もう一度生成")) { retry += 1 }
-            } else {
-                ProgressView(String(localized: "講評中…"))
-            }
+            if !store.settings.canPractice { Button(String(localized: "ChatGPTの接続設定")) { settings = true } }
         }
         .frame(maxWidth: .infinity, alignment: .leading).padding()
         .background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
         .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
-        .task(id: "\(store.settings.canPractice)-\(retry)-\(words.count)") {
-            guard store.settings.canPractice, explanation == nil else { return }
-            error = nil
-            do {
-                let material = words.map { $0.expression + "\n" + context($0) }.joined(separator: "\n\n")
-                let result = try await client.explain(material, "For each marked expression in order, give its meaning in the quoted sentence and briefly explain its usage. Use plain text.")
-                try Task.checkCancellation()
-                explanation = result
-            } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
-        }
     }
 }
 

@@ -1,6 +1,20 @@
 import ComposableArchitecture
 import Foundation
 
+struct MarkedWordKey: Hashable, Sendable {
+    let expression: String
+    let context: String
+    let language: String
+
+    func matches(_ entry: SavedExpression) -> Bool {
+        entry.expression == expression && entry.contextExcerpt == context && entry.paper != nil
+    }
+}
+
+enum MarkedMeaning: Equatable {
+    case loading, ready(String), failed(String)
+}
+
 @Reducer
 struct StudyFeature {
     @ObservableState
@@ -13,6 +27,7 @@ struct StudyFeature {
         var loading = false
         var error: String?
         var explanation: String?
+        var markedMeanings: [MarkedWordKey: MarkedMeaning] = [:]
         var asking = false
         var messages: [TutorMessage] = []
         @Shared(.appStorage("vocabularyDetails")) var vocabularyData = Data()
@@ -44,6 +59,7 @@ struct StudyFeature {
         case start(Int), loaded(ReadingSet), failed(String), finish
         case answer(Int, String), review, save(String)
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
+        case explainMarkedWord(MarkedWordKey), markedMeaningResult(MarkedWordKey, MarkedMeaning)
         case updateMeaning(UUID, String)
         case deleteExpression(UUID)
         case deletePaper(String)
@@ -62,6 +78,7 @@ struct StudyFeature {
             switch action {
             case .settings: break
             case .resetLearningData:
+                state.markedMeanings.removeAll()
                 state.$words.withLock { $0 = Data() }
                 state.$history.withLock { $0 = Data() }
                 state.$vocabularyData.withLock { $0 = Data() }
@@ -84,6 +101,7 @@ struct StudyFeature {
                     let result = try await client.generate(section)
                     try Task.checkCancellation()
                     await send(.loaded(result))
+                    await GenerationNotifications.post(title: String(localized: "問題の準備ができました"), body: result.title)
                 } catch: { error, send in
                     if !Task.isCancelled { await send(.failed(error.localizedDescription)) }
                 }.cancellable(id: Request.generation, cancelInFlight: true)
@@ -124,6 +142,10 @@ struct StudyFeature {
             case let .saveExpression(entry):
                 var entries = state.vocabulary
                 if let index = entries.firstIndex(where: { $0.expression == entry.expression && $0.source == entry.source }) {
+                    if entries[index].meaningLanguage != nil && entries[index].contextExcerpt != entry.contextExcerpt {
+                        entries[index].meaning = ""
+                        entries[index].meaningLanguage = nil
+                    }
                     entries[index].sourceText = entry.sourceText
                     entries[index].paper = entry.paper ?? entries[index].paper
                     entries[index].sourceID = entry.sourceID
@@ -132,6 +154,35 @@ struct StudyFeature {
                     if !entry.meaning.isEmpty { entries[index].meaning = entry.meaning }
                 } else { entries.insert(entry, at: 0) }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
+            case let .explainMarkedWord(key):
+                guard state.markedMeanings[key] != .loading else { return .none }
+                if let entry = state.vocabulary.first(where: { key.matches($0) && $0.meaningLanguage == key.language && !$0.meaning.isEmpty }) {
+                    state.markedMeanings[key] = .ready(entry.meaning)
+                    return .none
+                }
+                if case let .ready(meaning) = state.markedMeanings[key] {
+                    return .send(.markedMeaningResult(key, .ready(meaning)))
+                }
+                guard state.settings.canPractice else { return .none }
+                state.markedMeanings[key] = .loading
+                return .run { send in
+                    let prompt = "Explain the selected expression in \(key.language). Give its meaning in this sentence, briefly explain its usage, and translate the quoted sentence into \(key.language). Use concise plain text."
+                    let meaning = try await client.explain(key.expression + "\n" + key.context, prompt)
+                    await send(.markedMeaningResult(key, .ready(meaning)))
+                } catch: { error, send in
+                    await send(.markedMeaningResult(key, .failed(error.localizedDescription)))
+                }
+            case let .markedMeaningResult(key, result):
+                guard state.markedMeanings[key] != nil else { return .none }
+                state.markedMeanings[key] = result
+                if case let .ready(meaning) = result {
+                    var entries = state.vocabulary
+                    for index in entries.indices where key.matches(entries[index]) {
+                        entries[index].meaning = meaning
+                        entries[index].meaningLanguage = key.language
+                    }
+                    if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
+                }
             case let .deleteExpression(id):
                 guard state.vocabulary.contains(where: { $0.id == id }) else { return .none }
                 let remaining = state.vocabulary.filter { $0.id != id }

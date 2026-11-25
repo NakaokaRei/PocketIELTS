@@ -311,7 +311,20 @@ struct VocabularyScreen: View {
                             WordPronunciationButton(word: entry.expression, pronunciation: pronunciation)
                             Spacer(minLength: 0)
                         }
-                        if !entry.meaning.isEmpty { Text(entry.meaning).font(StudyTypography.body).textSelection(.enabled) }
+                        let language = StudyClient.explanationLanguage
+                        if !entry.meaning.isEmpty && (entry.meaningLanguage == nil || entry.meaningLanguage == language) {
+                            Text(entry.meaning).font(StudyTypography.body).textSelection(.enabled)
+                        } else if entry.paper != nil, store.settings.canPractice {
+                            let key = MarkedWordKey(expression: entry.expression, context: entry.contextExcerpt, language: language)
+                            if store.markedMeanings[key] == .loading {
+                                ProgressView()
+                            } else {
+                                Button(String(localized: "Show meaning")) { store.send(.explainMarkedWord(key)) }
+                                if case let .failed(message) = store.markedMeanings[key] {
+                                    Text(verbatim: message).font(.footnote).foregroundStyle(StudyColors.error)
+                                }
+                            }
+                        }
                         if !entry.sourceText.isEmpty { Text(entry.contextExcerpt).font(StudyTypography.subheadline).textSelection(.enabled) }
                         Button(String(localized: "AIに質問"), systemImage: "bubble.left.and.bubble.right") {
                             pronunciation.stop()

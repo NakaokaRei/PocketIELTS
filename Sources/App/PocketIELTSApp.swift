@@ -1,10 +1,12 @@
 import ComposableArchitecture
 import SwiftUI
+import UserNotifications
 
 @main
 struct PocketIELTSApp: App {
     let store: StoreOf<StudyFeature>
     init() {
+        UNUserNotificationCenter.current().delegate = GenerationNotifications.shared
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--ui-testing") {
             let suite = "PocketIELTS.UITests"

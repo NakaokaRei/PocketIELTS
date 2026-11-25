@@ -1,6 +1,31 @@
 import BackgroundTasks
 import UIKit
 import OSLog
+import UserNotifications
+
+final class GenerationNotifications: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = GenerationNotifications()
+
+    static func post(title: String, body: String) async {
+        let center = UNUserNotificationCenter.current()
+        let authorization = await center.notificationSettings().authorizationStatus
+        guard !Task.isCancelled, authorization == .authorized || authorization == .provisional || authorization == .ephemeral else { return }
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.threadIdentifier = "generation"
+        content.sound = .default
+        do {
+            try await center.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
+        } catch {
+            Logger(subsystem: "app.pocketielts.study", category: "Notifications").error("Could not deliver completion notification: \(error.localizedDescription)")
+        }
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
+    }
+}
 
 /// Transport callbacks inherit the current generation job, without changing API credentials.
 enum GenerationTransferProgress {
@@ -370,6 +395,7 @@ final class SectionPreparation {
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 try JSONEncoder().encode(unit).write(to: directory.appending(path: id + ".json"), options: .atomic)
                 ready[id] = unit
+                await GenerationNotifications.post(title: String(localized: "問題の準備ができました"), body: unit.id)
                 return unit
             } catch {
                 if !Task.isCancelled {

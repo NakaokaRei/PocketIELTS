@@ -284,6 +284,7 @@ enum SpeechAudio {
                 self.generating = false
                 if self.requestedRow != nil && self.times == nil { throw StudyError.message(String(localized: "音声データを読み込めませんでした。")) }
                 if self.autoPlayWhenReady, UIApplication.shared.applicationState == .active { self.play(script: script, row: self.requestedRow) }
+                await GenerationNotifications.post(title: String(localized: "リスニング音声"), body: String(localized: "再生の準備ができました"))
             } catch {
                 guard let self, self.generationID == id else { return }
                 self.generating = false

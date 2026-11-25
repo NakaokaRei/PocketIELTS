@@ -257,8 +257,16 @@ final class PocketIELTSUITests: XCTestCase {
     }
 
     func testPasteSelectedWordIntoListeningAnswer() {
-        app.buttons["home.skill.Listening"].tap()
-        app.buttons["part.open.Listening / Part 1"].tap()
+        verifyPasteIntoSecondAnswer(skill: "Listening", part: "Listening / Part 1")
+    }
+
+    func testReadingAnswerShowsPasteWithKeyboardOpen() {
+        verifyPasteIntoSecondAnswer(skill: "Reading", part: "Reading / Section 2")
+    }
+
+    private func verifyPasteIntoSecondAnswer(skill: String, part: String) {
+        app.buttons["home.skill.\(skill)"].tap()
+        app.buttons["part.open.\(part)"].tap()
         let jump = app.buttons["practice.jumpQuestion"]
         XCTAssertTrue(jump.waitForExistence(timeout: 8))
         jump.tap()
