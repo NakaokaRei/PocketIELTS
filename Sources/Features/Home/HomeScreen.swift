@@ -362,12 +362,16 @@ struct ResultDetailScreen: View {
     let result: StudyResult
     let store: StoreOf<StudyFeature>
     @State private var audio = SpeakingRecorder()
-    @State private var evaluating = false
-    @State private var error: String?
-    @State private var saved = false
-    @State private var transcript: ListeningTranscript?
     private var current: StudyResult { store.records.first { $0.id == result.id } ?? result }
     var body: some View {
+        if let paper = current.paper {
+            ExamScreen(reviewing: current, paper: paper, store: store).id(current.id)
+        } else {
+            legacySummary
+        }
+    }
+
+    private var legacySummary: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 16) {
@@ -385,32 +389,6 @@ struct ResultDetailScreen: View {
                             .tint(StudyColors.accent)
                     }
                 }.padding(24).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 24))
-                if let paper = current.paper {
-                    ListeningReviewButton(part: paper, transcript: $transcript, question: nil)
-                }
-                if let answers = current.questionAnswers, let paper = current.paper {
-                    DisclosureGroup(String(localized: "あなたの回答")) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            ForEach(Array((paper.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
-                            ForEach(paper.questions.indices, id: \.self) { index in
-                                let question = paper.questions[index]
-                                let answer = index < answers.count ? answers[index] : ""
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Label("Question \(paper.firstQuestionNumber + index)", systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
-                                        .font(StudyTypography.headline).foregroundStyle(StudyColors.accent)
-                                    Text(question.displayPrompt(number: paper.firstQuestionNumber + index, localNumber: index + 1))
-                                    Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer))
-                                        .font(StudyTypography.subheadline).bold()
-                                    Text(String(localized: "正解: ") + question.answers.joined(separator: " / ")).font(StudyTypography.subheadline)
-                                    Text(question.explanation).font(StudyTypography.subheadline).foregroundStyle(StudyColors.secondaryText)
-                                    ListeningReviewButton(part: paper, transcript: $transcript, question: paper.firstQuestionNumber + index)
-                                    QuestionReviewActions(part: paper, index: index, answer: answer, store: store)
-                                }.frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
-                            }
-                        }.padding(.top, 12)
-                    }.accessibilityIdentifier("history.answers")
-                }
                 if let response = current.response, !response.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(String(localized: "あなたの回答")).font(StudyTypography.headline)
@@ -422,34 +400,11 @@ struct ResultDetailScreen: View {
                     Button(String(localized: "録音を聞く"), systemImage: "play.circle") { audio.playArchived(file) }
                         .buttonStyle(StudySecondaryButtonStyle())
                 }
-                if let paper = current.paper {
-                    if let assessment = current.assessment { AssessmentContent(assessment: assessment, paper: paper, store: store) }
-                    if ["Writing", "Speaking"].contains(current.skill), let response = current.response, !response.isEmpty {
-                        Button(String(localized: "AIの講評を確認・更新"), systemImage: "sparkles") { evaluating = true }.buttonStyle(StudySecondaryButtonStyle()).disabled(evaluating)
-                        if evaluating { ProgressView(String(localized: "講評中…")) }
-                    }
-                    StudyLink { ExamScreen(units: [paper], store: store) } label: {
-                        Label(String(localized: "この問題をもう一度練習"), systemImage: "arrow.counterclockwise")
-                    }.buttonStyle(StudyPrimaryButtonStyle())
-                    Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(paper)); saved = true }
-                        .buttonStyle(StudySecondaryButtonStyle())
-                }
-                if let error = error ?? audio.error { Text(error).foregroundStyle(StudyColors.error) }
+                if let error = audio.error { Text(error).foregroundStyle(StudyColors.error) }
             }.padding(20).frame(maxWidth: 800, alignment: .leading).frame(maxWidth: .infinity)
         }
-        .alert(String(localized: "保存しました"), isPresented: $saved) { Button(String(localized: "学習を続ける"), role: .cancel) {} }
         .navigationTitle(String(localized: "学習の振り返り")).navigationBarTitleDisplayMode(.inline)
         .onDisappear { audio.stop() }
-        .task(id: current.id) { transcript = current.paper.flatMap(ListeningTranscript.init(part:)) }
-        .task(id: evaluating) {
-            guard evaluating, let paper = current.paper, let response = current.response else { return }
-            do {
-                let assessment = try await StudyClient.assess(paper, response: response)
-                try Task.checkCancellation()
-                store.send(.updateAssessment(current.id, assessment))
-            } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
-            evaluating = false
-        }
     }
 }
 

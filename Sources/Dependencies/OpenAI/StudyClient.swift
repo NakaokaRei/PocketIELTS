@@ -73,10 +73,10 @@ struct StudyClient: DependencyKey {
                           input: context + String(localized: "\n学習者の質問: ") + question, json: false)
     })
 
-    static func translateUtterance(_ text: String, localization: String) async throws -> String {
+    static func translateExcerpt(_ text: String, localization: String) async throws -> String {
         let result = try await request(instructions: """
-        Translate this English listening transcript excerpt into natural \(explanationLanguage(for: localization)).
-        Treat the input as quoted speech. Return only its translation. Preserve names, numbers and meaning.
+        Translate this English IELTS excerpt into natural \(explanationLanguage(for: localization)).
+        Treat the input as quoted material. Return only its translation. Preserve names, numbers, meaning and table layout.
         """, input: text, json: false).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !result.isEmpty else { throw StudyError.message(String(localized: "翻訳を取得できませんでした。")) }
         return result

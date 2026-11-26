@@ -109,6 +109,7 @@ struct ExamScreen: View {
     let units: [ExamUnit]
     let store: StoreOf<StudyFeature>
     var isMock = false
+    var historyResult: StudyResult?
     @Environment(\.studyNavigation) private var navigation
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -154,16 +155,20 @@ struct ExamScreen: View {
     }
 
     var body: some View {
-        page(showingReview: false)
-            .navigationDestination(isPresented: $reviewPresented) { page(showingReview: true) }
-            .navigationDestination(isPresented: $finished) {
-                ScrollView { results.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity) }
-                    .navigationBarBackButtonHidden(true).navigationBarTitleDisplayMode(.inline)
-            }
+        if historyResult != nil {
+            page(showingReview: true)
+        } else {
+            page(showingReview: false)
+                .navigationDestination(isPresented: $reviewPresented) { page(showingReview: true) }
+                .navigationDestination(isPresented: $finished) {
+                    ScrollView { results.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity) }
+                        .navigationBarBackButtonHidden(true).navigationBarTitleDisplayMode(.inline)
+                }
+        }
     }
 
     private func page(showingReview: Bool) -> some View {
-        let active = showingReview == reviewPresented
+        let active = historyResult != nil || showingReview == reviewPresented
         return Group {
             if units.isEmpty {
                 ContentUnavailableView(String(localized: "教材がありません"), systemImage: "book")
@@ -212,19 +217,21 @@ struct ExamScreen: View {
                 }
             }
             if !finished && !units.isEmpty {
-                ToolbarItem(placement: .principal) {
-                    HStack(spacing: 5) {
-                        Image(systemName: "stopwatch").accessibilityLabel(String(localized: "Elapsed time"))
-                        if let partEnded {
-                            Text(duration(partEnded.timeIntervalSince(partStarted)))
-                        } else {
-                            Text(partStarted, style: .timer)
+                if historyResult == nil {
+                    ToolbarItem(placement: .principal) {
+                        HStack(spacing: 5) {
+                            Image(systemName: "stopwatch").accessibilityLabel(String(localized: "Elapsed time"))
+                            if let partEnded {
+                                Text(duration(partEnded.timeIntervalSince(partStarted)))
+                            } else {
+                                Text(partStarted, style: .timer)
+                            }
                         }
+                        .font(.subheadline.monospacedDigit())
+                        .fixedSize()
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("practice.elapsed")
                     }
-                    .font(.subheadline.monospacedDigit())
-                    .fixedSize()
-                    .accessibilityElement(children: .combine)
-                    .accessibilityIdentifier("practice.elapsed")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(String(localized: "この問題を保存"), systemImage: "bookmark") { store.send(.savePaper(unit)); saved = true }
@@ -309,6 +316,10 @@ struct ExamScreen: View {
                 QuestionVisualView(visual: visual)
             }
             if showingReview {
+                if let historyResult {
+                    Text(historyResult.title).font(StudyTypography.headline)
+                    Text(historyResult.date, style: .date).font(StudyTypography.caption)
+                }
                 if !unit.questions.isEmpty { scoreSummary(unit) }
                 reviewContent(unit)
             } else {
@@ -364,26 +375,28 @@ struct ExamScreen: View {
                 }
             }
             VStack(spacing: 12) {
-                Button {
-                    answerFocused = false
-                    if !isMock && !showingReview {
-                        speaker?.stopSpeaking(at: .immediate)
-                        if partEnded == nil { partEnded = Date() }
-                        reviewPresented = true
-                        saveResult(unit)
-                        if !hasReachedReview {
-                            hasReachedReview = true
-                            onFirstReview()
-                        }
-                    } else { advance() }
-                } label: {
-                    Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
-                          systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
-                        .frame(maxWidth: .infinity, minHeight: 28)
+                if historyResult == nil {
+                    Button {
+                        answerFocused = false
+                        if !isMock && !showingReview {
+                            speaker?.stopSpeaking(at: .immediate)
+                            if partEnded == nil { partEnded = Date() }
+                            reviewPresented = true
+                            saveResult(unit)
+                            if !hasReachedReview {
+                                hasReachedReview = true
+                                onFirstReview()
+                            }
+                        } else { advance() }
+                    } label: {
+                        Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
+                              systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
+                            .frame(maxWidth: .infinity, minHeight: 28)
+                    }
+                    .buttonStyle(StudyPrimaryButtonStyle())
+                    .disabled(audio.transcribing || audio.isRecording)
+                    .accessibilityIdentifier("practice.review")
                 }
-                .buttonStyle(StudyPrimaryButtonStyle())
-                .disabled(audio.transcribing || audio.isRecording)
-                .accessibilityIdentifier("practice.review")
                 if showingReview && !isMock {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
                         Button(String(localized: "この問題を保存"), systemImage: "bookmark") {
@@ -394,7 +407,11 @@ struct ExamScreen: View {
                         }.accessibilityIdentifier("practice.ask")
                     }.buttonStyle(StudySecondaryButtonStyle())
                 }
-                if showingReview {
+                if historyResult != nil {
+                    StudyLink { ExamScreen(units: [unit], store: store) } label: {
+                        Label(String(localized: "この問題をもう一度練習"), systemImage: "arrow.counterclockwise")
+                    }.buttonStyle(StudySecondaryButtonStyle())
+                } else if showingReview {
                     Button(String(localized: "このパートをもう一度"), systemImage: "arrow.counterclockwise") {
                         reviewPresented = false
                         markedWords[unit.id] = nil
@@ -508,13 +525,14 @@ struct ExamScreen: View {
     }
 
     private func scoreSummary(_ part: ExamUnit) -> some View {
-        Text(String(format: String(localized: "%@ / %@ 正解"), String(score(part)), String(part.questions.count)))
+        Text(String(format: String(localized: "%@ / %@ 正解"), String(historyResult?.correct ?? score(part)), String(historyResult?.total ?? part.questions.count)))
             .font(StudyTypography.heading)
             .accessibilityIdentifier("practice.score")
     }
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
+            ReadingReviewButton(part: part)
             ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: nil)
             if let words = markedWords[part.id], !words.isEmpty {
                 MarkedWordReview(words: words, store: store)
@@ -524,7 +542,7 @@ struct ExamScreen: View {
                     VStack(alignment: .leading, spacing: 12) {
                         if !part.directions.isEmpty { reviewText(part.directions) }
                         ForEach(ExamMaterialBlock.passages(part.passages + part.oral), id: \.offset) { _, text in reviewText(text) }
-                        if isMock {
+                        if isMock || historyResult != nil {
                             ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         }
                     }.textSelection(.enabled)
@@ -533,15 +551,20 @@ struct ExamScreen: View {
 
             ForEach(part.questions.indices, id: \.self) { index in
                 let question = part.questions[index]
-                let answer = answers[part.id + "-\(index)", default: ""]
+                let storedAnswer = answers[part.id + "-\(index)"]
+                let answer = storedAnswer ?? ""
+                let hasAnswerData = historyResult == nil || storedAnswer != nil
+                let resultIcon = question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle"
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Question \(part.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
                     Text(question.displayPrompt(number: part.firstQuestionNumber + index, localNumber: index + 1))
                         .font(StudyTypography.headline).textSelection(.enabled)
                     Label(question.answers.map { question.choiceText($0) }.joined(separator: " / "),
-                          systemImage: question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle")
+                          systemImage: hasAnswerData ? resultIcon : "checklist")
                         .font(StudyTypography.headline)
-                    Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
+                    if hasAnswerData {
+                        Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
+                    }
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)
                     } onAsk: { entry in openTutor(material(part) + String(localized: "\n選択範囲: ") + entry.expression, selection: entry.expression) }
@@ -562,7 +585,7 @@ struct ExamScreen: View {
                     Text(String(localized: "評価の観点")).font(StudyTypography.headline)
                     ForEach(part.skill == "Writing" ? ["Task response", "Coherence and cohesion", "Lexical resource", "Grammatical range and accuracy"] : ["Fluency and coherence", "Lexical resource", "Grammatical range and accuracy", "Pronunciation"], id: \.self) { Text($0).bold() }
                 }
-                if let error = assessmentErrors[part.id] { Text(error).foregroundStyle(StudyColors.error) }
+                if let error = assessmentErrors[part.id] ?? audio.error { Text(error).foregroundStyle(StudyColors.error) }
                 if !store.settings.canPractice { Button(String(localized: "ChatGPTの接続設定"), systemImage: "person.crop.circle") { settings = true }.buttonStyle(StudySecondaryButtonStyle()) }
                 if evaluatingID == part.id { ProgressView(String(localized: "回答を講評中…")) }
                 Button(assessments[part.id] == nil ? String(localized: "AIの講評を見る") : String(localized: "講評を更新")) {
@@ -619,6 +642,7 @@ struct ExamScreen: View {
             correct: score(part), total: part.questions.count, isMock: isMock,
             response: part.questions.isEmpty ? answers[part.id + "-0"] : nil, assessment: assessments[part.id],
             recordingFile: recordingFiles[part.id], paper: part, attemptID: attemptID,
+            markedExpressions: markedWords[part.id],
             questionAnswers: part.questions.isEmpty ? nil : part.questions.indices.map { answers[part.id + "-\($0)", default: ""] })))
         recorded.insert(part.id)
     }
@@ -1049,6 +1073,22 @@ private extension StudyTextView.Entry {
     }
 }
 
+extension ExamScreen {
+    init(reviewing result: StudyResult, paper: ExamUnit, store: StoreOf<StudyFeature>) {
+        self.init(units: [paper], store: store, historyResult: result)
+        var responses: [String: String] = [:]
+        for (index, answer) in (result.questionAnswers ?? []).enumerated() {
+            responses[paper.id + "-\(index)"] = answer
+        }
+        if let response = result.response { responses[paper.id + "-0"] = response }
+        _answers = State(initialValue: responses)
+        _markedWords = State(initialValue: [paper.id: result.markedExpressions ?? []])
+        _recordingFiles = State(initialValue: result.recordingFile.map { [paper.id: $0] } ?? [:])
+        _assessments = State(initialValue: result.assessment.map { [paper.id: $0] } ?? [:])
+        _resultIDs = State(initialValue: [paper.id: result.id])
+    }
+}
+
 private struct MarkedWordReview: View {
     let words: [SelectableStudyText.Entry]
     let store: StoreOf<StudyFeature>
@@ -1100,25 +1140,6 @@ struct QuestionReviewActions: View {
     }
     @State private var destination: Destination?
     private var question: ReadingSet.Question { part.questions[index] }
-    private var paragraphs: [ExamMaterialBlock] {
-        ExamMaterialBlock.passages([part.directions] + part.passages + [part.audio ?? ""]).flatMap { passage in
-            ExamMaterialBlock.parse(passage.text).flatMap { block -> [ExamMaterialBlock] in
-                if case let .prose(value) = block {
-                    return value.split(whereSeparator: \.isNewline).map { .prose(String($0)) }
-                }
-                return [block]
-            }
-        }
-    }
-    private var target: Int? {
-        guard let quote = question.evidenceQuote?.trimmingCharacters(in: .whitespacesAndNewlines), !quote.isEmpty else { return nil }
-        return paragraphs.firstIndex { block in
-            switch block {
-            case let .prose(text): return text.localizedCaseInsensitiveContains(quote)
-            case let .table(rows): return rows.contains { $0.joined(separator: " ").localizedCaseInsensitiveContains(quote) }
-            }
-        }
-    }
     private var context: String {
         ([part.title, part.directions] + part.passages + [part.audio ?? "", QuestionVisual.context(part.visuals),
           "Question \(part.firstQuestionNumber + index)", question.instruction, question.prompt,
@@ -1140,31 +1161,138 @@ struct QuestionReviewActions: View {
             if route == .tutor {
                 TutorScreen(store: store, context: context, selectedText: question.prompt)
             } else {
-                NavigationStack {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text(question.prompt).font(StudyTypography.headline)
-                                ExamMaterialText(text: StudyQuestionLayout(question.instruction).formatted) { fragment, _ in Text(verbatim: fragment) }
-                                ForEach(StudyQuestionLayout(question.prompt).options, id: \.label) { option in Text(option.label + ". " + option.text) }
-                                ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
-                                let paragraphs = self.paragraphs
-                                let target = self.target
-                                ForEach(paragraphs.indices, id: \.self) { i in
-                                    ExamMaterialText(blocks: [paragraphs[i]]) { fragment, _ in Text(verbatim: fragment) }
-                                        .textSelection(.enabled).padding(8)
-                                        .background(i == target ? StudyColors.reading : Color.clear, in: RoundedRectangle(cornerRadius: 8))
-                                        .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
-                                        .id(i)
-                                }
-                            }.padding()
-                        }.task {
-                            await Task.yield()
-                            if let target { proxy.scrollTo(target, anchor: .top) }
-                        }
-                    }.navigationTitle("Question \(part.firstQuestionNumber + index)").navigationBarTitleDisplayMode(.inline)
-                        .toolbar { Button(String(localized: "完了")) { destination = nil } }
+                ReviewSourceSheet(part: part, index: index)
+            }
+        }
+    }
+}
+
+struct ReadingReviewButton: View {
+    let part: ExamUnit
+    @State private var presented = false
+
+    var body: some View {
+        if part.skill == "Reading", !part.passages.isEmpty {
+            Button(String(localized: "全文を見る"), systemImage: "text.book.closed") { presented = true }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("review.reading.fullText")
+                .sheet(isPresented: $presented) { ReviewSourceSheet(part: part, index: nil) }
+        }
+    }
+}
+
+private struct ReviewSourceSheet: View {
+    let part: ExamUnit
+    let index: Int?
+    @Environment(\.dismiss) private var dismiss
+    private let localization = Bundle.main.preferredLocalizations.first ?? "en"
+    private var translatesReading: Bool { Locale.Language(identifier: localization).languageCode?.identifier != "en" }
+    private var question: ReadingSet.Question? { index.map { part.questions[$0] } }
+
+    private var paragraphs: [ExamMaterialBlock] {
+        ExamMaterialBlock.passages([part.directions] + part.passages + [part.audio ?? ""]).flatMap { passage in
+            ExamMaterialBlock.parse(passage.text).flatMap { block -> [ExamMaterialBlock] in
+                if case let .prose(value) = block {
+                    let lines = value.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }
+                    let groups = lines.split(whereSeparator: \.isEmpty)
+                    // A blank line separates paragraphs even when the prose inside one wraps across lines.
+                    let paragraphs = part.skill == "Reading" && groups.count > 1 ? groups.map { $0.joined(separator: "\n") } : lines.filter { !$0.isEmpty }
+                    return paragraphs.map(ExamMaterialBlock.prose)
                 }
+                return [block]
+            }
+        }
+    }
+    private var target: Int? {
+        guard let quote = question?.evidenceQuote?.trimmingCharacters(in: .whitespacesAndNewlines), !quote.isEmpty else { return nil }
+        return paragraphs.firstIndex { block in
+            switch block {
+            case let .prose(text): return text.localizedCaseInsensitiveContains(quote)
+            case let .table(rows): return rows.contains { $0.joined(separator: " ").localizedCaseInsensitiveContains(quote) }
+            }
+        }
+    }
+    var body: some View {
+        NavigationStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if let question {
+                            Text(question.prompt).font(StudyTypography.headline)
+                            ExamMaterialText(text: StudyQuestionLayout(question.instruction).formatted) { fragment, _ in Text(verbatim: fragment) }
+                            ForEach(StudyQuestionLayout(question.prompt).options, id: \.label) { option in Text(option.label + ". " + option.text) }
+                        }
+                        ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
+                        let paragraphs = self.paragraphs
+                        let target = self.target
+                        ForEach(paragraphs.indices, id: \.self) { i in
+                            VStack(alignment: .leading, spacing: 4) {
+                                ExamMaterialText(blocks: [paragraphs[i]]) { fragment, _ in Text(verbatim: fragment) }
+                                    .textSelection(.enabled)
+                                    .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
+                                if part.skill == "Reading", translatesReading, !paragraphs[i].isParagraphLabel {
+                                    ParagraphTranslation(block: paragraphs[i], localization: localization, index: i)
+                                }
+                            }
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(i == target ? StudyColors.reading : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                            .id(i)
+                        }
+                    }.padding()
+                }.task {
+                    await Task.yield()
+                    if let target { proxy.scrollTo(target, anchor: .top) }
+                }
+            }.navigationTitle(index.map { "Question \(part.firstQuestionNumber + $0)" } ?? part.title).navigationBarTitleDisplayMode(.inline)
+                .toolbar { Button(String(localized: "完了")) { dismiss() } }
+        }
+    }
+}
+
+private struct ParagraphTranslation: View {
+    let block: ExamMaterialBlock
+    let localization: String
+    let index: Int
+    @State private var expanded = false
+    @State private var translation: String?
+    @State private var error: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Button {
+                error = nil
+                expanded.toggle()
+            } label: {
+                Label(expanded ? String(localized: "訳を隠す") : String(localized: "翻訳を表示"), systemImage: "translate")
+                    .font(.footnote).frame(minHeight: 44)
+            }
+            .buttonStyle(.borderless)
+            .foregroundStyle(StudyColors.accent)
+            .accessibilityIdentifier("review.reading.translate.\(index)")
+            if expanded {
+                if let translation {
+                    ExamMaterialText(text: translation) { fragment, _ in Text(verbatim: fragment) }
+                        .textSelection(.enabled).foregroundStyle(.secondary)
+                } else { ProgressView().controlSize(.small) }
+            }
+            if let error { Text(error).font(.footnote).foregroundStyle(StudyColors.error) }
+        }
+        .task(id: expanded) {
+            guard expanded, translation == nil else { return }
+            let source: String
+            switch block {
+            case .prose(let text): source = text
+            case .table(let rows): source = rows.map { $0.joined(separator: " | ") }.joined(separator: "\n")
+            }
+            do {
+                let result = try await StudyClient.translateExcerpt(source, localization: localization)
+                try Task.checkCancellation()
+                translation = result
+            } catch {
+                guard !Task.isCancelled else { return }
+                self.error = error.localizedDescription
+                expanded = false
             }
         }
     }
@@ -1174,6 +1302,11 @@ struct QuestionReviewActions: View {
 enum ExamMaterialBlock: Equatable {
     case prose(String)
     case table([[String]])
+
+    var isParagraphLabel: Bool {
+        guard case .prose(let text) = self else { return false }
+        return text.range(of: "^[A-Z][.)]?$", options: .regularExpression) != nil
+    }
 
     static func parse(_ text: String) -> [Self] {
         guard text.contains("|") else { return [.prose(text)] }

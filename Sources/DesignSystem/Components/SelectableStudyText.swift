@@ -40,7 +40,7 @@ struct SelectableStudyText: View {
 /// Use for passages, prompts, answer choices, explanations, and completed AI messages.
 /// Persist the supplied entry in the same vocabulary store used by the vocabulary tab.
 struct StudyTextView: UIViewRepresentable {
-    struct Entry: Equatable, Identifiable {
+    struct Entry: Codable, Equatable, Identifiable {
         var id: String { sourceID + ":\(utf16Range.location):\(utf16Range.length)" }
         var meaning = ""
         let expression: String

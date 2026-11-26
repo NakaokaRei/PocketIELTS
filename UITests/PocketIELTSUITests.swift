@@ -469,6 +469,12 @@ final class PocketIELTSUITests: XCTestCase {
         let review = app.buttons["practice.review"]
         for _ in 0..<30 where !review.isHittable { app.swipeUp(velocity: .fast) }
         review.tap()
+        let fullText = app.buttons["review.reading.fullText"]
+        XCTAssertTrue(fullText.waitForExistence(timeout: 5))
+        fullText.tap()
+        XCTAssertTrue(app.buttons["review.reading.translate.0"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["review.reading.translate.1"].exists)
+        app.buttons["完了"].tap()
         let source = app.buttons["review.source.0"]
         for _ in 0..<8 where !source.isHittable { app.swipeUp() }
         source.tap()
@@ -541,10 +547,13 @@ final class PocketIELTSUITests: XCTestCase {
         let record = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Community services")).firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 5)); record.tap()
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-history-detail" : "iphone-history-detail")
-        app.buttons["この問題を保存"].tap()
+        XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
+        app.buttons["review.reading.fullText"].tap()
+        XCTAssertTrue(app.buttons["review.reading.translate.1"].waitForExistence(timeout: 5))
+        app.buttons["完了"].tap()
+        app.buttons["practice.saveToolbar"].tap()
         XCTAssertTrue(app.alerts["保存しました"].waitForExistence(timeout: 5))
         app.alerts.buttons["学習を続ける"].tap()
-        app.buttons["history.answers"].tap()
         XCTAssertTrue(app.staticTexts["あなたの解答: TRUE"].waitForExistence(timeout: 5))
         let unanswered = app.staticTexts["あなたの解答: 未回答"].firstMatch
         for _ in 0..<5 where !unanswered.isHittable { app.swipeUp() }

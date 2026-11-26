@@ -28,6 +28,7 @@ struct PracticeScreen: View {
                     }
                     if let set = store.session, !store.loading {
                         Text(set.title).font(StudyTypography.title)
+                        if store.reviewed, let currentPaper { ReadingReviewButton(part: currentPaper) }
                         ForEach(set.passages.indices, id: \.self) { i in selectable(set.passages[i], id: "passage-\(i)") }
                         ForEach(Array((set.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         Divider()

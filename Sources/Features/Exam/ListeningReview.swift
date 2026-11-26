@@ -221,7 +221,7 @@ private struct ListeningTranscriptRow: View {
                     } label: {
                         Image(systemName: "translate")
                             .font(.subheadline.weight(.medium))
-                            .foregroundStyle(expanded ? StudyColors.accent : .secondary)
+                            .foregroundStyle(StudyColors.accent)
                             .frame(width: 44, height: 44).contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
@@ -240,7 +240,7 @@ private struct ListeningTranscriptRow: View {
         .task(id: expanded) {
             guard expanded, translation == nil else { return }
             do {
-                let value = try await StudyClient.translateUtterance(segment.text, localization: localization)
+                let value = try await StudyClient.translateExcerpt(segment.text, localization: localization)
                 try Task.checkCancellation()
                 translation = value
             } catch {
