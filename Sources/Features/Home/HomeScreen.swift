@@ -314,7 +314,7 @@ struct VocabularyScreen: View {
                         let language = StudyClient.explanationLanguage
                         if !entry.meaning.isEmpty && (entry.meaningLanguage == nil || entry.meaningLanguage == language) {
                             Text(entry.meaning).font(StudyTypography.body).textSelection(.enabled)
-                        } else if entry.paper != nil, store.settings.canPractice {
+                        } else if store.settings.canPractice {
                             let key = MarkedWordKey(expression: entry.expression, context: entry.contextExcerpt, language: language)
                             if store.markedMeanings[key] == .loading {
                                 ProgressView()

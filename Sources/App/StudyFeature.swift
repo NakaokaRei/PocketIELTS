@@ -7,7 +7,7 @@ struct MarkedWordKey: Hashable, Sendable {
     let language: String
 
     func matches(_ entry: SavedExpression) -> Bool {
-        entry.expression == expression && entry.contextExcerpt == context && entry.paper != nil
+        entry.expression == expression && entry.contextExcerpt == context
     }
 }
 
@@ -57,7 +57,7 @@ struct StudyFeature {
         case resetLearningData
         case applyCloudSnapshot(CloudStudySnapshot)
         case start(Int), loaded(ReadingSet), failed(String), finish
-        case answer(Int, String), review, save(String)
+        case answer(Int, String), review
         case saveExpression(SavedExpression), savePaper(ExamUnit), record(StudyResult)
         case explainMarkedWord(MarkedWordKey), markedMeaningResult(MarkedWordKey, MarkedMeaning)
         case updateMeaning(UUID, String)
@@ -143,6 +143,7 @@ struct StudyFeature {
                 if let data = try? StudyPersistence.encode([record] + state.records) { state.$resultData.withLock { $0 = data } }
             case let .saveExpression(entry):
                 var entries = state.vocabulary
+                let saved: SavedExpression
                 if let index = entries.firstIndex(where: { $0.expression == entry.expression && $0.source == entry.source }) {
                     if entries[index].meaningLanguage != nil && entries[index].contextExcerpt != entry.contextExcerpt {
                         entries[index].meaning = ""
@@ -153,9 +154,20 @@ struct StudyFeature {
                     entries[index].sourceID = entry.sourceID
                     entries[index].selectionLocation = entry.selectionLocation
                     entries[index].selectionLength = entry.selectionLength
-                    if !entry.meaning.isEmpty { entries[index].meaning = entry.meaning }
-                } else { entries.insert(entry, at: 0) }
+                    if !entry.meaning.isEmpty {
+                        entries[index].meaning = entry.meaning
+                        entries[index].meaningLanguage = entry.meaningLanguage
+                    }
+                    saved = entries[index]
+                } else {
+                    entries.insert(entry, at: 0)
+                    saved = entry
+                }
                 if let data = try? StudyPersistence.encode(entries) { state.$vocabularyData.withLock { $0 = data } }
+                let language = StudyClient.explanationLanguage
+                if state.settings.canPractice, saved.meaning.isEmpty || (saved.meaningLanguage != nil && saved.meaningLanguage != language) {
+                    return .send(.explainMarkedWord(MarkedWordKey(expression: saved.expression, context: saved.contextExcerpt, language: language)))
+                }
             case let .explainMarkedWord(key):
                 guard state.markedMeanings[key] != .loading else { return .none }
                 if let entry = state.vocabulary.first(where: { key.matches($0) && $0.meaningLanguage == key.language && !$0.meaning.isEmpty }) {
@@ -168,7 +180,9 @@ struct StudyFeature {
                 guard state.settings.canPractice else { return .none }
                 state.markedMeanings[key] = .loading
                 return .run { send in
-                    let prompt = "Explain the selected expression in \(key.language). Give its meaning in this sentence, briefly explain its usage, and translate the quoted sentence into \(key.language). Use concise plain text."
+                    let prompt = key.context.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        ? "Give a concise definition of the expression in \(key.language)."
+                        : "Explain the selected expression in \(key.language). Give its meaning in this sentence, briefly explain its usage, and translate the quoted sentence into \(key.language). Use concise plain text."
                     let meaning = try await client.explain(key.expression + "\n" + key.context, prompt)
                     await send(.markedMeaningResult(key, .ready(meaning)))
                 } catch: { error, send in
@@ -216,10 +230,6 @@ struct StudyFeature {
             case let .record(result):
                 guard !state.records.contains(where: { $0.id == result.id }) else { return .none }
                 if let data = try? StudyPersistence.encode([result] + state.records) { state.$resultData.withLock { $0 = data } }
-            case let .save(expression):
-                guard !state.entries.contains(expression) else { return .none }
-                let data = try? StudyPersistence.encode([expression] + state.entries)
-                if let data { state.$words.withLock { $0 = data } }
             case let .ask(context, question):
                 guard !state.asking else { return .none }
                 let question = question.trimmingCharacters(in: .whitespacesAndNewlines)

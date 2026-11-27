@@ -614,7 +614,6 @@ struct ExamScreen: View {
                     markedWords[unit.id, default: []].append(entry)
                 }
                 save(entry, paper: unit)
-                store.send(.explainMarkedWord(entry.reviewKey))
             },
                 onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
                 allowsAI: !isMock, forLaterReview: true)

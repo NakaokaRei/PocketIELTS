@@ -599,6 +599,31 @@ struct PocketIELTSTests {
     }
 
     @Test
+    func testSavingManualWordGeneratesMeaningOnce() async throws {
+        let entry = SavedExpression(expression: "orchard", source: "My vocabulary", sourceText: "", sourceID: "manual")
+        let language = StudyClient.explanationLanguage
+        let key = MarkedWordKey(expression: entry.expression, context: "", language: language)
+        var initial = StudyFeature.State()
+        initial.settings.account.active = "profile"
+        let store = TestStore(initialState: initial) { StudyFeature() } withDependencies: {
+            $0[StudyClient.self].explain = { _, prompt in
+                #expect(prompt.contains(language))
+                return "Definition"
+            }
+        }
+        store.exhaustivity = .off
+        await store.send(.saveExpression(entry))
+        await store.receive(\.explainMarkedWord)
+        await store.receive(\.markedMeaningResult)
+        await store.send(.saveExpression(entry))
+        await store.finish()
+        #expect(store.state.vocabulary.count == 1)
+        #expect(store.state.vocabulary.first?.meaning == "Definition")
+        #expect(store.state.vocabulary.first?.meaningLanguage == language)
+        #expect(store.state.markedMeanings[key] == .ready("Definition"))
+    }
+
+    @Test
     func testMeaningEditOnlyChangesSelectedSource() async throws {
         let first = SavedExpression(expression: "book", source: "Reading", sourceText: "Read a book.")
         let second = SavedExpression(expression: "book", source: "Listening", sourceText: "Book a room.")

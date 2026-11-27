@@ -92,7 +92,8 @@ struct AddVocabularyScreen: View {
         let duplicate = isSaved(word)
         return Button(duplicate ? String(localized: "Already in your vocabulary") : String(localized: "Save to my vocabulary"), systemImage: "plus.circle.fill") {
             store.send(.saveExpression(SavedExpression(expression: word, source: "My vocabulary",
-                                                       sourceText: sentence, meaning: meaning, sourceID: "manual")))
+                                                       sourceText: sentence, meaning: meaning,
+                                                       meaningLanguage: meaning.isEmpty ? nil : StudyClient.explanationLanguage, sourceID: "manual")))
             dismiss()
         }.buttonStyle(StudyPrimaryButtonStyle()).disabled(word.isEmpty || duplicate)
     }

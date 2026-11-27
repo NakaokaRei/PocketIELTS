@@ -11,29 +11,14 @@ struct SelectableStudyText: View {
     var allowsAI = true
     var markdown = false
     var forLaterReview = false
-    private var confirmation: String { forLaterReview ? String(localized: "Marked for review") : String(localized: "単語帳に保存しました") }
-    @State private var saved = false
-
     var body: some View {
         StudyTextView(text: text, sourceID: sourceID, onSave: { entry in
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             onSave(entry)
-            if !forLaterReview { saved = true }
-            UIAccessibility.post(notification: .announcement, argument: confirmation)
-        }, onAsk: allowsAI ? onAsk : nil, markdown: markdown, forLaterReview: forLaterReview)
-        .overlay(alignment: .top) {
-            if saved {
-                Label(confirmation, systemImage: "checkmark.circle.fill")
-                    .font(.subheadline.bold()).padding(12)
-                    .background(.regularMaterial, in: Capsule())
-                    .allowsHitTesting(false).accessibilityIdentifier("selection.saved")
+            if forLaterReview {
+                UIAccessibility.post(notification: .announcement, argument: String(localized: "Marked for review"))
             }
-        }
-        .task(id: saved) {
-            guard saved else { return }
-            try? await Task.sleep(for: .seconds(2))
-            saved = false
-        }
+        }, onAsk: allowsAI ? onAsk : nil, markdown: markdown, forLaterReview: forLaterReview)
     }
 }
 
