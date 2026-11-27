@@ -42,9 +42,14 @@ struct ReadingSet: Codable, Equatable, Sendable {
         }
         func accepts(_ input: String) -> Bool {
             func normal(_ value: String) -> String {
-                value.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
+                let text = value.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
+                if let time = text.wholeMatch(of: #/(0?[1-9]|1[0-2])[:.]([0-5][0-9]) ?([ap])\.?m\.?/#) {
+                    return "\(time.1.drop(while: { $0 == "0" })):\(time.2) \(time.3)m"
+                }
+                return text
             }
-            return answers.contains { normal($0) == normal(input) }
+            let response = normal(input)
+            return answers.contains { normal($0) == response }
         }
     }
 }

@@ -450,6 +450,18 @@ struct PocketIELTSTests {
     }
 
     @Test
+    func testClockTimeAnswerVariants() {
+        let question = ReadingSet.Question(instruction: "", prompt: "Beginner session starts at:",
+                                           answers: ["9:45 am"], explanation: "")
+        for answer in ["9:45am", "9.45 am", "09:45 A.M."] {
+            #expect(question.accepts(answer))
+        }
+        for answer in ["9:45pm", "9:54am", "9:45", "about 9:45am"] {
+            #expect(!question.accepts(answer))
+        }
+    }
+
+    @Test
     func testChatGPTOnlyPracticeGate() {
         var state = SettingsFeature.State()
         #expect(!state.canPractice)

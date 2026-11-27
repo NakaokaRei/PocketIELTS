@@ -56,11 +56,13 @@ struct StudyClient: DependencyKey {
         Put shared instructions and shared options in instruction. Put question-specific options in prompt.
         Put each option on its own line, labelled A. / B. / C. or i. / ii. / iii.
         Do not prefix prompt with a question number; the app displays it.
+        For headings, summarise the paragraph's main point; for matching information, restate the specific detail. For TRUE/FALSE/NOT GIVEN, test the whole claim (including conditions, quantities and exceptions). FALSE requires contrary evidence; NOT GIVEN requires a detail the passage leaves undecided.
         For completion tasks use words from the text. Include all acceptable answers separately.
+        \(Self.receptiveQuestionGuidance)
         \(QuestionVisual.generationInstructions)
         Include evidenceQuote in each question: copy a short exact excerpt from the relevant passage, or the closest context for NOT GIVEN.
         Give evidence for each answer in \(explanationLanguage). Return only a JSON object:
-        {"title":"...","passages":["full document with title and paragraphs"],"questions":[{"instruction":"...","prompt":"...","answers":["..."],"explanation":"..."}]}
+        {"title":"...","passages":["full document with title and paragraphs"],"questions":[{"instruction":"...","prompt":"...","answers":["..."],"explanation":"...","evidenceQuote":"..."}]}
         """
         var set = try await completeReading(section: section) { input in
             try await request(instructions: prompt, input: input, json: true)
@@ -166,6 +168,11 @@ struct StudyClient: DependencyKey {
         return issues
     }
 
+    private static let receptiveQuestionGuidance = """
+    For questions testing meaning, rephrase the decisive clue in the stem, heading or options. Vary the relationship naturally: a concrete example can support a general description, or the same condition can be expressed with a different sentence structure. Before returning the exercise, check whether copying a distinctive phrase beside the gap or into the correct option gives the answer away; revise those clues while keeping one defensible answer.
+    Keep natural direct-recall items for names, times, prices and labels. When the instructions require words from the source, the missing answer itself must occur there and fit the word limit. Where interpreting wording matters, use the explanation to connect the actual English wording in the task to the actual wording in the source. For NOT GIVEN, explain which information is missing.
+    """
+
     static func generateUnit(like template: ExamUnit) async throws -> ExamUnit {
         if template.skill == "Reading", let section = (1...3).first(where: { template.id.contains("Section \($0)") }) {
             let set = try await liveValue.generate(section)
@@ -181,6 +188,8 @@ struct StudyClient: DependencyKey {
         Match the IELTS part, number of questions, length and difficulty of this example. The example is a schema and length reference, NOT a topic or task-type template.
         \(variation)
         Use English for material and \(explanationLanguage) for answer explanations. All answers must be grounded in the material.
+        \(template.skill == "Listening" ? Self.receptiveQuestionGuidance : "")
+        \(template.skill == "Listening" ? "In matching and multiple choice, use natural spoken details to support the written descriptions. Make alternatives plausible but distinguishable from what the speaker finally decides or means. Keep questions in recording order." : "")
         For Listening provide a complete spoken script in audio. Put every dialogue turn on its own line as "Speaker name: spoken words", using consistent speaker names. Do not include a cast list, stage directions, or sound-effect labels. For a monologue, start each short topic paragraph on a new line with the same speaker label (for example, "Lecturer:"); keep each paragraph focused on one question where possible. For Speaking provide interview questions in oral.
         For each Reading or Listening question include evidenceQuote: a short exact excerpt from the relevant passage or script, including the closest context for NOT GIVEN. For Listening, copy a distinctive excerpt from the single speaker turn that supports the answer.
         Put every option on its own line with a letter or roman-numeral label. Do not prefix question prompts with question numbers.
