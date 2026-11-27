@@ -532,7 +532,7 @@ struct ExamScreen: View {
 
     private func reviewContent(_ part: ExamUnit) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            ReadingReviewButton(part: part)
+            ReadingReviewButton(part: part, store: store)
             ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: nil)
             if let words = markedWords[part.id], !words.isEmpty {
                 MarkedWordReview(words: words, store: store)
@@ -1161,7 +1161,7 @@ struct QuestionReviewActions: View {
             if route == .tutor {
                 TutorScreen(store: store, context: context, selectedText: question.prompt)
             } else {
-                ReviewSourceSheet(part: part, index: index)
+                ReviewSourceSheet(part: part, index: index, store: store)
             }
         }
     }
@@ -1169,6 +1169,7 @@ struct QuestionReviewActions: View {
 
 struct ReadingReviewButton: View {
     let part: ExamUnit
+    let store: StoreOf<StudyFeature>
     @State private var presented = false
 
     var body: some View {
@@ -1176,7 +1177,7 @@ struct ReadingReviewButton: View {
             Button(String(localized: "全文を見る"), systemImage: "text.book.closed") { presented = true }
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("review.reading.fullText")
-                .sheet(isPresented: $presented) { ReviewSourceSheet(part: part, index: nil) }
+                .sheet(isPresented: $presented) { ReviewSourceSheet(part: part, index: nil, store: store) }
         }
     }
 }
@@ -1184,6 +1185,8 @@ struct ReadingReviewButton: View {
 private struct ReviewSourceSheet: View {
     let part: ExamUnit
     let index: Int?
+    let store: StoreOf<StudyFeature>
+    @State private var selection: SelectableStudyText.Entry?
     @Environment(\.dismiss) private var dismiss
     private let localization = Bundle.main.preferredLocalizations.first ?? "en"
     private var translatesReading: Bool { Locale.Language(identifier: localization).languageCode?.identifier != "en" }
@@ -1227,9 +1230,18 @@ private struct ReviewSourceSheet: View {
                         let target = self.target
                         ForEach(paragraphs.indices, id: \.self) { i in
                             VStack(alignment: .leading, spacing: 4) {
-                                ExamMaterialText(blocks: [paragraphs[i]]) { fragment, _ in Text(verbatim: fragment) }
-                                    .textSelection(.enabled)
-                                    .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
+                                ExamMaterialText(blocks: [paragraphs[i]]) { fragment, suffix in
+                                    if part.skill == "Reading" {
+                                        SelectableStudyText(text: fragment, sourceID: "\(part.id)-review-\(i)\(suffix)", onSave: { entry in
+                                            store.send(.saveExpression(SavedExpression(expression: entry.expression, source: part.id,
+                                                sourceText: entry.sourceText, meaning: entry.meaning, paper: part, sourceID: entry.sourceID,
+                                                selectionLocation: entry.utf16Range.location, selectionLength: entry.utf16Range.length)))
+                                        }, onAsk: { selection = $0 })
+                                    } else {
+                                        Text(verbatim: fragment).textSelection(.enabled)
+                                    }
+                                }
+                                .accessibilityIdentifier(i == target ? "review.source.target" : "review.source.paragraph")
                                 if part.skill == "Reading", translatesReading, !paragraphs[i].isParagraphLabel {
                                     ParagraphTranslation(block: paragraphs[i], localization: localization, index: i)
                                 }
@@ -1246,6 +1258,11 @@ private struct ReviewSourceSheet: View {
                 }
             }.navigationTitle(index.map { "Question \(part.firstQuestionNumber + $0)" } ?? part.title).navigationBarTitleDisplayMode(.inline)
                 .toolbar { Button(String(localized: "完了")) { dismiss() } }
+        }
+        .sheet(item: $selection, onDismiss: { store.send(.closeQuestion) }) { entry in
+            let context = ([part.title, question?.prompt, entry.sourceText].compactMap { $0 }.joined(separator: "\n\n")
+                + String(localized: "\n選択範囲: ") + entry.expression)
+            TutorScreen(store: store, context: context, selectedText: entry.expression)
         }
     }
 }

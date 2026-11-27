@@ -39,8 +39,6 @@ struct IELTSPracticeSession<Content: View>: View {
 struct ShortAnswerField: View {
     @Binding var text: String
     @State private var selection: TextSelection?
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var canPaste = UIPasteboard.general.hasStrings
 
     var body: some View {
         HStack(spacing: 8) {
@@ -48,31 +46,8 @@ struct ShortAnswerField: View {
                 .textFieldStyle(.roundedBorder)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-            Group {
-                if canPaste {
-                    PasteButton(payloadType: String.self) { strings in
-                        guard let pasted = strings.first, !pasted.isEmpty else { return }
-                        insert(pasted)
-                    }
-                } else {
-                    Button {} label: {
-                        Label(String(localized: "Paste"), systemImage: "document.on.clipboard")
-                    }
-                    .buttonStyle(.bordered)
-                    .disabled(true)
-                }
-            }
-            .labelStyle(.iconOnly)
-            .fixedSize(horizontal: true, vertical: false)
-            .tint(StudyColors.accent)
-            .accessibilityIdentifier("answer.paste")
-        }
-        .onAppear { canPaste = UIPasteboard.general.hasStrings }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active { canPaste = UIPasteboard.general.hasStrings }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in
-            canPaste = UIPasteboard.general.hasStrings
+            AnswerPasteControl(insert: insert)
+                .frame(width: 44, height: 44)
         }
     }
 
@@ -86,6 +61,45 @@ struct ShortAnswerField: View {
         let prefix = text[..<range.lowerBound] + pasted
         text = String(prefix) + text[range.upperBound...]
         selection = TextSelection(insertionPoint: String.Index(utf16Offset: prefix.utf16.count, in: text))
+    }
+}
+
+private struct AnswerPasteControl: UIViewRepresentable {
+    let insert: (String) -> Void
+
+    final class Target: UIResponder {
+        var insert: ((String) -> Void)?
+
+        override init() {
+            super.init()
+            pasteConfiguration = UIPasteConfiguration(forAccepting: NSString.self)
+        }
+
+        override func paste(itemProviders: [NSItemProvider]) {
+            guard let provider = itemProviders.first(where: { $0.canLoadObject(ofClass: NSString.self) }) else { return }
+            provider.loadObject(ofClass: NSString.self) { [weak self] value, _ in
+                guard let text = value as? String, !text.isEmpty else { return }
+                Task { @MainActor in self?.insert?(text) }
+            }
+        }
+    }
+
+    func makeCoordinator() -> Target { Target() }
+
+    func makeUIView(context: Context) -> UIPasteControl {
+        let configuration = UIPasteControl.Configuration()
+        configuration.displayMode = .iconOnly
+        configuration.baseForegroundColor = UIColor(StudyColors.accent)
+        configuration.baseBackgroundColor = .secondarySystemGroupedBackground
+        let control = UIPasteControl(configuration: configuration)
+        control.accessibilityIdentifier = "answer.paste"
+        control.accessibilityLabel = String(localized: "Paste")
+        return control
+    }
+
+    func updateUIView(_ control: UIPasteControl, context: Context) {
+        context.coordinator.insert = insert
+        control.target = context.environment.isEnabled ? context.coordinator : nil
     }
 }
 

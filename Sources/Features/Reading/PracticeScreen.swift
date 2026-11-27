@@ -28,7 +28,7 @@ struct PracticeScreen: View {
                     }
                     if let set = store.session, !store.loading {
                         Text(set.title).font(StudyTypography.title)
-                        if store.reviewed, let currentPaper { ReadingReviewButton(part: currentPaper) }
+                        if store.reviewed, let currentPaper { ReadingReviewButton(part: currentPaper, store: store) }
                         ForEach(set.passages.indices, id: \.self) { i in selectable(set.passages[i], id: "passage-\(i)") }
                         ForEach(Array((set.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                         Divider()
@@ -155,7 +155,7 @@ struct TutorScreen: View {
                 }.padding().background(.regularMaterial)
             }
             .navigationTitle(String(localized: "AIチューター")).navigationBarTitleDisplayMode(.inline)
-            .toolbar { Button(String(localized: "完了")) { dismiss() } }
+            .toolbar { Button(String(localized: "完了")) { dismiss() }.accessibilityIdentifier("tutor.done") }
             .sheet(isPresented: $settings) { SettingsScreen(store: store.scope(state: \.settings, action: \.settings)) }
         }
     }

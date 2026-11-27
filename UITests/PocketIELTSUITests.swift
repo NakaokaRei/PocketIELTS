@@ -271,7 +271,11 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(jump.waitForExistence(timeout: 8))
         jump.tap()
         let first = app.textFields["解答"].firstMatch
+        let firstPaste = app.buttons.matching(identifier: "answer.paste").firstMatch
+        XCTAssertTrue(firstPaste.waitForExistence(timeout: 5))
+        XCTAssertGreaterThanOrEqual(firstPaste.frame.width, 44)
         first.tap()
+        XCTAssertTrue(firstPaste.isHittable)
         first.typeText("Course")
         first.typeKey("a", modifierFlags: .command)
         first.typeKey("c", modifierFlags: .command)
@@ -464,6 +468,19 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(evidence.isHittable)
     }
 
+    private func askAboutPassageSelection() {
+        let paragraph = app.textViews.matching(NSPredicate(
+            format: "value BEGINSWITH %@ OR label BEGINSWITH %@", "Your ordinary library card", "Your ordinary library card"
+        )).firstMatch
+        XCTAssertTrue(paragraph.waitForExistence(timeout: 5))
+        paragraph.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 12, dy: 12)).tap()
+        let ask = app.menuItems["AIに質問"]
+        XCTAssertTrue(ask.waitForExistence(timeout: 5))
+        ask.tap()
+        XCTAssertTrue(app.staticTexts["tutor.subject"].waitForExistence(timeout: 5))
+        app.buttons["tutor.done"].tap()
+    }
+
     func testPerAnswerSourceAndTutor() {
         openReading()
         let review = app.buttons["practice.review"]
@@ -474,11 +491,13 @@ final class PocketIELTSUITests: XCTestCase {
         fullText.tap()
         XCTAssertTrue(app.buttons["review.reading.translate.0"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["review.reading.translate.1"].exists)
+        askAboutPassageSelection()
+        XCTAssertTrue(app.buttons["review.reading.translate.0"].waitForExistence(timeout: 5))
         app.buttons["完了"].tap()
         let source = app.buttons["review.source.0"]
         for _ in 0..<8 where !source.isHittable { app.swipeUp() }
         source.tap()
-        XCTAssertTrue(app.staticTexts["review.source.target"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "review.source.target").firstMatch.waitForExistence(timeout: 5))
         app.buttons["完了"].tap()
         app.buttons["review.tutor.0"].tap()
         XCTAssertTrue(app.staticTexts["tutor.subject"].waitForExistence(timeout: 5))
@@ -550,6 +569,7 @@ final class PocketIELTSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
         app.buttons["review.reading.fullText"].tap()
         XCTAssertTrue(app.buttons["review.reading.translate.1"].waitForExistence(timeout: 5))
+        askAboutPassageSelection()
         app.buttons["完了"].tap()
         app.buttons["practice.saveToolbar"].tap()
         XCTAssertTrue(app.alerts["保存しました"].waitForExistence(timeout: 5))
