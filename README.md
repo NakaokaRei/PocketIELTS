@@ -2,10 +2,12 @@
 
 Practise all four IELTS General Training skills on iPhone and iPad. Choose a section to work on, then review your answers and the explanations.
 
+[Download Pokelts on the App Store](https://apps.apple.com/app/id6837188606)
+
 <p>
-  <img src="Documentation/Screenshots/iphone-speaking-conversation.png" width="30%" alt="Speaking practice with an AI examiner" />
-  <img src="Documentation/Screenshots/iphone-reading-figure.png" width="30%" alt="A Reading question with a diagram" />
-  <img src="Documentation/Screenshots/iphone-progress.png" width="30%" alt="Estimated IELTS band score and CEFR level based on practice across all four skills" />
+  <img src="Documentation/AppStore/en/iPhone/01-generation.jpg" width="30%" alt="Generate practice questions with diagrams and Listening audio" />
+  <img src="Documentation/AppStore/en/iPhone/02-tutor.jpg" width="30%" alt="Ask the AI tutor about a word selected in a passage" />
+  <img src="Documentation/AppStore/en/iPhone/03-progress.jpg" width="30%" alt="Review estimated IELTS band scores and CEFR level" />
 </p>
 
 - **Practice questions.** Generate new exercises for each section, with diagrams or Listening audio when needed.
