@@ -1470,10 +1470,13 @@ struct ExamMaterialText<Cell: View>: View {
                     cell(value, blocks.count == 1 ? "" : "-text-\(index)")
                 case let .table(rows):
                     let minimumWidth = CGFloat(rows[0].count) * minimumColumnWidth
-                    ViewThatFits(in: .horizontal) {
-                        table(rows, index: index).frame(minWidth: minimumWidth)
-                        ScrollView(.horizontal) { table(rows, index: index).frame(width: minimumWidth) }
+                    ScrollView(.horizontal) {
+                        table(rows, index: index)
+                            .containerRelativeFrame(.horizontal) { viewport, _ in
+                                max(viewport, minimumWidth)
+                            }
                     }
+                    .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
                 }
             }
         }

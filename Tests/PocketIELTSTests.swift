@@ -85,6 +85,9 @@ struct PocketIELTSTests {
         try checkTableLayout("Source | Detail to include in the exhibition\nOpening leaflet | Item customers had to bring: (21) _____",
                              width: 760, firstHeader: "Source", answerHeader: "Detail to include in the exhibition",
                              answerCell: "Item customers had to bring: (21) _____")
+        try checkTableLayout("Stage of a library visit | Finding from the study\nChecking the website | People could identify the right door more easily when shown (31) _____.",
+                             width: 760, firstHeader: "Stage of a library visit", answerHeader: "Finding from the study",
+                             answerCell: "People could identify the right door more easily when shown (31) _____.")
     }
 
     private func checkTableLayout(_ material: String, width: CGFloat, firstHeader: String, answerHeader: String, answerCell: String) throws {
@@ -114,6 +117,14 @@ struct PocketIELTSTests {
         #expect(blank.minY >= event.maxY)
         #expect(abs(blank.minX - (try rect(answerHeader).minX)) <= 1)
         #expect(blank.maxX <= window.bounds.width)
+        let counts = ExamMaterialBlock.parse(material).compactMap { block -> Int? in
+            if case let .table(rows) = block { return rows.first?.count }
+            return nil
+        }
+        let columns = try #require(counts.first)
+        let columnStride = (blank.minX - event.minX) / CGFloat(columns - 1)
+        #expect(abs(columnStride * CGFloat(columns) - width) <= 2,
+                "Column stride \(columnStride) across \(columns) columns, proposed width \(width), header \(event), answer \(blank), host \(host.view.bounds)")
     }
 
     @Test
