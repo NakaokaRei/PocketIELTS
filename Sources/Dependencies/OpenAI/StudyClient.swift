@@ -193,7 +193,7 @@ struct StudyClient: DependencyKey {
         case "Listening":
             taskGuidance = Self.receptiveQuestionGuidance + """
 
-            Solve the questions against the completed script in recording order. For a correction or change of plan, distinguish the rejected detail from the final one. Quote the words that establish each key, including the amount, unit or qualification where decisive. For multiple choice, vary the correct option positions without an obvious cycle.
+            Solve the questions against the completed script in recording order. For a correction or change of plan, distinguish the rejected detail from the final one. Quote the words that establish each key, including the amount, unit or qualification where decisive. For multiple choice, vary the correct option positions without an obvious cycle. In Parts 1–3, arrange two groups of questions with a natural break near the middle. Begin the second group in a new speaker turn or labelled monologue paragraph. Keep answer evidence on its own side of the break. Audio production inserts the timed announcement; keep it out of the dialogue script.
             """
         case "Speaking":
             taskGuidance = """

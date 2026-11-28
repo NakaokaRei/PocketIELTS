@@ -975,6 +975,103 @@ extension PocketIELTSTests {
 
 extension PocketIELTSTests {
     @Test
+    func listeningPreviewSeparatesAnswerEvidenceInBundledParts() throws {
+        let parts = try ExamUnit.load().filter { $0.skill == "Listening" }
+        for part in parts.prefix(3) {
+            let preview = try #require(ListeningPreview(part: part))
+            let row = try #require(preview.row)
+            let next = try #require(preview.questions?.lowerBound)
+            let transcript = try #require(ListeningTranscript(part: part))
+            for (question, evidenceRow) in transcript.evidence {
+                #expect((question < next) == (evidenceRow < row))
+            }
+        }
+        #expect(ListeningPreview.seconds == 30)
+        #expect(ListeningPreview(part: try #require(parts.last)) == nil)
+    }
+
+    @Test
+    func practiceRecordingContainsAnnouncementAndThirtySecondsOfSilence() async throws {
+        let part = try #require(try ExamUnit.load().first { $0.id == "Listening / Part 1" })
+        let script = try #require(part.audio)
+        let folder = URL.temporaryDirectory.appending(path: UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let preview = try #require(ListeningPreview(part: part))
+        let parts = SpeechAudio.segments(script)
+        for segment in parts {
+            try Data(repeating: 1, count: 4800).write(to: SpeechAudio.segmentURL(segment, directory: folder))
+        }
+        let row = try #require(preview.row)
+        let cleanURL = try #require(SpeechAudio.cachedAudioURL(script, directory: folder))
+        let original = try Data(contentsOf: cleanURL)
+        let split = 44 + row * (4800 + SpeechAudio.gapBytes)
+        let cue = Data(repeating: 2, count: 24000)
+        let audio = try await preview.recording(for: script, directory: folder) { text, _ in
+            #expect(text == preview.announcement)
+            return SpeechAudio.wave(cue)
+        } progress: { _, _ in }
+        var expected = Data(original[44..<split])
+        let leadIn = Data(repeating: 0, count: 2 * 48000)
+        expected.append(leadIn)
+        expected.append(cue)
+        expected.append(Data(repeating: 0, count: 30 * 48000))
+        expected.append(original[split...])
+        #expect(audio.suffix(expected.count) == expected)
+        let decoded = try AVAudioPlayer(data: audio)
+        #expect(abs(decoded.duration - Double(expected.count) / 48000) < 0.001)
+        #expect(try Data(contentsOf: cleanURL) == original)
+        let playback = ListeningPlayer(script: script, cacheDirectory: folder, preview: preview)
+        let track = try #require(preview.cachedTrack(script, directory: folder))
+        let expectedStart = Double(split - 44 + leadIn.count + cue.count) / 48000
+        #expect(abs(track.silence.lowerBound - expectedStart) < 0.001)
+        playback.seek(track.silence.lowerBound + 10.25)
+        #expect(playback.previewSecondsRemaining == 20)
+        playback.pause()
+        #expect(playback.previewSecondsRemaining == 20)
+        playback.seek(track.silence.upperBound + 0.1)
+        #expect(playback.previewSecondsRemaining == nil)
+
+    }
+
+    @Test
+    func previewAnnouncerIsDistinctFromEveryCurrentAndLegacyDialogueVoice() throws {
+        let part = try #require(try ExamUnit.load().first { $0.id == "Listening / Part 1" })
+        let preview = try #require(ListeningPreview(part: part))
+        let announcer = try #require(SpeechAudio.segments(preview.announcement).first)
+        let cast = (1...8).map { "Speaker \($0): Hello." }.joined(separator: "\n")
+        let dialogue = SpeechAudio.segments(cast)
+        #expect(dialogue.count == 8)
+        #expect(dialogue.allSatisfy { $0.voice != announcer.voice && $0.legacyVoice != announcer.voice })
+        #expect(announcer.legacyVoice == announcer.voice)
+        #expect(announcer.text.hasPrefix("You now have thirty seconds"))
+        let oldCue = "Test announcer: " + announcer.text
+        #expect(SpeechAudio.completeURL(oldCue, directory: .temporaryDirectory) !=
+                SpeechAudio.completeURL(preview.announcement, directory: .temporaryDirectory))
+    }
+
+    @Test
+    func listeningVoiceProfilesAreRepeatableAndReachTheSpeechRequest() throws {
+        var voices = Set<String>(), accents = Set<String>()
+        for i in 0..<24 {
+            let script = "Guide: This is visit \(i).\nVisitor: Hello.\nGuide: Welcome."
+            let parts = SpeechAudio.segments(script)
+            #expect(parts == SpeechAudio.segments(script))
+            #expect(parts[0].accent == parts[2].accent)
+            #expect(parts[0].accent != parts[1].accent)
+            let first = parts[0]
+            voices.insert(first.voice)
+            accents.insert(first.accent)
+            let request = try SpeechAudio.request(text: first.text, key: "fixture", voice: first.voice, accent: first.accent)
+            let body = try #require(request.httpBody)
+            let payload = try #require(JSONSerialization.jsonObject(with: body) as? [String: String])
+            #expect(payload["instructions"]?.contains(first.accent) == true)
+        }
+        #expect(voices.count > 1)
+        #expect(accents.count == 4)
+    }
+
+    @Test
     func testDialogueAudioRemovesLabelsAndKeepsVoicesStable() throws {
         let parts = SpeechAudio.segments("Receptionist: Welcome.\nCaller: Hello!\nReceptionist: We open at 9:30.\nPlease arrive early.")
         #expect(parts.map(\.text) == ["Welcome.", "Hello!", "We open at 9:30.\nPlease arrive early."])
@@ -1215,7 +1312,7 @@ extension PocketIELTSTests {
         defer { try? FileManager.default.removeItem(at: folder) }
         let script = "Guide: Welcome to the centre."
         let part = try #require(SpeechAudio.segments(script).first)
-        try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(part, directory: folder))
+        try Data(repeating: 0, count: 48000).write(to: SpeechAudio.segmentURL(part, directory: folder, legacy: true))
         let player = ListeningPlayer(script: script, cacheDirectory: folder)
         #expect(player.player != nil, "Legacy cached segments should be ready on initialization")
         #expect(!player.generating)
@@ -1224,7 +1321,7 @@ extension PocketIELTSTests {
         #expect(player.player?.currentTime == 0)
         let complete = SpeechAudio.completeURL(script, directory: folder)
         #expect(FileManager.default.fileExists(atPath: complete.path))
-        try FileManager.default.removeItem(at: SpeechAudio.segmentURL(part, directory: folder))
+        try FileManager.default.removeItem(at: SpeechAudio.segmentURL(part, directory: folder, legacy: true))
         #expect(ListeningPlayer(script: script, cacheDirectory: folder).player != nil, "Complete audio remains reusable without segment files")
     }
 
@@ -1300,7 +1397,7 @@ extension PocketIELTSTests {
         #expect(failed.audioPreparationFailed == true)
         #expect(failed.questions == paper.questions)
         let prepared = try await SpeechAudio.prepare(for: paper, enabled: true, directory: folder) { text, _ in
-            #expect(text == script)
+            #expect(text == script || text == ListeningPreview(part: paper)?.announcement)
             let wav = SpeechAudio.wave(Data(repeating: 0, count: 48000))
             try wav.write(to: SpeechAudio.completeURL(text, directory: folder))
             return wav

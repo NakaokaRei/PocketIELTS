@@ -820,6 +820,32 @@ final class PocketIELTSUITests: XCTestCase {
         capture(UIDevice.current.userInterfaceIdiom == .pad ? "ipad-mock-large-text" : "iphone-mock-large-text")
     }
 
+    func testMockListeningReviewEditsEarlierPartsAndExpiresIntoReading() {
+        let mock = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "模擬テスト")).firstMatch
+        for _ in 0..<12 where !mock.isHittable { app.swipeUp() }
+        mock.tap()
+        let start = app.buttons["模試を始める"]
+        for _ in 0..<8 where !start.isHittable { app.swipeUp(velocity: .fast) }
+        start.tap()
+        for part in 1...4 {
+            XCTAssertTrue(app.staticTexts["Listening / Part \(part)"].waitForExistence(timeout: 10))
+            let next = app.buttons["practice.review"]
+            for _ in 0..<30 where !next.isHittable { app.swipeUp(velocity: .fast) }
+            next.tap()
+        }
+        let picker = app.segmentedControls.firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 8))
+        picker.buttons["Part 2"].tap()
+        let choice = app.buttons["answer.choice.0.B"]
+        for _ in 0..<10 where !choice.isHittable { app.swipeUp(velocity: .fast) }
+        choice.tap()
+        for _ in 0..<10 where !picker.isHittable { app.swipeDown(velocity: .fast) }
+        picker.buttons["Part 1"].tap()
+        picker.buttons["Part 2"].tap()
+        XCTAssertEqual(choice.value as? String, "選択済み")
+        XCTAssertTrue(app.staticTexts["Reading / Section 1"].waitForExistence(timeout: 125))
+    }
+
     func testMockStartsWithoutRevealingAnswersAndCanExit() {
         let mock = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "模擬テスト")).firstMatch
         for _ in 0..<12 where !mock.isHittable { app.swipeUp() }

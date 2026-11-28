@@ -118,6 +118,8 @@ struct ExamScreen: View {
     @State private var hasReachedReview = false
     @State private var completing = false
     @FocusState private var answerFocused: Bool
+    @State private var listeningReviewDeadline: Date?
+    @State private var listeningReviewPart = 0
     @State private var position = 0
     @State private var attemptID = UUID()
     @State private var resultIDs: [String: UUID] = [:]
@@ -183,13 +185,17 @@ struct ExamScreen: View {
                                     else { Text(started, style: .timer).monospacedDigit() }
                                 }.foregroundStyle(StudyColors.accent)
                             }
-                            exercise(showingReview: showingReview)
+                            if let deadline = listeningReviewDeadline {
+                                listeningAnswerReview(deadline)
+                            } else {
+                                exercise(showingReview: showingReview)
+                            }
                         }.padding(StudySpacing.screenInset).frame(maxWidth: 800).frame(maxWidth: .infinity)
                     }.scrollEdgeEffectStyle(.soft, for: .top)
                         .scrollDismissesKeyboard(.interactively)
-                        .id(showingReview ? unit.id : "\(position)-\(questionPageID)")
+                        .id(listeningReviewDeadline != nil ? "listening-check" : showingReview ? unit.id : "\(position)-\(questionPageID)")
                         .safeAreaInset(edge: .bottom) {
-                            if !showingReview && (!unit.questions.isEmpty || unit.skill == "Writing" || unit.skill == "Speaking") {
+                            if listeningReviewDeadline == nil && !showingReview && (!unit.questions.isEmpty || unit.skill == "Writing" || unit.skill == "Speaking") {
                                 jumpControls(proxy)
                             }
                         }
@@ -221,7 +227,10 @@ struct ExamScreen: View {
                     ToolbarItem(placement: .principal) {
                         HStack(spacing: 5) {
                             Image(systemName: "stopwatch").accessibilityLabel(String(localized: "Elapsed time"))
-                            if let partEnded {
+                            if let deadline = listeningReviewDeadline {
+                                Text(timerInterval: min(.now, deadline)...deadline, countsDown: true)
+                                    .accessibilityIdentifier("listening.reviewTimer")
+                            } else if let partEnded {
                                 Text(duration(partEnded.timeIntervalSince(partStarted)))
                             } else {
                                 Text(partStarted, style: .timer)
@@ -326,7 +335,9 @@ struct ExamScreen: View {
                 if !unit.directions.isEmpty { selectable(unit.directions, id: "directions") }
                 ForEach(ExamMaterialBlock.passages(unit.passages), id: \.offset) { index, text in selectable(text, id: "passage-\(index)") }
                 if let script = unit.audio {
-                    ListeningAudioView(script: script, preparationFailed: unit.audioPreparationFailed == true) { settings = true }.id(unit.id)
+                    ListeningAudioView(script: script, part: unit, preparationFailed: unit.audioPreparationFailed == true,
+                                       onFinished: { if isLastMockListeningPart { beginListeningReview() } },
+                                       openSettings: { settings = true }).id(unit.id)
                 }
                 if !unit.questions.isEmpty {
                     VStack(alignment: .leading, spacing: 20) {
@@ -387,9 +398,9 @@ struct ExamScreen: View {
                                 hasReachedReview = true
                                 onFirstReview()
                             }
-                        } else { advance() }
+                        } else if isLastMockListeningPart { beginListeningReview() } else { advance() }
                     } label: {
-                        Label(isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
+                        Label(isLastMockListeningPart ? String(localized: "Check listening answers") : isMock ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "テストを終了して結果を見る")) : showingReview ? (position + 1 < units.count ? String(localized: "次のパートへ") : String(localized: "練習を終了")) : String(localized: "解答・振り返りを確認"),
                               systemImage: showingReview || isMock ? "arrow.right" : "checkmark.circle")
                             .frame(maxWidth: .infinity, minHeight: 28)
                     }
@@ -430,46 +441,89 @@ struct ExamScreen: View {
         }
     }
 
-    private func questionRow(_ index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            let item = unit.questions[index]
-            if index == 0 || unit.questions[index-1].instruction != item.instruction {
+    private var isLastMockListeningPart: Bool {
+        isMock && unit.skill == "Listening" && !units.dropFirst(position + 1).contains { $0.skill == "Listening" }
+    }
+
+    private func beginListeningReview() {
+        guard listeningReviewDeadline == nil else { return }
+        listeningReviewPart = 0
+        listeningReviewDeadline = Date().addingTimeInterval(120)
+        speak("That is the end of the listening test. You now have two minutes to check your answers.")
+    }
+
+    private func finishListeningReview() {
+        guard listeningReviewDeadline != nil else { return }
+        listeningReviewDeadline = nil
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        if position + 1 < units.count { advance() }
+        else { completing = true; endPractice() }
+    }
+
+    private func listeningAnswerReview(_ deadline: Date) -> some View {
+        let parts = units.filter { $0.skill == "Listening" }
+        let part = parts[listeningReviewPart]
+        return VStack(alignment: .leading, spacing: 16) {
+            Text(String(localized: "Check listening answers")).font(StudyTypography.heading)
+            Picker("Listening", selection: $listeningReviewPart) {
+                ForEach(parts.indices, id: \.self) { index in
+                    Text(verbatim: parts[index].id.components(separatedBy: " · ")[0]
+                        .replacingOccurrences(of: "Listening / ", with: "")).tag(index)
+                }
+            }.pickerStyle(.segmented)
+            ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
+            ForEach(part.questions.indices, id: \.self) { index in questionRow(index, for: part) }
+                .id(part.id)
+            Button(String(localized: "Finish review")) { finishListeningReview() }
+                .buttonStyle(StudyPrimaryButtonStyle())
+        }
+        .task(id: deadline) {
+            do { try await Task.sleep(for: .seconds(max(0, deadline.timeIntervalSinceNow))) } catch { return }
+            finishListeningReview()
+        }
+    }
+
+    private func questionRow(_ index: Int, for part: ExamUnit? = nil) -> some View {
+        let part = part ?? unit
+        return VStack(alignment: .leading, spacing: 20) {
+            let item = part.questions[index]
+            if index == 0 || part.questions[index-1].instruction != item.instruction {
                 VStack(alignment: .leading, spacing: 10) {
                     Label(String(localized: "解答のルール"), systemImage: "info.circle").font(StudyTypography.subheadline.bold())
                         .foregroundStyle(StudyColors.accent)
-                    selectable(StudyQuestionLayout(item.instruction).formatted, id: "instruction-\(index)")
+                    selectable(StudyQuestionLayout(item.instruction).formatted, id: "instruction-\(index)", for: part)
                 }.padding(16).frame(maxWidth: .infinity, alignment: .leading)
                     .background(StudyColors.reading.opacity(0.35), in: RoundedRectangle(cornerRadius: 16))
             }
             VStack(alignment: .leading, spacing: 16) {
-                Text("Question \(unit.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold())
+                Text("Question \(part.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold())
                     .foregroundStyle(StudyColors.accent)
-                selectable(item.displayPrompt(number: unit.firstQuestionNumber + index, localNumber: index + 1), id: "question-\(index)")
+                selectable(item.displayPrompt(number: part.firstQuestionNumber + index, localNumber: index + 1), id: "question-\(index)", for: part)
                 if !item.choices.isEmpty {
                     Text(String(localized: "丸いボタンをタップして解答")).font(StudyTypography.caption).foregroundStyle(StudyColors.secondaryText)
                     ForEach(item.choices, id: \.self) { choice in
                         HStack(alignment: .top, spacing: 10) {
                             Button {
-                                binding(index).wrappedValue = choice
+                                binding(index, for: part).wrappedValue = choice
                             } label: {
-                                Image(systemName: binding(index).wrappedValue == choice ? "checkmark.circle.fill" : "circle")
+                                Image(systemName: binding(index, for: part).wrappedValue == choice ? "checkmark.circle.fill" : "circle")
                                     .font(.title2).frame(width: 44, height: 44)
                             }.buttonStyle(.plain).foregroundStyle(StudyColors.accent)
-                                .disabled(recorded.contains(unit.id))
+                                .disabled(recorded.contains(part.id))
                                 .accessibilityLabel(String(format: String(localized: "%@を選択"), item.choiceText(choice)))
-                                .accessibilityValue(binding(index).wrappedValue == choice ? String(localized: "選択済み") : String(localized: "未選択"))
+                                .accessibilityValue(binding(index, for: part).wrappedValue == choice ? String(localized: "選択済み") : String(localized: "未選択"))
                                 .accessibilityIdentifier("answer.choice.\(index).\(choice)")
-                            selectable(item.choiceText(choice), id: "choice-\(index)-\(choice)")
+                            selectable(item.choiceText(choice), id: "choice-\(index)-\(choice)", for: part)
                                 .padding(.vertical, 10)
                         }.padding(.horizontal, 8)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(binding(index).wrappedValue == choice ? StudyColors.reading.opacity(0.5) : Color.clear,
+                            .background(binding(index, for: part).wrappedValue == choice ? StudyColors.reading.opacity(0.5) : Color.clear,
                                         in: RoundedRectangle(cornerRadius: 12))
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(StudyColors.accent.opacity(binding(index).wrappedValue == choice ? 0.8 : 0.2)))
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(StudyColors.accent.opacity(binding(index, for: part).wrappedValue == choice ? 0.8 : 0.2)))
                     }
                 } else {
-                    ShortAnswerField(text: binding(index))
-                        .disabled(recorded.contains(unit.id))
+                    ShortAnswerField(text: binding(index, for: part))
+                        .disabled(recorded.contains(part.id))
                 }
             }.padding(16).background(StudyColors.mockCard, in: RoundedRectangle(cornerRadius: 16))
         }
@@ -607,15 +661,16 @@ struct ExamScreen: View {
         ExamMaterialText(text: text) { fragment, _ in Text(verbatim: fragment) }
     }
 
-    private func selectable(_ text: String, id: String) -> some View {
-        ExamMaterialText(text: text) { fragment, suffix in
-            SelectableStudyText(text: fragment, sourceID: unit.id + id + suffix, onSave: { entry in
-                if !(markedWords[unit.id] ?? []).contains(where: { $0.id == entry.id }) {
-                    markedWords[unit.id, default: []].append(entry)
+    private func selectable(_ text: String, id: String, for part: ExamUnit? = nil) -> some View {
+        let part = part ?? unit
+        return ExamMaterialText(text: text) { fragment, suffix in
+            SelectableStudyText(text: fragment, sourceID: part.id + id + suffix, onSave: { entry in
+                if !(markedWords[part.id] ?? []).contains(where: { $0.id == entry.id }) {
+                    markedWords[part.id, default: []].append(entry)
                 }
-                save(entry, paper: unit)
+                save(entry, paper: part)
             },
-                onAsk: isMock ? nil : { openTutor(material(unit) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
+                onAsk: isMock ? nil : { openTutor(material(part) + String(localized: "\n選択範囲: ") + $0.expression, selection: $0.expression) },
                 allowsAI: !isMock, forLaterReview: true)
         }
     }
@@ -675,8 +730,8 @@ struct ExamScreen: View {
             if unsavedUnits.isEmpty { endPractice() } else { confirmEnd = true }
         }
     }
-    private func binding(_ index: Int) -> Binding<String> {
-        let key = unit.id + "-\(index)"
+    private func binding(_ index: Int, for part: ExamUnit? = nil) -> Binding<String> {
+        let key = (part ?? unit).id + "-\(index)"
         return Binding(get: { answers[key, default: ""] }, set: { answers[key] = $0 })
     }
     private func score(_ part: ExamUnit) -> Int {
