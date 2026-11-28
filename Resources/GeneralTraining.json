@@ -13,7 +13,7 @@
           "Basics"
         ],
         "explanation": "受付では Kitchen Skills と区別し、予約するクラスを Kitchen Basics と確認しています。",
-        "evidenceQuote": "Receptionist: That photograph was taken at the end of last year's course."
+        "evidenceQuote": "The class we're taking bookings for now is called Kitchen Basics."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -22,7 +22,7 @@
           "Miller"
         ],
         "explanation": "会場は Miller Road。似た名前の Mill Road は別の場所です。",
-        "evidenceQuote": "Receptionist: We use that for talks. You'll be cooking in the hall"
+        "evidenceQuote": "You'll be cooking in the hall on Miller Road."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -35,7 +35,7 @@
           "6.30 pm"
         ],
         "explanation": "午後クラスの終了が6時で、その30分後に開始します。",
-        "evidenceQuote": "Receptionist: The afternoon group leaves at six. We need half an hour"
+        "evidenceQuote": "We need half an hour to set up after them, so your group starts at six thirty."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -44,7 +44,7 @@
           "Tuesday"
         ],
         "explanation": "印刷された曜日はThursdayですが、変更後はTuesdayです。",
-        "evidenceQuote": "Receptionist: That was the plan until the hall changed its opening hours."
+        "evidenceQuote": "We've moved the class to Tuesday."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -53,7 +53,7 @@
           "container"
         ],
         "explanation": "包丁とエプロンは用意されており、持参するのは持ち帰り用の容器です。",
-        "evidenceQuote": "Receptionist: Please leave your knives at home. We supply them, and there"
+        "evidenceQuote": "The one thing you need to bring is a container, so that you can take home what you've made."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -63,7 +63,7 @@
           "fifteen"
         ],
         "explanation": "80ポンドは全額で、予約時に支払うのは15ポンドです。",
-        "evidenceQuote": "Receptionist: No. The fee includes the food. We take a deposit of"
+        "evidenceQuote": "We take a deposit of fifteen pounds now, and you pay the balance on the first evening."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -72,7 +72,7 @@
           "Friday"
         ],
         "explanation": "支払いリンクが有効なのはFridayまでです。",
-        "evidenceQuote": "Receptionist: I can hold a place today. To confirm it, please use"
+        "evidenceQuote": "It stays active until Friday."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -81,7 +81,7 @@
           "sesame"
         ],
         "explanation": "食の好みとは別に、アレルギーとしてsesameだけを申告しています。",
-        "evidenceQuote": "Caller: Sesame. That's the only allergy. Don't put nuts; I eat those"
+        "evidenceQuote": "Sesame. That's the only allergy."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -90,7 +90,7 @@
           "garden"
         ],
         "explanation": "正面は施錠され、gardenと表示された入口を使います。",
-        "evidenceQuote": "Receptionist: Thanks. The main doors will be locked after the afternoon group"
+        "evidenceQuote": "Use the entrance marked garden rather than the one marked deliveries."
       },
       {
         "instruction": "Complete the booking form. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
@@ -100,7 +100,7 @@
           "e-mail"
         ],
         "explanation": "キャンセルには書面の記録が要るので、電話ではなくemailを使います。",
-        "evidenceQuote": "Receptionist: Email us rather than leaving a phone message. We need a"
+        "evidenceQuote": "Email us rather than leaving a phone message."
       }
     ],
     "audio": "Receptionist: Eastbank Community Centre. How can I help?\nCaller: I'm ringing about the evening cooking course. I saw the photograph in the newsletter. The people in it seemed to know what they were doing. I can follow a recipe, but I'd struggle if somebody just put ingredients in front of me.\nReceptionist: That photograph was taken at the end of last year's course. The class we're taking bookings for now is called Kitchen Basics. There's another called Kitchen Skills, but that's for people who have already done the first course. Shall I put Kitchen Basics on your form?\nCaller: Yes, please. Is it the building near the bridge? The market used to be held there.\nReceptionist: We use that for talks. You'll be cooking in the hall on Miller Road. That's Miller, M-I-L-L-E-R. Don't follow the sign to Mill Road; it's on the opposite side of the river. If you come by bus, get off outside the pharmacy.\nCaller: Good. I usually finish work at half past five. Would that give me time?\nReceptionist: The afternoon group leaves at six. We need half an hour to set up after them, so your group starts at six thirty. People sometimes ask if they can arrive at seven, but by then the practical demonstration is over.\nCaller: I can manage that. The advert said something about Thursday. Is that the day I need to keep free?\nReceptionist: That was the plan until the hall changed its opening hours. We've moved the class to Tuesday. Thursday is still printed on some copies of the newsletter. We've kept the course to six sessions so that it finishes before the school term ends.\nCaller: What about equipment? My sister said she had to buy a set of knives when she trained.\nReceptionist: Please leave your knives at home. We supply them, and there are aprons hanging by the door. The one thing you need to bring is a container, so that you can take home what you've made. Something with a lid is better than a plate.\nCaller: I'll bring one. My sister also told me I'd have to pay for ingredients every week. Is that still the arrangement?\nReceptionist: No. The fee includes the food. We take a deposit of fifteen pounds now, and you pay the balance on the first evening. The full fee is eighty pounds, so please don't send that amount as the deposit. When the course finishes, any unused money in the food budget goes towards the final meal.\nCaller: Fine. Can I book a place online? I can pay the deposit while we're talking if that's easier.\nReceptionist: I can hold a place today. To confirm it, please use the link in the email I'm about to send. It stays active until Friday. After Friday I have to offer the place to the next person on the list, even if you still have the link.\nCaller: Before you send it, could you make a note about food? I don't eat meat, but fish is fine. And there's a big difference between food I prefer to avoid and food that actually makes me ill.\nReceptionist: Absolutely. There's a separate box for allergies. What should I put there?\nCaller: Sesame. That's the only allergy. Don't put nuts; I eat those all the time. I can talk to the tutor about alternatives on the first evening.\nReceptionist: Thanks. The main doors will be locked after the afternoon group leaves. Use the entrance marked garden rather than the one marked deliveries. The tutor will meet you just inside. Last year everyone waited at the front until I went looking for them.\nCaller: Garden. I've written it down. And if I can't come after all?\nReceptionist: Email us rather than leaving a phone message. We need a written record of cancellations. You don't need to give a reason, but do include your booking number. You'll find that in the confirmation.\nCaller: Perfect. I'll look out for the message.",
@@ -120,7 +120,7 @@
           "B"
         ],
         "explanation": "時計の下はボランティア用で、壊れた物の受付は噴水のそばです。",
-        "evidenceQuote": "Guide: To begin with, anyone bringing a broken item should go to"
+        "evidenceQuote": "anyone bringing a broken item should go to the desk beside the fountain."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -129,7 +129,7 @@
           "A"
         ],
         "explanation": "新しい予約券は待ち時間に列を離れて会場を回るためのものです。",
-        "evidenceQuote": "Guide: The old system of giving people a place in a queue"
+        "evidenceQuote": "This year the tickets let you explore until ten minutes before your appointment."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -138,7 +138,7 @@
           "C"
         ],
         "explanation": "初心者が自分の服を傷めないよう、練習用の素材を用意しています。",
-        "evidenceQuote": "Guide: Let's look first at what you can do while you wait."
+        "evidenceQuote": "This time she has brought practice material for everyone."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -147,7 +147,7 @@
           "B"
         ],
         "explanation": "3脚は搬入時・分解中・修理後の状態を示します。",
-        "evidenceQuote": "Guide: Next door you'll see some beautiful wooden chairs. Please resist the"
+        "evidenceQuote": "Together they show the stages of a single repair."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -156,7 +156,7 @@
           "A"
         ],
         "explanation": "保護者が残る必要があるのは工具を使う午前の活動です。",
-        "evidenceQuote": "Guide: There are two events for children. The morning session involves small"
+        "evidenceQuote": "The morning session involves small tools, so an adult must stay with each child."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -165,7 +165,7 @@
           "stage"
         ],
         "explanation": "予約カードは入口ではなくステージそばのテントで配ります。",
-        "evidenceQuote": "Guide: There are two events for children. The morning session involves small"
+        "evidenceQuote": "Go to the tent beside the stage for a booking card."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -174,7 +174,7 @@
           "terrace"
         ],
         "explanation": "芝生は濡れているため、持参した昼食はテラスで食べます。",
-        "evidenceQuote": "Guide: Now for a few practical details. Hot drinks are available in"
+        "evidenceQuote": "Please eat it on the terrace."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -183,7 +183,7 @@
           "ticket"
         ],
         "explanation": "工具を借りる際に預けるのは身分証ではなく受付券です。",
-        "evidenceQuote": "Guide: If you borrow tools, please give the attendant your ticket to"
+        "evidenceQuote": "If you borrow tools, please give the attendant your ticket to hold, not your identity card."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -192,7 +192,7 @@
           "Monday"
         ],
         "explanation": "未完成の大型品を保管できるのは月曜までです。",
-        "evidenceQuote": "Guide: If you borrow tools, please give the attendant your ticket to"
+        "evidenceQuote": "Large items that aren't ready for collection this evening can be left in the store until Monday."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -201,7 +201,7 @@
           "board"
         ],
         "explanation": "提案は出口の掲示板へ。箱は寄付用です。",
-        "evidenceQuote": "Guide: If you borrow tools, please give the attendant your ticket to"
+        "evidenceQuote": "Put your suggestion on the board by the exit; the box beside it is for donations."
       }
     ],
     "audio": "Guide: Good morning, and welcome to the first day of the Eastbank Repair Festival. I'm going to talk you through the site before you go off with your maps. If you've been to the winter market here, forget the route you normally take. We haven't changed the entrance, but most of the activities are in different places. The small blue mark on your map is where we are standing now, in the courtyard.\nGuide: To begin with, anyone bringing a broken item should go to the desk beside the fountain. There are two desks in the courtyard. The one under the clock is for people who have volunteered to help, so there's no point showing the staff there your lamp or your radio. At the fountain you'll receive a ticket with a time on it. That time is for an assessment, not a promise that a repair will be finished by then.\nGuide: The old system of giving people a place in a queue as soon as they arrived didn't work very well. People had to stand for hours, and nobody dared leave to look at the demonstrations. This year the tickets let you explore until ten minutes before your appointment. If the time clashes with something else you want to see, return to the desk. Passing a ticket to somebody with a different item can cause problems, since electrical work and furniture repairs need different equipment.\nGuide: Let's look first at what you can do while you wait. In the weaving room a craft worker will show you how to mend a hole in a jumper. She used to ask people to bring something of their own to work on. That meant beginners worried about spoiling a favourite piece of clothing. This time she has brought practice material for everyone. You'll be working with wool, not the thin cotton you may have used for sewing on buttons. You'll be able to take your practice piece away.\nGuide: Next door you'll see some beautiful wooden chairs. Please resist the temptation to sit on them. The point of the display is not to sell restored furniture. One chair has been left exactly as it arrived, another has been taken apart, and a third has been put back together. Together they show the stages of a single repair. The carpenter has left the price tags from the charity shop on two of them, which can give the wrong impression.\nGuide: There are two events for children. The morning session involves small tools, so an adult must stay with each child. At the afternoon storytelling session an adult is welcome but does not have to stay. Both activities are free, but only the morning one has to be booked. Go to the tent beside the stage for a booking card. The people in the tent by the gate can tell you where things are, but they don't have the cards.\nGuide: Now for a few practical details. Hot drinks are available in the café, and you may bring your own lunch. Please eat it on the terrace. We originally intended to use the lawn for picnics, but the ground is too wet. There's a tap for drinking water just beyond the terrace, on the wall of the workshop. The tap in the paint room is for washing brushes only.\nGuide: If you borrow tools, please give the attendant your ticket to hold, not your identity card. You'll get it back when you return the tools. Large items that aren't ready for collection this evening can be left in the store until Monday. We cannot keep them until the next festival. Finally, before you leave, tell us which activity you would most like us to repeat. Put your suggestion on the board by the exit; the box beside it is for donations. That's everything. I hope you find something worth taking home, even if it's only an idea.",
@@ -357,7 +357,7 @@
           "A"
         ],
         "explanation": "ゼミ開始時刻が快速列車の到着に合い、同じ通学手段の人が偏っていました。",
-        "evidenceQuote": "Leo: Our seminar starts just after the fast train arrives. Students choose"
+        "evidenceQuote": "We've effectively chosen people who travel in one particular way."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -366,7 +366,7 @@
           "B"
         ],
         "explanation": "午前に来ないパートタイム学生を含めるためです。",
-        "evidenceQuote": "Maya: So we'll recruit at different entrances, not just at the station"
+        "evidenceQuote": "Leo suggested a period in the afternoon, too, because part-time students may never be there in the morning."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -375,7 +375,7 @@
           "C"
         ],
         "explanation": "バスの遅れに左右されないよう、最長距離を移動した方法を使います。",
-        "evidenceQuote": "Maya: Yes, let's use distance. We'll still ask about waiting time as"
+        "evidenceQuote": "Yes, let's use distance."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -384,7 +384,7 @@
           "A"
         ],
         "explanation": "信頼性と価格が1問に混在していたため、別々の質問にします。",
-        "evidenceQuote": "Tutor: You can see why I'd prefer two questions there. What about"
+        "evidenceQuote": "You can see why I'd prefer two questions there."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -393,7 +393,7 @@
           "B"
         ],
         "explanation": "参加者に自宅の場所を尋ねられていると思わせたためです。",
-        "evidenceQuote": "Maya: It might, but I tried it with a neighbour and she"
+        "evidenceQuote": "I tried it with a neighbour and she thought we wanted her home address."
       },
       {
         "instruction": "Choose the correct letter, A, B or C.",
@@ -402,7 +402,7 @@
           "C"
         ],
         "explanation": "全体傾向の例外に話を聞く方針に、指導教員も賛成します。",
-        "evidenceQuote": "Maya: Or people whose answers don't fit the general pattern. If almost"
+        "evidenceQuote": "people whose answers don't fit the general pattern."
       },
       {
         "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
@@ -411,7 +411,7 @@
           "code"
         ],
         "explanation": "質問票と別紙の連絡先には同じcodeを記入します。",
-        "evidenceQuote": "Leo: We'll give each questionnaire a code. Anyone willing to be interviewed"
+        "evidenceQuote": "Anyone willing to be interviewed can put the same code on a separate slip with their email address."
       },
       {
         "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
@@ -420,7 +420,7 @@
           "border"
         ],
         "explanation": "白黒印刷でも例を目立たせるため、borderで囲みます。",
-        "evidenceQuote": "Maya: The trial also taught us something about presentation. I put examples"
+        "evidenceQuote": "For the next version I'll use a border around each example."
       },
       {
         "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
@@ -429,7 +429,7 @@
           "table"
         ],
         "explanation": "正確な数値にはtable、最大の差にはグラフを使います。",
-        "evidenceQuote": "Leo: We'll use a table for the exact figures. Then we'll put"
+        "evidenceQuote": "We'll use a table for the exact figures."
       },
       {
         "instruction": "Complete the planning notes. Write ONE WORD ONLY for each answer.",
@@ -438,7 +438,7 @@
           "Friday"
         ],
         "explanation": "木曜は入口の視察で、質問の送付は金曜の午後です。",
-        "evidenceQuote": "Leo: Yes. The seminar is on Friday morning, so I'll send them"
+        "evidenceQuote": "The seminar is on Friday morning, so I'll send them that afternoon."
       }
     ],
     "audio": "Maya: Thanks for seeing us. Leo and I have been trying to design the survey about journeys to college. We were going to ask everyone in our seminar, but the trial answers weren't terribly interesting. Almost everyone came by train.\nTutor: Does that mean there isn't much to investigate, or does it tell you more about the people you asked? Think about what those students have in common, apart from studying the same subject.\nLeo: Our seminar starts just after the fast train arrives. Students choose it partly because of the timetable. We've effectively chosen people who travel in one particular way. I thought the problem was that we'd only tried twelve people, but asking another twelve in the same room wouldn't solve it.\nMaya: So we'll recruit at different entrances, not just at the station gate. I wanted to stand outside the main gate all morning. Leo suggested a period in the afternoon, too, because part-time students may never be there in the morning.\nTutor: Good. Now, what do you mean by the main part of a journey? A student might walk to a bus stop and spend longer waiting for the bus than sitting on it. Would you call that a journey on foot?\nLeo: My first thought was to measure time, including the wait. But times change from day to day. For our categories, shall we take the method that covers the greatest distance? That way two people making the same trip won't be put in different groups simply because one bus was late.\nMaya: Yes, let's use distance. We'll still ask about waiting time as a separate question. In the trial I asked whether the service was reliable and affordable. Three people said yes, but then explained that it was expensive. They were answering just the first half.\nTutor: You can see why I'd prefer two questions there. What about the route map you planned to give people? Will that help somebody explain where they changed from a bus to a train?\nMaya: It might, but I tried it with a neighbour and she thought we wanted her home address. We don't need that. We'll remove the map rather than trying to cover the residential streets. We can ask for the number of changes without asking for a location.\nLeo: I'd quite like to interview a few people afterwards. The numbers might tell us that people avoid a certain service, but not why. Perhaps we should interview the students with the longest journeys?\nMaya: Or people whose answers don't fit the general pattern. If almost everyone with access to a car drives, the person who has one and cycles might tell us something the others won't. I think that's more useful than simply following up the longest journeys.\nTutor: I agree. Don't choose them before you've seen the questionnaires. You'll need a way to contact them without writing their names on the answers. How are you going to manage that?\nLeo: We'll give each questionnaire a code. Anyone willing to be interviewed can put the same code on a separate slip with their email address. I had planned to keep the slips in the same folder as the questionnaires, but that would defeat the point. Maya can keep the slips in a locked drawer.\nMaya: The trial also taught us something about presentation. I put examples in small grey print. People missed them because they looked like notes for us. For the next version I'll use a border around each example. I don't want to use colour because the copies may be printed in black and white.\nTutor: Good. And how will you display the results? A pie chart for each entrance would be easy to draw, but comparing the slices across several charts might be difficult.\nLeo: We'll use a table for the exact figures. Then we'll put one graph in the presentation showing the biggest difference. Our first draft had a graph for every answer and you couldn't remember the first by the time you reached the last.\nMaya: I'll visit the entrances on Thursday to check there's room to stand. Leo, could you send the revised questions to the tutor by Friday? We can do the printing after we've had some comments.\nLeo: Yes. The seminar is on Friday morning, so I'll send them that afternoon.",
@@ -458,7 +458,7 @@
           "postcard"
         ],
         "explanation": "呼び名が確認できた最も古い記録は、建物の使用後に送られた絵はがきです。",
-        "evidenceQuote": "Lecturer: Today I'd like to look at the way historians investigate a"
+        "evidenceQuote": "the earliest document in which we could find it was a postcard sent long after the building had stopped being used."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -467,7 +467,7 @@
           "walls"
         ],
         "explanation": "保険図は延焼リスクを見積もるため、壁の材質を詳しく記録します。",
-        "evidenceQuote": "Lecturer: Our first useful source was an insurance plan. These plans were"
+        "evidenceQuote": "They are therefore particularly good at recording the material of walls."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -476,7 +476,7 @@
           "scratches"
         ],
         "explanation": "床の平行な擦り傷の方向が、荷を運んだ方角を示しました。",
-        "evidenceQuote": "Lecturer: Inside the building we looked for signs of loads being moved."
+        "evidenceQuote": "Scratches can be made in several ways, but their direction was informative. Whatever was being moved was travelling towards the water, not towards the road."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -485,7 +485,7 @@
           "rope"
         ],
         "explanation": "何度も同じ場所を通るロープが、フックの溝を説明します。",
-        "evidenceQuote": "Lecturer: Above the opening we found an iron hook. The popular explanation"
+        "evidenceQuote": "A rope drawn repeatedly across the same point could leave such a curve."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -494,7 +494,7 @@
           "holes"
         ],
         "explanation": "今の位置では用途のない穴があり、梁を再利用したと考えられます。",
-        "evidenceQuote": "Lecturer: This brings me to a distinction that matters throughout this kind"
+        "evidenceQuote": "Its end contained holes that served no purpose in its present position. It had almost certainly been used somewhere else first."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -503,7 +503,7 @@
           "destination"
         ],
         "explanation": "運送業者の台帳は顧客名ではなく行き先順でした。",
-        "evidenceQuote": "Lecturer: After examining the fabric, we turned to the written sources. The"
+        "evidenceQuote": "Its entries were arranged by destination rather than by customer."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -512,7 +512,7 @@
           "clay"
         ],
         "explanation": "照合できた荷のうち、一部が粘土と判明します。",
-        "evidenceQuote": "Lecturer: After examining the fabric, we turned to the written sources. The"
+        "evidenceQuote": "By matching dates and payments we could connect some of the anonymous loads with shipments of clay."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -522,7 +522,7 @@
           "sum"
         ],
         "explanation": "頻出の標準料金より、珍しい支払額の一致の方が有力な根拠になります。",
-        "evidenceQuote": "Lecturer: After examining the fabric, we turned to the written sources. The"
+        "evidenceQuote": "A matching payment is much stronger evidence when the sum is unusual than when a standard charge appears twenty times on the same page."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -531,7 +531,7 @@
           "yard"
         ],
         "explanation": "住民が見た車輪の位置は、隣の建物の敷地の庭でした。",
-        "evidenceQuote": "Lecturer: We also interviewed former residents. One remembered an enormous wheel and"
+        "evidenceQuote": "When she drew it on a plan, she placed it outside the building we were studying, in the yard of the next property."
       },
       {
         "instruction": "Complete the notes. Write ONE WORD ONLY for each answer.",
@@ -540,7 +540,7 @@
           "drain"
         ],
         "explanation": "展示を見た人が排水溝に気づき、次の調査の出発点となります。",
-        "evidenceQuote": "Lecturer: Our report called the building a loading store, a description that"
+        "evidenceQuote": "One of those questions concerned a narrow drain, which will be the starting point for the next survey."
       }
     ],
     "audio": "Lecturer: Today I'd like to look at the way historians investigate a building whose original purpose is uncertain. I'll use the example of a brick building beside a canal. Local people called it the old mill. That name appeared in a newspaper article and later found its way into a guidebook. When we began our survey, it would have been easy to treat the name as evidence. In fact, the earliest document in which we could find it was a postcard sent long after the building had stopped being used. The postcard told us what one visitor believed, not what work had once taken place inside.\nLecturer: Our first useful source was an insurance plan. These plans were drawn so that an insurer could estimate the risk of fire spreading from one property to another. They are therefore particularly good at recording the material of walls. They pay rather less attention to the use of an individual room if changing that use made no difference to the risk. On our plan, two adjoining spaces appeared as one. We didn't conclude that the dividing wall was a later addition until we had actually examined the bricks.\nLecturer: Inside the building we looked for signs of loads being moved. A railway goods shed generally needs a floor set at a convenient height for unloading. Here the floor was too low for a railway wagon. However, there was a series of parallel scratches across it, ending at a wide opening in the canal wall. Scratches can be made in several ways, but their direction was informative. Whatever was being moved was travelling towards the water, not towards the road.\nLecturer: Above the opening we found an iron hook. The popular explanation was that it had once held a lamp. That was possible, although it was unusually thick for the weight of an ordinary lamp. Under a layer of paint we found a curve worn into its upper surface. A rope drawn repeatedly across the same point could leave such a curve. The discovery didn't tell us exactly what was lifted, but it encouraged us to look for records of loading operations.\nLecturer: This brings me to a distinction that matters throughout this kind of investigation: the date an object was made is not necessarily the date it entered the building. One beam bore a date a century earlier than the canal. Its end contained holes that served no purpose in its present position. It had almost certainly been used somewhere else first. Had we treated the beam as proof of the age of the walls, we would have had to explain why a waterside loading door had been built before there was any water outside it.\nLecturer: After examining the fabric, we turned to the written sources. The first ledger we consulted listed the names of customers and the amount each had paid, but it rarely named the goods. What helped was a second ledger kept by the carrier. Its entries were arranged by destination rather than by customer. By matching dates and payments we could connect some of the anonymous loads with shipments of clay. Notice the word some. A matching payment is much stronger evidence when the sum is unusual than when a standard charge appears twenty times on the same page.\nLecturer: We also interviewed former residents. One remembered an enormous wheel and described its position in detail. When she drew it on a plan, she placed it outside the building we were studying, in the yard of the next property. Her memory had not been useless. It suggested how the two properties came to be confused. For that reason we kept her drawing with the interview, rather than correcting its position to fit the guidebook.\nLecturer: Our report called the building a loading store, a description that fitted the physical marks and the carrier's accounts. We could not rule out other uses at other times. At the public exhibition we therefore displayed our conclusion alongside a photograph of the hook and a copy of one ledger page. Visitors could see the route from observation to interpretation. Several asked about details we had passed over. One of those questions concerned a narrow drain, which will be the starting point for the next survey.",

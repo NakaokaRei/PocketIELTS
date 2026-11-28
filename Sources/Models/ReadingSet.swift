@@ -154,11 +154,12 @@ struct PracticeAssessment: Codable, Equatable, Sendable {
     var criteria: [Criterion]
     var summary: String
     var improvedResponse: String
-    var estimatedBand: Double? {
+    var criterionMean: Double? {
         let scores = criteria.compactMap(\.band)
         guard !scores.isEmpty else { return nil }
-        return (scores.reduce(0, +) / Double(scores.count) * 2).rounded() / 2
+        return scores.reduce(0, +) / Double(scores.count)
     }
+    var estimatedBand: Double? { criterionMean.map { ($0 * 2).rounded() / 2 } }
     var isPartial: Bool { criteria.contains { $0.band == nil } }
 }
 
@@ -185,7 +186,7 @@ enum StudyBand {
             return objective(skill: skill, correct: recent.reduce(0) { $0 + $1.correct }, total: recent.reduce(0) { $0 + $1.total })
         }
         let assessed = recent.compactMap { result -> (Double, Double)? in
-            guard let score = result.assessment?.estimatedBand else { return nil }
+            guard let score = result.assessment?.criterionMean else { return nil }
             return (score, skill == "Writing" && result.paper?.id.contains("Task 2") == true ? 2 : 1)
         }
         guard !assessed.isEmpty else { return nil }

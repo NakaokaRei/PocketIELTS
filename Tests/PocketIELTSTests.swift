@@ -656,6 +656,20 @@ struct PocketIELTSTests {
     }
 
     @Test
+    func writingWeightsUnroundedCriterionMeans() throws {
+        let units = try ExamUnit.load()
+        func result(_ task: Int, bands: [Double]) throws -> StudyResult {
+            let paper = try #require(units.first { $0.id == "Writing / Task \(task)" })
+            let criteria = bands.map { PracticeAssessment.Criterion(name: "", band: $0, feedback: "") }
+            return StudyResult(skill: "Writing", title: paper.title, correct: 0, total: 0,
+                               assessment: .init(criteria: criteria, summary: "", improvedResponse: ""), paper: paper)
+        }
+        let first = try result(1, bands: [6, 6, 6, 7])
+        let second = try result(2, bands: [6, 7, 7, 7])
+        #expect(StudyBand.skill("Writing", records: [first, second]) == 6.5)
+    }
+
+    @Test
     func testAssessmentAndRecordingSurvivePersistence() throws {
         let assessment = PracticeAssessment(criteria: [
             .init(name: "Coherence", band: 6, feedback: "具体例を追加"),
