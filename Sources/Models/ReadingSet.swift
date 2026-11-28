@@ -207,29 +207,37 @@ enum StudyBand {
 /// Recognizes a complete, sequential option list, preserving punctuation inside each option.
 /// Plain prose is left unchanged when it does not contain at least A/B or i/ii.
 struct StudyQuestionLayout {
-    struct Option { let label, text: String }
+    struct Option: Equatable { let label, text: String }
     let body: String
     let options: [Option]
     var formatted: String {
         ([body] + options.map { $0.label + ". " + $0.text }).filter { !$0.isEmpty }.joined(separator: "\n\n")
     }
     static let roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii", "xiv", "xv"]
+    private static let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".map(String.init)
+    private static let lineMarkers = try! NSRegularExpression(pattern: #"(?m)^[ \t]*([A-Z])([.)])?[ \t]+"#)
+    private static let inlineMarkers = try! NSRegularExpression(pattern: #"(?m)(?:^|\n|[ \t]{2,}|(?<=[;.!?])[ \t]+)([A-H]|[ivx]{1,5})([.)])?[ \t]+"#)
+
     init(_ text: String) {
-        let pattern = #"(?m)(?:^|\n|[ \t]{2,}|(?<=[;.!?])[ \t]+)([A-H]|[ivx]{1,5})([.)])?[ \t]+"#
-        let regex = try! NSRegularExpression(pattern: pattern)
         let source = text as NSString
-        let matches = regex.matches(in: text, range: NSRange(location: 0, length: source.length))
+        let range = NSRange(location: 0, length: source.length)
+        let lines = Self.lineMarkers.matches(in: text, range: range)
+        let lineLabels = lines.map { source.substring(with: $0.range(at: 1)) }
+        let inline = Self.inlineMarkers.matches(in: text, range: range)
+        let inlineLabels = inline.map { source.substring(with: $0.range(at: 1)) }
+        let hasMoreInlineChoices = inlineLabels.count > lineLabels.count && inlineLabels == Array(Self.alphabet.prefix(inlineLabels.count))
+        let useLines = lineLabels.count >= 2 && lineLabels == Array(Self.alphabet.prefix(lineLabels.count)) && !hasMoreInlineChoices
+        let matches = useLines ? lines : inline
         let labels = matches.map { source.substring(with: $0.range(at: 1)) }
         let punctuationCount = matches.filter { $0.range(at: 2).location != NSNotFound }.count
         let consistentMarkers = punctuationCount == 0 || punctuationCount == matches.count
-        let separatedBareMarkers = punctuationCount > 0 || matches.dropFirst().allSatisfy { match in
+        let separatedBareMarkers = useLines || punctuationCount > 0 || matches.dropFirst().allSatisfy { match in
             let prefix = source.substring(with: NSRange(location: match.range.location,
                 length: match.range(at: 1).location - match.range.location))
             return prefix.contains("\n") || prefix.count >= 2
         }
-        let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H"]
         guard labels.count >= 2, consistentMarkers, separatedBareMarkers,
-              labels == Array(alphabet.prefix(labels.count)) || labels == Array(Self.roman.prefix(labels.count)) else {
+              labels == Array(Self.alphabet.prefix(labels.count)) || labels == Array(Self.roman.prefix(labels.count)) else {
             body = text; options = []; return
         }
         body = source.substring(to: matches[0].range.location).trimmingCharacters(in: .whitespacesAndNewlines)

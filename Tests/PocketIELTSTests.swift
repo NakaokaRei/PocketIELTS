@@ -725,6 +725,27 @@ struct PocketIELTSTests {
     }
 
     @Test
+    func listeningMatchingUsesTheBankForItsQuestionRange() {
+        let letter = ReadingSet.Question(instruction: "Choose the correct letter, A–C, from the list.", prompt: "Donation intake", answers: ["B"], explanation: "")
+        var shared = letter
+        shared.instruction = "Match the event to the day.\nA. Monday\nB. Tuesday"
+        let note = ReadingSet.Question(instruction: "Write ONE WORD ONLY.", prompt: "Bring _____.", answers: ["water"], explanation: "")
+        var multipleChoice = letter
+        multipleChoice.prompt = "Where?\nA. Office\nB. Depot"
+        let unit = ExamUnit(id: "Listening / Part 2", skill: "Listening", title: "", directions: "Questions 11–12\nWhat does each role involve?",
+                            passages: ["A Working alone", "B Checking donations", "C Packing boxes", "Questions 13–16\nComplete the notes."],
+                            questions: [letter, letter, note, shared, shared, multipleChoice], audio: nil, oral: [])
+        let groups = unit.listeningMatchingGroups
+        #expect(groups.map(\.indices) == [0..<2, 3..<5])
+        #expect(groups.first?.instruction == "What does each role involve?")
+        #expect(groups.first?.options.map(\.text) == ["Working alone", "Checking donations", "Packing boxes"])
+        #expect(groups.last?.options.map(\.label) == ["A", "B"])
+        let longBank = "ABCDEFGHIJ".map { "\($0). Rest first. A guide will help." }.joined(separator: "\n")
+        #expect(StudyQuestionLayout(longBank).options.last?.label == "J")
+        #expect(StudyQuestionLayout("A. North\nB. South; C. West").options.map(\.label) == ["A", "B", "C"])
+    }
+
+    @Test
     func testHeadingChoicesIncludeTheEntireRomanRange() {
         let labels = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii"]
         var question = ReadingSet.Question(instruction: "Write the correct Roman numeral, i–viii.", prompt: "Paragraph A", answers: ["vii"], explanation: "")

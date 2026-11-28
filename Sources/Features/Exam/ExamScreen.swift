@@ -113,7 +113,7 @@ struct ExamScreen: View {
     @Environment(\.studyNavigation) private var navigation
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    private enum JumpTarget: Hashable { case passage, question(Int) }
+    enum JumpTarget: Hashable { case passage, question(Int) }
     @State private var confirmEnd = false
     @State private var hasReachedReview = false
     @State private var completing = false
@@ -341,10 +341,7 @@ struct ExamScreen: View {
                 }
                 if !unit.questions.isEmpty {
                     VStack(alignment: .leading, spacing: 20) {
-                        ForEach(unit.questions.indices, id: \.self) { index in
-                            questionRow(index)
-                                .id(JumpTarget.question(index))
-                        }
+                        questionRows(unit)
                     }
                 }
                 if unit.skill == "Writing" {
@@ -472,7 +469,7 @@ struct ExamScreen: View {
                 }
             }.pickerStyle(.segmented)
             ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
-            ForEach(part.questions.indices, id: \.self) { index in questionRow(index, for: part) }
+            questionRows(part)
                 .id(part.id)
             Button(String(localized: "Finish review")) { finishListeningReview() }
                 .buttonStyle(StudyPrimaryButtonStyle())
@@ -483,8 +480,24 @@ struct ExamScreen: View {
         }
     }
 
-    private func questionRow(_ index: Int, for part: ExamUnit? = nil) -> some View {
-        let part = part ?? unit
+    private func questionRows(_ part: ExamUnit) -> some View {
+        let groups = part.listeningMatchingGroups
+        return ForEach(part.questions.indices, id: \.self) { index in
+            if let group = groups.first(where: { $0.indices.contains(index) }) {
+                if index == group.indices.lowerBound {
+                    let stem = { (i: Int) in part.questions[i].displayPrompt(number: part.firstQuestionNumber + i, localNumber: i + 1) }
+                    ListeningMatchingView(group: group, firstNumber: part.firstQuestionNumber,
+                                         answer: { binding($0, for: part) },
+                                         prompt: { selectable(stem($0), id: "question-\($0)", for: part) },
+                                         questionText: stem, disabled: recorded.contains(part.id))
+                }
+            } else {
+                questionRow(index, for: part).id(JumpTarget.question(index))
+            }
+        }
+    }
+
+    private func questionRow(_ index: Int, for part: ExamUnit) -> some View {
         return VStack(alignment: .leading, spacing: 20) {
             let item = part.questions[index]
             if index == 0 || part.questions[index-1].instruction != item.instruction {
@@ -585,20 +598,19 @@ struct ExamScreen: View {
     }
 
     private func reviewContent(_ part: ExamUnit) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
+        let matchingGroups = part.listeningMatchingGroups
+        return VStack(alignment: .leading, spacing: 18) {
             ReadingReviewButton(part: part, store: store)
             ListeningReviewButton(part: part, transcript: $transcripts[part.id], question: nil)
             if let words = markedWords[part.id], !words.isEmpty {
                 MarkedWordReview(words: words, store: store)
             }
-            if part.questions.isEmpty {
+            if part.questions.isEmpty || !part.directions.isEmpty || !part.passages.isEmpty || !(part.visuals ?? []).isEmpty {
                 DisclosureGroup(part.title) {
                     VStack(alignment: .leading, spacing: 12) {
                         if !part.directions.isEmpty { reviewText(part.directions) }
                         ForEach(ExamMaterialBlock.passages(part.passages + part.oral), id: \.offset) { _, text in reviewText(text) }
-                        if isMock || historyResult != nil {
-                            ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
-                        }
+                        ForEach(Array((part.visuals ?? []).enumerated()), id: \.offset) { _, visual in QuestionVisualView(visual: visual) }
                     }.textSelection(.enabled)
                 }
             }
@@ -608,16 +620,34 @@ struct ExamScreen: View {
                 let storedAnswer = answers[part.id + "-\(index)"]
                 let answer = storedAnswer ?? ""
                 let hasAnswerData = historyResult == nil || storedAnswer != nil
+                let group = matchingGroups.first { $0.indices.contains(index) }
+                let choices = group?.options.map(\.label) ?? question.choices
+                let instruction = group?.instruction ?? StudyQuestionLayout(question.instruction).body
                 let resultIcon = question.accepts(answer) ? "checkmark.circle.fill" : "xmark.circle"
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Question \(part.firstQuestionNumber + index)").font(StudyTypography.subheadline.bold()).foregroundStyle(StudyColors.accent)
+                    if !instruction.isEmpty { reviewText(instruction).textSelection(.enabled) }
                     Text(question.displayPrompt(number: part.firstQuestionNumber + index, localNumber: index + 1))
                         .font(StudyTypography.headline).textSelection(.enabled)
-                    Label(question.answers.map { question.choiceText($0) }.joined(separator: " / "),
-                          systemImage: hasAnswerData ? resultIcon : "checklist")
+                    ForEach(choices, id: \.self) { choice in
+                        let option = group?.options.first { $0.label == choice }
+                        let title = option.map { $0.label + ". " + $0.text } ?? question.choiceText(choice)
+                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                            Text(verbatim: title).textSelection(.enabled)
+                            if question.accepts(choice) {
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(StudyColors.accent)
+                                    .accessibilityHidden(true)
+                            } else if hasAnswerData && answer.caseInsensitiveCompare(choice) == .orderedSame {
+                                Image(systemName: "xmark.circle").foregroundStyle(StudyColors.error)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                    }
+                    Label(String(localized: "正解: ") + question.answers.joined(separator: " / "), systemImage: "checklist")
                         .font(StudyTypography.headline)
                     if hasAnswerData {
-                        Text(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer)).font(StudyTypography.caption)
+                        Label(String(localized: "あなたの解答: ") + (answer.isEmpty ? String(localized: "未回答") : answer),
+                              systemImage: resultIcon).font(StudyTypography.caption)
                     }
                     SelectableStudyText(text: question.explanation, sourceID: part.id + "-explanation-\(index)") { entry in
                         save(entry, paper: part)

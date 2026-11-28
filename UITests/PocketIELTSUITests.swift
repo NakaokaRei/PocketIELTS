@@ -288,6 +288,48 @@ final class PocketIELTSUITests: XCTestCase {
 
     }
 
+    func testSavedListeningMatchingAndReviewShowFullOptions() {
+        let fixture = """
+        [{"id":"Listening / Part 2 · Depot","skill":"Listening","title":"Depot","directions":"Questions 11–12\\nMatch each role.\\nA Work outdoors\\nB Check donations\\nC Pack boxes","passages":[],"oral":[],"questions":[
+          {"instruction":"Choose the correct letter, A–C.","prompt":"Donation intake","answers":["B"],"explanation":"Donations are checked on arrival."},
+          {"instruction":"Choose the correct letter, A–C.","prompt":"Packing team","answers":["C"],"explanation":"The team packs boxes."}]}]
+        """
+        app.terminate()
+        app.launchArguments += ["-savedPapers", "<" + fixture.utf8.map { String(format: "%02x", $0) }.joined() + ">"]
+        app.launch()
+        if UIDevice.current.userInterfaceIdiom == .pad { XCUIDevice.shared.orientation = .landscapeLeft }
+        let saved = app.buttons["home.savedPapers"]
+        for _ in 0..<8 where !saved.isHittable { app.swipeUp() }
+        saved.tap()
+        let paper = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Depot")).firstMatch
+        for _ in 0..<5 where !paper.isHittable { app.swipeUp() }
+        paper.tap()
+        let row = app.buttons["matching.question.0"]
+        for _ in 0..<8 where !row.isHittable { app.swipeUp() }
+        let wrong = app.buttons["answer.choice.0.A"]
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            XCTAssertTrue(wrong.isHittable)
+            XCTAssertGreaterThan(wrong.frame.minX, row.frame.midX)
+        } else {
+            XCTAssertFalse(wrong.exists)
+        }
+        row.tap()
+        XCTAssertTrue(wrong.waitForExistence(timeout: 5))
+        XCTAssertTrue(wrong.label.contains("Work outdoors"))
+        wrong.tap()
+        XCTAssertEqual(row.value as? String, "A")
+        let review = app.buttons["practice.review"]
+        for _ in 0..<10 where !review.isHittable { app.swipeUp() }
+        review.tap()
+        XCTAssertTrue(app.staticTexts["答えと解説"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Donation intake"].exists)
+        for choice in ["A. Work outdoors", "B. Check donations", "C. Pack boxes"] {
+            XCTAssertTrue(app.staticTexts[choice].firstMatch.exists)
+        }
+        XCTAssertTrue(app.staticTexts["あなたの解答: A"].exists)
+        XCTAssertTrue(app.staticTexts["正解: B"].exists)
+    }
+
     func testReadableChoicesAndAnswerSelection() {
         app.buttons["home.skill.Listening"].tap()
         app.buttons["part.open.Listening / Part 2"].tap()
