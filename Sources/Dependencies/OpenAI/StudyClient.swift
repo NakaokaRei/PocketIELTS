@@ -56,7 +56,9 @@ struct StudyClient: DependencyKey {
         Put shared instructions and shared options in instruction. Put question-specific options in prompt.
         Put each option on its own line, labelled A. / B. / C. or i. / ii. / iii.
         Do not prefix prompt with a question number; the app displays it.
-        For headings, summarise the paragraph's main point; for matching information, restate the specific detail. For TRUE/FALSE/NOT GIVEN, test the whole claim (including conditions, quantities and exceptions). FALSE requires contrary evidence; NOT GIVEN requires a detail the passage leaves undecided.
+        For headings, summarise the paragraph's main point; for matching information, restate the specific detail.
+        When the answer is a paragraph letter, start the group's shared instruction with "Which paragraph contains the following information?" and specify the passage and letter range. Repeat that instruction verbatim on every item in the group, use a single uppercase letter as its answer, and make each prompt independent of question order.
+        For TRUE/FALSE/NOT GIVEN, set aside the intended key and solve each statement from the passage. Check who did what, whether it was proposed or actually happened, and the exact scope of quantities, conditions and deadlines. Mark TRUE only if the whole statement follows, FALSE only if the text rules it out, and NOT GIVEN if both possibilities fit the text. If the key depends on guessing someone's role or on a borderline paraphrase, rewrite the statement and solve it again. In the explanation identify the decisive fact or the specific detail left open.
         For completion tasks use words from the text. Include all acceptable answers separately.
         \(Self.receptiveQuestionGuidance)
         \(QuestionVisual.generationInstructions)
@@ -129,11 +131,14 @@ struct StudyClient: DependencyKey {
             try Task.checkCancellation()
             let raw = try await generate(input)
             try Task.checkCancellation()
-            if let set = try? JSONDecoder().decode(ReadingSet.self, from: jsonData(raw)) {
+            if var set = try? JSONDecoder().decode(ReadingSet.self, from: jsonData(raw)) {
                 var issues = readingIssues(set, section: section)
                 do { try QuestionVisual.validate(set.visuals, instructions: set.questions.map { $0.instruction + " " + $0.prompt }) }
                 catch { issues.append("Supply valid visual material for all questions that refer to a diagram, map or chart.") }
-                if issues.isEmpty { return set }
+                if issues.isEmpty {
+                    set.shuffleParagraphMatchingQuestions()
+                    return set
+                }
                 input = """
                 Your previous paper did not meet the requirements. Correct these issues:
                 \(issues.joined(separator: "\n"))

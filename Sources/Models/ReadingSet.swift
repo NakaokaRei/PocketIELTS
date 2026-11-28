@@ -7,6 +7,26 @@ struct ReadingSet: Codable, Equatable, Sendable {
     var questions: [Question]
     var visuals: [QuestionVisual]? = nil
 
+    mutating func shuffleParagraphMatchingQuestions() {
+        var start = questions.startIndex
+        while start < questions.endIndex {
+            let instruction = questions[start].instruction
+            let group = questions[start...].prefix { $0.instruction == instruction }
+            let end = group.endIndex
+            defer { start = end }
+            guard group.count > 1, instruction.localizedCaseInsensitiveContains("which paragraph"),
+                  group.allSatisfy({ $0.answers.count == 1 && $0.answers[0].wholeMatch(of: #/[A-Z]/#) != nil }) else { continue }
+
+            var shuffled = group.shuffled()
+            let letters = shuffled.map { $0.answers[0] }
+            // A random permutation can still give away the answers in passage order.
+            if letters == letters.sorted(), letters.first != letters.last {
+                shuffled.swapAt(0, shuffled.count - 1)
+            }
+            questions.replaceSubrange(start..<end, with: shuffled)
+        }
+    }
+
     struct Question: Codable, Equatable, Sendable {
         var instruction: String
         var prompt: String

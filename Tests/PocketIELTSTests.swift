@@ -1351,6 +1351,35 @@ extension PocketIELTSTests {
 
 extension PocketIELTSTests {
     @Test
+    func paragraphMatchingShufflesWholeQuestionsWithinEachPassage() {
+        func items(_ instruction: String, _ letters: [String]) -> [ReadingSet.Question] {
+            letters.enumerated().map { index, letter in
+                .init(instruction: instruction, prompt: "Detail \(index)", answers: [letter],
+                      explanation: "Reason \(index)", evidenceQuote: "Clue \(index)")
+            }
+        }
+        let first = items("Which paragraph contains the following information? Passage 1, A–H.", ["A", "A", "D", "H"])
+        let second = items("Which paragraph contains the following information? Passage 2, A–H.", ["B", "F"])
+        let headings = items("Choose the best heading for each paragraph.", ["A", "B", "C"])
+        let repeated = items("Which paragraph contains the following information? Passage 3, A–H.", ["C", "C"])
+        let original = ReadingSet(title: "Training", passages: ["Passage 1", "Passage 2", "Passage 3"],
+                                  questions: first + second + headings + repeated)
+        for _ in 0..<32 {
+            var paper = original
+            paper.shuffleParagraphMatchingQuestions()
+            #expect(paper.passages == original.passages)
+            for (range, expected) in [(0..<4, first), (4..<6, second), (9..<11, repeated)] {
+                let group = paper.questions[range]
+                #expect(group.sorted { $0.prompt < $1.prompt } == expected)
+                if expected == repeated { continue }
+                let keys = group.map { $0.answers[0] }
+                #expect(keys != keys.sorted())
+            }
+            #expect(Array(paper.questions[6..<9]) == headings)
+        }
+    }
+
+    @Test
     func testReadingRepairsShortPaperWithSpecificFeedback() async throws {
         let unit = try #require(try ExamUnit.load().first { $0.id == "Reading / Section 2" })
         let valid = ReadingSet(title: unit.title, passages: unit.passages, questions: unit.questions, visuals: unit.visuals)
